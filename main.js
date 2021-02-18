@@ -1,26 +1,46 @@
 // This is the main Node.js source code file of your actor.
 // It is referenced from the "scripts" section of the package.json file,
 // so that it can be started by running "npm start".
-
+const { handlePageFunction } = require('./handlePageFunction');
 const Apify = require('apify');
-
+//https://www.defacto.com.tr/kadin
 Apify.main(async () => {
-    // Get input of the actor.
-    // If you'd like to have your input checked and generate a user interface
-    // for it, add INPUT_SCHEMA.json file to your actor.
-    // For more information, see https://apify.com/docs/actor/input-schema
-    const input = await Apify.getInput();
-    console.log('Input:');
-    console.dir(input);
+  const requestQueue = await Apify.openRequestQueue();
+  debugger;
+  const url = `https://www.defacto.com.tr`;
+  debugger;
+  const requestList = new Apify.RequestList({ sources: [url] });
+  await requestList.initialize();
+  debugger;
+  const crawler = new Apify.PuppeteerCrawler({
+    maxConcurrency: 10,
+    maxRequestRetries: 1,
+    // maxRequestsPerCrawl: 25,
+    requestList,
+    requestQueue,
+    launchContext: {
+      useChrome: true,
+      launchOptions: {
+        headless: true,
+        slowMo: 100,
+      },
+    },
+    handlePageFunction: handlePageFunction({ requestQueue }),
+    handleFailedRequestFunction: async ({ request }) => {},
+    preNavigationHooks: [
+      async (crawlingContext, gotoOptions) => {
+        const { page } = crawlingContext;
+        await page.setRequestInterception(true);
+        page.on('request', (interceptedRequest) => {
+          if (interceptedRequest.resourceType() === 'image') {
+            interceptedRequest.abort();
+          } else {
+            interceptedRequest.continue();
+          }
+        });
+      },
+    ],
+  });
 
-    // Do something useful here...
-
-    // Save output
-    const output = {
-        receivedInput: input,
-        message: 'Hello sir!',
-    };
-    console.log('Output:');
-    console.dir(output);
-    await Apify.setValue('OUTPUT', output);
+  await crawler.run();
 });

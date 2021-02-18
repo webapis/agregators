@@ -3,12 +3,17 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
-    "apify": "^1.0.1"
+    "@cucumber/cucumber": "^7.0.0",
+    "apify": "^1.0.1",
+    "mocha": "^8.3.0",
+    "sinon": "^9.2.4"
   },
   "devDependencies": {
-    "cross-env": "^7.0.2"
+    "cross-env": "^7.0.2",
+    "puppeteer": "^7.1.0"
   },
   "scripts": {
-    "start": "node main.js"
+    "start": "node main.js",
+    "test":"mocha test/**/*.test.js"
   }
 }
