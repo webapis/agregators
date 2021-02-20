@@ -10,10 +10,12 @@
   },
   "devDependencies": {
     "cross-env": "^7.0.2",
-    "puppeteer": "^7.1.0"
+    "puppeteer": "^7.1.0",
+    "rollup": "^2.39.0"
   },
   "scripts": {
+    "build":"node rollup.api.js",
     "start": "node main.js",
-    "test":"mocha test/**/*.test.js"
+    "test": "mocha test/**/*.test.js"
   }
 }
