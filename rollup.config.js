@@ -20,43 +20,36 @@ function prerender(options) {
     async buildStart(inputOptions) {
       //void
       const { target, dest } = options;
-      const files = fs.readdirSync(target).map((fileName) => {
+      this.browser = await puppeteer.launch();
+      const filePaths = fs.readdirSync(target).map((fileName) => {
         debugger;
         return path.join(target, fileName);
       });
-      debugger;
-      this.browser = await puppeteer.launch();
-      this.page = await this.browser.newPage();
-      this.page.addScriptTag({ path: files[0] });
-
-      await this.page.setContent('<home-page></home-page>', {
-        waitUntil: 'domcontentloaded',
-      });
-      debugger;
-      await this.page.waitForSelector('#root');
-      debugger;
-      await this.page.evaluate(() => {
-        const elements = document.getElementsByTagName('script');
-        for (var i = 0; i < elements.length; i++) {
-          if (elements[i].type === '') {
-            elements[i].parentNode.removeChild(elements[i]);
-          }
-        }
-      });
-      const content = await this.page.content();
-      const removeParentTag = content
-        .replace(/<\/home-page>/i, '')
-        .replace(/<home-page>/i, '');
-      const filename = path.basename(files[0], '.js');
-      debugger;
-
-      try {
-        fs.writeFileSync(path.join(dest, `${filename}.html`), removeParentTag);
-      } catch (error) {
+      await Promise.all(filePaths.map(async(filePath)=>{
+        const filename = path.basename(filePath, '.js');
+        const page = await this.browser.newPage();
+        await page.addScriptTag({ path: filePath });
+        await page.setContent(`<${filename}></${filename}>`, {
+          waitUntil: 'domcontentloaded',
+        });
+        await page.waitForSelector('#root');
         debugger;
-        error;
-      }
-
+        await page.evaluate(() => {
+          const elements = document.getElementsByTagName('script');
+          for (var i = 0; i < elements.length; i++) {
+            if (elements[i].type === '') {
+              elements[i].parentNode.removeChild(elements[i]);
+            }
+          }
+        });
+        const content = await page.content();
+     
+        const removeParentTag = content
+          .replace(`<${filename}>`, '')
+          .replace(`</${filename}>`, '');
+          fs.writeFileSync(path.join(dest, `${filename}.html`), removeParentTag);
+        debugger;
+      }))
       debugger;
     },
     resolveId(source, importer, options) {
@@ -83,9 +76,10 @@ function prerender(options) {
       return null;
     },
 
-    buildEnd(error) {
+  async  buildEnd(error) {
       //void
-
+      debugger;
+        await this.browser.close()
       debugger;
     },
     //Output Generation Hooks
