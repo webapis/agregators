@@ -1,5 +1,5 @@
-'use strict';
+console.log('I am logger');
 
-var main = console.log('hello yo');
+var main = console.log('I am main jss');
 
-module.exports = main;
+export default main;

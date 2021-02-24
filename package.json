@@ -14,7 +14,7 @@
     "rollup": "^2.39.0"
   },
   "scripts": {
-    "build":"node rollup.api.js",
+    "build":"rollup -c -w",
     "start": "node main.js",
     "test": "mocha test/**/*.test.js"
   }

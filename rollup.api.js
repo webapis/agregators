@@ -2,7 +2,7 @@ const inputOptions = {
   input: 'src/main.js',
   plugins: [prerender(), another()],
 };
-const outputOptions = { file: 'bundle.js', format: 'cjs' };
+const outputOptions = { file: 'bundle.js', format: 'es' };
 const rollup = require('rollup');
 
 async function build() {
@@ -13,14 +13,15 @@ async function build() {
   await bundle.close();
 }
 function watch() {
-  rollup.watch(...inputOptions, (output: [outputOptions]));
+  //rollup.watch(...inputOptions, (output: [outputOptions]));
 }
 function prerender(options) {
   return {
     name: 'prerender',
-    options(inputOptions) {
+    async options(inputOptions) {
       const args = arguments;
       debugger;
+      return await inputOptions;
     },
     async buildStart(options) {
       const args = arguments;
@@ -29,6 +30,10 @@ function prerender(options) {
     resolveId(source, importer, options) {
       const args = arguments;
       debugger;
+      if (source === './utils/logger') {
+        return false;
+      }
+      return null;
     },
     load(id) {
       const args = arguments;
@@ -129,10 +134,11 @@ function prerender(options) {
 function another(options) {
   return {
     name: 'another',
-    options(inputOptions) {
+    async options(inputOptions) {
       //another
       const args = arguments;
       debugger;
+      return await inputOptions;
     },
     async buildStart(options) {
       //another

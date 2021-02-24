@@ -1,1 +1,2 @@
-export default console.log('hello yo');
+import logger from './utils/logger';
+export default console.log('I am main jss');
