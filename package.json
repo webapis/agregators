@@ -5,17 +5,32 @@
   "dependencies": {
     "@cucumber/cucumber": "^7.0.0",
     "apify": "^1.0.1",
+    "dotenv": "^8.2.0",
     "mocha": "^8.3.0",
     "sinon": "^9.2.4"
   },
   "devDependencies": {
+    "axios": "^0.21.1",
     "cross-env": "^7.0.2",
+    "nodemon": "^2.0.7",
     "puppeteer": "^7.1.0",
-    "rollup": "^2.39.0"
+    "rollup": "^2.39.0",
+    "rollup-plugin-serve": "^1.1.0"
   },
   "scripts": {
-    "build":"rollup -c -w",
+    "server": "nodemon --watch prerender/index.js prerender/index.js",
+    "build": "rollup -c -w",
     "start": "node main.js",
     "test": "mocha test/**/*.test.js"
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "src/*",
+      "test/*",
+      "apify_storage/*",
+      "build/*",
+      "utils/*"
+    ],
+    "delay": "2500"
   }
 }

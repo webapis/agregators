@@ -4,9 +4,17 @@ customElements.define(
     constructor() {
       super();
     }
+    async connectedCallback() {
+      this.innerHTML = `<div id='root'>My Home Page</div>`;
+    }
 
-    connectedCallback() {
-      this.innerHTML = `<div id='root'>MY Home Page</div>`;
+    get items() {
+
+      return this.items;
+    }
+    set items(values) {
+      
+      this.items = values;
     }
   }
 );
