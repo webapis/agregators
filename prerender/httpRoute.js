@@ -8,8 +8,7 @@ function httpRoute(browser) {
   return async function (req, res) {
     try {
       req.browser = browser;
-      debugger;
-      debugger;
+      
       req.browser = browser;
       const { url } = req;
       console.log('url recieved', url);
@@ -22,7 +21,7 @@ function httpRoute(browser) {
 
       //the whole response has been received, so we just print it out here
       req.on('end', async function () {
-        debugger;
+        
         req.body = JSON.parse(str);
         prerender({ req });
         debugger;
