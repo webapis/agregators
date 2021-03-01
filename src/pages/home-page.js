@@ -5,22 +5,18 @@ customElements.define(
       super();
     }
     connectedCallback() {
+      this.setAttribute('id', 'container');
       this.innerHTML = `<div id='root'>My Home Page</div>`;
-      fetch('http://localhost:3000/buildstart')
-        .then((response) => response.json())
-        .then((data) => {
-          this.innerHTML = `<div id='root'>
-    <div id ="sub">${data.length}</div>
-    </div>`;
-          fetch('http://localhost:3000/buildend');
-        });
     }
 
     get items() {
-      return this.items;
+      return this._items;
     }
-    set items(values) {
-      this.items = values;
+    set items(items) {
+      document.getElementById(
+        'root'
+      ).innerHTML = `<div id='root'>I am changed:${items.length}</div>`;
+      this._items = items;
     }
   }
 );
