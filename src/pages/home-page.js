@@ -13,9 +13,14 @@ customElements.define(
       return this._items;
     }
     set items(items) {
-      document.getElementById(
-        'root'
-      ).innerHTML = `<div id='root'>I am changed:${items.length}</div>`;
+      const root = document.getElementById('root');
+      items.forEach((item) => {
+        var node = document.createElement('LI');
+        var textnode = document.createTextNode(item.title);
+        node.appendChild(textnode);
+        root.appendChild(node);
+      });
+
       this._items = items;
     }
   }

@@ -1,8 +1,7 @@
 require('dotenv').config();
 const puppeteer = require('puppeteer');
 const { httpRoute } = require('./httpRoute');
-const fs = require('fs');
-const path = require('path');
+
 const Apify = require('apify');
 const parallel = 72;
 const axios = require('axios');
@@ -10,7 +9,6 @@ const http = require('http');
 puppeteer
   .launch()
   .then((browser) => {
-    debugger;
     const server = http.createServer(httpRoute(browser));
     server.listen(3000, function () {
       console.log('listening on port 3000');
@@ -37,30 +35,32 @@ puppeteer
                 const dataSetName = `${mainMenuTitle}.${subMenuTitle}.${urlTitle}`;
                 const dataset = await Apify.openDataset(dataSetName);
                 const { items } = await dataset.getData();
-                for (let i = 0; i < items.length; i += parallel) {
-                  const nextItems = items.slice(i, i + parallel);
-                  const pageName =
-                    url.substring(url.lastIndexOf('/') + 1) +
-                    `-${i}-${i + parallel}`;
-                  const output = `build/${url.replace(
-                    'https://www.defacto.com.tr/',
-                    ''
-                  )}`;
+                if (items.length > 0) {
+                  for (let i = 0; i < 72; i += parallel) {
+                    debugger;
+                    const nextItems = items.slice(i, i + parallel);
+                    const pageName =
+                      url.substring(url.lastIndexOf('/') + 1) +
+                      `-${i}-${i + parallel}`;
+                    const output = `build/${url.replace(
+                      'https://www.defacto.com.tr/',
+                      ''
+                    )}`;
 
-                  axios
-                    .post('http://localhost:3000', {
-                      componentPath: 'src/pages/home-page.js',
-                      output,
-                      items: nextItems,
-                      pageName,
-                    })
-                    .then((res) => {
-                      console.log(`statusCode: ${res.status}`);
-                    })
-                    .catch((error) => {
-                      debugger;
-                      console.error(error);
-                    });
+                    axios
+                      .post('http://localhost:3000', {
+                        componentPath: 'src/pages/home-page.js',
+                        output,
+                        items: nextItems,
+                        pageName,
+                      })
+                      .then((res) => {
+                        console.log(`statusCode: ${res.status}`);
+                      })
+                      .catch((error) => {
+                        console.error(error);
+                      });
+                  }
                 }
               })
             );
@@ -69,12 +69,5 @@ puppeteer
       })
     );
 
-    debugger;
-    return new Promise((resolve, reject) => resolve(12));
-  })
-  .then((item) => {
-    debugger;
-  })
-  .catch((error) => {
-    debugger;
+    return new Promise((resolve) => resolve(12));
   });

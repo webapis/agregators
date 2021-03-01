@@ -3,97 +3,41 @@ const fs = require('fs');
 const path = require('path');
 const makeDir = require('make-dir');
 async function prerender({ req }) {
-  try {
-    const { componentPath, output, pageName, items } = req.body;
-    debugger;
-    console.log(req.body);
-    const filename = path.basename(componentPath, '.js');
-    const page = await req.browser.newPage();
+  const { componentPath, output, pageName, items } = req.body;
 
-    // await page.setRequestInterception(true);
-    // page.on('request', async (request) => {
-    //   if (request.url() === 'http://localhost:3000/buildstart') {
-    //     debugger;
-    //     request.response({
-    //       content: 'application/json',
-    //       body: JSON.stringify(items),
-    //     });
-    //   }
-    //   if (request.url() === 'http://localhost:3000/buildend') {
-    //     debugger;
-    //   }
-    //   debugger;
-    // });
+  const filename = path.basename(componentPath, '.js');
+  const page = await req.browser.newPage();
 
-    debugger;
+  await page.addScriptTag({ path: componentPath });
 
-    await page.addScriptTag({ path: componentPath });
+  await page.setContent(`<${filename}></${filename}>`, {
+    waitUntil: 'domcontentloaded',
+  });
+  await page.waitForSelector('#root');
 
-    await page.setContent(`<${filename}></${filename}>`, {
-      waitUntil: 'domcontentloaded',
-    });
-    await page.waitForSelector('#root');
-    debugger;
-    await page.evaluate((_items) => {
-      const container = (document.getElementById('container').items = _items);
-    }, items);
+  await page.evaluate((_items) => {
+    document.getElementById('container').items = _items;
+  }, items);
 
-    debugger;
-
-    await page.evaluate(() => {
-      const elements = document.getElementsByTagName('script');
-      for (var i = 0; i < elements.length; i++) {
-        if (elements[i].type === '') {
-          elements[i].parentNode.removeChild(elements[i]);
-        }
+  await page.evaluate(() => {
+    const elements = document.getElementsByTagName('script');
+    for (var i = 0; i < elements.length; i++) {
+      if (elements[i].type === '') {
+        elements[i].parentNode.removeChild(elements[i]);
       }
-    });
-    const content = await page.content();
-    debugger;
-    const removeParentTag = content
-      .replace(`<${filename}>`, '')
-      .replace(`</${filename}>`, '');
-    debugger;
-    const pathMade = await makeDir(output);
-    debugger;
-    fs.writeFileSync(path.join(output, `${pageName}.html`), removeParentTag);
-    debugger;
-  } catch (error) {
-    debugger;
+    }
+  });
+  const content = await page.content();
 
-    throw error;
-  }
+  const removeParentTag = content
+    .replace(`<${filename} id="container">`, '')
+    .replace(`</${filename}>`, '');
+
+  await makeDir(output);
+
+  fs.writeFileSync(path.join(output, `${pageName}.html`), removeParentTag);
 }
 
 module.exports = {
   prerender,
 };
-/*
-const fs = require('fs');
-const path = require('path');
-async function renderPage ({items, browser}){
-    filePaths.map(async (filePath) => {
-      const filename = path.basename(filePath, '.js');
-      const page = await this.browser.newPage();
-      await page.addScriptTag({ path: filePath });
-      await page.setContent(`<${filename}></${filename}>`, {
-        waitUntil: 'domcontentloaded',
-      });
-      await page.waitForSelector('#root');
-      debugger;
-      await page.evaluate(() => {
-        const elements = document.getElementsByTagName('script');
-        for (var i = 0; i < elements.length; i++) {
-          if (elements[i].type === '') {
-            elements[i].parentNode.removeChild(elements[i]);
-          }
-        }
-      });
-      const content = await page.content();
-      const removeParentTag = content
-        .replace(`<${filename}>`, '')
-        .replace(`</${filename}>`, '');
-      fs.writeFileSync(path.join(dest, `${filename}.html`), removeParentTag);
-      debugger;
-}
-*/

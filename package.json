@@ -11,16 +11,19 @@
     "sinon": "^9.2.4"
   },
   "devDependencies": {
+    "@open-wc/rollup-plugin-html": "^1.2.5",
     "axios": "^0.21.1",
     "cross-env": "^7.0.2",
+    "eslint": "^7.21.0",
     "nodemon": "^2.0.7",
     "puppeteer": "^7.1.0",
     "rollup": "^2.39.0",
+    "rollup-plugin-clear": "^2.0.7",
     "rollup-plugin-serve": "^1.1.0"
   },
   "scripts": {
-    "server": "nodemon --watch prerender/index.js prerender/index.js",
-    "build": "rollup -c -w",
+    "server": "node prerender/index.js prerender/index.js",
+    "dev": "rollup -c -w",
     "start": "node main.js",
     "test": "mocha test/**/*.test.js"
   },
