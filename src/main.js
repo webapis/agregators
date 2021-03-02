@@ -5,8 +5,8 @@ document.body.innerHTML = `<div>
 
 const container = document.getElementById('container');
 
-container.items = [
-  {
+container.items = [0, 1, 2, 3,4,5,6,7,8,9].map(() => {
+  return {
     mainMenuTitle: 'AKSESUAR',
     subMenuTitle: 'ERKEK',
     title: 'DeFacto Erkek Saat | DeFacto',
@@ -36,12 +36,12 @@ container.items = [
     productInfo: {
       title: 'METAL SAAT',
       salePrice: '129,99 TL',
-      marketPrice: null,
-      discountRate: null,
-      discountText: null,
+      marketPrice: '159,99 TL',
+      discountRate: '%36',
+      discountText: 'İNDİRİM',
     },
-  },
-];
+  };
+});
 
 /*
 [
