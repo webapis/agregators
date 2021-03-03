@@ -7,13 +7,16 @@ async function prerender({ req }) {
 
   const filename = path.basename(componentPath, '.js');
   const page = await req.browser.newPage();
-
+ 
   await page.addScriptTag({ path: componentPath });
-
+  
   await page.setContent(`<${filename}></${filename}>`, {
     waitUntil: 'domcontentloaded',
   });
+
+ 
   await page.waitForSelector('#root');
+  debugger;
 
   await page.evaluate((_items) => {
     document.getElementById('container').items = _items;

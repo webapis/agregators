@@ -9,10 +9,10 @@
   "requestTotalFailedDurationMillis": 642604,
   "requestTotalFinishedDurationMillis": 39075593,
   "crawlerStartedAt": "2021-02-18T09:43:10.387Z",
-  "crawlerFinishedAt": "2021-02-25T04:03:28.973Z",
-  "statsPersistedAt": "2021-02-25T04:03:28.974Z",
-  "crawlerRuntimeMillis": 6909428,
-  "crawlerLastStartTimestamp": 1614218899546,
+  "crawlerFinishedAt": "2021-03-03T08:44:13.559Z",
+  "statsPersistedAt": "2021-03-03T08:44:13.560Z",
+  "crawlerRuntimeMillis": 6909531,
+  "crawlerLastStartTimestamp": 1614754144029,
   "requestRetryHistogram": [
     1445,
     12

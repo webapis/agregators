@@ -37,7 +37,7 @@ puppeteer
                 const { items } = await dataset.getData();
                 if (items.length > 0) {
                   for (let i = 0; i < 72; i += parallel) {
-                    debugger;
+                 
                     const nextItems = items.slice(i, i + parallel);
                     const pageName =
                       url.substring(url.lastIndexOf('/') + 1) +

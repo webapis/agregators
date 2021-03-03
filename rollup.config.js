@@ -1,10 +1,12 @@
 import serve from 'rollup-plugin-serve';
 import clear from 'rollup-plugin-clear';
 import html from '@open-wc/rollup-plugin-html';
+import copy from "rollup-plugin-copy-assets";
 const puppeteer = require('puppeteer');
 const fs = require('fs');
 const path = require('path');
-export default {
+export default [{
+  external:['df-product-view'],
   input: 'src/main.js',
   output: {
     dir: 'build',
@@ -12,7 +14,7 @@ export default {
     entryFileNames: 'main-[hash].js',
   },
   plugins: [
-    clear({ targets: ['build'] }),
+    clear({ targets: ['build'],watch: true, }),
     html({
       name: 'index.html',
       inject: false,
@@ -21,7 +23,7 @@ export default {
         return `
         <html>
           <head>
-          <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+      
             ${bundle.entrypoints.map((bundle) => {
               debugger;
               return `<script type="module" src=${bundle.importPath}></script>`;
@@ -31,15 +33,17 @@ export default {
       `;
       },
     }),
+    copy({assets:['src/components']}),
     serve({
-      open: true,
+      open: false,
       contentBase: 'build',
       // openPage: 'build/home-page',
       host: 'localhost',
       port: 10001,
     }),
   ],
-};
+},
+]
 
 /*
 const puppeteer = require('puppeteer');
