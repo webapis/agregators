@@ -12,6 +12,8 @@ customElements.define(
         const discountRate = this.getAttribute('discountRate');
         const discountText = this.getAttribute('discountText');
         const detailLink = this.getAttribute('detailLink');
+        const placeHolder = this.getAttribute('placeHolder');
+       debugger;
         // eslint-disable-next-line no-undef
         this.innerHTML = /**/ `
         <style>
@@ -72,7 +74,7 @@ customElements.define(
           }
         </style>
         <div class="df-product-item">
-          <img srcset=${srcset} class="df-picture">
+          <img src=${placeHolder} srcset=${srcset} class="df-picture">
           <a href="${detailLink}" class="df-product-info-title-link">
           <div>${title}</div>
           </a>
@@ -90,4 +92,3 @@ customElements.define(
       }
     }
   );
-  

@@ -1,3 +1,5 @@
+const BOOTSTRAP_CSS =
+  '  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">';
 customElements.define(
   'home-page',
   class extends HTMLElement {
@@ -11,7 +13,7 @@ customElements.define(
       document.body.appendChild(s);
       this.setAttribute('id', 'container');
       document.head.innerHTML = `
-      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+        ${BOOTSTRAP_CSS}
       `;
       this.innerHTML = `
       <div class="container"> <div id='root' class="row"></div></div>
@@ -32,7 +34,7 @@ customElements.define(
             discountRate,
             discountText
           },
-          picture: { img: { scrset }, a: { detailLink } }
+          picture: { img: { scrset,placeHolder }, a: { detailLink } }
         } = item;
         var node = document.createElement('product-view');
         node.classList.add('col-sm-6');
@@ -44,6 +46,7 @@ customElements.define(
         node.setAttribute('discountText', discountText);
         node.setAttribute('detailLink', detailLink);
         node.setAttribute('srcset', scrset);
+        node.setAttribute('placeHolder', placeHolder);
         root.appendChild(node);
       });
 
@@ -51,7 +54,3 @@ customElements.define(
     }
   }
 );
-
-/*
-   
-*/

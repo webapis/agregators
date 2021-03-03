@@ -1,20 +1,21 @@
 import serve from 'rollup-plugin-serve';
-import clear from 'rollup-plugin-clear';
+import del from 'rollup-plugin-delete'
 import html from '@open-wc/rollup-plugin-html';
-import copy from "rollup-plugin-copy-assets";
-const puppeteer = require('puppeteer');
+const makeDir = require('make-dir');
 const fs = require('fs');
 const path = require('path');
-export default [{
-  external:['df-product-view'],
+const puppeteer = require('puppeteer');
+
+export default {
+  external: ['df-product-view'],
   input: 'src/main.js',
   output: {
     dir: 'build',
     format: 'es',
-    entryFileNames: 'main-[hash].js',
+    entryFileNames: 'main-[hash].js'
   },
   plugins: [
-    clear({ targets: ['build'],watch: true, }),
+    del({ targets: 'build/*.js' }),
     html({
       name: 'index.html',
       inject: false,
@@ -24,26 +25,49 @@ export default [{
         <html>
           <head>
       
-            ${bundle.entrypoints.map((bundle) => {
+            ${bundle.entrypoints.map(bundle => {
               debugger;
               return `<script type="module" src=${bundle.importPath}></script>`;
             })}
           </head>
         </html>
       `;
-      },
+      }
     }),
-    copy({assets:['src/components']}),
+    watchComponent({ target: 'src/components', dest: 'build/components' }),
     serve({
       open: false,
       contentBase: 'build',
       // openPage: 'build/home-page',
       host: 'localhost',
-      port: 10001,
-    }),
-  ],
-},
-]
+      port: 10001
+    })
+  ]
+};
+
+function watchComponent(options) {
+  debugger;
+  return {
+    name: 'watchComponent',
+
+    async buildStart(inputOptions) {
+      const { target, dest } = options;
+      debugger;
+      await makeDir(dest);
+      let self = this;
+      const filePaths = fs.readdirSync(target).map(function(fileName) {
+        const filePath = path.join(target, fileName);
+        const file = fs.readFileSync(filePath);
+        debugger;
+        fs.writeFileSync(path.join(dest, fileName), file);
+        const pathResolved = path.resolve(filePath);
+        self.addWatchFile(pathResolved);
+        debugger;
+      });
+      debugger;
+    }
+  };
+}
 
 /*
 const puppeteer = require('puppeteer');
@@ -57,6 +81,7 @@ export default {
   },
   plugins: [prerender({ target: './src/pages', dest: './build' })],
 };
+
 
 function prerender(options) {
   debugger;
