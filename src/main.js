@@ -1,5 +1,7 @@
 import './pages/home-page';
-document.body.innerHTML = `<div>
+
+document.body.innerHTML = `<div class="container mt-5">
+
 <home-page></home-page>
 </div>`;
 

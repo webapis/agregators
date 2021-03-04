@@ -7,16 +7,21 @@ customElements.define(
       super();
     }
     connectedCallback() {
-      var s = document.createElement('script');
-      s.type = 'text/javascript';
-      s.src = '../components/df-product-view.js';
-      document.body.appendChild(s);
+      addScriptTag({ src: '../components/df-product-view.js' });
+      addScriptTag({ src: '../components/navigation-bar.js' });
+      // var s = document.createElement('script');
+      // s.type = 'text/javascript';
+      // s.src = '../components/df-product-view.js';
+      // document.body.appendChild(s);
+
       this.setAttribute('id', 'container');
       document.head.innerHTML = `
         ${BOOTSTRAP_CSS}
       `;
       this.innerHTML = `
-      <div class="container"> <div id='root' class="row"></div></div>
+      <div class="container">
+      <navigation-bar></navigation-bar>
+      <div id='root' class="row"></div></div>
       `;
     }
 
@@ -34,7 +39,7 @@ customElements.define(
             discountRate,
             discountText
           },
-          picture: { img: { scrset,placeHolder }, a: { detailLink } }
+          picture: { img: { scrset, placeHolder }, a: { detailLink } }
         } = item;
         var node = document.createElement('product-view');
         node.classList.add('col-sm-6');
@@ -54,3 +59,10 @@ customElements.define(
     }
   }
 );
+
+const addScriptTag = ({ src }) => {
+  var s = document.createElement('script');
+  s.type = 'text/javascript';
+  s.src = src;
+  document.body.appendChild(s);
+};
