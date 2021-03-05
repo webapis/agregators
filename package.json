@@ -25,7 +25,8 @@
     "rollup-plugin-serve": "^1.1.0"
   },
   "scripts": {
-    "server": "node prerender/index.js prerender/index.js",
+    "pages_ssr": "node prerender/index.js",
+    "nav_ssr":"node prerender/navigationBuilder",
     "dev": "rollup -c -w",
     "start": "node main.js",
     "test": "mocha test/**/*.test.js"

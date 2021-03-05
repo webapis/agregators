@@ -9,6 +9,8 @@ customElements.define(
     connectedCallback() {
       addScriptTag({ src: '../components/df-product-view.js' });
       addScriptTag({ src: '../components/navigation-bar.js' });
+      addScriptTag({ src: '../components/search-bar.js' });
+      addScriptTag({ src: '../components/marka-nav.js' });
       // var s = document.createElement('script');
       // s.type = 'text/javascript';
       // s.src = '../components/df-product-view.js';
@@ -19,9 +21,27 @@ customElements.define(
         ${BOOTSTRAP_CSS}
       `;
       this.innerHTML = `
+      <nav class="navbar navbar-light bg-light">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Navbar</a>
+  </div>
+</nav>
       <div class="container">
+
+      <div class ="row">
+   
+      <div class="col-3">
       <navigation-bar></navigation-bar>
-      <div id='root' class="row"></div></div>
+      </div>
+      <div class="col">
+      <search-bar></search-bar>
+      <marka-nav></marka-nav>
+      <div id='root' class="row mt-1"></div></div>
+      </div>
+   
+     
+      </div>
+     
       `;
     }
 
