@@ -6,6 +6,24 @@ customElements.define(
     }
 
     connectedCallback() {
+      Promise.all([
+        import('../components/pageStore.js'),
+        import('../components/alphabet-marka.js')
+      ]).then(() => {
+        this.render();
+      });
+    }
+
+    set items(items) {
+      debugger;
+      this._items = items;
+    }
+
+    get items() {
+      return this._items;
+    }
+
+    render() {
       this.innerHTML = `<div class="p-3">Alphabe page
       <div class="row">
         <h5 class="fw-light col-12">A</h5>
@@ -27,10 +45,7 @@ customElements.define(
         </div>
         </a>
         </div>
-      
-      
         </div>
-      
         <h5 class="fw-light">B</h5>
         <div class="border-bottom d-flex align-items-start ps-3">
         Basic

@@ -1,5 +1,5 @@
 
-import './alphabet-marka.storybook'
+//import './alphabet-marka.storybook'
+import './alphabet-page.storybook'
 
-
-document.body.innerHTML=`<alphabet-marka-storybook></alphabet-marka-storybook>`
+document.body.innerHTML=`<alphabet-page-storybook></alphabet-page-storybook>`
