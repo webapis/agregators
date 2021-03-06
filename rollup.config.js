@@ -1,6 +1,7 @@
 import serve from 'rollup-plugin-serve';
 import del from 'rollup-plugin-delete'
 import html from '@open-wc/rollup-plugin-html';
+import replace from "@rollup/plugin-replace";
 const makeDir = require('make-dir');
 const fs = require('fs');
 const path = require('path');
@@ -15,12 +16,15 @@ export default {
     entryFileNames: 'main-[hash].js'
   },
   plugins: [
+    replace({
+      ENV: JSON.stringify(process.env.NODE_ENV),
+    }),
     del({ targets: 'build/*.js' }),
     html({
       name: 'index.html',
       inject: false,
       template({ bundle }) {
-        debugger;
+        
         return `
         <html>
           <head>
@@ -30,7 +34,7 @@ export default {
           <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
           <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script> 
           ${bundle.entrypoints.map(bundle => {
-              debugger;
+              
               return `<script type="module" src=${bundle.importPath}></script>`;
             })}
           </head>
@@ -50,25 +54,25 @@ export default {
 };
 
 function watchComponent(options) {
-  debugger;
+  
   return {
     name: 'watchComponent',
 
     async buildStart(inputOptions) {
       const { target, dest } = options;
-      debugger;
+      
       await makeDir(dest);
       let self = this;
       const filePaths = fs.readdirSync(target).map(function(fileName) {
         const filePath = path.join(target, fileName);
         const file = fs.readFileSync(filePath);
-        debugger;
+        
         fs.writeFileSync(path.join(dest, fileName), file);
         const pathResolved = path.resolve(filePath);
         self.addWatchFile(pathResolved);
-        debugger;
+        
       });
-      debugger;
+      
     }
   };
 }
@@ -88,18 +92,18 @@ export default {
 
 
 function prerender(options) {
-  debugger;
+  
   return {
     name: 'prerender',
     options(inputOptions) {
-      debugger;
+      
     },
     async buildStart(inputOptions) {
       //void
       const { target, dest } = options;
       this.browser = await puppeteer.launch();
       const filePaths = fs.readdirSync(target).map((fileName) => {
-        debugger;
+        
         return path.join(target, fileName);
       });
       await Promise.all(filePaths.map(async(filePath)=>{
@@ -110,7 +114,7 @@ function prerender(options) {
           waitUntil: 'domcontentloaded',
         });
         await page.waitForSelector('#root');
-        debugger;
+        
         await page.evaluate(() => {
           const elements = document.getElementsByTagName('script');
           for (var i = 0; i < elements.length; i++) {
@@ -125,113 +129,113 @@ function prerender(options) {
           .replace(`<${filename}>`, '')
           .replace(`</${filename}>`, '');
           fs.writeFileSync(path.join(dest, `${filename}.html`), removeParentTag);
-        debugger;
+        
       }))
-      debugger;
+      
     },
     resolveId(source, importer, options) {
-      debugger;
+      
       return null;
     },
     load(id) {
       this.addWatchFile(id);
-      debugger;
+      
       return null;
     },
     transform(code, id) {
-      debugger;
+      
       return null;
     },
     moduleParsed(moduleInfo) {
       //void
 
-      debugger;
+      
     },
 
     resolveDynamicImport() {
-      debugger;
+      
       return null;
     },
 
   async  buildEnd(error) {
       //void
-      debugger;
+      
         await this.browser.close()
-      debugger;
+      
     },
     //Output Generation Hooks
     closeBundle() {
       //void
 
-      debugger;
+      
     },
     outputOptions(outputOptions) {
-      debugger;
+      
       return null;
     },
     renderStart(outputOptions, inputOptions) {
       //void
-      debugger;
+      
     },
     banner() {
       //void
 
-      debugger;
+      
     },
     footer() {
       //void
 
-      debugger;
+      
     },
     intro() {
       //void
 
-      debugger;
+      
     },
     outro() {
       //void
 
-      debugger;
+      
     },
     renderDynamicImport() {
-      debugger;
+      
       return null;
     },
     resolveImportMeta() {
-      debugger;
+      
       return null;
     },
     augmentChunkHash() {
-      debugger;
+      
     },
     resolveFileUrl() {
-      debugger;
+      
       return null;
     },
     renderChunk(code, chunkinfo, outputOptions) {
-      debugger;
+      
     },
     generateBundle(outputOptions, bundle, isWrite) {
       //void
 
-      debugger;
+      
     },
     writeBundle(outputOptions, bundle) {
       //void
 
-      debugger;
+      
     },
     renderError() {
       //void
 
-      debugger;
+      
     },
 
     closeWatcher() {
-      debugger;
+      
     },
     watchChange(id, change) {
-      debugger;
+      
     },
   };
 }

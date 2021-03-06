@@ -1,8 +1,15 @@
-//import './pages/home-page';
-import './pages/alphabe-page'
-document.body.innerHTML = `
-<alphabe-page></alphabe-page>
-</div>`;
+
+
+if (ENV === 'storybook') {
+  import('./storybook/storybook');
+
+} else {
+  //import('./index');
+
+}
+// document.body.innerHTML = `
+// <alphabe-page></alphabe-page>
+// </div>`;
 
 // const container = document.getElementById('container');
 
@@ -43,5 +50,3 @@ document.body.innerHTML = `
 //     },
 //   };
 // });
-
-
