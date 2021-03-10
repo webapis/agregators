@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-catch */
 const puppeteer = require('puppeteer');
 const fs = require('fs');
 const path = require('path');
@@ -5,7 +6,7 @@ module.exports = async function ({ pageUrl, saveToUrl }) {
   try {
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
-    await page.goto(pageUrl, { waitUntil: 'domcontentloaded' });
+    await page.goto(pageUrl, { waitUntil: 'networkidle2' });
 
     const content = await page.content();
 

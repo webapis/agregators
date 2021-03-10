@@ -16,10 +16,21 @@ customElements.define(
 
 const items = [
   {
-    name: 'Kazak',
-    counters: [
-      { name: 'defactor', count: '50' },
-      { name: 'kigili', count: '15' }
-    ]
+    gender: 'kadın',
+    productCategory: 'Giyim',
+    productName: 'İndirimli ürünler',
+    url: '/indirimli-ürünler'
+  },
+  {
+    gender: 'kadın',
+    productCategory: 'Giyim',
+    productName: 'Yeni gelenler',
+    url: '/yeni-gelenler'
+  },
+  {
+    gender: 'kadın',
+    productCategory: 'Giyim',
+    productName: 'Basics- Günlük giyim',
+    url: '/basics-günlük-giyim'
   }
 ];

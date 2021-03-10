@@ -1,45 +1,51 @@
-// This is the main Node.js source code file of your actor.
-// It is referenced from the "scripts" section of the package.json file,
-// so that it can be started by running "npm start".
 const { handlePageFunction } = require('./handlePageFunction');
+const { firstPageUrls } = require('./firstPageUrls');
 const Apify = require('apify');
-//https://www.defacto.com.tr/kadin
 Apify.main(async () => {
   const requestQueue = await Apify.openRequestQueue();
-  debugger;
-  const url = `https://www.defacto.com.tr`;
-  debugger;
-  const requestList = new Apify.RequestList({ sources: [url] });
-  await requestList.initialize();
+  const urls = firstPageUrls.filter(
+    url => url.marka === process.env.MARKA.toLowerCase()
+  );
+  const sources = urls.map(s => {
+    return {
+      url: s.pageUrl,
+      method: 'GET',
+      userData: { firstPage: true, folderName: s.folderName }
+    };
+  });
+
+  for (const s of sources) {
+    await requestQueue.addRequest(s);
+  }
+
   debugger;
   const crawler = new Apify.PuppeteerCrawler({
     maxConcurrency: 10,
     maxRequestRetries: 1,
     // maxRequestsPerCrawl: 25,
-    requestList,
     requestQueue,
     launchContext: {
       useChrome: true,
       launchOptions: {
         headless: true,
-        slowMo: 100,
-      },
+        slowMo: 100
+      }
     },
-    handlePageFunction: handlePageFunction({ requestQueue }),
-    handleFailedRequestFunction: async ({ request }) => {},
+    handlePageFunction,
+
     preNavigationHooks: [
-      async (crawlingContext, gotoOptions) => {
+      async crawlingContext => {
         const { page } = crawlingContext;
         await page.setRequestInterception(true);
-        page.on('request', (interceptedRequest) => {
+        page.on('request', async interceptedRequest => {
           if (interceptedRequest.resourceType() === 'image') {
             interceptedRequest.abort();
           } else {
             interceptedRequest.continue();
           }
         });
-      },
-    ],
+      }
+    ]
   });
 
   await crawler.run();
