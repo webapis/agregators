@@ -14,7 +14,7 @@ describe('Test Kadin-denim page scraped data', function() {
   before(() => {
     process.env['APIFY_LOCAL_STORAGE_DIR'] = './apify_storage';
   });
-  it('savePage content', async function() {
+  it.skip('savePage content', async function() {
     this.timeout(50000);
     await savePageContent({
       pageUrl: 'https://www.defacto.com.tr/kadin-denim',
@@ -23,6 +23,7 @@ describe('Test Kadin-denim page scraped data', function() {
   });
   it('scrapes product data from listPage', async function() {
     this.timeout(50000);
+    debugger;
     const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
     page.on('request', async interceptedRequest => {
@@ -37,10 +38,11 @@ describe('Test Kadin-denim page scraped data', function() {
     });
     await page.setContent(content, { waitUntil: 'networkidle2' });
     const pageData = await defactoPageHandler({ page });
+    debugger;
     assert.deepEqual(kayndenim, pageData);
   });
 
-  it.only('defactoNextPageUrls', async () => {
+  it.skip('defactoNextPageUrls', async () => {
     this.timeout(50000);
     const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();

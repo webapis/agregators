@@ -1,13 +1,5 @@
-const firstPageUrls = [
-  {
-    marka: 'defacto',
-    gender: 'kadın',
-    productCategory: 'Giyim',
-    productName: 'Jeans',
-    folderName: 'defacto-kadin-jeans',
-    pageUrl: 'https://www.defacto.com.tr/kadin-denim'
-  }
-];
+const defactoFirstPageUrls = require('./defacto/defactoFirstPageUrls');
+const firstPageUrls = [defactoFirstPageUrls];
 
 module.exports = {
   firstPageUrls

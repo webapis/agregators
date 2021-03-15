@@ -41,7 +41,12 @@ async function defactoPageHandler({ page }) {
           discountText:
             $el.querySelector('.discount-text') &&
             $el.querySelector('.discount-text').innerText
-        }
+        },
+        onlineOzel:
+          $el.querySelector('img[alt="patlangac/onlineozell.png"]') && true,
+        yeniSezon: $el.querySelector('img[alt="patlangac/yenisezon.png"]') && true,
+        buyukBeden: $el.querySelector('img[alt="patlangac/buyuk-beden-r.png"]') && true,
+        organik: $el.querySelector('img[alt="patlangac/organic1.png"]') && true
       };
     })
   );

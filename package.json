@@ -26,12 +26,13 @@
     "rollup-plugin-serve": "^1.1.0"
   },
   "scripts": {
-    "srp:defacto":"MARKA=DEFACTO node scrape/main.js",
-    "pages_ssr": "node prerender/index.js",
+    "scrape:defacto":"MARKA=DEFACTO node scrape/main.js",
+    "prerender:defacto": "MARKA=DEFACTO node prerender/server.js",
     "nav_ssr": "node prerender/navigationBuilder",
     "storybook": "NODE_ENV=storybook rollup -c -w",
     "dev": "rollup -c -w",
     "start": "node main.js",
+    "agregator": "MARKA=DEFACTO node aggregator.js",
     "test": "mocha test/**/*.test.js"
   },
   "nodemonConfig": {

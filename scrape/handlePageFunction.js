@@ -1,3 +1,4 @@
+require('dotenv').config();
 /* eslint-disable no-prototype-builtins */
 const { pageHandlers } = require('./pageHandlers');
 const { nextPageUrls } = require('./nextPageUrls');
