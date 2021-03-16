@@ -49,31 +49,31 @@ customElements.define(
       return this._items;
     }
     set items(items) {
-      const root = document.getElementById('root');
-      items.forEach(item => {
-        const {
-          productInfo: {
-            title,
-            salePrice,
-            marketPrice,
-            discountRate,
-            discountText
-          },
-          picture: { img: { scrset, placeHolder }, a: { detailLink } }
-        } = item;
-        var node = document.createElement('product-view');
-        node.classList.add('col-sm-6');
-        node.classList.add('col-xl-3');
-        node.setAttribute('title', title);
-        node.setAttribute('salePrice', salePrice);
-        node.setAttribute('marketPrice', marketPrice);
-        node.setAttribute('discountRate', discountRate);
-        node.setAttribute('discountText', discountText);
-        node.setAttribute('detailLink', detailLink);
-        node.setAttribute('srcset', scrset);
-        node.setAttribute('placeHolder', placeHolder);
-        root.appendChild(node);
-      });
+   //   const root = document.getElementById('root');
+      // items.forEach(item => {
+      //   const {
+      //     productInfo: {
+      //       title,
+      //       salePrice,
+      //       marketPrice,
+      //       discountRate,
+      //       discountText
+      //     },
+      //     picture: { img: { scrset, placeHolder }, a: { detailLink } }
+      //   } = item;
+      //   var node = document.createElement('product-view');
+      //   node.classList.add('col-sm-6');
+      //   node.classList.add('col-xl-3');
+      //   node.setAttribute('title', title);
+      //   node.setAttribute('salePrice', salePrice);
+      //   node.setAttribute('marketPrice', marketPrice);
+      //   node.setAttribute('discountRate', discountRate);
+      //   node.setAttribute('discountText', discountText);
+      //   node.setAttribute('detailLink', detailLink);
+      //   node.setAttribute('srcset', scrset);
+      //   node.setAttribute('placeHolder', placeHolder);
+      //   root.appendChild(node);
+      // });
 
       this._items = items;
     }
