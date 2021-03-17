@@ -40,7 +40,7 @@ export default {
       `;
       }
     }),
-    watchComponent({ target: 'src/components', dest: 'build/components' }),
+    watchComponent({ target: 'src/csr-components', dest: 'build/components' }),
     watchComponent({
       target: 'aggregation/defacto/jean/kadin',
       dest: 'build/items'

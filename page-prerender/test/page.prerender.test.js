@@ -24,8 +24,8 @@ describe('page-prerender test', () => {
       pageDescription,
       items: kadinjeanpantolonPage,
       wordPatterns,
-      componentPath: 'src/pages/product-list-page.js',
-      output: `build/defacto/jean/kadin`
+      componentPath: 'src/ssr-components/product-list-page.js',
+      output: `build/defacto`
     });
     debugger;
   });

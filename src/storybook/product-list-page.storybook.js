@@ -1,4 +1,4 @@
-import '../pages/product-list-page';
+import '../ssr-components/product-list-page';
 
 customElements.define(
   'product-list-page-storybook',
@@ -12,11 +12,13 @@ customElements.define(
           return response.json();
         })
         .then(data => {
+            this.innerHTML = `<product-list-page></product-list-page>`;
           document.querySelector('product-list-page').items = data;
-        });
+          
+        })
 
-      this.innerHTML = `<product-list-page></product-list-page>`;
-      const element = document.getElementsByTagName('product-list-page')[0];
+    
+     
     }
   }
 );

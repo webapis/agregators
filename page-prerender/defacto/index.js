@@ -44,8 +44,8 @@ async function prerender({
   debugger;
   debugger;
   const removeParentTag = content
-    // .replace(`<${filename}>`, '')
-    // .replace(`</${filename}>`, '');
+    .replace(`<${filename}>`, '')
+    .replace(`</${filename}>`, '');
   debugger;
   await makeDir(output);
   debugger;
