@@ -2,8 +2,6 @@
 *.log
 node_modules
 yarn.lock
-package-lock.json
-
 # Typically you don't want to have the `apify_storage` directory
 # in the Git repo, but in this boilerplate we keep the `INPUT.json`
 # file in Git for documentation purposes.
