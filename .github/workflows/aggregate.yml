@@ -15,6 +15,6 @@ jobs:
         uses: ./.github/actions/hello-action
         with:
           who-to-greet: 'Serdar the Octocat'
-     - name: Get the output time
-        run: echo "The time was ${{ steps.hello.outputs.time }}"
+      - name: Get the output time
+        run: echo "The time was ${{steps.hello.outputs.time}}"
 
