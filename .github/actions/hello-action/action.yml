@@ -1,7 +1,5 @@
 name: 'Hello'
 description: 'Receives file and generates output'
-inputs:
-
 runs:
   using: 'node12'
   main: 'hello.js'
