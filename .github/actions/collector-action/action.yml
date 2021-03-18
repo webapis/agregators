@@ -1,7 +1,7 @@
-name: 'Hello'
-description: 'Receives file and generates output'
+name: 'Collector'
+description: 'Collect product items'
 inputs:
-  who-to-greet:  # id of input
+  page-url:  # id of input
     description: 'Who to greet'
     required: true
     default: 'World'
@@ -10,4 +10,4 @@ outputs:
     description: 'The time we greeted you'
 runs:
   using: 'node12'
-  main: 'hello.js'
+  main: 'collector.js'
