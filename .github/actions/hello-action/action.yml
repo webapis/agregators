@@ -1,5 +1,6 @@
 name: 'Hello'
 description: 'Receives file and generates output'
+inputs:
   who-to-greet:  # id of input
     description: 'Who to greet'
     required: true
