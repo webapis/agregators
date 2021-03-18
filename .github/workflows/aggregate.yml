@@ -23,10 +23,10 @@ jobs:
       - name: Install dependencies
         run: 'npm install'
       - name: Hello world action step
-        id: hello
-        uses: ./.github/actions/hello-action
+        id: collector
+        uses: ./.github/actions/collector-action
         with:
-          who-to-greet: 'Serdar the Octocat'
+          page-url: 'https://www.defacto.com.tr/kadin-denim'
       - name: Get the output time
         run: echo "The time was ${{steps.collector.outputs.time}}"
 
