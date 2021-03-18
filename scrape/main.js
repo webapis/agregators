@@ -53,7 +53,7 @@ async function Scraper() {
     });
 
     await crawler.run();
-
+  
     return Promise.resolve(true);
   } catch (error) {
     return Promise.reject(error);

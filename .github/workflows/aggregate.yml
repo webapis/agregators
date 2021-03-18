@@ -22,7 +22,7 @@ jobs:
             ${{ runner.os }}-
       - name: Install dependencies
         run: 'npm install'
-      - name: Hello world action step
+      - name: Collector action step
         id: collector
         uses: ./.github/actions/collector-action
         with:
