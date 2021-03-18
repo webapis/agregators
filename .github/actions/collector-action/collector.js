@@ -9,7 +9,7 @@ try {
   core.setOutput('time', time);
   // Get the JSON webhook payload for the event that triggered the workflow
   const payload = JSON.stringify(github.context.payload, undefined, 2);
-  Scraper().then(function() {
+  Scraper().then(() => {
     console.log('Scraping finished....');
   });
 } catch (error) {
