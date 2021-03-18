@@ -3,6 +3,8 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
+    "@actions/core": "^1.2.6",
+    "@actions/github": "^4.0.0",
     "@cucumber/cucumber": "^7.0.0",
     "@rollup/plugin-replace": "^2.4.1",
     "apify": "^1.0.1",
@@ -26,7 +28,7 @@
     "rollup-plugin-serve": "^1.1.0"
   },
   "scripts": {
-    "scrape:defacto":"MARKA=DEFACTO node scrape/main.js",
+    "scrape:defacto": "MARKA=DEFACTO node scrape/main.js",
     "prerender:defacto": "MARKA=DEFACTO node prerender/server.js",
     "nav_ssr": "node prerender/navigationBuilder",
     "storybook": "NODE_ENV=storybook rollup -c -w",

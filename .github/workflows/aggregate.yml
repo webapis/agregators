@@ -4,8 +4,17 @@ jobs:
   greeting:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2.1.5
-      - run: echo 'hello aggregator'
-      - uses: ./.github/actions/hello-action
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup Node
+        uses: actions/setup-node@v2.1.5
+      - name: Hello world action step
+        id: hello
+        run: echo 'hello aggregator'
+        run: 'npm install'
+        uses: ./.github/actions/hello-action
+        with:
+          who-to-greet: 'Serdar the Octocat'
+     - name: Get the output time
+        run: echo "The time was ${{ steps.hello.outputs.time }}"
 
