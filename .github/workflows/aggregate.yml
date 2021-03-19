@@ -27,6 +27,6 @@ jobs:
         uses: ./.github/actions/collector-action
         with:
           page-url: 'https://www.defacto.com.tr/kadin-denim'
-      - name: Get the output pageTitle
+      - name: Get the output pageData
         run: echo "The pageTitle is ${{steps.collector.outputs.pageData}}"
 

@@ -1,9 +1,12 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
-const { pageContentReader } = require('../../../page-content-reader');
+const { pageContentReader } = require('../../../page-data-reader');
+const {
+  defactoNextPageUrls
+} = require('../../../page-data-reader/defacto/defactoNextPageUrls');
 const {
   defactoPageHandler
-} = require('../../../page-content-reader/defacto/defactoPageHandler');
+} = require('../../../page-data-reader/defacto/defactoPageHandler');
 try {
   // `who-to-greet` input defined in action metadata file
   const pageUrl = core.getInput('page-url');
@@ -14,10 +17,11 @@ try {
   const payload = JSON.stringify(github.context.payload, undefined, 2);
   pageContentReader({
     url: pageUrl,
-    pageHandler: defactoPageHandler
+    pageHandler: defactoPageHandler,
+    pageUrlsGetter: defactoNextPageUrls
   }).then(pageData => {
     console.log('PageTitle', pageData.pageTitle);
-    core.setOutput('pageData', pageData.pageTitle);
+    core.setOutput('pageData', pageData);
   });
 } catch (error) {
   core.setFailed(error.message);
