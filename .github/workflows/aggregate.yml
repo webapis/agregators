@@ -27,8 +27,10 @@ jobs:
         uses: ./.github/actions/collector-action
         with:
           page-url: 'https://www.defacto.com.tr/kadin-denim'
-      #- name: Meta creator action step
-        #id: creator
-        #uses: ./.github/actions/meta-creator-action
+      - name: Meta creator action step
+        id: creator
+        uses: ./.github/actions/meta-creator-action
+        with:
+          pageData: steps.collector.outputs.pageData
         #run: echo "The pageTitle is ${{steps.collector.outputs.pageData}}"
 
