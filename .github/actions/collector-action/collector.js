@@ -10,7 +10,8 @@ try {
   // Get the JSON webhook payload for the event that triggered the workflow
   const payload = JSON.stringify(github.context.payload, undefined, 2);
   pageContentReader({ url:pageUrl }).then(pageTitle => {
-    console.log('PageTitle', pageTitle);
+    //console.log('PageTitle', pageTitle);
+    core.setOutput('pageTitle', pageTitle);
   });
 } catch (error) {
   core.setFailed(error.message);
