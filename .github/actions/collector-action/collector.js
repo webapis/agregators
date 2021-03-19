@@ -16,7 +16,7 @@ try {
     url: pageUrl,
     pageHandler: defactoPageHandler
   }).then(pageData => {
-    //console.log('PageTitle', pageTitle);
+    console.log('PageTitle', pageData.pageTitle);
     core.setOutput('pageData', pageData);
   });
 } catch (error) {
