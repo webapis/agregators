@@ -1,16 +1,16 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
-const { Scraper } = require('../../../scrape/main');
+const { pageContentReader } = require('../../../page-content-reader');
 try {
   // `who-to-greet` input defined in action metadata file
-  const nameToGreet = core.getInput('who-to-greet');
-  console.log(`Hello ${nameToGreet}!`);
+  const pageUrl = core.getInput('page-url');
+  console.log(`pageUrl ${pageUrl}!`);
   const time = new Date().toTimeString();
   core.setOutput('time', time);
   // Get the JSON webhook payload for the event that triggered the workflow
   const payload = JSON.stringify(github.context.payload, undefined, 2);
-  Scraper().then(() => {
-    console.log('Scraping finished....');
+  pageContentReader({ url }).then(pageTitle => {
+    console.log('PageTitle', pageTitle);
   });
 } catch (error) {
   core.setFailed(error.message);
