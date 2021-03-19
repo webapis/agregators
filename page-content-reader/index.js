@@ -1,13 +1,13 @@
 const puppeteer = require('puppeteer');
-async function pageContentReader({ url }) {
+async function pageContentReader({ url, pageHandler }) {
   try {
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
     await page.goto(url, { waitUntil: 'networkidle2' });
-    const pageTitle = await page.title();
     await page.close();
     await browser.close();
-    return Promise.resolve(pageTitle);
+    const data = await pageHandler({ page });
+    return Promise.resolve(data);
   } catch (error) {
     return Promise.reject(error);
   }

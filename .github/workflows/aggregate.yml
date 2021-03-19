@@ -28,5 +28,5 @@ jobs:
         with:
           page-url: 'https://www.defacto.com.tr/kadin-denim'
       - name: Get the output time
-        run: echo "The pageTitle is ${{steps.collector.outputs.pageTitle}}"
+        run: echo "The pageTitle is ${{steps.collector.outputs.pageData}}"
 

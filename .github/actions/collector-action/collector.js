@@ -1,6 +1,9 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
 const { pageContentReader } = require('../../../page-content-reader');
+const {
+  defactoPageHandler
+} = require('../../../page-content-reader/defacto/defactoPageHandler');
 try {
   // `who-to-greet` input defined in action metadata file
   const pageUrl = core.getInput('page-url');
@@ -9,9 +12,12 @@ try {
   core.setOutput('time', time);
   // Get the JSON webhook payload for the event that triggered the workflow
   const payload = JSON.stringify(github.context.payload, undefined, 2);
-  pageContentReader({ url:pageUrl }).then(pageTitle => {
+  pageContentReader({
+    url: pageUrl,
+    pageHandler: defactoPageHandler
+  }).then(pageData => {
     //console.log('PageTitle', pageTitle);
-    core.setOutput('pageTitle', pageTitle);
+    core.setOutput('pageData', pageData);
   });
 } catch (error) {
   core.setFailed(error.message);
