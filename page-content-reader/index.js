@@ -4,9 +4,10 @@ async function pageContentReader({ url, pageHandler }) {
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
     await page.goto(url, { waitUntil: 'networkidle2' });
+
+    const data = await pageHandler({ page });
     await page.close();
     await browser.close();
-    const data = await pageHandler({ page });
     return Promise.resolve(data);
   } catch (error) {
     return Promise.reject(error);
