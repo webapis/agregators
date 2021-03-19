@@ -1,32 +1,21 @@
-const puppeteer = require('puppeteer');
+const fs = require('fs');
+const makeDir = require('make-dir');
 const { prerender } = require('../defacto/index');
-const kadinjeanpantolonPage = require('../../aggregation/defacto/jean/kadin/kadin-jean-pantolonPage.json');
+const kadinjeanpantolonPage = require('../../page-meta-data/defacto/kadin/pantolonPage.json');
 debugger;
 /* eslint-disable no-undef */
 describe('page-prerender test', () => {
-  before(async () => {
-    global.browser = await puppeteer.launch();
-  });
   it('test page prerender', async function() {
     this.timeout(50000);
-    const {
-      pageTitle,
-      pageName,
-      pageDescription,
-      items,
-      wordPatterns
-    } = kadinjeanpantolonPage;
+    const outputDir = `${process.cwd()}/build/defacto`;
+    await makeDir(outputDir);
+    const filePath = `${outputDir}/defacto-kadin-jean-pantolon.html`;
     debugger;
-    await prerender({
-      browser,
-      pageTitle,
-      pageName,
-      pageDescription,
+    const content = await prerender({
       items: kadinjeanpantolonPage,
-      wordPatterns,
-      componentPath: 'src/ssr-components/product-list-page.js',
-      output: `build/defacto`
+      componentPath: 'src/ssr-components/product-list-page.js'
     });
+    fs.writeFileSync(filePath, content);
     debugger;
   });
 });

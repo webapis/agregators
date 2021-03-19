@@ -37,7 +37,8 @@
     "agregator": "MARKA=DEFACTO node aggregator.js",
     "test": "mocha test/**/*.test.js",
     "prerender:test": "mocha page-prerender/test",
-    "pageReader:test":"mocha page-content-reader/test"
+    "pageReader:test":"mocha page-data-reader/test",
+    "pageMetaCreator:test":"mocha page-meta-creator/test"
   },
   "nodemonConfig": {
     "ignore": [

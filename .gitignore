@@ -10,3 +10,5 @@ apify_storage/request_queues
 apify_storage/key_value_stores/default/OUTPUT.json
 build/
 aggregation/
+page-data
+page-meta-data

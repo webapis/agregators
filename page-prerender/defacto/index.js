@@ -1,15 +1,9 @@
-require('dotenv').config();
-const fs = require('fs');
+const puppeteer = require('puppeteer');
+
 const path = require('path');
-const makeDir = require('make-dir');
-async function prerender({
-  browser,
-  componentPath,
-  output,
-  pageName,
-  items
-}) {
-  debugger;
+
+async function prerender({ componentPath, items }) {
+  const browser = await puppeteer.launch();
   const filename = path.basename(componentPath, '.js');
   const page = await browser.newPage();
   debugger;
@@ -41,15 +35,16 @@ async function prerender({
   //   }
   // });
   const content = await page.content();
-  debugger;
-  debugger;
+
   const removeParentTag = content
     .replace(`<${filename}>`, '')
     .replace(`</${filename}>`, '');
-  debugger;
-  await makeDir(output);
-  debugger;
-  fs.writeFileSync(path.join(output, `${pageName}.html`), removeParentTag);
+  // debugger;
+  // await makeDir(output);
+
+  return removeParentTag;
+
+  //fs.writeFileSync(path.join(output, `${pageName}.html`), removeParentTag);
 }
 
 module.exports = {

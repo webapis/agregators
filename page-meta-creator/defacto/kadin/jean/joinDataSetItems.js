@@ -1,10 +1,5 @@
-require('dotenv').config();
-const Apify = require('apify');
-async function joinDataSetItems(dataSetName) {
+async function joinDataSetItems(items) {
   try {
-    const dataSet = await Apify.openDataset(dataSetName);
-
-    const { items } = await dataSet.getData();
     const joinedDataSetItems = items.reduce((a, c, i) => {
       if (i === 0) {
         return [...c.products];
@@ -12,7 +7,6 @@ async function joinDataSetItems(dataSetName) {
       return [...a, ...c.products];
     }, []);
     return Promise.resolve(joinedDataSetItems);
-    
   } catch (error) {
     return Promise.reject(error);
   }

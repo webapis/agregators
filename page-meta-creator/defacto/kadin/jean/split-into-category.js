@@ -3,7 +3,7 @@ const makeDir = require('make-dir');
 const { extractDescription } = require('./extract.description');
 const { extractWordPattern } = require('./extract.word.pattern');
 async function splitIntoCategory(datasetItems, gender) {
-  debugger;
+
 
   const pantolon = [];
   const others = [];
@@ -167,7 +167,7 @@ async function splitIntoCategory(datasetItems, gender) {
 
     fs.writeFileSync(filePath, JSON.stringify(current));
   }
-  debugger;
+ 
   return withDescription;
 }
 
