@@ -19,7 +19,7 @@ try {
     dataCollector: defactoDataCollector,
     pageUrlsGetter: defactoNextPageUrls
   }).then(pageData => {
-    console.log('PageData length', pageData);
+    console.log('PageData length', pageData.length);
     core.setOutput('pageData', pageData);
   });
 } catch (error) {

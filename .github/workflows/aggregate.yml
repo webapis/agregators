@@ -31,6 +31,6 @@ jobs:
         id: creator
         uses: ./.github/actions/meta-creator-action
         with:
-          pageData: steps.collector.outputs.pageData
+          pageData: ${{steps.collector.outputs.pageData}}
         #run: echo "The pageTitle is ${{steps.collector.outputs.pageData}}"
 
