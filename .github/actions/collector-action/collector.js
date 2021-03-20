@@ -18,12 +18,7 @@ try {
     url: pageUrl,
     dataCollector: defactoDataCollector,
     pageUrlsGetter: defactoNextPageUrls
-  }).then(pageData => {
-    console.log('PageData length', pageData.length);
-    core.setOutput('pageData', pageData);
   });
 } catch (error) {
   core.setFailed(error.message);
 }
-
-
