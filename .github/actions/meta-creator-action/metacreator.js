@@ -5,7 +5,7 @@ const {
 } = require('../../../page-meta-creator/defacto/kadin/jean/defacto.kadyn.jean.metadata');
 try {
   const pageData = core.getInput('pageData');
-  console.log('pageData length inside creator action', pageData.length);
+  console.log('pageData length inside creator action', pageData[0]);
   // const data = defactoKadynJeanMetaData(pageData).then(pageMete => {
   //   core.setOutput('pageMeta', data['pantolonPage']);
   //});
