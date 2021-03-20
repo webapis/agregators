@@ -1,4 +1,4 @@
-async function defactoPageHandler({ page }) {
+async function defactoDataCollector({ page }) {
   await page.waitForSelector('#products');
 
   const pageTitle = await page.title();
@@ -44,15 +44,17 @@ async function defactoPageHandler({ page }) {
         },
         onlineOzel:
           $el.querySelector('img[alt="patlangac/onlineozell.png"]') && true,
-        yeniSezon: $el.querySelector('img[alt="patlangac/yenisezon.png"]') && true,
-        buyukBeden: $el.querySelector('img[alt="patlangac/buyuk-beden-r.png"]') && true,
+        yeniSezon:
+          $el.querySelector('img[alt="patlangac/yenisezon.png"]') && true,
+        buyukBeden:
+          $el.querySelector('img[alt="patlangac/buyuk-beden-r.png"]') && true,
         organik: $el.querySelector('img[alt="patlangac/organic1.png"]') && true
       };
     })
   );
 
-  return { pageTitle, pageDescription, products };
+  return products;
 }
 module.exports = {
-  defactoPageHandler
+  defactoDataCollector
 };

@@ -13,11 +13,14 @@ describe('Defacto Kadin Jean Meta creator', () => {
     await makeDir(outputFolder);
 
     const data = await defactoKadynJeanMetaData(pageData);
+    debugger;
     for (const d in data) {
-      const filePath = `${outputFolder}/${d}.json`;
       const current = data[d];
-      fs.writeFileSync(filePath, JSON.stringify(current));
       debugger;
+      const filePath = `${outputFolder}/${current.pageName}.json`;
+      debugger;
+      fs.writeFileSync(filePath, JSON.stringify(current));
+    
     }
     debugger;
   });

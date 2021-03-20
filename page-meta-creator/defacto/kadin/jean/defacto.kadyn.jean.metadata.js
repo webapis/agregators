@@ -4,7 +4,7 @@ async function defactoKadynJeanMetaData(items) {
   try {
     const joinedItems = await joinDataSetItems(items);
     const catSplit = await splitIntoCategory(joinedItems, 'kadin');
-    return Promise.resolve(catSplit);
+    return Promise.resolve(Object.values(catSplit));
   } catch (error) {
     return Promise.reject(error);
   }

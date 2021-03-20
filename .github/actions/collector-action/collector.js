@@ -1,26 +1,25 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
-const { pageContentReader } = require('../../../page-data-reader');
+const { pageDataCollector } = require('../../../page-data-collector');
 const {
   defactoNextPageUrls
-} = require('../../../page-data-reader/defacto/defactoNextPageUrls');
+} = require('../../../page-data-collector/defacto/defactoNextPageUrls');
 const {
-  defactoPageHandler
-} = require('../../../page-data-reader/defacto/defactoPageHandler');
+  defactoDataCollector
+} = require('../../../page-data-collector/defacto/defactoDataCollector');
 try {
-  // `who-to-greet` input defined in action metadata file
   const pageUrl = core.getInput('page-url');
   console.log(`pageUrl ${pageUrl}!`);
   const time = new Date().toTimeString();
   core.setOutput('time', time);
   // Get the JSON webhook payload for the event that triggered the workflow
   const payload = JSON.stringify(github.context.payload, undefined, 2);
-  pageContentReader({
+  pageDataCollector({
     url: pageUrl,
-    pageHandler: defactoPageHandler,
+    dataCollector: defactoDataCollector,
     pageUrlsGetter: defactoNextPageUrls
   }).then(pageData => {
-    console.log('PageTitle', pageData.pageTitle);
+    console.log('PageData length', pageData.length);
     core.setOutput('pageData', pageData);
   });
 } catch (error) {
