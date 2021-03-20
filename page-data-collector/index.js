@@ -1,4 +1,6 @@
 const puppeteer = require('puppeteer');
+const fs = require('fs');
+const makeDir = require('make-dir');
 async function pageDataCollector({ url, dataCollector, pageUrlsGetter }) {
   try {
     const browser = await puppeteer.launch();
@@ -18,16 +20,19 @@ async function pageDataCollector({ url, dataCollector, pageUrlsGetter }) {
     await page.close();
     await browser.close();
 
-    return Promise.resolve([
+    const result = [
       ...firstData,
       ...data.reduce((acc, curr, i) => {
         if (i === 0) {
           return [...curr];
         }
-
         return [...acc, ...curr];
       }, [])
-    ]);
+    ];
+    const outputFolder = `${process.cwd()}/page-data/defacto/kadin`;
+    await makeDir(outputFolder);
+    const filePath = `${outputFolder}/kadin-jeans.json`;
+    fs.writeFileSync(filePath, JSON.stringify(result));
   } catch (error) {
     return Promise.reject(error);
   }

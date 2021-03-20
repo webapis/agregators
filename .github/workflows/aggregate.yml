@@ -1,7 +1,7 @@
 name: aggregate
 on: [push]
 jobs:
-  collector-job:
+  aggregator:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -27,15 +27,8 @@ jobs:
         uses: ./.github/actions/collector-action
         with:
           page-url: 'https://www.defacto.com.tr/kadin-denim'
-      - name: Archive production artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: page-data
-          path: page-data/defacto/kadin
-     # - name: Meta creator action step
-       # id: creator
-       # uses: ./.github/actions/meta-creator-action
-       # with:
-        #  pageData: ${{steps.collector.outputs.pageData}}
-        #run: echo "The pageTitle is ${{steps.collector.outputs.pageData}}"
+      - name: Meta creator action step
+        id: creator
+        uses: ./.github/actions/meta-creator-action
+
 
