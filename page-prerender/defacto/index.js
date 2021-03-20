@@ -6,18 +6,17 @@ async function prerender({ componentPath, items }) {
   const browser = await puppeteer.launch();
   const filename = path.basename(componentPath, '.js');
   const page = await browser.newPage();
-  debugger;
+
   await page.addScriptTag({ path: componentPath });
-  debugger;
+
   await page.setContent(`<${filename}></${filename}>`, {
     waitUntil: 'domcontentloaded'
   });
-  debugger;
+
   await page.waitForSelector(`${filename}`);
-  debugger;
 
   const element = await page.$(`${filename}`);
-  debugger;
+
   await page.evaluate(
     (_items, _element) => {
       _element.items = _items;
@@ -41,9 +40,9 @@ async function prerender({ componentPath, items }) {
     .replace(`</${filename}>`, '');
   // debugger;
   // await makeDir(output);
-
+  await page.close();
+  await browser.close();
   return removeParentTag;
-
   //fs.writeFileSync(path.join(output, `${pageName}.html`), removeParentTag);
 }
 
