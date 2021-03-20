@@ -11,11 +11,12 @@ async function prerenderAction() {
     const outputDir = `${process.cwd()}/build/defacto`;
     await makeDir(outputDir);
     const filePath = `${outputDir}/defacto-kadin-jean-pantolon.html`;
-    await prerender({
+    const content = await prerender({
       items: kadinjeanpantolonPage,
       componentPath: 'src/ssr-components/product-list-page.js'
     });
     fs.writeFileSync(filePath, content);
+
     console.log('prerendered');
   } catch (error) {
     core.setFailed(error.message);
