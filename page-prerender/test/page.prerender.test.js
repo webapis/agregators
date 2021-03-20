@@ -1,7 +1,7 @@
 const fs = require('fs');
 const makeDir = require('make-dir');
 const { prerender } = require('../defacto/index');
-const kadinjeanpantolonPage = require('../../page-meta-data/defacto/kadin/pantolonPage.json');
+const kadinjeanpantolonPage = require('../../page-meta-data/defacto/kadin/defacto-kadin-jean-pantolon.json');
 debugger;
 /* eslint-disable no-undef */
 describe('page-prerender test', () => {
