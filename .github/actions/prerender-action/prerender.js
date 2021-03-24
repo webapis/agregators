@@ -6,7 +6,7 @@ const {
 } = require(`${process.cwd()}/page-prerender/defacto/index.js`);
 
 async function prerenderAction() {
-  const kadinjeanpantolonPage = require(`${process.cwd()}/page-meta-data/defacto/kadin/defacto-kadin-jean-pantolon.json`);
+  const kadinjeanpantolonPage = require(`${process.cwd()}/build/page-meta-data/defacto/kadin/defacto-kadin-jean-pantolon.json`);
   try {
     const outputDir = `${process.cwd()}/build`;
     await makeDir(outputDir);
