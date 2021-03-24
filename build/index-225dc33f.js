@@ -77,3 +77,8 @@ const addScriptTag = ({ src }) => {
   s.src = src;
   document.body.appendChild(s);
 };
+
+document.body.innerHTML = `
+
+<product-list-page url="page-meta-data/defacto/kadin/defacto-kadin-jean-pantolon.json"></product-list-page>
+`;

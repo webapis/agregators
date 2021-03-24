@@ -1,5 +1,7 @@
-import './ssr-components/home-page';
+import './ssr-components/product-list-page';
+
 document.body.innerHTML = `
 
-<home-page></home-page>
+<product-list-page url="page-meta-data/defacto/kadin/defacto-kadin-jean-pantolon.json"></product-list-page>
 `;
+

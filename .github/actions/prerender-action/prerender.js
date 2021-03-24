@@ -10,7 +10,7 @@ async function prerenderAction() {
   try {
     const outputDir = `${process.cwd()}/build/defacto`;
     await makeDir(outputDir);
-    const filePath = `${outputDir}/defacto-kadin-jean-pantolon.html`;
+    const filePath = `${outputDir}/index.html`;
     const content = await prerender({
       items: kadinjeanpantolonPage,
       componentPath: 'src/ssr-components/product-list-page.js'

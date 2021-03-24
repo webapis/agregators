@@ -5,9 +5,13 @@ customElements.define(
       super();
     }
     connectedCallback() {
-      fetch('page-meta-data/defacto/kadin/defacto-kadin-jean-pantolon.json').then((result)=>{
-        debugger;
-      })
+      fetch('page-meta-data/defacto/kadin/defacto-kadin-jean-pantolon.json')
+        .then(result => {
+          return result.json();
+        })
+        .then(data => {
+          debugger;
+        });
       this.innerHTML = `<div>Kadin Jean Navigation</div>`;
     }
   }
