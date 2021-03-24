@@ -37,7 +37,8 @@
     "test": "mocha test/**/*.test.js",
     "prerender:test": "mocha page-prerender/test",
     "pageDataCollector:test": "mocha page-data-collector/test",
-    "pageMetaCreator:test": "mocha page-meta-creator/test"
+    "pageMetaCreator:test": "mocha page-meta-creator/test",
+    "deploy":" node page-publish/publish.js"
   },
   "nodemonConfig": {
     "ignore": [

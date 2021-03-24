@@ -33,5 +33,9 @@ jobs:
       - name: Prerender action step
         id: prerender
         uses: ./.github/actions/prerender-action
+      - name: install firebase cli
+        run: npm install -g firebase-tools
+      - name: deploy to firebase
+        run: firebase deploy --token ${{secrets.FIREBASE_TOKEN}}
 
 

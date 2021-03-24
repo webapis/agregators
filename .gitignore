@@ -12,3 +12,5 @@ build/
 aggregation/
 page-data
 page-meta-data
+
+.env
