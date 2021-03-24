@@ -8,7 +8,7 @@ const {
 async function prerenderAction() {
   const kadinjeanpantolonPage = require(`${process.cwd()}/page-meta-data/defacto/kadin/defacto-kadin-jean-pantolon.json`);
   try {
-    const outputDir = `${process.cwd()}/build/defacto`;
+    const outputDir = `${process.cwd()}/build`;
     await makeDir(outputDir);
     const filePath = `${outputDir}/index.html`;
     const content = await prerender({

@@ -7,9 +7,9 @@ debugger;
 describe('page-prerender test', () => {
   it('test page prerender', async function() {
     this.timeout(50000);
-    const outputDir = `${process.cwd()}/build/defacto`;
+    const outputDir = `${process.cwd()}/build`;
     await makeDir(outputDir);
-    const filePath = `${outputDir}/defacto-kadin-jean-pantolon.html`;
+    const filePath = `${outputDir}/index.html`;
     debugger;
     const content = await prerender({
       items: kadinjeanpantolonPage,
