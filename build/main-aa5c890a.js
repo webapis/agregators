@@ -1,11 +1,6 @@
-
-
-if (ENV === 'storybook') {
-  import('./storybook/storybook');
-
-} else {
+{
   
-  import('./index');
+  import('./index-75e63e6e.js');
 
 }
 // document.body.innerHTML = `

@@ -6,7 +6,7 @@ const makeDir = require('make-dir');
 const fs = require('fs');
 const path = require('path');
 const puppeteer = require('puppeteer');
-
+const production = !process.env.ROLLUP_WATCH;
 export default {
   external: ['df-product-view'],
   input: 'src/main.js',
@@ -44,14 +44,15 @@ export default {
     watchComponent({
       target: 'aggregation/defacto/jean/kadin',
       dest: 'build/items'
-    })
-    // serve({
-    //   open: false,
-    //   contentBase: 'build',
-    //   // openPage: 'build/home-page',
-    //   host: 'localhost',
-    //   port: 10001
-    // })
+    }),
+    !production &&
+      serve({
+        open: false,
+        contentBase: 'build',
+        // openPage: 'build/home-page',
+        host: 'localhost',
+        port: 10001
+      })
   ]
 };
 
