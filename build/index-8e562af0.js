@@ -9,7 +9,7 @@ customElements.define(
     connectedCallback() {
       addScriptTag({ src: '../components/search-bar-csr.js' });
 
-      import('./kadin-jean-navigation-ssr.js').then(() => {
+      import('./kadin-jean-navigation-ssr-75efbeef.js').then(() => {
         this.innerHTML = `
         <div class="container">
         <search-bar-csr></search-bar-csr>
@@ -40,3 +40,8 @@ const addScriptTag = ({ src }) => {
   s.src = src;
   document.body.appendChild(s);
 };
+
+document.body.innerHTML = `
+
+<home-page></home-page>
+`;

@@ -31,7 +31,7 @@
     "prerender:defacto": "MARKA=DEFACTO node prerender/server.js",
     "nav_ssr": "node prerender/navigationBuilder",
     "storybook": "NODE_ENV=storybook rollup -c -w",
-    "dev": "rollup -c -w",
+    "dev": "NODE_ENV=dev rollup -c -w",
     "build":"rollup -c",
     "start": "node main.js",
     "agregator": "MARKA=DEFACTO node aggregator.js",

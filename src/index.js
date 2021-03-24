@@ -1,3 +1,5 @@
+import './ssr-components/home-page';
 document.body.innerHTML = `
-<div>Home
-</div>`;
+
+<home-page></home-page>
+`;

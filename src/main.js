@@ -1,12 +1,7 @@
-
-
 if (ENV === 'storybook') {
   import('./storybook/storybook');
-
-} else {
-  
+} else if (ENV === 'dev') {
   import('./index');
-
 }
 // document.body.innerHTML = `
 // <alphabe-page></alphabe-page>

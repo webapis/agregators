@@ -1,5 +1,5 @@
 customElements.define(
-  'search-bar',
+  'search-bar-csr',
   class extends HTMLElement {
     constructor() {
       super();
