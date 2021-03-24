@@ -32,6 +32,7 @@
     "nav_ssr": "node prerender/navigationBuilder",
     "storybook": "NODE_ENV=storybook rollup -c -w",
     "dev": "rollup -c -w",
+    "build":"rollup -c",
     "start": "node main.js",
     "agregator": "MARKA=DEFACTO node aggregator.js",
     "test": "mocha test/**/*.test.js",

@@ -33,6 +33,8 @@ jobs:
       - name: Prerender action step
         id: prerender
         uses: ./.github/actions/prerender-action
+      - name: rollup
+        run: npm run build
       - name: install firebase cli
         run: sudo npm install -g firebase-tools
       - name: deploy to firebase
