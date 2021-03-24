@@ -44,14 +44,14 @@ export default {
     watchComponent({
       target: 'aggregation/defacto/jean/kadin',
       dest: 'build/items'
-    }),
-    serve({
-      open: false,
-      contentBase: 'build',
-      // openPage: 'build/home-page',
-      host: 'localhost',
-      port: 10001
     })
+    // serve({
+    //   open: false,
+    //   contentBase: 'build',
+    //   // openPage: 'build/home-page',
+    //   host: 'localhost',
+    //   port: 10001
+    // })
   ]
 };
 
