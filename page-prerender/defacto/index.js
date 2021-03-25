@@ -17,13 +17,13 @@ async function prerender({ componentPath, items }) {
 
   const element = await page.$(`${filename}`);
 
-  await page.evaluate(
-    (_items, _element) => {
-      _element.items = _items;
-    },
-    items,
-    element
-  );
+  // await page.evaluate(
+  //   (_items, _element) => {
+  //     _element.items = _items;
+  //   },
+  //   items,
+  //   element
+  // );
 
   // await page.evaluate(() => {
   //   const elements = document.getElementsByTagName('script');
@@ -33,8 +33,10 @@ async function prerender({ componentPath, items }) {
   //     }
   //   }
   // });
+  //await page.waitForSelector('product-view')
+  await page.waitFor(5000)
   const content = await page.content();
-
+debugger;
   const removeParentTag = content
     .replace(`<${filename}>`, '')
     .replace(`</${filename}>`, '');

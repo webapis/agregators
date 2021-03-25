@@ -3,39 +3,35 @@ customElements.define(
   class extends HTMLElement {
     constructor() {
       super();
-      var s = document.createElement('script');
-      s.type = 'text/javascript';
-      s.src = '../components/pageStore.js';
-      s.onload = () => {
-        addScriptTag({ src: '../components/df-product-view.js' });
-        addScriptTag({ src: '../components/pl-page-tabs.js' });
+    }
+    connectedCallback() {
+      window.onpagestore = () => {
+        const { state: { selected_pl_tab } } = window.pageStore;
+        this.render({ selected: selected_pl_tab });
+        window.pageStore.subscribe(
+          window.actionTypes.PL_PAGE_TAB_SELECTED,
+          state => {
+            const { selected_pl_tab } = state;
+            this.render({ selected: selected_pl_tab });
+          }
+        );
+        window.pageStore.subscribe(
+          window.actionTypes.PRODUCT_ITEMS_SET,
+          state => {
+            const { items, selected_pl_tab } = state;
+            debugger;
+            this.render({ selected: selected_pl_tab, value: items });
+          }
+        );
       };
-
-      document.body.appendChild(s);
+      addScriptTag({ src: '../components/pageStore.js' });
       addLinkTag({
         href:
           'https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css'
       });
     }
-    connectedCallback() {
-      document.onreadystatechange = () => {
-        if (document.readyState === 'complete') {
-          const { state: { selected_pl_tab } } = window.pageStore;
-          this.render({ selected: selected_pl_tab });
-          window.pageStore.subscribe(
-            window.actionTypes.PL_PAGE_TAB_SELECTED,
-            state => {
-              const { selected_pl_tab } = state;
 
-              this.render({ selected: selected_pl_tab });
-            }
-          );
-        }
-      };
-    }
-
-    render({ selected }) {
-      debugger;
+    render({ selected, value }) {
       this.innerHTML = /*html*/ `
       <div class="container">
         <pl-page-tabs></pl-page-tabs>
@@ -44,9 +40,7 @@ customElements.define(
           ? '<div  id="root" class="row"></div></div>'
           : ''}
         `;
-      const url = this.getAttribute('url');
-      fetch(url).then(result => result.json()).then(value => {
-        this._items = value;
+      if (value) {
         document.title = value.pageTitle;
         const descriptionTag = document.createElement('meta');
         descriptionTag.type = 'description';
@@ -62,6 +56,7 @@ customElements.define(
           } = item;
 
           var node = document.createElement('product-view');
+          debugger;
           node.classList.add('col-sm-6');
           node.classList.add('col-xl-3');
           node.setAttribute('title', productName);
@@ -74,7 +69,19 @@ customElements.define(
           node.setAttribute('placeHolder', placeHolder);
           document.getElementById('root').appendChild(node);
         });
+      }
+    }
+    set items(value) {
+      debugger;
+      window.pageStore.dispatch({
+        type: window.actionTypes.PRODUCT_ITEMS_SET,
+        payload: value
       });
+      this._items = value;
+    }
+
+    get items() {
+      return this._items;
     }
   }
 );
@@ -95,4 +102,6 @@ const addLinkTag = ({ href }) => {
   document.head.appendChild(s);
 };
 
-document.body.innerHTML = `<product-list-page url="page-meta-data/defacto/kadin/defacto-kadin-jean-pantolon.json"></product-list-page>`;
+window.pageUrl =
+  'page-meta-data/defacto/kadin/defacto-kadin-jean-pantolon.json';
+document.body.innerHTML = `<product-list-page > </product-list-page>`;

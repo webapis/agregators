@@ -28,7 +28,6 @@
   },
   "scripts": {
     "scrape:defacto": "MARKA=DEFACTO node scrape/main.js",
-    "prerender:defacto": "MARKA=DEFACTO node prerender/server.js",
     "nav_ssr": "node prerender/navigationBuilder",
     "storybook": "NODE_ENV=storybook rollup -c -w",
     "dev": "NODE_ENV=dev rollup -c -w",
