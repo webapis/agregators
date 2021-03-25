@@ -1,5 +1,5 @@
 {
-  import('./index-225dc33f.js');
+  import('./index-ba01d11b.js');
 }
 // document.body.innerHTML = `
 // <alphabe-page></alphabe-page>

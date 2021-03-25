@@ -94,3 +94,5 @@ const addLinkTag = ({ href }) => {
   s.href = href;
   document.head.appendChild(s);
 };
+
+document.body.innerHTML = `<product-list-page url="page-meta-data/defacto/kadin/defacto-kadin-jean-pantolon.json"></product-list-page>`;

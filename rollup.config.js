@@ -8,7 +8,7 @@ const path = require('path');
 const puppeteer = require('puppeteer');
 const production = !process.env.ROLLUP_WATCH;
 export default {
-  external: ['df-product-view'],
+  external: ['df-product-view', 'addScriptTag'],
   input: 'src/main.js',
   output: {
     dir: 'build',
