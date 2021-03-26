@@ -41,14 +41,14 @@ export default {
     //   }
     // }),
     watchComponent({ target: 'src/csr-components', dest: 'build/components' }),
-    !production &&
-      serve({
-        open: false,
-        contentBase: 'build',
-        // openPage: 'build/home-page',
-        host: 'localhost',
-        port: 10001
-      })
+    //!production &&
+      // serve({
+      //   open: false,
+      //   contentBase: 'build',
+      //   // openPage: 'build/home-page',
+      //   host: 'localhost',
+      //   port: 10001
+      // })
   ]
 };
 
