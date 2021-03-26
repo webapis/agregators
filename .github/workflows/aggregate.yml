@@ -30,6 +30,8 @@ jobs:
       - name: Meta creator action step
         id: creator
         uses: ./.github/actions/meta-creator-action
+      - name: build
+        run: npm run dev
       - name: Prerender action step
         id: prerender
         uses: ./.github/actions/prerender-action

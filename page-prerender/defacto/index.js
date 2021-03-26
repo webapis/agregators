@@ -1,53 +1,77 @@
-const puppeteer = require('puppeteer');
+const jsdom = require('jsdom');
+const { JSDOM } = jsdom;
+const fs = require('fs');
 
-const path = require('path');
-
-async function prerender({ componentPath, items }) {
-  const browser = await puppeteer.launch();
-  const filename = path.basename(componentPath, '.js');
-  const page = await browser.newPage();
-
-  await page.addScriptTag({ path: componentPath });
-
-  await page.setContent(`<${filename}></${filename}>`, {
-    waitUntil: 'domcontentloaded'
+const makeDir = require('make-dir');
+const items = require(`${process.cwd()}/build/page-meta-data/defacto/kadin/defacto-kadin-jean-pantolon.json`);
+async function prerender() {
+  const outputDir = `${process.cwd()}/build`;
+  await makeDir(outputDir);
+  const filePath = `${outputDir}/index.html`;
+  const {
+    window: { document }
+  } = new JSDOM(`<!DOCTYPE html><div id="root">Hello world</div>`, {
+    runScripts: 'outside-only'
   });
+  addLinkTag({
+    href:
+      'https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css',
+    document
+  });
+  document.body.innerHTML = `<div class="container">
+    <pl-page-tabs></pl-page-tabs>
+   <div  id="root" class="container-fluid">
+   <div id="urun-container" class="row"></div>
+   <div id="secenekler-container" class="row">Secenekler<div>
+   </div>
+   <script src="components/pageStore.js" type="text/javascript"></script>
+</div>
+`;
+  debugger;
+  const root = document.getElementById('root');
+  debugger;
+  document.title = items.pageTitle;
+  const descriptionTag = document.createElement('meta');
+  descriptionTag.type = 'description';
+  descriptionTag.content = items.pageDescription;
+  document.querySelector('head').appendChild(descriptionTag);
+  items.items.filter((it, i) => i < 76).forEach(item => {
+    const {
+      detailLink,
+      productName,
+      price: { salePrice, marketPrice },
+      discount: { discountRate, discountText },
+      image: { scrset, placeHolder }
+    } = item;
 
-  await page.waitForSelector(`${filename}`);
+    var node = document.createElement('product-view');
 
-  const element = await page.$(`${filename}`);
-
-  // await page.evaluate(
-  //   (_items, _element) => {
-  //     _element.items = _items;
-  //   },
-  //   items,
-  //   element
-  // );
-
-  // await page.evaluate(() => {
-  //   const elements = document.getElementsByTagName('script');
-  //   for (var i = 0; i < elements.length; i++) {
-  //     if (elements[i].type === '') {
-  //       elements[i].parentNode.removeChild(elements[i]);
-  //     }
-  //   }
-  // });
-  //await page.waitForSelector('product-view')
-  await page.waitFor(5000)
-  const content = await page.content();
-debugger;
-  const removeParentTag = content
-    .replace(`<${filename}>`, '')
-    .replace(`</${filename}>`, '');
-  // debugger;
-  // await makeDir(output);
-  await page.close();
-  await browser.close();
-  return removeParentTag;
-  //fs.writeFileSync(path.join(output, `${pageName}.html`), removeParentTag);
+    node.classList.add('col-sm-6');
+    node.classList.add('col-xl-3');
+    node.setAttribute('title', productName);
+    node.setAttribute('salePrice', salePrice);
+    node.setAttribute('marketPrice', marketPrice);
+    node.setAttribute('discountRate', discountRate);
+    node.setAttribute('discountText', discountText);
+    node.setAttribute('detailLink', detailLink);
+    node.setAttribute('srcset', scrset);
+    node.setAttribute('placeHolder', placeHolder);
+    document.getElementById('urun-container').appendChild(node);
+  });
+  debugger;
+  const content = document.documentElement.outerHTML;
+  fs.writeFileSync(filePath, content);
+  return content;
 }
 
 module.exports = {
   prerender
 };
+
+function addLinkTag({ href, document }) {
+  var s = document.createElement('link');
+
+  s.rel = 'stylesheet';
+  s.href = href;
+  document.head.appendChild(s);
+}

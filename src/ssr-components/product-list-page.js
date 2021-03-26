@@ -11,34 +11,34 @@ customElements.define(
         window.pageStore.subscribe(
           window.actionTypes.PL_PAGE_TAB_SELECTED,
           state => {
-            const { selected_pl_tab } = state;
-            this.render({ selected: selected_pl_tab });
+            const { selected_pl_tab, items } = state;
+            this.render({ selected: selected_pl_tab, value: items });
           }
         );
         window.pageStore.subscribe(
           window.actionTypes.PRODUCT_ITEMS_SET,
           state => {
             const { items, selected_pl_tab } = state;
-            debugger;
+
             this.render({ selected: selected_pl_tab, value: items });
           }
         );
       };
-      addScriptTag({ src: '../components/pageStore.js' });
-      addLinkTag({
-        href:
-          'https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css'
-      });
     }
 
     render({ selected, value }) {
       this.innerHTML = /*html*/ `
       <div class="container">
         <pl-page-tabs></pl-page-tabs>
-        ${selected === 'secenekler' ? '<div >Secenekler<div>' : ''}
-        ${selected === 'urunler'
-          ? '<div  id="root" class="row"></div></div>'
-          : ''}
+       
+          <div  id="root" class="container-fluid">
+          <div id="urun-container" class="row ${selected !== 'urunler' &&
+            'd-none'}"></div>
+          <div id="secenekler-container" class="row ${selected !==
+            'secenekler' && 'd-none'}">Secenekler<div>
+          </div>
+       </div>
+         
         `;
       if (value) {
         document.title = value.pageTitle;
@@ -56,7 +56,7 @@ customElements.define(
           } = item;
 
           var node = document.createElement('product-view');
-          debugger;
+
           node.classList.add('col-sm-6');
           node.classList.add('col-xl-3');
           node.setAttribute('title', productName);
@@ -67,12 +67,11 @@ customElements.define(
           node.setAttribute('detailLink', detailLink);
           node.setAttribute('srcset', scrset);
           node.setAttribute('placeHolder', placeHolder);
-          document.getElementById('root').appendChild(node);
+          document.getElementById('urun-container').appendChild(node);
         });
       }
     }
     set items(value) {
-      debugger;
       window.pageStore.dispatch({
         type: window.actionTypes.PRODUCT_ITEMS_SET,
         payload: value
@@ -85,19 +84,3 @@ customElements.define(
     }
   }
 );
-
-const addScriptTag = ({ src }) => {
-  var s = document.createElement('script');
-  s.type = 'text/javascript';
-  s.src = src;
-
-  document.body.appendChild(s);
-};
-
-const addLinkTag = ({ href }) => {
-  var s = document.createElement('link');
-
-  s.rel = 'stylesheet';
-  s.href = href;
-  document.head.appendChild(s);
-};

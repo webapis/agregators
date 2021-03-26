@@ -5,18 +5,20 @@ customElements.define(
       super();
     }
     connectedCallback() {
-      const { state: { selected_pl_tab } } = window.pageStore;
-     
-      this.render({ selected: selected_pl_tab });
+      window.onpagestore = () => {
+        const { state: { selected_pl_tab } } = window.pageStore;
 
-      window.pageStore.subscribe(
-        window.actionTypes.PL_PAGE_TAB_SELECTED,
-        state => {
-          const { selected_pl_tab } = state;
-        
-          this.render({ selected: selected_pl_tab });
-        }
-      );
+        this.render({ selected: selected_pl_tab });
+
+        window.pageStore.subscribe(
+          window.actionTypes.PL_PAGE_TAB_SELECTED,
+          state => {
+            const { selected_pl_tab } = state;
+
+            this.render({ selected: selected_pl_tab });
+          }
+        );
+      };
     }
 
     render({ selected }) {

@@ -10,13 +10,13 @@ Promise.all([
     'page-store'
   );
   window.actionTypes = modules[1].actionTypes;
-  const url = window.pageUrl;
-  window.onpagestore();
-  fetch(url).then(response => response.json()).then(items => {
-    console.log('window.pageStoress|||||||', window.pageStore);
-    window.pageStore.dispatch({
-      type: window.actionTypes.PRODUCT_ITEMS_SET,
-      payload: items
-    });
-  });
+  // const url = window.pageUrl;
+   window.onpagestore();
+  // fetch(url).then(response => response.json()).then(items => {
+  //   console.log('window.pageStoress|||||||', window.pageStore);
+  //   window.pageStore.dispatch({
+  //     type: window.actionTypes.PRODUCT_ITEMS_SET,
+  //     payload: items
+  //   });
+  // });
 });
