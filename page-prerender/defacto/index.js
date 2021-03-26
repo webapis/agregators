@@ -3,9 +3,9 @@ const { JSDOM } = jsdom;
 const fs = require('fs');
 
 const makeDir = require('make-dir');
-const items = require(`page-meta-data/defacto/kadin/defacto-kadin-jean-pantolon.json`);
+const items = require(`./page-meta-data/defacto/kadin/defacto-kadin-jean-pantolon.json`);
 async function prerender() {
-  const outputDir = `build`;
+  const outputDir = `./build`;
   await makeDir(outputDir);
   const filePath = `${outputDir}/index.html`;
   const {
