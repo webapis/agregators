@@ -7,12 +7,14 @@ async function defactoKadynJeanMetaData() {
   const outputFolder = `${process.cwd()}/page-meta-data/defacto/kadin`;
   await makeDir(outputFolder);
 
+debugger;
   //const joinedItems = await joinDataSetItems(pageData);
   const data = await splitIntoCategory(pageData, 'kadin');
-
+debugger;
   for (const d in data) {
     const current = data[d];
     const filePath = `${outputFolder}/${current.pageName}.json`;
+    debugger;
     console.log('filePath||||||', filePath);
     fs.writeFileSync(filePath, JSON.stringify(current));
   }

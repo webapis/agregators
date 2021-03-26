@@ -47,8 +47,8 @@ async function splitIntoCategory(datasetItems, gender) {
       default:
         others.push(curr);
     }
-    if (others.length > 0)
-      throw 'split-into-category others length should be ===0';
+    // if (others.length > 0)
+    //   throw 'split-into-category others length should be ===0';
     const jeanCategories = {
       pantolonPage: {
         items: pantolon,
