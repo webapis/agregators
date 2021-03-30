@@ -1,1 +1,1 @@
-import './csr-components/product-list';
+import './csr-components/product-list/product-list';

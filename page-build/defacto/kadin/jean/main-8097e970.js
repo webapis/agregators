@@ -42,10 +42,11 @@ customElements.define(
 
       document.head.appendChild(s);
       Promise.all([
-        import('./air-store.js'),
-        import('./reducer.js'),
-        import('./df-product-view.js'),
-        import('./pl-page-tabs.js')
+        import('./air-store-0b06b9a4.js'),
+        import('./reducer-59ca1155.js'),
+        import('./df-product-view-f2e2a6d1.js'),
+        import('./pl-page-tabs-b9501048.js'),
+        import('./pl-secenekler-c0d07d4a.js')
       ]).then(function(modules) {
         window.pageStore = modules[0].createStore(
           modules[1].default,
@@ -56,7 +57,7 @@ customElements.define(
 
         // const url = window.pageUrl;
         window.onpagestore();
-       
+
         if (jsonUrl) {
           fetch(jsonUrl).then(response => response.json()).then(items => {
             console.log('window.pageStoress|||||||', window.pageStore);
@@ -84,6 +85,15 @@ customElements.define(
           state => {
             const { items, selected_pl_tab } = state;
 
+            this.render({ selected: selected_pl_tab, value: items });
+          }
+        );
+
+        window.pageStore.subscribe(
+          window.actionTypes.PATTERN_SELECTED,
+          state => {
+            const { items, selected_pl_tab, pattern } = state;
+            console.log('pattern recieved', pattern);
             this.render({ selected: selected_pl_tab, value: items });
           }
         );
@@ -123,10 +133,10 @@ customElements.define(
           <div id="urun-container" class="row ${selected !== 'urunler' &&
             'd-none'}">
             </div>
-         
-           
           <div id="secenekler-container" class="row ${selected !==
-            'secenekler' && 'd-none'}">Secenekler<div>
+            'secenekler' && 'd-none'}">
+            <pl-secenekler></pl-secenekler>
+            <div>
           </div>
        </div>
          

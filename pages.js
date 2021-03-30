@@ -33,7 +33,7 @@ const pages = [
       output: `${process.cwd()}/page-data/defacto/kadin/kadin-jeans.json`
     },
     metaCreation: {
-     // pageMetaCreator: defactoKadynJeanMetaData
+     // metaCreator: defactoKadynJeanMetaData
     }
   }
 ];

@@ -5,8 +5,7 @@ customElements.define(
       super();
     }
     connectedCallback() {
-
-    
+      if (window.pageStore) {
         const { state: { selected_pl_tab } } = window.pageStore;
 
         this.render({ selected: selected_pl_tab });
@@ -19,7 +18,7 @@ customElements.define(
             this.render({ selected: selected_pl_tab });
           }
         );
-      
+      }
     }
 
     render({ selected }) {
