@@ -14,6 +14,7 @@ customElements.define(
       return this._items;
     }
     connectedCallback() {
+      const jsonUrl = this.getAttribute('jsonUrl');
       var s = document.createElement('link');
       s.rel = 'stylesheet';
       s.href = './main.css';
@@ -34,8 +35,9 @@ customElements.define(
 
         // const url = window.pageUrl;
         window.onpagestore();
-        if (window.pageUrl) {
-          fetch(window.pageUrl)
+
+        if (jsonUrl) {
+          fetch(jsonUrl)
             .then(response => response.json())
             .then(items => {
               console.log('window.pageStoress|||||||', window.pageStore);

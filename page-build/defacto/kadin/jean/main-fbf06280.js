@@ -14,6 +14,7 @@ customElements.define(
       return this._items;
     }
     connectedCallback() {
+      const jsonUrl = this.getAttribute('jsonUrl');
       var s = document.createElement('link');
       s.rel = 'stylesheet';
       s.href = './main.css';
@@ -34,8 +35,9 @@ customElements.define(
 
         // const url = window.pageUrl;
         window.onpagestore();
-        if (window.pageUrl) {
-          fetch(window.pageUrl)
+
+        if (jsonUrl) {
+          fetch(jsonUrl)
             .then(response => response.json())
             .then(items => {
               console.log('window.pageStoress|||||||', window.pageStore);
@@ -116,19 +118,3 @@ customElements.define(
     }
   }
 );
-
-const addLinkTag = ({ href }) => {
-  var s = document.createElement('link');
-
-  s.rel = 'stylesheet';
-  s.href = href;
-  document.head.appendChild(s);
-};
-
-addLinkTag({
-  href:
-    'https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css'
-});
-
-//window.pageUrl = './defacto-kadin-jean-pantolon.json';
-document.body.innerHTML = `<product-list></product-list>`;

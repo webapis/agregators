@@ -14,11 +14,13 @@ export default pages.map(p => {
   return pageBuilder({
     pageName: p.pageName,
     input: p.input,
-    jsonUrl: p.jsonUrl
+    jsonUrl: p.jsonUrl,
+    component: p.component,
+    id: p.id
   });
 });
 
-function pageBuilder({ pageName, input, jsonUrl }) {
+function pageBuilder({ pageName, input, component, id, jsonUrl }) {
   return {
     external: ['df-product-view', 'addScriptTag'],
     input,
@@ -48,12 +50,12 @@ function pageBuilder({ pageName, input, jsonUrl }) {
           <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
           ${bundle.entrypoints.map(bundle => {
             return `<script type="module" src=${bundle.importPath}></script>
-            <script type="module">
-         console.log('hello')
-            </script>
             `;
           })}
           </head>
+          <body>
+          <${component} id=${id} jsonUrl=${jsonUrl}></${component}>
+          </body>
         </html>
       `;
           }
