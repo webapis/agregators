@@ -1,5 +1,0 @@
-name: 'Prerender'
-description: 'Prerender page'
-runs:
-  using: 'node12'
-  main: 'prerender.js'
