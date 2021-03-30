@@ -22,7 +22,6 @@ export default pages.map(p => {
 
 function pageBuilder({ pageName, input, component, id, jsonUrl }) {
   return {
-    external: ['df-product-view', 'addScriptTag'],
     input,
     output: {
       dir: `page-build/${path.dirname(pageName)}`,
@@ -41,7 +40,7 @@ function pageBuilder({ pageName, input, component, id, jsonUrl }) {
           inject: false,
           template({ bundle }) {
             return `
-        <html>
+         <html>
           <head>
           <meta charset="UTF-8">
           <meta http-equiv="X-UA-Compatible" content="IE=edge">

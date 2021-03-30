@@ -42,10 +42,10 @@ customElements.define(
 
       document.head.appendChild(s);
       Promise.all([
-        import('./air-store.js'),
-        import('./reducer.js'),
-        import('./df-product-view.js'),
-        import('./pl-page-tabs.js')
+        import('./air-store-0b06b9a4.js'),
+        import('./reducer-3e4f7fbe.js'),
+        import('./df-product-view-f2e2a6d1.js'),
+        import('./pl-page-tabs-13551ac1.js')
       ]).then(function(modules) {
         window.pageStore = modules[0].createStore(
           modules[1].default,

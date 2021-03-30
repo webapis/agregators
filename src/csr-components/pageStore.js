@@ -11,7 +11,7 @@ Promise.all([
   );
   window.actionTypes = modules[1].actionTypes;
 
-  //window.onpagestore();
+
   // const url = window.pageUrl;
 
   // fetch(url).then(response => response.json()).then(items => {

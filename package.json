@@ -30,19 +30,16 @@
     "rollup-plugin-serve": "^1.1.0"
   },
   "scripts": {
-    "prerender": "node page-prerender/defacto/ssr-server.js",
     "scrape:defacto": "MARKA=DEFACTO node scrape/main.js",
-    "server": "npm run csr & node page-prerender/defacto/server.js",
-    "ssr": "node page-prerender/defacto/ssr-server.js",
+    "dev": "npm run csr & node page-prerender/defacto/server.js",
+    "prerender": "node page-prerender/defacto/ssr-server.js",
     "storybook": "NODE_ENV=storybook rollup -c -w",
     "csr": "NODE_ENV=dev rollup -c -w",
     "build": "rollup -c",
-    "start": "node main.js",
     "test": "mocha test/**/*.test.js",
     "prerender:test": "mocha page-prerender/test",
     "pageDataCollector:test": "mocha page-data-collector/test",
-    "pageMetaCreator:test": "mocha page-meta-creator/test",
-    "deploy": " node page-publish/publish.js"
+    "pageMetaCreator:test": "mocha page-meta-creator/test"
   },
   "nodemonConfig": {
     "ignore": [
