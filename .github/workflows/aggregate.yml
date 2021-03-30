@@ -24,7 +24,7 @@ jobs:
         run: 'npm install'
       - name: Collector action step
         id: collector
-        uses: ./.github/actions/collector-action
+        run: 'npm run collector'
         with:
           page-url: 'https://www.defacto.com.tr/kadin-denim'
       - name: Meta creator action step

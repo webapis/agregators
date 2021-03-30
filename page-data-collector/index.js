@@ -1,7 +1,8 @@
 const puppeteer = require('puppeteer');
 const fs = require('fs');
+const path=require('path')
 const makeDir = require('make-dir');
-async function pageDataCollector({ url, dataCollector, pageUrlsGetter }) {
+async function pageDataCollector({ url, dataCollector, pageUrlsGetter,output }) {
   try {
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
@@ -29,10 +30,9 @@ async function pageDataCollector({ url, dataCollector, pageUrlsGetter }) {
         return [...acc, ...curr];
       }, [])
     ];
-    const outputFolder = `${process.cwd()}/page-data/defacto/kadin`;
-    await makeDir(outputFolder);
-    const filePath = `${outputFolder}/kadin-jeans.json`;
-    fs.writeFileSync(filePath, JSON.stringify(result));
+   
+    await makeDir(path.dirname(output));
+    fs.writeFileSync(output, JSON.stringify(result));
   } catch (error) {
     return Promise.reject(error);
   }

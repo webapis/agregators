@@ -30,6 +30,7 @@
     "rollup-plugin-serve": "^1.1.0"
   },
   "scripts": {
+    "collector":"node page-data-collector/server.js",
     "scrape:defacto": "MARKA=DEFACTO node scrape/main.js",
     "dev": "npm run csr & node page-prerender/defacto/server.js",
     "prerender": "node page-prerender/defacto/ssr-server.js",
