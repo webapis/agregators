@@ -1,4 +1,3 @@
-import './df-product-view.css';
 customElements.define(
   'product-view',
   class extends HTMLElement {

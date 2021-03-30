@@ -10,8 +10,10 @@ Promise.all([
     'page-store'
   );
   window.actionTypes = modules[1].actionTypes;
+
+  //window.onpagestore();
   // const url = window.pageUrl;
-   window.onpagestore();
+
   // fetch(url).then(response => response.json()).then(items => {
   //   console.log('window.pageStoress|||||||', window.pageStore);
   //   window.pageStore.dispatch({

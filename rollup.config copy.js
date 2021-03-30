@@ -2,43 +2,30 @@ import serve from 'rollup-plugin-serve';
 import del from 'rollup-plugin-delete';
 import html from '@open-wc/rollup-plugin-html';
 import replace from '@rollup/plugin-replace';
-import css from 'rollup-plugin-css-porter';
 const makeDir = require('make-dir');
 const fs = require('fs');
 const path = require('path');
 const puppeteer = require('puppeteer');
 const production = !process.env.ROLLUP_WATCH;
-const { pages } = require('./pages');
-export default pages.map(p => {
-  debugger;
-  return pageBuilder({
-    pageName: p.pageName,
-    input: p.input,
-    jsonUrl: p.jsonUrl
-  });
-});
-
-function pageBuilder({ pageName, input, jsonUrl }) {
-  return {
-    external: ['df-product-view', 'addScriptTag'],
-    input,
-    output: {
-      dir: `page-build/${path.dirname(pageName)}`,
-      format: 'es',
-      entryFileNames: 'main-[hash].js'
-    },
-    plugins: [
-      css({ dest: `page-build/${path.dirname(pageName)}/main.css` }),
-      replace({
-        ENV: JSON.stringify(process.env.NODE_ENV)
-      }),
-      del({ targets: `page-build/${path.dirname(pageName)}/*.js` }),
-      !production &&
-        html({
-          name: path.basename(pageName),
-          inject: false,
-          template({ bundle }) {
-            return `
+export default {
+  external: ['df-product-view', 'addScriptTag'],
+  input: 'src/main.js',
+  output: {
+    dir: 'build',
+    format: 'es',
+    entryFileNames: 'main-[hash].js'
+  },
+  plugins: [
+    replace({
+      ENV: JSON.stringify(process.env.NODE_ENV)
+    }),
+    del({ targets: 'build/*.js' }),
+    !production &&
+      html({
+        name: 'index.html',
+        inject: false,
+        template({ bundle }) {
+          return `
         <html>
           <head>
           <meta charset="UTF-8">
@@ -47,18 +34,43 @@ function pageBuilder({ pageName, input, jsonUrl }) {
           <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
           <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
           ${bundle.entrypoints.map(bundle => {
-            return `<script type="module" src=${bundle.importPath}></script>
-            <script type="module">
-         console.log('hello')
-            </script>
-            `;
+            return `<script type="module" src=${bundle.importPath}></script>`;
           })}
           </head>
         </html>
       `;
-          }
-        })
-    ]
+        }
+      }),
+    watchComponent({ target: 'src/csr-components', dest: 'build/components' }),
+    !production &&
+      serve({
+        open: false,
+        contentBase: 'build',
+        // openPage: 'build/home-page',
+        host: 'localhost',
+        port: 10001
+      })
+  ]
+};
+
+function watchComponent(options) {
+  return {
+    name: 'watchComponent',
+
+    async buildStart(inputOptions) {
+      const { target, dest } = options;
+
+      await makeDir(dest);
+      let self = this;
+      const filePaths = fs.readdirSync(target).map(function(fileName) {
+        const filePath = path.join(target, fileName);
+        const file = fs.readFileSync(filePath);
+
+        fs.writeFileSync(path.join(dest, fileName), file);
+        const pathResolved = path.resolve(filePath);
+        self.addWatchFile(pathResolved);
+      });
+    }
   };
 }
 
