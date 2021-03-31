@@ -9,34 +9,40 @@ const path = require('path');
 const puppeteer = require('puppeteer');
 const production = !process.env.ROLLUP_WATCH;
 const { pages } = require('./pages');
-export default pages.map(p => {
+export default pages.filter(p => p.pageBuild).map(p => {
+  const { pageBuild: { rollup, htmlPlugin, cssPlugin, deletePlugin } } = p;
   debugger;
   return pageBuilder({
-    pageName: p.pageName,
-    input: p.input,
-    jsonUrl: p.jsonUrl,
-    component: p.component,
-    id: p.id
+    rollup,
+    htmlPlugin,
+    cssPlugin,
+    deletePlugin
   });
 });
 
-function pageBuilder({ pageName, input, component, id, jsonUrl }) {
+function pageBuilder({
+  rollup: { input, output: { dir } },
+  htmlPlugin: { component, jsonUrl, name },
+  cssPlugin: { dest },
+  deletePlugin: { targets }
+}) {
+  debugger;
   return {
     input,
     output: {
-      dir: `page-build/${path.dirname(pageName)}`,
+      dir,
       format: 'es',
       entryFileNames: 'main-[hash].js'
     },
     plugins: [
-      css({ dest: `page-build/${path.dirname(pageName)}/main.css` }),
+      css({ dest }),
       replace({
         ENV: JSON.stringify(process.env.NODE_ENV)
       }),
-      del({ targets: `page-build/${path.dirname(pageName)}/*.js` }),
-      !production &&
+      del({ targets }),
+      production &&
         html({
-          name: path.basename(pageName),
+          name,
           inject: false,
           template({ bundle }) {
             return `
@@ -53,7 +59,7 @@ function pageBuilder({ pageName, input, component, id, jsonUrl }) {
           })}
           </head>
           <body>
-          <${component} id=${id} jsonUrl=${jsonUrl}></${component}>
+          <${component}  jsonUrl=${jsonUrl}></${component}>
           </body>
         </html>
       `;

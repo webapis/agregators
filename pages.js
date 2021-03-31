@@ -10,11 +10,17 @@ const pages = [
     pageData: null,
     pageMeta: null,
     pageBuild: {
-      pageName: '/index.html',
-      input: 'src/index.js',
-      component: 'div',
-      id: 'root',
-      jsonUrl: ''
+      rollup: {
+        input: 'src/index.js',
+        output: { dir: 'page-build' }
+      },
+      htmlPlugin: {
+        name: 'index.html',
+        component: 'div',
+        jsonFile: ''
+      },
+      cssPlugin: { dest: 'page-build/main.css' },
+      deletePlugin: { targets: 'page-build/*.js' }
     },
     pagePrerender: { selector: '#root' }
   },
@@ -27,11 +33,17 @@ const pages = [
     },
     pageMeta: {},
     pageBuild: {
-      pageName: '/defacto/kadin/jean/pantolon.html',
-      input: 'src/product-list-page.js',
-      component: 'product-list',
-      id: 'defacto-kadin-jean-pantolon',
-      jsonUrl: './defacto-kadin-jean-pantolon.json'
+      rollup: {
+        input: 'src/product-list-page.js',
+        output: { dir: 'page-build/defacto/kadin/jean' }
+      },
+      htmlPlugin: {
+        name: 'pantolon.html',
+        component: 'product-list',
+        jsonFile: './defacto-kadin-jean-pantolon.json'
+      },
+      cssPlugin: { dest: 'page-build/page-build/defacto/kadin/jean/main.css' },
+      deletePlugin: { targets: 'page-build/page-build/defacto/kadin/jean/*.js' }
     },
     pagePrerender: { selector: 'product-list' }
   }
@@ -40,3 +52,16 @@ const pages = [
 module.exports = {
   pages
 };
+
+function pageBuildConfig({ pageUrl, component }) {
+  const rollupInput = '';
+  const rollupOutputDir = '';
+
+  const htmlPluginName = '';
+  const htmlPluginComponent = '';
+  const htmlPluginJsonFile = '';
+
+  const cssPluginDest = '';
+  const deletePluginTargets = '';
+  return null;
+}
