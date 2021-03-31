@@ -5,35 +5,33 @@ customElements.define(
       super();
 
       window.addEventListener('scroll', () => {
-        console.log(' body.scrollHeight', document.body.scrollHeight);
-        console.log(
-          ' body.scrollTop',
-          document.body.scrollTop + document.body.clientHeight
-        );
+        const { state: { autoscroll } } = window.pageStore;
+        if (autoscroll) {
+          console.log(' body.scrollHeight', document.body.scrollHeight);
+          console.log(
+            ' body.scrollTop',
+            document.body.scrollTop + document.body.clientHeight
+          );
 
-        if (
-          document.body.scrollTop + document.body.clientHeight ===
-          document.body.scrollHeight
-        ) {
-          const { state: { items: { items } } } = window.pageStore;
-          const itemTags = document.getElementsByTagName('product-view');
+          if (
+            document.body.scrollTop + document.body.clientHeight ===
+            document.body.scrollHeight
+          ) {
+            const { state: { items: { items } } } = window.pageStore;
+            const itemTags = document.getElementsByTagName('product-view');
 
-          console.log('itemTags', itemTags.length);
-          const nextItems = items.slice(itemTags.length, itemTags.length + 70);
-          this.appendProducts(nextItems);
-          console.log('nextItems', nextItems);
+            console.log('itemTags', itemTags.length);
+            const nextItems = items.slice(
+              itemTags.length,
+              itemTags.length + 70
+            );
+            this.appendProducts(nextItems);
+            console.log('nextItems', nextItems);
+          }
         }
       });
     }
-    // set items(value) {
-    //   document.innerHTML = `<div>${value.pageTitle}</div>`;
-    //   // this.render({ selected: 'urunler', value });
-    //   this._items = value;
-    // }
 
-    // get items() {
-    //   return this._items;
-    // }
     connectedCallback() {
       const jsonUrl = this.getAttribute('jsonUrl');
       var s = document.createElement('link');
@@ -43,10 +41,11 @@ customElements.define(
       document.head.appendChild(s);
       Promise.all([
         import('./air-store-0b06b9a4.js'),
-        import('./reducer-59ca1155.js'),
-        import('./df-product-view-f2e2a6d1.js'),
+        import('./reducer-046f5d27.js'),
+        import('./df-product-view-bde34222.js'),
         import('./pl-page-tabs-b9501048.js'),
-        import('./pl-secenekler-c0d07d4a.js')
+        import('./pl-secenekler-53f87cfd.js'),
+        import('./pl-search-result-afb840f9.js')
       ]).then(function(modules) {
         window.pageStore = modules[0].createStore(
           modules[1].default,
@@ -60,7 +59,6 @@ customElements.define(
 
         if (jsonUrl) {
           fetch(jsonUrl).then(response => response.json()).then(items => {
-            console.log('window.pageStoress|||||||', window.pageStore);
             window.pageStore.dispatch({
               type: window.actionTypes.PRODUCT_ITEMS_SET,
               payload: items
@@ -93,8 +91,16 @@ customElements.define(
           window.actionTypes.PATTERN_SELECTED,
           state => {
             const { items, selected_pl_tab, pattern } = state;
-            console.log('pattern recieved', pattern);
-            this.render({ selected: selected_pl_tab, value: items });
+            const filter = items.items.filter(item => {
+              return item.productName.includes(pattern);
+              //
+            });
+            console.log('filter', filter);
+
+            this.render({
+              selected: selected_pl_tab,
+              value: { ...items, items: filter }
+            });
           }
         );
       };
@@ -129,17 +135,18 @@ customElements.define(
       <div class="container">
         <pl-page-tabs></pl-page-tabs>
        
-          <div  id="root" class="container-fluid">
+          <div  id="root" class="container-fluid ">
           <div id="urun-container" class="row ${selected !== 'urunler' &&
             'd-none'}">
+            <pl-search-result></pl-search-result>
             </div>
+         
           <div id="secenekler-container" class="row ${selected !==
             'secenekler' && 'd-none'}">
             <pl-secenekler></pl-secenekler>
             <div>
           </div>
        </div>
-         
         `;
       if (value) {
         document.title = value.pageTitle;
@@ -148,6 +155,16 @@ customElements.define(
         descriptionTag.content = value.pageDescription;
         document.querySelector('head').appendChild(descriptionTag);
         this.appendProducts(value.items);
+      }
+
+      const filterBtn = document.getElementById('filter-btn');
+      if (filterBtn) {
+        filterBtn.addEventListener('click', () => {
+          window.pageStore.dispatch({ type: 'CLEAR_PATTERN' });
+
+          const { state: { selected_pl_tab, items } } = window.pageStore;
+          this.render({ selected: selected_pl_tab, value: items });
+        });
       }
     }
   }
