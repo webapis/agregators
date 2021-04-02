@@ -24,17 +24,17 @@ jobs:
         run: 'npm install'
       - name: Collector action step
         id: collector
-        run: 'npm run collector'
+        run: 'npm run dataCollector'
         with:
           page-url: 'https://www.defacto.com.tr/kadin-denim'
       - name: Meta creator action step
         id: creator
-        uses: ./.github/actions/meta-creator-action
+        run: npm run metaCreator
       - name: build
-        run: npm run build
+        run: npm run pageBuild
       - name: Prerender action step
         id: prerender
-        run: npm run prerender
+        run: npm run pagePrerender
       - name: install firebase cli
         run: sudo npm install -g firebase-tools
       - name: deploy to firebase

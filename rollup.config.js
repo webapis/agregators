@@ -3,6 +3,7 @@ import del from 'rollup-plugin-delete';
 import html from '@open-wc/rollup-plugin-html';
 import replace from '@rollup/plugin-replace';
 import css from 'rollup-plugin-css-porter';
+
 const makeDir = require('make-dir');
 const fs = require('fs');
 const path = require('path');
@@ -10,7 +11,9 @@ const puppeteer = require('puppeteer');
 const production = !process.env.ROLLUP_WATCH;
 const { pages } = require('./pages');
 export default pages.filter(p => p.pageBuild).map(p => {
-  const { pageBuild: { rollup, htmlPlugin, cssPlugin, deletePlugin } } = p;
+  const {
+    pageBuild: { rollup, htmlPlugin, cssPlugin, deletePlugin, copyPlugin }
+  } = p;
   debugger;
   return pageBuilder({
     rollup,
@@ -22,7 +25,7 @@ export default pages.filter(p => p.pageBuild).map(p => {
 
 function pageBuilder({
   rollup: { input, output: { dir } },
-  htmlPlugin: { component, jsonUrl, name },
+  htmlPlugin: { component, jsonFile, name },
   cssPlugin: { dest },
   deletePlugin: { targets }
 }) {
@@ -40,7 +43,7 @@ function pageBuilder({
         ENV: JSON.stringify(process.env.NODE_ENV)
       }),
       del({ targets }),
-      production &&
+      !production &&
         html({
           name,
           inject: false,
@@ -59,7 +62,7 @@ function pageBuilder({
           })}
           </head>
           <body>
-          <${component}  jsonUrl=${jsonUrl}></${component}>
+          <${component}  jsonUrl=${jsonFile}></${component}>
           </body>
         </html>
       `;

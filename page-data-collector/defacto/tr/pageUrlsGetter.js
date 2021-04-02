@@ -1,4 +1,4 @@
-async function defactoNextPageUrls({ page }) {
+async function pageUrlsGetter({ page }) {
   let nextPageUrls = [];
 
   const productCount = await page.$eval(
@@ -8,7 +8,6 @@ async function defactoNextPageUrls({ page }) {
   const pageUrl = await page.url();
 
   if (parseInt(productCount) > 72) {
-  
     const pageCount = Math.round(parseInt(productCount) / 72);
 
     let i;
@@ -16,10 +15,9 @@ async function defactoNextPageUrls({ page }) {
       nextPageUrls.push(`${pageUrl}?lt=v2&page=${i}`);
     }
   }
-
   return nextPageUrls;
 }
 
 module.exports = {
-  defactoNextPageUrls
+  pageUrlsGetter
 };

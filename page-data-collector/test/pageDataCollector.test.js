@@ -1,6 +1,6 @@
 const { pageDataCollector } = require('../index');
-const { defactoDataCollector } = require('../defacto/defactoDataCollector');
-const { defactoNextPageUrls } = require('../defacto/defactoNextPageUrls');
+const { dataCollector } = require('../defacto/tr/dataCollector');
+const { pageUrlsGetter } = require('../defacto/tr/pageUrlsGetter');
 
 describe('pageDataCollector test', () => {
   it('read page data', async function() {
@@ -9,8 +9,8 @@ describe('pageDataCollector test', () => {
       debugger;
       await pageDataCollector({
         url: 'https://www.defacto.com.tr/kadin-denim',
-        dataCollector: defactoDataCollector,
-        pageUrlsGetter: defactoNextPageUrls
+        dataCollector,
+        pageUrlsGetter
       });
 
       debugger;

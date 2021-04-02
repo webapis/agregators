@@ -1,50 +1,34 @@
-const {
-  defactoDataCollector
-} = require('./page-data-collector/defacto/defactoDataCollector');
-const {
-  defactoNextPageUrls
-} = require('./page-data-collector/defacto/defactoNextPageUrls');
+const path = require('path');
 
 const pages = [
   {
     pageData: null,
     pageMeta: null,
-    pageBuild: {
-      rollup: {
-        input: 'src/index.js',
-        output: { dir: 'page-build' }
-      },
-      htmlPlugin: {
-        name: 'index.html',
-        component: 'div',
-        jsonFile: ''
-      },
-      cssPlugin: { dest: 'page-build/main.css' },
-      deletePlugin: { targets: 'page-build/*.js' }
-    },
+    pageBuild: pageBuildConfig({
+      pageUrl: '/index.html',
+      input: 'src/index.js',
+      component: 'div'
+    }),
     pagePrerender: { selector: '#root' }
   },
   {
     pageData: {
-      sourceUrl: 'https://www.defacto.com.tr/kadin-denim',
-      dataCollector: defactoDataCollector,
-      pageUrlsGetter: defactoNextPageUrls,
-      output: `${process.cwd()}/page-data/defacto/kadin/kadin-jeans.json`
+      input: 'https://www.defacto.com.tr/kadin-denim',
+      output: `${process.cwd()}/page-data/defacto/tr/kadin-denim.json`,
+      dataCollectorFunc: './defacto/tr/dataCollector.js',
+      pageUrlsGetterFunc: './defacto/tr/pageUrlsGetter.js'
     },
-    pageMeta: {},
-    pageBuild: {
-      rollup: {
-        input: 'src/product-list-page.js',
-        output: { dir: 'page-build/defacto/kadin/jean' }
-      },
-      htmlPlugin: {
-        name: 'pantolon.html',
-        component: 'product-list',
-        jsonFile: './defacto-kadin-jean-pantolon.json'
-      },
-      cssPlugin: { dest: 'page-build/page-build/defacto/kadin/jean/main.css' },
-      deletePlugin: { targets: 'page-build/page-build/defacto/kadin/jean/*.js' }
+    pageMeta: {
+      input: `${process.cwd()}/page-data/defacto/tr/kadin-denim.json`,
+      output: `${process.cwd()}/page-meta/defacto/tr/kadin/jean/pantolon.json`,
+      output2: `${process.cwd()}/page-build/defacto/tr/kadin/jean/pantolon.json`,
+      metaCreatorFunc: './defacto/tr/kadin/jean/metaCreator.js'
     },
+    pageBuild: pageBuildConfig({
+      pageUrl: '/defacto/tr/kadin/jean/pantolon.html',
+      component: 'product-list',
+      input: 'src/product-list-page.js'
+    }),
     pagePrerender: { selector: 'product-list' }
   }
 ];
@@ -53,15 +37,26 @@ module.exports = {
   pages
 };
 
-function pageBuildConfig({ pageUrl, component }) {
-  const rollupInput = '';
-  const rollupOutputDir = '';
-
-  const htmlPluginName = '';
-  const htmlPluginComponent = '';
-  const htmlPluginJsonFile = '';
-
-  const cssPluginDest = '';
-  const deletePluginTargets = '';
-  return null;
+function pageBuildConfig({ pageUrl, component, input, jsonData }) {
+  const outputDir = `page-build${path.dirname(pageUrl)}`;
+  const rollupOutputDir = outputDir;
+  const htmlPluginName = path.basename(pageUrl);
+  const htmlPluginComponent = component;
+  const htmlPluginJsonFile = `./${path.basename(pageUrl, '.html')}.json`;
+  const cssPluginDest = `${outputDir}/main.css`;
+  const deletePluginTargets = `${outputDir}*.js`;
+  debugger;
+  return {
+    rollup: {
+      input,
+      output: { dir: rollupOutputDir }
+    },
+    htmlPlugin: {
+      name: htmlPluginName,
+      component: htmlPluginComponent,
+      jsonFile: htmlPluginJsonFile
+    },
+    cssPlugin: { dest: cssPluginDest },
+    deletePlugin: { targets: deletePluginTargets }
+  };
 }

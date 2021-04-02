@@ -1,10 +1,6 @@
-const fs = require('fs');
-const makeDir = require('make-dir');
 const { extractDescription } = require('./extract.description');
 const { extractWordPattern } = require('./extract.word.pattern');
-async function splitIntoCategory(datasetItems, gender) {
-
-
+async function splitIntoCategory(datasetItems) {
   const pantolon = [];
   const others = [];
   const tulum = [];
@@ -47,55 +43,54 @@ async function splitIntoCategory(datasetItems, gender) {
       default:
         others.push(curr);
     }
-    // if (others.length > 0)
-    //   throw 'split-into-category others length should be ===0';
+
     const jeanCategories = {
-      pantolonPage: {
+      pantolon: {
         items: pantolon,
         pageName: 'defacto-kadin-jean-pantolon',
         pageTitle: 'Defacto kadin jean pantolon'
       },
-      tulumPage: {
+      tulum: {
         items: tulum,
         pageName: 'defacto-kadin-jean-tulum',
         pageTitle: 'Defacto kadin jean tulum'
       },
-      elbisePage: {
+      elbise: {
         items: elbise,
         pageName: 'defacto-kadin-jean-elbise',
         pageTitle: 'Defacto kadin jean elbise'
       },
-      ceketPage: {
+      ceket: {
         items: ceket,
         pageName: 'defacto-kadin-jean-ceket',
         pageTitle: 'Defacto kadin jean ceket'
       },
-      gomlekPage: {
+      gomlek: {
         items: gomlek,
         pageName: 'defacto-kadin-jean-gomlek',
         pageTitle: 'Defacto kadin jean gomlek'
       },
-      salopetPage: {
+      salopet: {
         items: salopet,
         pageName: 'defacto-kadin-jean-salopet',
         pageTitle: 'Defacto kadin jean salopet'
       },
-      etekPage: {
+      etek: {
         items: etek,
         pageName: 'defacto-kadin-jean-etek',
         pageTitle: 'Defacto kadin jean etek'
       },
-      sortPage: {
+      sort: {
         items: sort,
         pageName: 'defacto-kadin-jean-sort',
         pageTitle: 'Defacto kadin jean sort'
       },
-      jeanPage: {
+      jean: {
         items: src,
         pageName: 'defacto-kadin-jean',
         pageTitle: 'Defacto kadin jean'
       },
-      othersPage: {
+      others: {
         items: others,
         pageName: 'defacto-kadin-jean-others',
         pageTitle: 'Defacto kadin jean others'
@@ -104,70 +99,56 @@ async function splitIntoCategory(datasetItems, gender) {
 
     return jeanCategories;
   }, []);
-
+  debugger;
   const withDescription = {
     ...jeanCategories,
-    pantolonPage: {
-      ...jeanCategories.pantolonPage,
-      pageDescription: extractDescription(jeanCategories.pantolonPage.items),
-      wordPatterns: extractWordPattern(jeanCategories.pantolonPage.items)
+    pantolon: {
+      ...jeanCategories.pantolon,
+      pageDescription: extractDescription(jeanCategories.pantolon.items),
+      wordPatterns: extractWordPattern(jeanCategories.pantolon.items)
     },
-    tulumPage: {
-      ...jeanCategories.tulumPage,
-      pageDescription: extractDescription(jeanCategories.tulumPage.items),
-      wordPatterns: extractWordPattern(jeanCategories.tulumPage.items)
+    tulum: {
+      ...jeanCategories.tulum,
+      pageDescription: extractDescription(jeanCategories.tulum.items),
+      wordPatterns: extractWordPattern(jeanCategories.tulum.items)
     },
-    elbisePage: {
-      ...jeanCategories.elbisePage,
-      pageDescription: extractDescription(jeanCategories.elbisePage.items),
-      wordPatterns: extractWordPattern(jeanCategories.elbisePage.items)
+    elbise: {
+      ...jeanCategories.elbise,
+      pageDescription: extractDescription(jeanCategories.elbise.items),
+      wordPatterns: extractWordPattern(jeanCategories.elbise.items)
     },
-    ceketPage: {
-      ...jeanCategories.ceketPage,
-      pageDescription: extractDescription(jeanCategories.ceketPage.items),
-      wordPatterns: extractWordPattern(jeanCategories.ceketPage.items)
+    ceket: {
+      ...jeanCategories.ceket,
+      pageDescription: extractDescription(jeanCategories.ceket.items),
+      wordPatterns: extractWordPattern(jeanCategories.ceket.items)
     },
-    gomlekPage: {
-      ...jeanCategories.gomlekPage,
-      pageDescription: extractDescription(jeanCategories.gomlekPage.items),
-      wordPatterns: extractWordPattern(jeanCategories.gomlekPage.items)
+    gomlek: {
+      ...jeanCategories.gomlek,
+      pageDescription: extractDescription(jeanCategories.gomlek.items),
+      wordPatterns: extractWordPattern(jeanCategories.gomlek.items)
     },
-    salopetPage: {
-      ...jeanCategories.salopetPage,
-      pageDescription: extractDescription(jeanCategories.salopetPage.items),
-      wordPatterns: extractWordPattern(jeanCategories.salopetPage.items)
+    salopet: {
+      ...jeanCategories.salopet,
+      pageDescription: extractDescription(jeanCategories.salopet.items),
+      wordPatterns: extractWordPattern(jeanCategories.salopet.items)
     },
-    etekPage: {
-      ...jeanCategories.etekPage,
-      pageDescription: extractDescription(jeanCategories.etekPage.items),
-      wordPatterns: extractWordPattern(jeanCategories.etekPage.items)
+    etek: {
+      ...jeanCategories.etek,
+      pageDescription: extractDescription(jeanCategories.etek.items),
+      wordPatterns: extractWordPattern(jeanCategories.etek.items)
     },
-    sortPage: {
-      ...jeanCategories.sortPage,
-      pageDescription: extractDescription(jeanCategories.sortPage.items),
-      wordPatterns: extractWordPattern(jeanCategories.sortPage.items)
+    sort: {
+      ...jeanCategories.sort,
+      pageDescription: extractDescription(jeanCategories.sort.items),
+      wordPatterns: extractWordPattern(jeanCategories.sort.items)
     },
-    jeanPage: {
-      ...jeanCategories.jeanPage,
-      pageDescription: extractDescription(jeanCategories.jeanPage.items),
-      wordPatterns: extractWordPattern(jeanCategories.jeanPage.items)
+    jean: {
+      ...jeanCategories.jean,
+      pageDescription: extractDescription(jeanCategories.jean.items),
+      wordPatterns: extractWordPattern(jeanCategories.jean.items)
     }
   };
-  for (const cat in withDescription) {
-    const current = withDescription[cat];
-    const folderPath = await makeDir(
-      `${process.cwd()}/aggregation/defacto/jean/${gender}`
-    );
-    let filePath;
-    if (cat === 'jean') {
-      filePath = `${folderPath}/${gender}-${cat}.json`;
-    } else {
-      filePath = `${folderPath}/${gender}-jean-${cat}.json`;
-    }
 
-    fs.writeFileSync(filePath, JSON.stringify(current));
-  }
- 
   return withDescription;
 }
 

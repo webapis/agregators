@@ -12,6 +12,7 @@
     "jsdom": "^16.5.1",
     "make-dir": "^3.1.0",
     "mocha": "^8.3.0",
+    "rollup-plugin-cpy": "^2.0.1",
     "sinon": "^9.2.4"
   },
   "devDependencies": {
@@ -30,13 +31,13 @@
     "rollup-plugin-serve": "^1.1.0"
   },
   "scripts": {
-    "collector":"node page-data-collector/server.js",
-    "scrape:defacto": "MARKA=DEFACTO node scrape/main.js",
+    "dataCollector": "node page-data-collector/server.js",
+    "metaCreator": "node page-meta-creator/server.js",
+    "pageBuild": "rollup -c",
+    "pagePrerender": "node page-prerender/defacto/ssr-server.js",
     "dev": "npm run csr & node page-prerender/defacto/server.js",
-    "prerender": "node page-prerender/defacto/ssr-server.js",
     "storybook": "NODE_ENV=storybook rollup -c -w",
     "csr": "NODE_ENV=dev rollup -c -w",
-    "build": "rollup -c",
     "test": "mocha test/**/*.test.js",
     "prerender:test": "mocha page-prerender/test",
     "pageDataCollector:test": "mocha page-data-collector/test",

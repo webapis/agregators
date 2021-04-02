@@ -1,4 +1,4 @@
-async function defactoDataCollector({ page }) {
+async function dataCollector({ page }) {
   await page.waitForSelector('#products');
 
   const pageTitle = await page.title();
@@ -56,5 +56,5 @@ async function defactoDataCollector({ page }) {
   return products;
 }
 module.exports = {
-  defactoDataCollector
+  dataCollector
 };
