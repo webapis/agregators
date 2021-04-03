@@ -3,7 +3,8 @@ export const initState = {
   selected_pl_tab: 'urunler',
   items: {},
   pattern: '',
-  autoscroll: true
+  autoscroll: true,
+  scrollTop: 0
 };
 
 export default (state, action) => {
@@ -23,6 +24,8 @@ export default (state, action) => {
       };
     case actionTypes.CLEAR_PATTERN:
       return { ...state, pattern: '', autoscroll: true };
+    case actionTypes.PAGE_SCROLLED:
+      return { ...state, scrollTop: action.payload };
     default:
       return state;
   }
@@ -33,5 +36,7 @@ export const actionTypes = {
   PL_PAGE_TAB_SELECTED: 'PL_PAGE_TAB_SELECTED',
   PRODUCT_ITEMS_SET: 'PRODUCT_ITEMS_SET',
   PATTERN_SELECTED: 'PATTERN_SELECTED',
-  CLEAR_PATTERN: 'CLEAR_PATTERN'
+  CLEAR_PATTERN: 'CLEAR_PATTERN',
+  SCROLLED_TOP: 'SCROLLED_TOP',
+  PAGE_SCROLLED: 'PAGE_SCROLLED'
 };

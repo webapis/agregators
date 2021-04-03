@@ -3,33 +3,6 @@ customElements.define(
   class extends HTMLElement {
     constructor() {
       super();
-
-      window.addEventListener('scroll', () => {
-        const { state: { autoscroll } } = window.pageStore;
-        if (autoscroll) {
-          console.log(' body.scrollHeight', document.body.scrollHeight);
-          console.log(
-            ' body.scrollTop',
-            document.body.scrollTop + document.body.clientHeight
-          );
-
-          if (
-            document.body.scrollTop + document.body.clientHeight ===
-            document.body.scrollHeight
-          ) {
-            const { state: { items: { items } } } = window.pageStore;
-            const itemTags = document.getElementsByTagName('product-view');
-
-            console.log('itemTags', itemTags.length);
-            const nextItems = items.slice(
-              itemTags.length,
-              itemTags.length + 70
-            );
-            this.appendProducts(nextItems);
-            console.log('nextItems', nextItems);
-          }
-        }
-      });
     }
 
     connectedCallback() {
@@ -54,7 +27,6 @@ customElements.define(
         );
         window.actionTypes = modules[1].actionTypes;
 
-        // const url = window.pageUrl;
         window.onpagestore();
 
         if (jsonUrl) {
@@ -95,7 +67,6 @@ customElements.define(
               return item.productName.includes(pattern);
               //
             });
-            console.log('filter', filter);
 
             this.render({
               selected: selected_pl_tab,
@@ -114,9 +85,7 @@ customElements.define(
           discount: { discountRate, discountText },
           image: { scrset, placeHolder }
         } = item;
-
         var node = document.createElement('product-view');
-
         node.classList.add('col-sm-6');
         node.classList.add('col-xl-3');
         node.setAttribute('title', productName);
@@ -131,18 +100,17 @@ customElements.define(
       });
     }
     render({ selected, value }) {
+      const height = document.body.clientHeight;
       this.innerHTML = /*html*/ `
-      <div class="container">
+        <div>
         <pl-page-tabs></pl-page-tabs>
-       
-          <div  id="root" class="container-fluid ">
+          <div  id="root">
           <div id="urun-container" class="row ${selected !== 'urunler' &&
-            'd-none'}">
-            <pl-search-result></pl-search-result>
+            'd-none'} position-fixed" style="height:${height}px; overflow: auto;" >
+            <pl-search-result class="pt-5"></pl-search-result>
             </div>
-         
           <div id="secenekler-container" class="row ${selected !==
-            'secenekler' && 'd-none'}">
+            'secenekler' && 'd-none'} bg-info">
             <pl-secenekler></pl-secenekler>
             <div>
           </div>
@@ -156,7 +124,6 @@ customElements.define(
         document.querySelector('head').appendChild(descriptionTag);
         this.appendProducts(value.items);
       }
-
       const filterBtn = document.getElementById('filter-btn');
       if (filterBtn) {
         filterBtn.addEventListener('click', () => {
@@ -166,6 +133,27 @@ customElements.define(
           this.render({ selected: selected_pl_tab, value: items });
         });
       }
-    }
+      const urunContainer = document.getElementById('urun-container');
+      urunContainer.addEventListener('scroll', () => {
+        const { state: { autoscroll } } = window.pageStore;
+        if (autoscroll) {
+          if (
+            urunContainer.scrollTop + urunContainer.clientHeight ===
+            urunContainer.scrollHeight
+          ) {
+            const { state: { items: { items } } } = window.pageStore;
+            const itemTags = document.getElementsByTagName('product-view');
+
+            const nextItems = items.slice(
+              itemTags.length,
+              itemTags.length + 70
+            );
+            this.appendProducts(nextItems);
+          }
+        }
+
+        //toggle nav tab
+      });
+    } //render
   }
 );
