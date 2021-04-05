@@ -51,9 +51,11 @@ customElements.define(
        
        <a id="secenekler" class="nav-link ${selected === 'secenekler' &&
          'active'}" aria-current="page" href="#">Seçenekler</a>
+       
        <a id="urunler" class="nav-link ${selected === 'urunler' &&
          'active'}" href="#">Ürünler</a>
      </ul>
+ 
      <div>
      `;
       this.querySelectorAll('a').forEach(element => {

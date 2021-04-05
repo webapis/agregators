@@ -54,6 +54,7 @@ customElements.define(
        <a id="urunler" class="nav-link ${selected === 'urunler' &&
          'active'}" href="#">Ürünler</a>
      </ul>
+ 
      <div>
      `;
       this.querySelectorAll('a').forEach(element => {
