@@ -30,6 +30,21 @@ const pages = [
       input: 'src/product-list-page.js'
     }),
     pagePrerender: { selector: 'product-list' }
+  },
+  {
+    pageData: null,
+    pageMeta: {
+      input: `${process.cwd()}/page-data/defacto/tr/kadin-denim.json`,
+      output: `${process.cwd()}/page-meta/defacto/tr/kadin/jean/ceket.json`,
+      output2: `${process.cwd()}/page-build/defacto/tr/kadin/jean/ceket.json`,
+      metaCreatorFunc: './defacto/tr/kadin/jean/metaCreator.js'
+    },
+    pageBuild: pageBuildConfig({
+      pageUrl: '/defacto/tr/kadin/jean/ceket.html',
+      component: 'product-list',
+      input: 'src/product-list-page.js'
+    }),
+    pagePrerender: { selector: 'product-list' }
   }
 ];
 
@@ -37,7 +52,7 @@ module.exports = {
   pages
 };
 
-function pageBuildConfig({ pageUrl, component, input, jsonData }) {
+function pageBuildConfig({ pageUrl, component, input }) {
   const outputDir = `page-build${path.dirname(pageUrl)}`;
   const rollupOutputDir = outputDir;
   const htmlPluginName = path.basename(pageUrl);
@@ -45,7 +60,6 @@ function pageBuildConfig({ pageUrl, component, input, jsonData }) {
   const htmlPluginJsonFile = `./${path.basename(pageUrl, '.html')}.json`;
   const cssPluginDest = `${outputDir}/main.css`;
   const deletePluginTargets = `${outputDir}*.js`;
-  debugger;
   return {
     rollup: {
       input,
