@@ -43,7 +43,7 @@ function pageBuilder({
         ENV: JSON.stringify(process.env.NODE_ENV)
       }),
       del({ targets }),
-      !production &&
+   
         html({
           name,
           inject: false,
