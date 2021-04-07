@@ -18,17 +18,18 @@ customElements.define(
         import('./df-product-view.js'),
         import('./pl-page-tabs.js'),
         import('./pl-secenekler.js'),
-        import('./pl-search-result.js')
-      ]).then(function(modules) {
+        import('./pl-search-result.js'),
+        import('./products-container.js'),
+        import('./filter-container.js')
+      ]).then(modules => {
         window.pageStore = modules[0].createStore(
           modules[1].default,
           modules[1].initState,
           'page-store'
         );
         window.actionTypes = modules[1].actionTypes;
-
-        window.onpagestore();
-
+        const { state: { selected_pl_tab } } = window.pageStore;
+        this.render({ selected: selected_pl_tab });
         if (jsonUrl) {
           fetch(jsonUrl).then(response => response.json()).then(items => {
             window.pageStore.dispatch({
@@ -38,122 +39,13 @@ customElements.define(
           });
         }
       });
-
-      window.onpagestore = () => {
-        const { state: { selected_pl_tab } } = window.pageStore;
-        this.render({ selected: selected_pl_tab });
-        window.pageStore.subscribe(
-          window.actionTypes.PL_PAGE_TAB_SELECTED,
-          state => {
-            const { selected_pl_tab, items } = state;
-
-            this.render({ selected: selected_pl_tab, value: items });
-          }
-        );
-        window.pageStore.subscribe(
-          window.actionTypes.PRODUCT_ITEMS_SET,
-          state => {
-            const { items, selected_pl_tab } = state;
-
-            this.render({ selected: selected_pl_tab, value: items });
-          }
-        );
-
-        window.pageStore.subscribe(
-          window.actionTypes.PATTERN_SELECTED,
-          state => {
-            const { items, selected_pl_tab, pattern } = state;
-            const filter = items.items.filter(item => {
-              return item.productName.includes(pattern);
-              //
-            });
-
-            this.render({
-              selected: selected_pl_tab,
-              value: { ...items, items: filter }
-            });
-          }
-        );
-      };
     }
-    appendProducts(items) {
-      items.filter((it, i) => i < 70).forEach(item => {
-        const {
-          detailLink,
-          productName,
-          price: { salePrice, marketPrice },
-          discount: { discountRate, discountText },
-          image: { scrset, placeHolder }
-        } = item;
-        var node = document.createElement('product-view');
-        node.classList.add('col-sm-6');
-        node.classList.add('col-xl-3');
-        node.setAttribute('title', productName);
-        node.setAttribute('salePrice', salePrice);
-        node.setAttribute('marketPrice', marketPrice);
-        node.setAttribute('discountRate', discountRate);
-        node.setAttribute('discountText', discountText);
-        node.setAttribute('detailLink', detailLink);
-        node.setAttribute('srcset', scrset);
-        node.setAttribute('placeHolder', placeHolder);
-        document.getElementById('urun-container').appendChild(node);
-      });
-    }
-    render({ selected, value }) {
-      const height = document.body.clientHeight;
-      this.innerHTML = /*html*/ `
-        <div>
+    render() {
+      this.innerHTML = `
         <pl-page-tabs></pl-page-tabs>
-          <div  id="root">
-          <div id="urun-container" class="row ${selected !== 'urunler' &&
-            'd-none'} position-fixed" style="height:${height}px; overflow: auto;" >
-            <pl-search-result class="pt-5"></pl-search-result>
-            </div>
-          <div id="secenekler-container" class="row ${selected !==
-            'secenekler' && 'd-none'} bg-info">
-            <pl-secenekler></pl-secenekler>
-            <div>
-          </div>
-       </div>
-        `;
-      if (value) {
-        document.title = value.pageTitle;
-        const descriptionTag = document.createElement('meta');
-        descriptionTag.type = 'description';
-        descriptionTag.content = value.pageDescription;
-        document.querySelector('head').appendChild(descriptionTag);
-        this.appendProducts(value.items);
-      }
-      const filterBtn = document.getElementById('filter-btn');
-      if (filterBtn) {
-        filterBtn.addEventListener('click', () => {
-          window.pageStore.dispatch({ type: 'CLEAR_PATTERN' });
-
-          const { state: { selected_pl_tab, items } } = window.pageStore;
-          this.render({ selected: selected_pl_tab, value: items });
-        });
-      }
-      const urunContainer = document.getElementById('urun-container');
-      urunContainer.addEventListener('scroll', () => {
-        const { state: { autoscroll } } = window.pageStore;
-        if (autoscroll) {
-          if (
-            urunContainer.scrollTop + urunContainer.clientHeight ===
-            urunContainer.scrollHeight
-          ) {
-            const { state: { items: { items } } } = window.pageStore;
-            const itemTags = document.getElementsByTagName('product-view');
-
-            const nextItems = items.slice(
-              itemTags.length,
-              itemTags.length + 70
-            );
-            this.appendProducts(nextItems);
-          }
-        }
-
-        //toggle nav tab
-      });
-    } //render
+        <products-container></products-container>
+        <filter-container></filter-container>
+      `;
+    }
   }
 );

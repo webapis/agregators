@@ -1,7 +1,7 @@
 export const initState = {
   selected: 'defacto_counter',
-  selected_pl_tab: 'urunler',
-  items: {},
+  selected_pl_tab: 'urunler-tab',
+  items: null,
   pattern: '',
   autoscroll: true,
   scrollTop: 0
@@ -19,7 +19,7 @@ export default (state, action) => {
       return {
         ...state,
         pattern: action.payload,
-        selected_pl_tab: 'urunler',
+        selected_pl_tab: 'urunler-tab',
         autoscroll: false
       };
     case actionTypes.CLEAR_PATTERN:
