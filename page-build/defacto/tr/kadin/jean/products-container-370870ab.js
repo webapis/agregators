@@ -34,6 +34,7 @@ customElements.define(
         const { items, selected_pl_tab, pattern } = state;
         const filter = items.items.filter(item => {
           return item.productName.includes(pattern);
+          //
         });
 
         if (selected_pl_tab === 'urunler-tab') {
@@ -47,7 +48,7 @@ customElements.define(
       this.innerHTML = `<div class="container">
       <div class="row">
       <div class="col">
-      <pl-search-result length=${value && value.items && value.items.length}>
+      <pl-search-result>
       
       </pl-search-result>
       </div>

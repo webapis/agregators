@@ -30,16 +30,16 @@ customElements.define(
         }
       });
 
-      window.pageStore.subscribe(window.actionTypes.PATTERN_SELECTED, state => {
-        const { items, selected_pl_tab, pattern } = state;
-        const filter = items.items.filter(item => {
-          return item.productName.includes(pattern);
-        });
+      window.pageStore.subscribe(
+        window.actionTypes.PATTERN_SELECTED,
+        () => {
+          const { state: { selected_pl_tab, items } } = window.pageStore;
 
-        if (selected_pl_tab === 'urunler-tab') {
-          this.render({ value: { ...items, items: filter } });
+          if (selected_pl_tab === 'urunler-tab') {
+            this.render({ value: items });
+          }
         }
-      });
+      );
     }
 
     render({ value }) {
@@ -47,7 +47,7 @@ customElements.define(
       this.innerHTML = `<div class="container">
       <div class="row">
       <div class="col">
-      <pl-search-result length=${value && value.items && value.items.length}>
+      <pl-search-result>
       
       </pl-search-result>
       </div>

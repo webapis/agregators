@@ -7,8 +7,9 @@ customElements.define(
 
     connectedCallback() {
       const length = this.getAttribute('length');
+      this.getAttribute('pattern');
       this.innerHTML = `  <div class='d-flex justify-content-md-between'>
-        <div class="m-2 text-black-50"> Seçilen ürün ${length} adet  
+        <div class="m-2 text-black-50"> Bulunan ürün ${length} adet  
         </div>
         <div>
        `;

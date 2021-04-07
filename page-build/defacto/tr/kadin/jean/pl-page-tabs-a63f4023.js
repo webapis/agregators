@@ -85,13 +85,11 @@ customElements.define(
           this.update({ selected_pl_tab, name });
         }
       );
-      window.pageStore.subscribe(window.actionTypes.PATTERN_SELECTED, state => {
-        const { selected_pl_tab } = state;
-        this.update({ selected_pl_tab, name });
-      });
+      window.pageStore.subscribe(window.actionTypes.PATTERN_SELECTED,);
     }
 
     update({ selected_pl_tab, name }) {
+    
       if (selected_pl_tab === name) {
         console.log('I am clicked', name);
         this.classList.add('border-bottom');

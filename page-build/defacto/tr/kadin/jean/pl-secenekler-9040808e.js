@@ -9,13 +9,16 @@ customElements.define(
       const { state: { items: { wordPatterns } } } = window.pageStore;
       this.render(wordPatterns);
 
-      window.pageStore.subscribe(window.actionTypes.PATTERN_SELECTED, () => {
-        const { state: { selected_pl_tab } } = window.pageStore;
+      window.pageStore.subscribe(
+        window.actionTypes.PATTERN_SELECTED,
+        () => {
+          const { state: { selected_pl_tab, items } } = window.pageStore;
 
-        if (selected_pl_tab !== 'secenekler-tab') {
-          this.innerHTML = ``;
+          if (selected_pl_tab !== 'secenekler-tab') {
+            this.render({ value: items });
+          }
         }
-      });
+      );
     }
 
     render(wordPatterns) {
