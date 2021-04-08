@@ -1,6 +1,6 @@
 document.body.innerHTML = `<div id="root">Home page
-<a href="/defacto/tr/kadin/jean/pantolon.html">pantolon</a>
-<a href="/defacto/tr/kadin/jean/ceket.html">ceket</a>
+<a href="http://localhost:8080/defacto/tr/kadin/jeans-nav/jeans.html">jeans nav</a>
+
 </div>
 
 `;

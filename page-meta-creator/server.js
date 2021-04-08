@@ -1,15 +1,13 @@
 const { pages } = require('../pages');
 
 pages.filter(p => p.pageMeta !== null).map(async p => {
-  const { pageMeta: { input, metaCreatorFunc, output, output2 } } = p;
+  const { pageMeta: { metaCreatorFunc } } = p;
   const { metaCreator } = require(metaCreatorFunc);
 
   await metaCreator({
-    input,
-    output,
-    output2
+    ...p.pageMeta
   });
 
-  console.log('meta created.......')
+  console.log('meta created.......');
   debugger;
 });

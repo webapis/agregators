@@ -1,4 +1,4 @@
-import './df-product-view.css';
+//import './df-product-view.css';
 customElements.define(
   'product-view',
   class extends HTMLElement {
@@ -6,6 +6,13 @@ customElements.define(
       super();
     }
     connectedCallback() {
+   
+  
+        var s = document.createElement('link');
+      s.rel = 'stylesheet';
+      s.href = '/components/product-list/df-product-view.css';
+
+      document.head.appendChild(s);
       const { state: { pattern } } = window.pageStore;
       const title = this.getAttribute('title');
       const salePrice = this.getAttribute('salePrice');
@@ -18,6 +25,7 @@ customElements.define(
       boldenPattern(title, pattern);
       // eslint-disable-next-line no-undef
       this.innerHTML = /**/ `
+    
         <div class="df-product-item">
           <img src=${placeHolder} srcset=${srcset} class="df-picture">
           <a href="${detailLink}" class="df-product-info-title-link">
@@ -44,14 +52,15 @@ function boldenPattern(word, pattern) {
     const withBold = word.split(' ');
     let bold = [];
     let normal = [];
-   return  withBold.map(w => {
-      if (pattern.includes(w)) {
-        return `<b class="bg-secondary text-light px-1">${w}</b>`;
-      } else {
-        return w;
-      }
-    })
-    .join(' ');
+    return withBold
+      .map(w => {
+        if (pattern.includes(w)) {
+          return `<b class="bg-secondary text-light px-1">${w}</b>`;
+        } else {
+          return w;
+        }
+      })
+      .join(' ');
   }
   return word;
 }

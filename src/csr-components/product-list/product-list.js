@@ -4,13 +4,12 @@ customElements.define(
     constructor() {
       super();
     }
-
     connectedCallback() {
-      const jsonUrl = this.getAttribute('jsonUrl');
+     
       var s = document.createElement('link');
       s.rel = 'stylesheet';
-      s.href = './main.css';
-
+      s.href =
+        'https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css';
       document.head.appendChild(s);
       Promise.all([
         import('../air-store.js'),
@@ -20,7 +19,8 @@ customElements.define(
         import('./pl-secenekler.js'),
         import('./pl-search-result.js'),
         import('./products-container.js'),
-        import('./filter-container.js')
+        import('./filter-container.js'),
+        import('../pl-search-box.js')
       ]).then(modules => {
         window.pageStore = modules[0].createStore(
           modules[1].default,
@@ -30,8 +30,9 @@ customElements.define(
         window.actionTypes = modules[1].actionTypes;
         const { state: { selected_pl_tab } } = window.pageStore;
         this.render({ selected: selected_pl_tab });
-        if (jsonUrl) {
-          fetch(jsonUrl).then(response => response.json()).then(items => {
+        if (window.jsonUrl) {
+     
+          fetch(window.jsonUrl).then(response => response.json()).then(items => {
             window.pageStore.dispatch({
               type: window.actionTypes.PRODUCT_ITEMS_SET,
               payload: items
@@ -49,3 +50,7 @@ customElements.define(
     }
   }
 );
+
+const component = document.createElement('product-list');
+
+document.body.prepend(component);

@@ -29,7 +29,7 @@ jobs:
         id: creator
         run: npm run metaCreator
       - name: build
-        run: npm run pageBuild
+        run: npm run pageBuilder
       - name: Prerender action step
         id: prerender
         run: npm run pagePrerender

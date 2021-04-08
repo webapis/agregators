@@ -43,12 +43,11 @@ function pageBuilder({
         ENV: JSON.stringify(process.env.NODE_ENV)
       }),
       del({ targets }),
-   
-        html({
-          name,
-          inject: false,
-          template({ bundle }) {
-            return `
+      html({
+        name,
+        inject: false,
+        template({ bundle }) {
+          return `
          <html>
           <head>
           <meta charset="UTF-8">
@@ -66,8 +65,8 @@ function pageBuilder({
           </body>
         </html>
       `;
-          }
-        })
+        }
+      })
     ]
   };
 }
@@ -208,26 +207,18 @@ function prerender(options) {
       return null;
     },
     renderChunk(code, chunkinfo, outputOptions) {
-      
     },
     generateBundle(outputOptions, bundle, isWrite) {
       //void
-
-      
     },
     writeBundle(outputOptions, bundle) {
       //void
-
-      
     },
     renderError() {
       //void
-
-      
     },
 
     closeWatcher() {
-      
     },
     watchChange(id, change) {
       
