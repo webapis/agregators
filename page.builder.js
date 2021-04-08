@@ -1,4 +1,5 @@
 const { pages } = require('./pages');
+var watch = require('node-watch');
 const jsdom = require('jsdom');
 const { JSDOM } = jsdom;
 const fs = require('fs');
@@ -14,8 +15,7 @@ async function prebuild() {
 
   return Promise.resolve(true);
 }
-
-prebuild().then(() => {
+async function build() {
   pages.filter(p => p.pageBuild !== null).map(async p => {
     const { pageBuild: { htmlOutput, component, json } } = p;
     const outputFolder = path.dirname(htmlOutput);
@@ -56,5 +56,15 @@ prebuild().then(() => {
     fs.writeFileSync(htmlOutput, content);
 
     console.log('pageBuilder complete....');
+  });
+}
+prebuild().then(async () => {
+  await build();
+});
+
+watch('src', { recursive: true }, function(evt, name) {
+  console.log('%s changed.', name);
+  prebuild().then(async () => {
+    await build();
   });
 });

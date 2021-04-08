@@ -12,9 +12,17 @@ customElements.define(
         s.href =
           'https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css';
         document.head.appendChild(s);
-        this.innerHTML =`
+        this.innerHTML = `
         <pl-search-box></pl-search-box>
-        <div id="root">Prducts navddsssd</div>`;
+        <div id="root" class="row">Prducts navddsssd</div>`;
+      });
+      window.addEventListener('load', () => {
+        console.log('window.jsonUrl', window.jsonUrl);
+        fetch(window.jsonUrl).then(result => result.json()).then(data => {
+          document.getElementById('root').innerHTML = `${data
+            .map(d => `<a href=${d.url}>${d.productName}</a>`)
+            .join('')}`;
+        });
       });
     }
   }

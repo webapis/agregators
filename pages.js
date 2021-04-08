@@ -1,15 +1,15 @@
 const path = require('path');
 
 const pages = [
-  // {
-  //   pageData: null,
-  //   pageMeta: null,
-  //   pageBuild: {
-  //     htmlOutput: 'page-build/index.html',
-  //     component: 'src/csr-components/home-page.js'
-  //   },
-  //   pagePrerender: { selector: '#root' }
-  // },
+  {
+    pageData: null,
+    pageMeta: null,
+    pageBuild: {
+      htmlOutput: 'page-build/index.html',
+      component: 'src/csr-components/home-page.js'
+    },
+    pagePrerender: { selector: '#root' }
+  },
   {
     pageData: {
       input: 'https://www.defacto.com.tr/kadin-denim',
@@ -67,6 +67,7 @@ const pages = [
       input: `${process.cwd()}/page-data/defacto/tr/kadin-denim.json`,
       output: `${process.cwd()}/page-meta/defacto/tr/kadin/jean/jean-category.json`,
       output2: `${process.cwd()}/page-build/defacto/tr/kadin/jean/jean-category.json`,
+      linkUrl: '/defacto/tr/kadin/jean/',
       metaCreatorFunc: './defacto/tr/kadin/jean/nav/metaCreator.js'
     },
     pageBuild: {
@@ -81,26 +82,3 @@ const pages = [
 module.exports = {
   pages
 };
-
-function pageBuildConfig({ pageUrl, component, input }) {
-  const outputDir = `page-build${path.dirname(pageUrl)}`;
-  const rollupOutputDir = outputDir;
-  const htmlPluginName = path.basename(pageUrl);
-  const htmlPluginComponent = component;
-  const htmlPluginJsonFile = `./${path.basename(pageUrl, '.html')}.json`;
-  const cssPluginDest = `${outputDir}/main.css`;
-  const deletePluginTargets = `${outputDir}*.js`;
-  return {
-    rollup: {
-      input,
-      output: { dir: rollupOutputDir }
-    },
-    htmlPlugin: {
-      name: htmlPluginName,
-      component: htmlPluginComponent,
-      jsonFile: htmlPluginJsonFile
-    },
-    cssPlugin: { dest: cssPluginDest },
-    deletePlugin: { targets: deletePluginTargets }
-  };
-}

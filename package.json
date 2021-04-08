@@ -21,6 +21,7 @@
     "axios": "^0.21.1",
     "cross-env": "^7.0.2",
     "eslint": "^7.21.0",
+    "node-watch": "^0.7.1",
     "nodemon": "^2.0.7",
     "puppeteer": "^7.1.0",
     "rollup": "^2.39.0",
@@ -36,9 +37,8 @@
     "metaCreator": "node page-meta-creator/server.js",
     "pageBuilder": "node page.builder.js",
     "pagePrerender": "node page-prerender/defacto/ssr-server.js",
-    "dev": "node page-prerender/defacto/server.js",
+    "dev": " node page-prerender/defacto/server.js & npm run pageBuilder & npm run metaCreator",
     "storybook": "NODE_ENV=storybook rollup -c -w",
-
     "test": "mocha test/**/*.test.js",
     "prerender:test": "mocha page-prerender/test",
     "pageDataCollector:test": "mocha page-data-collector/test",
@@ -46,10 +46,11 @@
   },
   "nodemonConfig": {
     "ignore": [
-      "src/*",
       "test/*",
       "apify_storage/*",
-      "build/*",
+      "page-build/*",
+      "page-data/*",
+      "page-meta/*",
       "utils/*"
     ],
     "delay": "2500"

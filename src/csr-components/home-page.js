@@ -5,7 +5,11 @@ customElements.define(
       super();
     }
     connectedCallback() {
-      this.innerHTML = `<div>Home page</div>`;
+      this.innerHTML = `
+      <div>Home page
+      <a href="/defacto/tr/kadin/jean/jean-category.html">Jean Cagetory</a>
+      </div>
+      `;
     }
   }
 );

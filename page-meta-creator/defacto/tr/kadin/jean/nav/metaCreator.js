@@ -1,10 +1,7 @@
 const fs = require('fs');
-const path = require('path');
-const makeDir = require('make-dir');
- function metaCreator({ input, output, output2 }) {
+
+function metaCreator({ input, output, output2, linkUrl }) {
   try {
-   // const outputFolder2 = path.dirname(output2);
-   // await makeDir(outputFolder2);
     debugger;
     const rawData = fs.readFileSync(input, 'utf-8');
     const arrayOfObjects = JSON.parse(rawData);
@@ -27,9 +24,13 @@ const makeDir = require('make-dir');
       return [...acc, { productName: curr, totalItems }];
     }, []);
 
-    fs.writeFileSync(output, JSON.stringify(countProducts));
-    fs.writeFileSync(output2, JSON.stringify(countProducts));
-    debugger;
+    const withUrls = countProducts.map(c => {
+      return { ...c, url: `${linkUrl}${c.productName.toLowerCase()}.html` };
+    });
+    debugger; //
+    fs.writeFileSync(output, JSON.stringify(withUrls));
+    fs.writeFileSync(output2, JSON.stringify(withUrls));
+
     console.log('nav/metaCreator is being tested');
   } catch (error) {
     debugger;
