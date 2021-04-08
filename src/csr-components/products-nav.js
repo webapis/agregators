@@ -14,7 +14,7 @@ customElements.define(
         document.head.appendChild(s);
         this.innerHTML = `
         <pl-search-box></pl-search-box>
-        <div id="root" class="row">Prducts navddsssd</div>`;
+        <div id="root" class="row">Prducts navddss</div>`;
       });
       window.addEventListener('load', () => {
         console.log('window.jsonUrl', window.jsonUrl);

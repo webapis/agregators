@@ -62,9 +62,11 @@ prebuild().then(async () => {
   await build();
 });
 
-watch('src', { recursive: true }, function(evt, name) {
-  console.log('%s changed.', name);
-  prebuild().then(async () => {
-    await build();
+if (process.env.NODE_ENV === 'dev') {
+  watch('src', { recursive: true }, function(evt, name) {
+    console.log('%s changed.', name);
+    prebuild().then(async () => {
+      await build();
+    });
   });
-});
+}

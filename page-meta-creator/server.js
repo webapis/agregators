@@ -14,7 +14,10 @@ async function metaCreator() {
   });
 }
 metaCreator();
-watch('page-meta-creator', { recursive: true }, function(evt, name) {
-  console.log('%s meta changed.', name);
-  metaCreator();
-});
+
+if (process.env.NODE_ENV === 'dev') {
+  watch('page-meta-creator', { recursive: true }, function(evt, name) {
+    console.log('%s meta changed.', name);
+    metaCreator();
+  });
+}
