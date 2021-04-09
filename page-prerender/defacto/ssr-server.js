@@ -15,27 +15,24 @@ staticApp.listen(8080, async () => {
 
       const outputDirPath = `page-build${pageName}`;
       const outputDir = path.dirname(outputDirPath);
-      debugger;
+
       await makeDir(outputDir);
-      debugger;
+
       try {
         const page = await browser.newPage();
         await page.goto(`http://localhost:8080${pageName}`, {
           waitUntil: 'networkidle0'
         });
 
-        debugger;
         await page.waitForSelector(selector); // ensure #posts exists in the DOM.
-        debugger;
+
         const html = await page.content(); // serialized HTML of page DOM.
-        debugger;
+
         fs.writeFileSync(`${process.cwd()}/${outputDirPath}`, html);
-      } catch (error) {
-        debugger;
-      }
+      } catch (error) {}
     })
   );
   console.log('prerender complete....');
   await browser.close();
-  process.exit()
+  process.exit();
 });

@@ -14,6 +14,5 @@ pages.filter(p => p.pageData !== null).map(async p => {
     output
   });
 
-  console.log('data collected.......')
-  debugger;
+  console.log('data collected.......');
 });

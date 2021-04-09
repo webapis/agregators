@@ -1,16 +1,33 @@
-const { pages } = require('../pages');
 var watch = require('node-watch');
+
+const pages = [
+  {
+    input: `${process.cwd()}/page-data/defacto/tr/kadin-denim.json`,
+    output: `${process.cwd()}/page-meta/defacto/tr/kadin/jean/jean-category.json`,
+    output2: `${process.cwd()}/page-build/defacto/tr/kadin/jean/jean-category.json`,
+    linkUrl: '/defacto/tr/kadin/jean/',
+    metaCreatorFunc: `./defacto/tr/kadin/jean/nav/metaCreator.js`
+  },
+  {
+    input: `${process.cwd()}/page-data/defacto/tr/kadin-denim.json`,
+    output: `${process.cwd()}/page-meta/defacto/tr/kadin/jean`,
+    output2: `${process.cwd()}/page-build/defacto/tr/kadin/jean`,
+    metaCreatorFunc: `./defacto/tr/kadin/jean/metaCreator.js`
+  }
+];
+
 async function metaCreator() {
-  pages.filter(p => p.pageMeta !== null).map(async p => {
-    const { pageMeta: { metaCreatorFunc } } = p;
+  pages.map(async p => {
+  
+    const { metaCreatorFunc } = p;
+    
     const { metaCreator } = require(metaCreatorFunc);
-
+    
     await metaCreator({
-      ...p.pageMeta
+      ...p
     });
-
     console.log('meta created.......');
-    debugger;
+  
   });
 }
 metaCreator();

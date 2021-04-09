@@ -1,8 +1,11 @@
 const fs = require('fs');
-
-function metaCreator({ input, output, output2, linkUrl }) {
+const makeDir = require('make-dir');
+const path = require('path');
+const { replaceUnicode } = require(`${process.cwd()}/utils/replaceUnicode`);
+async function metaCreator({ input, output, output2, linkUrl }) {
   try {
-    debugger;
+    await makeDir(path.dirname(output));
+    await makeDir(path.dirname(output2));
     const rawData = fs.readFileSync(input, 'utf-8');
     const arrayOfObjects = JSON.parse(rawData);
     const extracProductName = arrayOfObjects.map(a => {
@@ -25,15 +28,22 @@ function metaCreator({ input, output, output2, linkUrl }) {
     }, []);
 
     const withUrls = countProducts.map(c => {
-      return { ...c, url: `${linkUrl}${c.productName.toLowerCase()}.html` };
+      const productName = replaceUnicode(c.productName).toLowerCase();
+      return {
+        ...c,
+        productName,
+        url: `${linkUrl}${productName}.html`
+      };
     });
-    debugger; //
+
     fs.writeFileSync(output, JSON.stringify(withUrls));
     fs.writeFileSync(output2, JSON.stringify(withUrls));
 
     console.log('nav/metaCreator is being tested');
+
+    return Promise.resolve(true);
   } catch (error) {
-    debugger;
+    return Promise.reject(error);
   }
 }
 

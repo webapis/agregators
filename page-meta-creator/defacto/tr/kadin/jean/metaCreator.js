@@ -4,21 +4,27 @@ const makeDir = require('make-dir');
 const { splitIntoCategory } = require('./split-into-category');
 
 async function metaCreator({ input, output, output2 }) {
-  debugger;
-  const pageData = require(input);
-  debugger;
-  const outputFolder = path.dirname(output);
-  const outputFolder2 = path.dirname(output2);
-  await makeDir(outputFolder);
-  await makeDir(outputFolder2);
-  const data = await splitIntoCategory(pageData);
-  const categoryName = path.basename(output, '.json');
-  debugger;
-  const category = data[categoryName];
-  debugger;
-
-  fs.writeFileSync(output, JSON.stringify(category));
-  fs.writeFileSync(output2, JSON.stringify(category));
+  try {
+    const pageData = require(input);
+    await makeDir(output);
+    await makeDir(output2);
+    const data = await splitIntoCategory(pageData);
+    data.forEach(d => {
+      const productName = d.productName;
+      fs.writeFileSync(
+        `${output}/${productName}.json`,
+        JSON.stringify(d)
+      );
+      fs.writeFileSync(
+        `${output2}/${productName}.json`,
+        JSON.stringify(d)
+      );
+    });
+ 
+    return Promise.resolve(true);
+  } catch (error) {
+    return Promise.reject(error);
+  }
 }
 
 module.exports = {

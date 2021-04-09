@@ -1,6 +1,4 @@
-async function pageMetaCreator() {
-  debugger;
-}
+async function pageMetaCreator() {}
 
 module.exports = {
   pageMetaCreator

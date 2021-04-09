@@ -14,7 +14,7 @@ export default pages.filter(p => p.pageBuild).map(p => {
   const {
     pageBuild: { rollup, htmlPlugin, cssPlugin, deletePlugin, copyPlugin }
   } = p;
-  debugger;
+
   return pageBuilder({
     rollup,
     htmlPlugin,
@@ -29,7 +29,6 @@ function pageBuilder({
   cssPlugin: { dest },
   deletePlugin: { targets }
 }) {
-  debugger;
   return {
     input,
     output: {

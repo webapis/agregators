@@ -35,7 +35,7 @@
   "scripts": {
     "dataCollector": "node page-data-collector/server.js",
     "metaCreator": "node page-meta-creator/server.js",
-    "pageBuilder": "node page.builder.js",
+    "pageBuilder": "node page-builder/server.js",
     "pagePrerender": "node page-prerender/defacto/ssr-server.js",
     "dev": "NODE_ENV=dev npm run pageBuilder & NODE_ENV=dev  npm run metaCreator & NODE_ENV=dev node page-prerender/defacto/server.js",
     "storybook": "NODE_ENV=storybook rollup -c -w",

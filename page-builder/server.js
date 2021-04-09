@@ -1,8 +1,9 @@
-const { pages } = require('./pages');
 var watch = require('node-watch');
 const jsdom = require('jsdom');
 const { JSDOM } = jsdom;
 const fs = require('fs');
+const { defactoPageBuilder } = require('./defacto');
+const { homePage } = require('./home');
 const fsExtra = require('fs-extra');
 const path = require('path');
 const makeDir = require('make-dir');
@@ -16,8 +17,11 @@ async function prebuild() {
   return Promise.resolve(true);
 }
 async function build() {
-  pages.filter(p => p.pageBuild !== null).map(async p => {
-    const { pageBuild: { htmlOutput, component, json } } = p;
+  const pages = defactoPageBuilder();
+  const allPages = [...pages, homePage];
+  allPages.map(async p => {
+    const { htmlOutput, component, json } = p;
+
     const outputFolder = path.dirname(htmlOutput);
     await makeDir(outputFolder);
     const componentName = path.basename(component);
@@ -29,7 +33,6 @@ async function build() {
       .map(() => '../')
       .join(' ')
       .replace(/\s/g, '');
-
     const forwardComponentDothPath = path
       .dirname(component)
       .replace(/\//g, ' ')
