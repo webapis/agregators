@@ -23,8 +23,7 @@ customElements.define(
                 0,
                 defaultScr.indexOf('525w')
               );
-              // img.srcset = defaultScr;
-              // img.sizes="(max-width: 700px) 525px,773px"
+   
 
               if (screenWidth <= 525) {
                 img.src = srcCurrent;
@@ -36,7 +35,7 @@ customElements.define(
                 img.src = srcCurrent.replace('/252/', '/376/');
               }
 
-              // console.log('window.innerHeight', window.innerHeight);
+           
             } else {
               console.log('I am set');
             }
@@ -108,6 +107,8 @@ customElements.define(
     get imgSrc() {
       return this._srcset;
     }
+
+  
   }
 );
 
@@ -127,3 +128,4 @@ function boldenPattern(word, pattern) {
   }
   return word;
 }
+
