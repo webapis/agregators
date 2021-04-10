@@ -19,16 +19,22 @@ customElements.define(
               this._srcset = true;
               const screenWidth = window.screen.width;
               const defaultScr = this.getAttribute('srcset');
-              img.srcset = defaultScr;
-              img.sizes="(max-width: 700px) 525px,773px"
-           
-              // if (screenWidth <= 700) {
-              //   img.src = defaultScr.replace('/252/', '/304/');
-              // } else if (screenWidth > 1000) {
-              //   img.src = defaultScr.replace('/252/', '/320/');
-              // } else if (screenWidth <= 2000) {
-              //   img.src = defaultScr.replace('/252/', '/376/');
-              // }
+              const srcCurrent = defaultScr.substring(
+                0,
+                defaultScr.indexOf('525w')
+              );
+              // img.srcset = defaultScr;
+              // img.sizes="(max-width: 700px) 525px,773px"
+
+              if (screenWidth <= 525) {
+                img.src = srcCurrent;
+              } else if (screenWidth > 525 && screenWidth < 773) {
+                img.src = srcCurrent.replace('/252/', '/304/');
+              } else if (screenWidth >= 773 && screenWidth < 2000) {
+                img.src = srcCurrent.replace('/252/', '/320/');
+              } else if (screenWidth > 2000) {
+                img.src = srcCurrent.replace('/252/', '/376/');
+              }
 
               // console.log('window.innerHeight', window.innerHeight);
             } else {
@@ -73,16 +79,20 @@ customElements.define(
           this._srcset = true;
           const screenWidth = window.screen.width;
           const defaultScr = this.getAttribute('srcset');
-          img.srcset = defaultScr;
-          img.sizes="(max-width: 700px) 525px,773px;(max-width: 1200px) 2000px"
-        
-          // if (screenWidth <= 700) {
-          //   img.src = defaultScr.replace('/252/', '/304/');
-          // } else if (screenWidth > 1000) {
-          //   img.src = defaultScr.replace('/252/', '/320/');
-          // } else if (screenWidth <= 2000) {
-          //   img.src = defaultScr.replace('/252/', '/376/');
-          // }
+          const srcCurrent = defaultScr.substring(
+            0,
+            defaultScr.indexOf('525w')
+          );
+
+          if (screenWidth <= 525) {
+            img.src = srcCurrent;
+          } else if (screenWidth > 525 && screenWidth < 773) {
+            img.src = srcCurrent.replace('/252/', '/304/');
+          } else if (screenWidth >= 773 && screenWidth < 2000) {
+            img.src = srcCurrent.replace('/252/', '/320/');
+          } else if (screenWidth > 2000) {
+            img.src = srcCurrent.replace('/252/', '/376/');
+          }
 
           console.log('window.innerHeight', window.innerHeight);
         } else {
