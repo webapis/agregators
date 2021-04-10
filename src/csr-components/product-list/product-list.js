@@ -3,14 +3,25 @@ customElements.define(
   class extends HTMLElement {
     constructor() {
       super();
+     const viewport = document.createElement('meta')
+     viewport.name='viewport'
+     viewport.content='width=device-width, initial-scale=1.0'
+     document.head.appendChild(viewport);
     }
     connectedCallback() {
-     
+    
+
+
       var s = document.createElement('link');
       s.rel = 'stylesheet';
       s.href =
         'https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css';
       document.head.appendChild(s);
+      var pds = document.createElement('link');
+      pds.rel = 'stylesheet';
+      pds.href = '/components/product-list/df-product-view.css';
+
+      document.head.appendChild(pds);
       Promise.all([
         import('../air-store.js'),
         import('./reducer.js'),

@@ -36,11 +36,7 @@ customElements.define(
         }
       });
 
-      var s = document.createElement('link');
-      s.rel = 'stylesheet';
-      s.href = '/components/product-list/df-product-view.css';
-
-      document.head.appendChild(s);
+     
       const { state: { pattern } } = window.pageStore;
       const title = this.getAttribute('title');
       const salePrice = this.getAttribute('salePrice');
