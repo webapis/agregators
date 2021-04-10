@@ -1,4 +1,6 @@
 //import './df-product-view.css';
+
+
 customElements.define(
   'product-view',
   class extends HTMLElement {
@@ -23,7 +25,6 @@ customElements.define(
                 0,
                 defaultScr.indexOf('525w')
               );
-   
 
               if (screenWidth <= 525) {
                 img.src = srcCurrent;
@@ -34,8 +35,6 @@ customElements.define(
               } else if (screenWidth > 2000) {
                 img.src = srcCurrent.replace('/252/', '/376/');
               }
-
-           
             } else {
               console.log('I am set');
             }
@@ -51,12 +50,12 @@ customElements.define(
       const discountRate = this.getAttribute('discountRate');
       const discountText = this.getAttribute('discountText');
       const detailLink = this.getAttribute('detailLink');
-      const placeHolder = this.getAttribute('placeHolder');
+    
       boldenPattern(title, pattern);
       // eslint-disable-next-line no-undef
       this.innerHTML = /**/ `
         <div class="df-product-item">
-          <img src=${placeHolder}  data-srcset=${srcset} class="df-picture img-fluid">
+          <img src="/components/product-list/image-placeholder.svg"  data-srcset=${srcset} class="df-picture img-fluid">
           <a href="${detailLink}" class="df-product-info-title-link">
           <div >${boldenPattern(title, pattern)}</div>
           </a>
@@ -72,6 +71,8 @@ customElements.define(
           </div>
           </div>
         `;
+
+      debugger;
       if (this.offsetTop <= window.innerHeight) {
         if (!this._srcset) {
           const img = this.querySelector('img');
@@ -107,8 +108,6 @@ customElements.define(
     get imgSrc() {
       return this._srcset;
     }
-
-  
   }
 );
 
@@ -128,4 +127,3 @@ function boldenPattern(word, pattern) {
   }
   return word;
 }
-
