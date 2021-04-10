@@ -7,28 +7,30 @@ customElements.define(
       this._srcset = false;
     }
     connectedCallback() {
-  
+      // console.log('window.screen.width', window.screen.width);
 
       document.addEventListener('scroll', () => {
         if (this.offsetTop >= window.innerHeight) {
           if (
-            Math.round(document.body.scrollTop * 100 / this.offsetTop) >= 50
+            Math.round(document.body.scrollTop * 100 / this.offsetTop) >= 30
           ) {
             if (!this._srcset) {
-              this._srcset = true;
               const img = this.querySelector('img');
-              img.srcset = img.getAttribute('data-srcset');
+              this._srcset = true;
+              const screenWidth = window.screen.width;
+              const defaultScr = this.getAttribute('srcset');
+              img.srcset = defaultScr;
+              img.sizes="(max-width: 700px) 525px,773px"
+           
+              // if (screenWidth <= 700) {
+              //   img.src = defaultScr.replace('/252/', '/304/');
+              // } else if (screenWidth > 1000) {
+              //   img.src = defaultScr.replace('/252/', '/320/');
+              // } else if (screenWidth <= 2000) {
+              //   img.src = defaultScr.replace('/252/', '/376/');
+              // }
 
-              // console.log('this.offsetTop;', this.offsetTop);
-              // console.log(
-              //   ' document.body.scrollTop..',
-              //   document.body.scrollTop
-              // );
-              // console.log(
-              //   ' in %',
-              //   Math.round(document.body.scrollTop * 100 / this.offsetTop)
-              // );
-              console.log('window.innerHeight', window.innerHeight);
+              // console.log('window.innerHeight', window.innerHeight);
             } else {
               console.log('I am set');
             }
@@ -36,7 +38,6 @@ customElements.define(
         }
       });
 
-     
       const { state: { pattern } } = window.pageStore;
       const title = this.getAttribute('title');
       const salePrice = this.getAttribute('salePrice');
@@ -49,9 +50,8 @@ customElements.define(
       boldenPattern(title, pattern);
       // eslint-disable-next-line no-undef
       this.innerHTML = /**/ `
-    
         <div class="df-product-item">
-          <img src=${placeHolder}  data-srcset=${srcset} class="df-picture">
+          <img src=${placeHolder}  data-srcset=${srcset} class="df-picture img-fluid">
           <a href="${detailLink}" class="df-product-info-title-link">
           <div >${boldenPattern(title, pattern)}</div>
           </a>
@@ -67,19 +67,28 @@ customElements.define(
           </div>
           </div>
         `;
+      if (this.offsetTop <= window.innerHeight) {
+        if (!this._srcset) {
+          const img = this.querySelector('img');
+          this._srcset = true;
+          const screenWidth = window.screen.width;
+          const defaultScr = this.getAttribute('srcset');
+          img.srcset = defaultScr;
+          img.sizes="(max-width: 700px) 525px,773px;(max-width: 1200px) 2000px"
+        
+          // if (screenWidth <= 700) {
+          //   img.src = defaultScr.replace('/252/', '/304/');
+          // } else if (screenWidth > 1000) {
+          //   img.src = defaultScr.replace('/252/', '/320/');
+          // } else if (screenWidth <= 2000) {
+          //   img.src = defaultScr.replace('/252/', '/376/');
+          // }
 
-       
-          if (this.offsetTop <= window.innerHeight) {
-            if (!this._srcset) {
-              this._srcset = true;
-              const img = this.querySelector('img');
-              img.srcset = img.getAttribute('data-srcset');
-              console.log('window.innerHeight', window.innerHeight);
-            } else {
-              console.log('I am set');
-            }
-          }
-     
+          console.log('window.innerHeight', window.innerHeight);
+        } else {
+          console.log('I am set');
+        }
+      }
     }
 
     set imgSrc(value) {
@@ -95,8 +104,7 @@ customElements.define(
 function boldenPattern(word, pattern) {
   if (pattern !== '') {
     const withBold = word.split(' ');
-    let bold = [];
-    let normal = [];
+
     return withBold
       .map(w => {
         if (pattern.includes(w)) {
@@ -109,13 +117,3 @@ function boldenPattern(word, pattern) {
   }
   return word;
 }
-/*
-  .map(w => {
-        if (pattern.includes(w)) {
-          return `<b class="badge bg-primary text-wrap">${w}</b>`;
-        } else {
-          return w;
-        }
-      })
-      .join(' ');
-*/

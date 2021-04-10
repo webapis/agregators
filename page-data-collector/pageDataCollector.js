@@ -1,8 +1,13 @@
 const puppeteer = require('puppeteer');
 const fs = require('fs');
-const path=require('path')
+const path = require('path');
 const makeDir = require('make-dir');
-async function pageDataCollector({ url, dataCollector, pageUrlsGetter,output }) {
+async function pageDataCollector({
+  url,
+  dataCollector,
+  pageUrlsGetter,
+  output
+}) {
   try {
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
@@ -30,9 +35,22 @@ async function pageDataCollector({ url, dataCollector, pageUrlsGetter,output }) 
         return [...acc, ...curr];
       }, [])
     ];
-   
+
     await makeDir(path.dirname(output));
-    fs.writeFileSync(output, JSON.stringify(result));
+    const modImageSrc = result.map(r => {
+      const { image: { scrset } } = r;
+      const sourceImage = scrset.substring(0, scrset.indexOf('525w'));
+      const imageOne = `${sourceImage}525w,`;
+      const imageTwo = `${sourceImage.replace('/252/', '/304/')}773w,`;
+      const imageThree = `${sourceImage.replace('/252/', '/320/')}2000w,`;
+      const imageFour = `${sourceImage.replace('/252/', '/376/')}3000w`;
+      const modsrcset = imageOne + imageTwo + imageThree + imageFour;
+
+      return { ...r, image: { ...r.image, scrset: modsrcset } };
+  
+    });
+  
+    fs.writeFileSync(output, JSON.stringify(modImageSrc));
   } catch (error) {
     return Promise.reject(error);
   }

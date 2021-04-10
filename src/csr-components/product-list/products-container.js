@@ -96,6 +96,7 @@ customElements.define(
           discount: { discountRate, discountText },
           image: { scrset, placeHolder }
         } = item;
+     
         var node = document.createElement('product-view');
         node.classList.add('col-sm-6');
         node.classList.add('col-xl-3');
