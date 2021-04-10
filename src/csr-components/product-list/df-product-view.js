@@ -4,11 +4,39 @@ customElements.define(
   class extends HTMLElement {
     constructor() {
       super();
+      this._srcset = false;
     }
     connectedCallback() {
-   
   
-        var s = document.createElement('link');
+
+      document.addEventListener('scroll', () => {
+        if (this.offsetTop >= window.innerHeight) {
+          if (
+            Math.round(document.body.scrollTop * 100 / this.offsetTop) >= 50
+          ) {
+            if (!this._srcset) {
+              this._srcset = true;
+              const img = this.querySelector('img');
+              img.srcset = img.getAttribute('data-srcset');
+
+              // console.log('this.offsetTop;', this.offsetTop);
+              // console.log(
+              //   ' document.body.scrollTop..',
+              //   document.body.scrollTop
+              // );
+              // console.log(
+              //   ' in %',
+              //   Math.round(document.body.scrollTop * 100 / this.offsetTop)
+              // );
+              console.log('window.innerHeight', window.innerHeight);
+            } else {
+              console.log('I am set');
+            }
+          }
+        }
+      });
+
+      var s = document.createElement('link');
       s.rel = 'stylesheet';
       s.href = '/components/product-list/df-product-view.css';
 
@@ -27,7 +55,7 @@ customElements.define(
       this.innerHTML = /**/ `
     
         <div class="df-product-item">
-          <img src=${placeHolder} srcset=${srcset} class="df-picture">
+          <img src=${placeHolder}  data-srcset=${srcset} class="df-picture">
           <a href="${detailLink}" class="df-product-info-title-link">
           <div >${boldenPattern(title, pattern)}</div>
           </a>
@@ -43,6 +71,27 @@ customElements.define(
           </div>
           </div>
         `;
+
+       
+          if (this.offsetTop <= window.innerHeight) {
+            if (!this._srcset) {
+              this._srcset = true;
+              const img = this.querySelector('img');
+              img.srcset = img.getAttribute('data-srcset');
+              console.log('window.innerHeight', window.innerHeight);
+            } else {
+              console.log('I am set');
+            }
+          }
+     
+    }
+
+    set imgSrc(value) {
+      this._srcset = value;
+    }
+
+    get imgSrc() {
+      return this._srcset;
     }
   }
 );

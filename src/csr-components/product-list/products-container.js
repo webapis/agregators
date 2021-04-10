@@ -88,7 +88,7 @@ customElements.define(
     } //render
 
     appendProducts(items) {
-      items.filter((it, i) => i < 70).forEach(item => {
+      items.filter((it, i) => i < 70).forEach((item,i) => {
         const {
           detailLink,
           productName,
@@ -99,6 +99,7 @@ customElements.define(
         var node = document.createElement('product-view');
         node.classList.add('col-sm-6');
         node.classList.add('col-xl-3');
+        node.setAttribute('id', i);
         node.setAttribute('title', productName);
         node.setAttribute('salePrice', salePrice);
         node.setAttribute('marketPrice', marketPrice);

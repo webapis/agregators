@@ -26,16 +26,20 @@ async function metaCreator({ input, output, output2, linkUrl }) {
       }
       return [...acc, { productName: curr, totalItems }];
     }, []);
-
+debugger;
     const withUrls = countProducts.map(c => {
+      debugger;
       const productName = replaceUnicode(c.productName).toLowerCase();
       return {
         ...c,
         productName,
+        productNameLabel: c.productName,
+        srcset: '',
         url: `${linkUrl}${productName}.html`
       };
     });
 
+    debugger;
     fs.writeFileSync(output, JSON.stringify(withUrls));
     fs.writeFileSync(output2, JSON.stringify(withUrls));
 

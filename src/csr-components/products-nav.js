@@ -20,7 +20,7 @@ customElements.define(
         console.log('window.jsonUrl', window.jsonUrl);
         fetch(window.jsonUrl).then(result => result.json()).then(data => {
           document.getElementById('root').innerHTML = `${data
-            .map(d => `<a href=${d.url}>${d.productName}</a>`)
+            .map(d => `<a href=${d.url}>${d.productNameLabel}${' '}(${d.totalItems})</a>`)
             .join('')}`;
         });
       });
