@@ -9,34 +9,36 @@ async function metaCreator({ input, output, output2, linkUrl }) {
     const rawData = fs.readFileSync(input, 'utf-8');
     const arrayOfObjects = JSON.parse(rawData);
     const CategoryNames = arrayOfObjects.map(a => {
-   
       return a.category;
     });
-
+    
     const dublicateRemoved = CategoryNames.filter(
       (value, index) => CategoryNames.indexOf(value) === index
     );
-
+    debugger;
     const countProducts = dublicateRemoved.reduce((acc, curr, index) => {
-      const totalItems = CategoryNames.filter(pName => pName === curr)
-        .length;
+      const totalItems = CategoryNames.filter(pName => pName === curr).length;
       if (index === 0) {
         return [{ productName: curr, totalItems }];
       }
       return [...acc, { productName: curr, totalItems }];
     }, []);
-
+  
     const withUrls = countProducts.map(c => {
       const productName = replaceUnicode(c.productName).toLowerCase();
+     
+      const {image} = arrayOfObjects.find(a => a.category === c.productName);
+     
       return {
         ...c,
         productName,
-        productNameLabel: c.productName,
+        productNameLabel:`JEAN ${c.productName}`,
         srcset: '',
-        url: `${linkUrl}${productName}.html`
+        url: `${linkUrl}${productName}.html`,
+        image
       };
     });
-  
+
     fs.writeFileSync(output, JSON.stringify(withUrls));
     fs.writeFileSync(output2, JSON.stringify(withUrls));
 

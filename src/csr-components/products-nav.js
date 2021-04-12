@@ -14,13 +14,24 @@ customElements.define(
         document.head.appendChild(s);
         this.innerHTML = `
         <pl-search-box></pl-search-box>
-        <div id="root" class="row">Prducts navddss</div>`;
+        <div class="container">
+        <div id="root" class="row">Prducts navddss</div>
+        </div>
+        `;
       });
       window.addEventListener('load', () => {
         console.log('window.jsonUrl', window.jsonUrl);
         fetch(window.jsonUrl).then(result => result.json()).then(data => {
           document.getElementById('root').innerHTML = `${data
-            .map(d => `<a href=${d.url}>${d.productNameLabel}${' '}(${d.totalItems})</a>`)
+            .map(
+              d => `
+              <div class="col-12 col-md-3">
+              <a href="${d.url}">
+              <img src="${d.image.placeHolder}" srcset="${d.image.scrset}" class="img-thumbnail"/>
+            </a>
+            </div>
+            `
+            )
             .join('')}`;
         });
       });
@@ -31,3 +42,5 @@ customElements.define(
 const component = document.createElement('products-nav');
 
 document.body.prepend(component);
+
+//${d.productNameLabel}${' '}${d.totalItems}
