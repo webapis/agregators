@@ -9,7 +9,7 @@ staticApp.use(express.static('page-build'));
 
 staticApp.listen(8081, async () => {
   console.log('Static Server started........... Press Ctrl+C to quit');
-  const browser = await puppeteer.launch({ headless: false });
+  const browser = await puppeteer.launch({ headless: true });
   await Promise.all(
     pages.map(async p => {
       debugger;
