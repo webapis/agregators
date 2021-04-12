@@ -3,7 +3,7 @@ const fs = require('fs');
 const catPage = {
   htmlOutput: 'page-build/defacto/tr/kadin/jean/jean-kategoriler.html',
   component: 'src/csr-components/products-nav.js',
-  json: './jean-category.json'
+  json: './jean-kategoriler.json'
 };
 
 function defactoPageBuilder() {

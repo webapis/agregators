@@ -28,6 +28,7 @@ customElements.define(
               <div class="col-12 col-md-3">
               <a href="${d.url}">
               <img src="${d.image.placeHolder}" srcset="${d.image.scrset}" class="img-thumbnail"/>
+              ${d.productNameLabel}${' '}${d.totalItems}
             </a>
             </div>
             `
