@@ -3,8 +3,8 @@ var watch = require('node-watch');
 const pages = [
   {
     input: `${process.cwd()}/page-data/defacto/tr/kadin-denim-categorized.json`,
-    output: `${process.cwd()}/page-meta/defacto/tr/kadin/jean/jean-category.json`,
-    output2: `${process.cwd()}/page-build/defacto/tr/kadin/jean/jean-category.json`,
+    output: `${process.cwd()}/page-meta/defacto/tr/kadin/jean/jean-kategoriler.json`,
+    output2: `${process.cwd()}/page-build/defacto/tr/kadin/jean/jean-kategoriler.json`,
     linkUrl: '/defacto/tr/kadin/jean/',
     metaCreatorFunc: `./defacto/tr/kadin/jean/nav/metaCreator.js`
   },

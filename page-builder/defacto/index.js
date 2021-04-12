@@ -1,13 +1,13 @@
 const fs = require('fs');
 
 const catPage = {
-  htmlOutput: 'page-build/defacto/tr/kadin/jean/jean-category.html',
+  htmlOutput: 'page-build/defacto/tr/kadin/jean/jean-kategoriler.html',
   component: 'src/csr-components/products-nav.js',
   json: './jean-category.json'
 };
 
 function defactoPageBuilder() {
-  const filePath = `${process.cwd()}/page-build/defacto/tr/kadin/jean/jean-category.json`;
+  const filePath = `${process.cwd()}/page-build/defacto/tr/kadin/jean/jean-kategoriler.json`;
   const data = fs.readFileSync(filePath, 'utf-8');
 
   const pages = JSON.parse(data).map(p => {
