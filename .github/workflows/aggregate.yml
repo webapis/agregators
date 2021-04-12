@@ -25,6 +25,9 @@ jobs:
       - name: Collector action step
         id: collector
         run: 'npm run dataCollector'
+      - name: Categorize action step
+        id: categorizer
+        run: 'npm run dataCategorizer'
       - name: Meta creator action step
         id: creator
         run: npm run metaCreator

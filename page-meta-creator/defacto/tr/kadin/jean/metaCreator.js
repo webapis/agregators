@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const { replaceUnicode } = require(`${process.cwd()}/utils/replaceUnicode`);
 const makeDir = require('make-dir');
 const { splitIntoCategory } = require('./split-into-category');
 
@@ -9,18 +10,20 @@ async function metaCreator({ input, output, output2 }) {
     await makeDir(output);
     await makeDir(output2);
     const data = await splitIntoCategory(pageData);
-    data.forEach(d => {
-      const productName = d.productName;
-      fs.writeFileSync(
-        `${output}/${productName}.json`,
-        JSON.stringify(d)
-      );
-      fs.writeFileSync(
-        `${output2}/${productName}.json`,
-        JSON.stringify(d)
-      );
+    const removeUnicode = data.map(d => {
+      return {
+        ...d,
+        category: replaceUnicode(d.category.toLowerCase().replace(/\s/g, ''))
+      };
     });
- 
+
+    removeUnicode.forEach(d => {
+      const category = d.category;
+
+      fs.writeFileSync(`${output}/${category}.json`, JSON.stringify(d));
+      fs.writeFileSync(`${output2}/${category}.json`, JSON.stringify(d));
+    });
+
     return Promise.resolve(true);
   } catch (error) {
     return Promise.reject(error);

@@ -1,9 +1,9 @@
 const { extractDescription } = require('./extract.description');
 const { extractWordPattern } = require('./extract.word.pattern');
-const { replaceUnicode } = require(`${process.cwd()}/utils/replaceUnicode`);
+//const { replaceUnicode } = require(`${process.cwd()}/utils/replaceUnicode`);
 async function splitIntoCategory(datasetItems) {
   const prodCatNames = datasetItems
-    .map(d => d.productName.substring(d.productName.lastIndexOf(' ')))
+    .map(d => d.category)
     .reduce((acc, curr, index) => {
       if (index === 0) {
         return [curr];
@@ -14,23 +14,19 @@ async function splitIntoCategory(datasetItems) {
       return acc;
     }, [])
     .map(p => {
+   
       return {
-        productName: replaceUnicode(p.toLowerCase().replace(/\s/g, '')),
+        category: p, //: replaceUnicode(p.toLowerCase().replace(/\s/g, '')),
         items: []
       };
     });
 
   datasetItems.forEach(d => {
-    const productName = replaceUnicode(
-      d.productName
-        .substring(d.productName.lastIndexOf(' '))
-        .toLowerCase()
-        .replace(/\s/g, '')
-    );
-
-    const product = prodCatNames.find(p => p.productName === productName);
+    const category = d.category;
+  
+    const product = prodCatNames.find(p => p.category === category);
     product.items.push(d);
-    product.pageTitle = `Defacto kadin jean ${productName.toLowerCase()}`;
+    product.pageTitle = `Defacto kadin jean ${category.toLowerCase()}`;
   });
 
   const withPageDescriptions = prodCatNames.map(p => {

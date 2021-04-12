@@ -1,6 +1,5 @@
 //import './df-product-view.css';
 
-
 customElements.define(
   'product-view',
   class extends HTMLElement {
@@ -50,7 +49,7 @@ customElements.define(
       const discountRate = this.getAttribute('discountRate');
       const discountText = this.getAttribute('discountText');
       const detailLink = this.getAttribute('detailLink');
-    
+
       boldenPattern(title, pattern);
       // eslint-disable-next-line no-undef
       this.innerHTML = /**/ `
@@ -72,7 +71,6 @@ customElements.define(
           </div>
         `;
 
-      debugger;
       if (this.offsetTop <= window.innerHeight) {
         if (!this._srcset) {
           const img = this.querySelector('img');

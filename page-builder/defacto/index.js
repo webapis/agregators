@@ -9,7 +9,7 @@ const catPage = {
 function defactoPageBuilder() {
   const filePath = `${process.cwd()}/page-build/defacto/tr/kadin/jean/jean-category.json`;
   const data = fs.readFileSync(filePath, 'utf-8');
-  debugger;
+
   const pages = JSON.parse(data).map(p => {
     const { productName } = p;
     const lowerCaseProdName = productName.toLowerCase();

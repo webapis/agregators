@@ -8,27 +8,25 @@ async function metaCreator({ input, output, output2, linkUrl }) {
     await makeDir(path.dirname(output2));
     const rawData = fs.readFileSync(input, 'utf-8');
     const arrayOfObjects = JSON.parse(rawData);
-    const extracProductName = arrayOfObjects.map(a => {
-      const splitted = a.productName.split(' ');
-      const lastword = splitted[splitted.length - 1];
-      return lastword;
+    const CategoryNames = arrayOfObjects.map(a => {
+   
+      return a.category;
     });
 
-    const dublicateRemoved = extracProductName.filter(
-      (value, index) => extracProductName.indexOf(value) === index
+    const dublicateRemoved = CategoryNames.filter(
+      (value, index) => CategoryNames.indexOf(value) === index
     );
 
     const countProducts = dublicateRemoved.reduce((acc, curr, index) => {
-      const totalItems = extracProductName.filter(pName => pName === curr)
+      const totalItems = CategoryNames.filter(pName => pName === curr)
         .length;
       if (index === 0) {
         return [{ productName: curr, totalItems }];
       }
       return [...acc, { productName: curr, totalItems }];
     }, []);
-debugger;
+
     const withUrls = countProducts.map(c => {
-      debugger;
       const productName = replaceUnicode(c.productName).toLowerCase();
       return {
         ...c,
@@ -38,8 +36,7 @@ debugger;
         url: `${linkUrl}${productName}.html`
       };
     });
-
-    debugger;
+  
     fs.writeFileSync(output, JSON.stringify(withUrls));
     fs.writeFileSync(output2, JSON.stringify(withUrls));
 
