@@ -37,16 +37,17 @@
     "dataCategorizer": "node page-data-categorizer/server.js",
     "metaCreator": "node page-meta-creator/server.js",
     "pageBuilder": "node page-builder/server.js",
-    "pagePrerender": "node page-prerender/defacto/ssr-server.js",
-    "dev": "NODE_ENV=dev npm run pageBuilder & NODE_ENV=dev  npm run metaCreator & NODE_ENV=dev node page-prerender/defacto/server.js",
-    "serve": "NODE_ENV=dev node page-prerender/defacto/server.js",
+    "pagePrerender": "node page-prerender/server.js",
+    "dev": "NODE_ENV=dev npm run pageBuilder & NODE_ENV=dev  npm run metaCreator & NODE_ENV=dev node page-serve/server.js",
+    "serve": "NODE_ENV=dev node page-serve/server.js",
     "storybook": "NODE_ENV=storybook rollup -c -w",
     "test": "mocha test/**/*.test.js",
     "prerender:test": "mocha page-prerender/test",
     "pageDataCollector:test": "mocha page-data-collector/test",
     "pageDataCorrector:test": "mocha page-data-corrector/test",
     "pageDataCategorizer:test": "mocha page-data-categorizer/test",
-    "pageMetaCreator:test": "mocha page-meta-creator/test"
+    "pageMetaCreator:test": "mocha page-meta-creator/test",
+    "pagePrerender:test": "mocha page-prerender/test"
   },
   "nodemonConfig": {
     "ignore": [
