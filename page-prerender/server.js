@@ -19,5 +19,5 @@ staticApp.listen(8081, async () => {
   );
   console.log('prerender complete....');
   await browser.close();
-  //process.exit();
+  process.exit();
 });
