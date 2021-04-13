@@ -15,7 +15,7 @@ customElements.define(
         this.innerHTML = `
         <pl-search-box></pl-search-box>
         <div class="container">
-        <div id="root" class="row">Prducts navddss</div>
+        <div id="root" class="row">Loading...</div>
         </div>
         `;
       });
@@ -27,7 +27,8 @@ customElements.define(
               d => `
               <div class="col-12 col-md-3">
               <a href="${d.url}">
-              <img src="${d.image.placeHolder}" srcset="${d.image.scrset}" class="img-thumbnail"/>
+              <img src="${d.image.placeHolder}" srcset="${d.image
+                .scrset}" class="img-thumbnail"/>
               ${d.productNameLabel}${' '}${d.totalItems}
             </a>
             </div>

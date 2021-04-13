@@ -7,7 +7,7 @@ customElements.define(
     connectedCallback() {
       this.innerHTML = `
       <div>Home page
-      <a href="/defacto/tr/kadin/jean/jean-kategoriler.html">Jean Cagetory</a>
+      <a href="/defacto/tr/kadin/jean/jean-kategoriler.html">Defacto Jeans</a>
       </div>
       `;
     }
