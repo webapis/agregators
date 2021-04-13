@@ -1,8 +1,5 @@
 const puppeteer = require('puppeteer');
 const express = require('express');
-const path = require('path');
-const fs = require('fs');
-const makeDir = require('make-dir');
 const { pages } = require('./pages');
 const staticApp = express();
 staticApp.use(express.static('page-build'));
@@ -22,5 +19,5 @@ staticApp.listen(8081, async () => {
   );
   console.log('prerender complete....');
   await browser.close();
-  process.exit();
+  //process.exit();
 });

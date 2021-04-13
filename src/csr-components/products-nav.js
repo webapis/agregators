@@ -40,8 +40,8 @@ customElements.define(
   }
 );
 
-const component = document.createElement('products-nav');
+// const component = document.createElement('products-nav');
 
-document.body.prepend(component);
+// document.body.prepend(component);
 
 //${d.productNameLabel}${' '}${d.totalItems}

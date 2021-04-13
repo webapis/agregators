@@ -10,10 +10,4 @@ module.exports = {
   pages
 };
 
-/*
-const pages=[{ pageName:'/defacto/tr/kadin/jean/pantolon.html', selector: 'product-list' }]
 
-module.exports={
-    pages
-}
-*/

@@ -42,7 +42,6 @@ customElements.define(
         const { state: { selected_pl_tab } } = window.pageStore;
         this.render({ selected: selected_pl_tab });
         if (window.jsonUrl) {
-     
           fetch(window.jsonUrl).then(response => response.json()).then(items => {
             window.pageStore.dispatch({
               type: window.actionTypes.PRODUCT_ITEMS_SET,
@@ -62,9 +61,9 @@ customElements.define(
   }
 );
 
-const component = document.createElement('product-list');
+// const component = document.createElement('product-list');
 
-document.body.prepend(component);
+// document.body.prepend(component);
 
 
 

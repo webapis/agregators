@@ -14,6 +14,6 @@ customElements.define(
   }
 );
 
-const component = document.createElement('home-page');
+// const component = document.createElement('home-page');
 
-document.body.prepend(component);
+// document.body.prepend(component);

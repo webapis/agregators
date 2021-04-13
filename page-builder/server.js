@@ -25,6 +25,7 @@ async function build() {
     const outputFolder = path.dirname(htmlOutput);
     await makeDir(outputFolder);
     const componentName = path.basename(component);
+    const tagName = path.basename(component, '.js');
     const componentDotPath = path
       .dirname(htmlOutput)
       .replace(/\//g, ' ')
@@ -47,6 +48,7 @@ async function build() {
 
     const dom = new JSDOM(
       `<body>
+          <${tagName}></${tagName}>
             <script src="${relativeComponentPath}"></script>
             ${json ? `<script> window.jsonUrl ="${json}" </script>` : ''}
             </body>`,
