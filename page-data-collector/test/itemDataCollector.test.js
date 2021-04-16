@@ -3,13 +3,12 @@ describe('pageDataCollector test', () => {
     this.timeout(50000);
     try {
       const { defactoHtml } = require('./itemHtml');
-      debugger;
-      const { itemDataCollector } = require('../tr/moda/defacto/itemDataCollector');
+
+      const {
+        itemDataCollector
+      } = require('../tr/moda/defacto/itemDataCollector');
       const product = itemDataCollector({ html: defactoHtml });
-      debugger;
-    } catch (error) {
-      debugger;
-    }
+    } catch (error) {}
   });
 
   it('koton itemDataCollector', async function() {
@@ -17,12 +16,11 @@ describe('pageDataCollector test', () => {
       this.timeout(50000);
 
       const { kotonItemHtml } = require('./itemHtml');
-      debugger;
-      const { itemDataCollector } = require('../tr/moda/koton/itemDataCollector');
+
+      const {
+        itemDataCollector
+      } = require('../tr/moda/koton/itemDataCollector');
       const product = itemDataCollector({ html: kotonItemHtml });
-      debugger;
-    } catch (error) {
-      debugger;
-    }
+    } catch (error) {}
   });
 });

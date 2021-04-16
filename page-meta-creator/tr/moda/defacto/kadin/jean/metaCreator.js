@@ -5,7 +5,6 @@ const { splitIntoCategory } = require('./split-into-category');
 
 async function metaCreator({ input, output, output2 }) {
   try {
-    debugger;
     const pageData = require(input);
     await makeDir(output);
     await makeDir(output2);
@@ -16,14 +15,14 @@ async function metaCreator({ input, output, output2 }) {
         category: replaceUnicode(d.category.toLowerCase().replace(/\s/g, ''))
       };
     });
-    debugger;
+
     removeUnicode.forEach(d => {
       const category = d.category;
 
       fs.writeFileSync(`${output}/${category}.json`, JSON.stringify(d));
       fs.writeFileSync(`${output2}/${category}.json`, JSON.stringify(d));
     });
-    debugger;
+
     return Promise.resolve(true);
   } catch (error) {
     return Promise.reject(error);

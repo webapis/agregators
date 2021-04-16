@@ -50,9 +50,7 @@ function itemDataCollector({ html }) {
       }
     };
     return product;
-  } catch (error) {
-    debugger;
-  }
+  } catch (error) {}
 }
 
 module.exports = {

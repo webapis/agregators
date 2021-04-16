@@ -7,7 +7,6 @@ async function pagePrerender({ input, browser, selector }) {
 
   await Promise.all(
     dataObject.map(async d => {
-      debugger;
       const { url } = d;
       const outputDirPath = `page-build${url}`;
       const outputDir = path.dirname(outputDirPath);
@@ -20,14 +19,9 @@ async function pagePrerender({ input, browser, selector }) {
         await page.waitForSelector(selector); // ensure #posts exists in the DOM.
         const html = await page.content(); // serialized HTML of page DOM.
         fs.writeFileSync(`${process.cwd()}/${outputDirPath}`, html);
-        debugger;
-      } catch (error) {
-        debugger;
-      }
+      } catch (error) {}
     })
   );
-
-  debugger;
 }
 
 module.exports = {

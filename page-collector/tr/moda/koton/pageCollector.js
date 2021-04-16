@@ -1,5 +1,6 @@
 const fs = require('fs');
 const { JSDOM } = require('jsdom');
+const http = require('http');
 const path = require('path');
 const makeDir = require('make-dir');
 
@@ -10,52 +11,49 @@ async function getNextPageContent({ url }) {
   return content;
 }
 
-async function pageCollector({ input, output }) {
+async function pageCollector({ input, output, pageUrl }) {
+
+  
   try {
-    debugger;
     const { window: { document } } = await JSDOM.fromURL(input);
+
     const content = document.querySelector('.productGrid').innerHTML;
-
-    const pagesCountString = Array.from(
-      document.querySelector('.paging').querySelectorAll('li>a')
-    ).map(m => m.innerHTML);
-    const pagesCountIntager = Number.parseInt(
-      pagesCountString.find((p, i) => i === pagesCountString.length - 2)
-    );
-
     debugger;
-
     await makeDir(path.dirname(output));
-  let nextPageContents=[]
-    if (pagesCountIntager > 0) {
-      debugger;
-      let promises = [];
-      for (let i = 1; i <= pagesCountIntager; i++) {
-        console.log('Collecting page:',i)
-        debugger;
-        promises.push(
-          getNextPageContent({
-          
-            url: `https://www.koton.com/tr/kadin/giyim/alt-giyim/jean-pantolon/c/M01-C02-N01-AK102-K100044?q=%3Arelevance&psize=192&page=${i}`
-          })
-        );
+    if (document.querySelector('.paging')) {
+      if (pageUrl === undefined) throw 'pageUrl not provided';
+      const pagesCountString = Array.from(
+        document.querySelector('.paging').querySelectorAll('li>a')
+      ).map(m => m.innerHTML);
+      const pagesCountIntager = Number.parseInt(
+        pagesCountString.find((p, i) => i === pagesCountString.length - 2)
+      );
+
+      let nextPageContents = [];
+      if (pagesCountIntager > 0) {
+        let promises = [];
+        for (let i = 1; i <= pagesCountIntager; i++) {
+          console.log('Collecting page:', i);
+
+          promises.push(
+            getNextPageContent({
+              url: `${pageUrl}${i}`
+            })
+          );
+        }
+        nextPageContents = await Promise.all(promises);
       }
-       nextPageContents = await Promise.all(promises);
-     
-
-      debugger;
+      const mergedPagesContent = content + nextPageContents;
+      fs.writeFileSync(output, mergedPagesContent);
+    } else {
+      fs.writeFileSync(output, content);
     }
-    const mergedPagesContent = content + nextPageContents;
-    // debugger;
-    fs.writeFileSync(output, mergedPagesContent);
-
-    debugger;
   } catch (error) {
     debugger;
+    throw error;
   }
 }
 
 module.exports = {
   pageCollector
 };
-

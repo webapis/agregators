@@ -11,11 +11,11 @@ async function metaCreator({ input, output, output2, linkUrl }) {
     const CategoryNames = arrayOfObjects.map(a => {
       return a.category;
     });
-    
+
     const dublicateRemoved = CategoryNames.filter(
       (value, index) => CategoryNames.indexOf(value) === index
     );
-    debugger;
+
     const countProducts = dublicateRemoved.reduce((acc, curr, index) => {
       const totalItems = CategoryNames.filter(pName => pName === curr).length;
       if (index === 0) {
@@ -23,16 +23,16 @@ async function metaCreator({ input, output, output2, linkUrl }) {
       }
       return [...acc, { productName: curr, totalItems }];
     }, []);
-  
+
     const withUrls = countProducts.map(c => {
       const productName = replaceUnicode(c.productName).toLowerCase();
-     
-      const {image} = arrayOfObjects.find(a => a.category === c.productName);
-     
+
+      const { image } = arrayOfObjects.find(a => a.category === c.productName);
+
       return {
         ...c,
         productName,
-        productNameLabel:`JEAN ${c.productName}`,
+        productNameLabel: `JEAN ${c.productName}`,
         srcset: '',
         url: `${linkUrl}${productName}.html`,
         image
