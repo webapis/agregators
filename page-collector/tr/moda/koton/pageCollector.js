@@ -1,27 +1,38 @@
 const fs = require('fs');
 const { JSDOM } = require('jsdom');
-const http = require('http');
+const axios = require('axios');
 const path = require('path');
 const makeDir = require('make-dir');
 
 async function getNextPageContent({ url }) {
-  const { window: { document } } = await JSDOM.fromURL(url);
-  const content = document.querySelector('.productGrid').innerHTML;
+  try {
+    debugger;
+    const { data } = await axios.get(url);
+    debugger;
+    const { window: { document } } = new JSDOM(data);
 
-  return content;
+    const content = document.querySelector('.productGrid').innerHTML;
+
+    return content;
+  } catch (error) {
+    debugger;
+    throw error;
+  }
 }
 
 async function pageCollector({ input, output, pageUrl }) {
-
-  
   try {
-    const { window: { document } } = await JSDOM.fromURL(input);
+    const { data } = await axios.get(input);
+
+    const { window: { document } } = new JSDOM(data);
 
     const content = document.querySelector('.productGrid').innerHTML;
-    debugger;
+
     await makeDir(path.dirname(output));
+
     if (document.querySelector('.paging')) {
       if (pageUrl === undefined) throw 'pageUrl not provided';
+
       const pagesCountString = Array.from(
         document.querySelector('.paging').querySelectorAll('li>a')
       ).map(m => m.innerHTML);
@@ -30,9 +41,11 @@ async function pageCollector({ input, output, pageUrl }) {
       );
 
       let nextPageContents = [];
+
       if (pagesCountIntager > 0) {
+        debugger;
         let promises = [];
-        for (let i = 1; i <= pagesCountIntager; i++) {
+        for (let i = 1; i < pagesCountIntager; i++) {
           console.log('Collecting page:', i);
 
           promises.push(
@@ -41,11 +54,15 @@ async function pageCollector({ input, output, pageUrl }) {
             })
           );
         }
+        debugger;
         nextPageContents = await Promise.all(promises);
       }
-      const mergedPagesContent = content + nextPageContents;
+      debugger;
+      const mergedPagesContent = content + nextPageContents.join('');
       fs.writeFileSync(output, mergedPagesContent);
+      debugger;
     } else {
+      debugger;
       fs.writeFileSync(output, content);
     }
   } catch (error) {
