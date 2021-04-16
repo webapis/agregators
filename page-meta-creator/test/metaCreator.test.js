@@ -1,24 +1,26 @@
-const { metaCreator } = require('../defacto/tr/kadin/jean/metaCreator');
+
 
 describe('Defacto Kadin Jean Meta creator', () => {
-  it.only('test defactoKadynJeanMetaData ', async function() {
+  it.only('tr/moda/defacto/kadin/jean/metaCreator', async function() {
     this.timeout(50000);
-
+    const { metaCreator } = require('../tr/moda/defacto/kadin/jean/metaCreator');
     const data = await metaCreator({
-      input: `${process.cwd()}/page-data/defacto/tr/kadin-denim-categorized.json`,
-      output: `${process.cwd()}/page-meta/defacto/tr/kadin/jean`,
-      output2: `${process.cwd()}/page-build/defacto/tr/kadin/jean`,
-      metaCreatorFunc: `./defacto/tr/kadin/jean/metaCreator.js`
+      input: `${process.cwd()}/page-data/tr/moda/defacto/kadin-denim-categorized.json`,
+      output: `${process.cwd()}/page-meta/tr/moda/defacto/kadin/jean`,
+      output2: `${process.cwd()}/page-build/tr/moda/defacto/kadin/jean`,
+      metaCreatorFunc: `./tr/moda/defacto/kadin/jean/metaCreator.js`
     });
   });
 
-  it('nav/metaCreator', function() {
-    const { metaCreator } = require('../defacto/tr/kadin/jean/nav/metaCreator');
+  it('tr/moda/defacto/kadin/jean/nav/metaCreator', function() {
+    const {
+      metaCreator
+    } = require('../tr/moda/defacto/kadin/jean/nav/metaCreator');
     metaCreator({
-      input: `${process.cwd()}/page-data/defacto/tr/kadin-denim-categorized.json`,
-      output: `${process.cwd()}/page-meta/defacto/tr/kadin/jean/jean-kategoriler.json`,
-      output2: `${process.cwd()}/page-build/defacto/tr/kadin/jean/jean-kategoriler.json`,
-      linkUrl: '/defacto/tr/kadin/jean/'
+      input: `${process.cwd()}/page-data/tr/moda/defacto/kadin-denim-categorized.json`,
+      output: `${process.cwd()}/page-meta/tr/moda/defacto/kadin/jean/jean-kategoriler.json`,
+      output2: `${process.cwd()}/page-build/tr/moda/defacto/kadin/jean/jean-kategoriler.json`,
+      linkUrl: '/tr/moda/defacto/kadin/jean/'
     });
   });
 });

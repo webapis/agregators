@@ -33,6 +33,7 @@
     "rollup-plugin-serve": "^1.1.0"
   },
   "scripts": {
+    "pageCollector": "node page-collector/server.js",
     "dataCollector": "node page-data-collector/server.js",
     "dataCategorizer": "node page-data-categorizer/server.js",
     "metaCreator": "node page-meta-creator/server.js",
@@ -43,6 +44,7 @@
     "storybook": "NODE_ENV=storybook rollup -c -w",
     "test": "mocha test/**/*.test.js",
     "prerender:test": "mocha page-prerender/test",
+    "pageCollector:test": "mocha page-collector/test",
     "pageDataCollector:test": "mocha page-data-collector/test",
     "pageDataCorrector:test": "mocha page-data-corrector/test",
     "pageDataCategorizer:test": "mocha page-data-categorizer/test",

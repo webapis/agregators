@@ -11,9 +11,7 @@ const makeDir = require('make-dir');
 async function prebuild() {
   const outputFolder = await makeDir('page-build/components/');
   const sourceFoler = `${process.cwd()}/src/csr-components/`;
-
   fsExtra.copySync(sourceFoler, outputFolder);
-
   return Promise.resolve(true);
 }
 async function build() {
@@ -21,7 +19,6 @@ async function build() {
   const allPages = [...pages, homePage];
   allPages.map(async p => {
     const { htmlOutput, component, json } = p;
-
     const outputFolder = path.dirname(htmlOutput);
     await makeDir(outputFolder);
     const componentName = path.basename(component);
