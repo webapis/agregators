@@ -22,8 +22,11 @@ jobs:
             ${{ runner.os }}-
       - name: Install dependencies
         run: 'npm install'
-      - name: Collector action step
-        id: collector
+      - name: pageCollector action step
+        id: pageCollector
+        run: 'npm run pageCollector'
+      - name: dataCollector action step
+        id: dataCollector
         run: 'npm run dataCollector'
       - name: Categorize action step
         id: categorizer
