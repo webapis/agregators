@@ -4,7 +4,6 @@ const { pages } = require('./pages');
 async function batchPageCollector() {
   const browser = await puppeteer.launch({ timeout: 50000 });
   pages.map(async p => {
-
     const { input, pageCollectorFunc, output } = p;
     console.log('pageCollector started', input);
     const { pageCollector } = require(pageCollectorFunc);
@@ -15,6 +14,7 @@ async function batchPageCollector() {
     });
     console.log('pageCollector ended', output);
   });
+  await browser.close();
 }
 
 batchPageCollector();
