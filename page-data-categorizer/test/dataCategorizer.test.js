@@ -1,7 +1,7 @@
 describe('Defacto jean Data Categorizer', () => {
   it.only('test Data Categorizer', async function() {
     this.timeout(50000);
-    debugger;
+
     const {
       dataCategorizer
     } = require(`${process.cwd()}/page-data-categorizer/tr/moda/defacto/dataCategorizer.js`);

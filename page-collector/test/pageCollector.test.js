@@ -1,25 +1,38 @@
-
-
 describe('pageCollector test', function() {
   it.only('tr/koton/pageCollector test', async function() {
-    debugger;
     this.timeout(100000);
-    const { pageCollector } = require('../tr/moda/koton/pageCollector');
-    await pageCollector({
-      input:
-        'https://www.koton.com/tr/kadin/giyim/alt-giyim/jean-pantolon/c/M01-C02-N01-AK102-K100044',
-      output: `${process.cwd()}/page-collection/tr/moda/koton/jean-pantolon.html`
-    });
+
+    const pages = require('../tr/moda/koton/pages');
+    await Promise.all(
+      pages.map(async p => {
+        const { input, pageCollectorFunc, output } = p;
+
+        console.log('pageCollector started', input);
+        const { pageCollector } = require(pageCollectorFunc);
+        await pageCollector({
+          ...p
+        });
+        console.log('pageCollector ended', output);
+      })
+    );
   });
   it('tr/defacto/pageCollector test', async function() {
-    debugger;
     this.timeout(100000);
-    debugger;
-    const { pageCollector } = require('../tr/moda/defacto/pageCollector');
-    debugger;
-    await pageCollector({
-      input: 'https://www.defacto.com.tr/kadin-denim',
-      output: `${process.cwd()}/page-collection/tr/moda/defacto/kadin-denim.html`
-    });
+
+    const pages = require('../tr/moda/defacto/pages');
+
+    await Promise.all(
+      pages.map(async p => {
+        const { input, pageCollectorFunc, output } = p;
+
+        console.log('pageCollector started', input);
+        const { pageCollector } = require(pageCollectorFunc);
+        await pageCollector({
+          input,
+          output
+        });
+        console.log('pageCollector ended', output);
+      })
+    );
   });
 });

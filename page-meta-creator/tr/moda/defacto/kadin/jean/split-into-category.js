@@ -2,7 +2,6 @@ const { extractDescription } = require('./extract.description');
 const { extractWordPattern } = require('./extract.word.pattern');
 //const { replaceUnicode } = require(`${process.cwd()}/utils/replaceUnicode`);
 async function splitIntoCategory(datasetItems) {
-  debugger;
   const prodCatNames = datasetItems
     .map(d => d.category)
     .reduce((acc, curr, index) => {
@@ -20,7 +19,7 @@ async function splitIntoCategory(datasetItems) {
         items: []
       };
     });
-  debugger;
+
   datasetItems.forEach(d => {
     const category = d.category;
 
@@ -36,7 +35,7 @@ async function splitIntoCategory(datasetItems) {
       wordPatterns: extractWordPattern(p.items)
     };
   });
-  debugger;
+
   return withPageDescriptions;
 }
 

@@ -9,12 +9,10 @@ staticApp.listen(8081, async () => {
   const browser = await puppeteer.launch({ headless: true });
   await Promise.all(
     pages.map(async p => {
-      debugger;
       const { pagePrerenderFunc, selector, input } = p;
       const { pagePrerender } = require(pagePrerenderFunc);
-      debugger;
+
       await pagePrerender({ input, selector, browser });
-      debugger;
     })
   );
   console.log('prerender complete....');
