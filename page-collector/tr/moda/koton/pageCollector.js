@@ -22,6 +22,7 @@ async function getNextPageContent({ url }) {
 
 async function pageCollector({ input, output, pageUrl }) {
   try {
+    debugger;
     const { data } = await axios.get(input);
 
     const { window: { document } } = new JSDOM(data);
@@ -29,8 +30,9 @@ async function pageCollector({ input, output, pageUrl }) {
     const content = document.querySelector('.productGrid').innerHTML;
 
     await makeDir(path.dirname(output));
-
+    debugger;
     if (document.querySelector('.paging')) {
+      debugger;
       if (pageUrl === undefined) throw 'pageUrl not provided';
 
       const pagesCountString = Array.from(
@@ -43,7 +45,7 @@ async function pageCollector({ input, output, pageUrl }) {
       let nextPageContents = [];
 
       if (pagesCountIntager > 0) {
-        debugger;
+      
         let promises = [];
         for (let i = 1; i < pagesCountIntager; i++) {
           console.log('Collecting page:', i);
@@ -54,15 +56,15 @@ async function pageCollector({ input, output, pageUrl }) {
             })
           );
         }
-        debugger;
+     
         nextPageContents = await Promise.all(promises);
       }
-      debugger;
+     
       const mergedPagesContent = content + nextPageContents.join('');
       fs.writeFileSync(output, mergedPagesContent);
-      debugger;
+  
     } else {
-      debugger;
+     debugger;
       fs.writeFileSync(output, content);
     }
   } catch (error) {

@@ -10,7 +10,6 @@ async function batchPageCollector() {
     });
     console.log('pageCollector ended', output);
   });
-  await browser.close();
 }
 
 batchPageCollector();

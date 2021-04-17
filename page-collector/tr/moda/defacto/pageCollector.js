@@ -26,7 +26,7 @@ async function pageCollector({ input, output }) {
     let nextPageContents = [];
     if (pageCount > 0) {
       let promises = [];
-      for (let i = 1; i < pageCount; i++) {
+      for (let i = 2; i <= pageCount; i++) {
         console.log('Collecting page:', i);
 
         promises.push(
@@ -43,6 +43,7 @@ async function pageCollector({ input, output }) {
       fs.writeFileSync(output, content);
     }
   } catch (error) {
+    debugger
     throw error;
   }
 }
