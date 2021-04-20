@@ -26,14 +26,13 @@ describe('Defacto Kadin Jean Meta creator', () => {
 
   it.only('tr/moda/koton/kadin/jean/metaCreator', function() {
     this.timeout(50000);
-    debugger;
+
     const pages = require('../tr/moda/koton/pages');
     pages.forEach(page => {
       const { metaCreatorFunc } = page;
-      debugger;
+
       const { metaCreator } = require(metaCreatorFunc);
       metaCreator({ ...page });
-      debugger;
     });
   });
 });

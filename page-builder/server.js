@@ -4,6 +4,7 @@ const { JSDOM } = jsdom;
 const fs = require('fs');
 const { defactoPageBuilder } = require('./defacto');
 const { homePage } = require('./home');
+const kotonPages = require('./koton/pages');
 const fsExtra = require('fs-extra');
 const path = require('path');
 const makeDir = require('make-dir');
@@ -16,38 +17,23 @@ async function prebuild() {
 }
 async function build() {
   const pages = defactoPageBuilder();
-  const allPages = [...pages, homePage];
+  const allPages = [...pages, homePage, ...kotonPages];
   allPages.map(async p => {
-    const { htmlOutput, component, json } = p;
+    const { htmlOutput, component, json, filterJson } = p;
     const outputFolder = path.dirname(htmlOutput);
     await makeDir(outputFolder);
-    const componentName = path.basename(component);
-    const tagName = path.basename(component, '.js');
-    const componentDotPath = path
-      .dirname(htmlOutput)
-      .replace(/\//g, ' ')
-      .split(' ')
-      .slice(1)
-      .map(() => '../')
-      .join(' ')
-      .replace(/\s/g, '');
-    const forwardComponentDothPath = path
-      .dirname(component)
-      .replace(/\//g, ' ')
-      .split(' ')
-      .slice(2)
-      .map(f => `/${f}/`)
-      .join(' ');
-    const relativeComponentPath = (componentDotPath +
-      'components/' +
-      forwardComponentDothPath +
-      componentName).replace(/\/\//g, '/');
-
+    const { tagName, relativeComponentPath } = getComponentPath({
+      htmlOutput,
+      component
+    });
     const dom = new JSDOM(
       `<body>
           <${tagName}></${tagName}>
             <script src="${relativeComponentPath}"></script>
             ${json ? `<script> window.jsonUrl ="${json}" </script>` : ''}
+            ${filterJson
+              ? `<script> window.filterJsonUrl ="${filterJson}" </script>`
+              : ''}
             </body>`,
       { includeNodeLocations: true }
     );
@@ -69,4 +55,29 @@ if (process.env.NODE_ENV === 'dev') {
       await build();
     });
   });
+}
+
+function getComponentPath({ htmlOutput, component }) {
+  const componentName = path.basename(component);
+  const tagName = path.basename(component, '.js');
+  const componentDotPath = path
+    .dirname(htmlOutput)
+    .replace(/\//g, ' ')
+    .split(' ')
+    .slice(1)
+    .map(() => '../')
+    .join(' ')
+    .replace(/\s/g, '');
+  const forwardComponentDothPath = path
+    .dirname(component)
+    .replace(/\//g, ' ')
+    .split(' ')
+    .slice(2)
+    .map(f => `/${f}/`)
+    .join(' ');
+  const relativeComponentPath = (componentDotPath +
+    'components/' +
+    forwardComponentDothPath +
+    componentName).replace(/\/\//g, '/');
+  return { relativeComponentPath, tagName };
 }
