@@ -6,7 +6,8 @@ function itemDataCollector({ html }) {
     .getAttribute('data-srcset');
   const imageUrl = imageSrc
     .substring(imageSrc.lastIndexOf('//'))
-    .replace('3000w', '').trim();
+    .replace('3000w', '')
+    .trim();
   const product = {
     detailPageLink:
       `https://www.defacto.com.tr/` +
@@ -42,7 +43,7 @@ function itemDataCollector({ html }) {
       document.querySelector('img[alt="patlangac/buyuk-beden-r.png"]') && true,
     organik: document.querySelector('img[alt="patlangac/organic1.png"]') && true
   };
-  debugger;
+
   return product;
 }
 

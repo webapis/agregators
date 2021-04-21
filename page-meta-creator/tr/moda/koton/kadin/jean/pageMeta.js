@@ -7,7 +7,6 @@ function pageMeta({ dataObject, pageTitle, output, output2 }) {
   makeDir.sync(path.dirname(output2));
   fs.writeFileSync(output, JSON.stringify(withPageTitle));
   fs.writeFileSync(output2, JSON.stringify(withPageTitle));
-  debugger;
 }
 
 module.exports = { pageMeta };

@@ -1,7 +1,7 @@
 describe('pageCollector test', function() {
   it.only('tr/koton/pageCollector test', async function() {
     this.timeout(100000);
-    debugger;
+
     const pages = require('../tr/moda/koton/pages');
     await Promise.all(
       pages.map(async p => {

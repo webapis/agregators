@@ -6,23 +6,20 @@ const makeDir = require('make-dir');
 
 async function getNextPageContent({ url }) {
   try {
-    debugger;
     const { data } = await axios.get(url);
-    debugger;
+
     const { window: { document } } = new JSDOM(data);
 
     const content = document.querySelector('.productGrid').innerHTML;
 
     return content;
   } catch (error) {
-    debugger;
     throw error;
   }
 }
 
 async function pageCollector({ input, output, pageUrl }) {
   try {
-    debugger;
     const { data } = await axios.get(input);
 
     const { window: { document } } = new JSDOM(data);
@@ -30,9 +27,8 @@ async function pageCollector({ input, output, pageUrl }) {
     const content = document.querySelector('.productGrid').innerHTML;
 
     await makeDir(path.dirname(output));
-    debugger;
+
     if (document.querySelector('.paging')) {
-      debugger;
       if (pageUrl === undefined) throw 'pageUrl not provided';
 
       const pagesCountString = Array.from(
@@ -45,7 +41,6 @@ async function pageCollector({ input, output, pageUrl }) {
       let nextPageContents = [];
 
       if (pagesCountIntager > 0) {
-      
         let promises = [];
         for (let i = 1; i < pagesCountIntager; i++) {
           console.log('Collecting page:', i);
@@ -56,19 +51,16 @@ async function pageCollector({ input, output, pageUrl }) {
             })
           );
         }
-     
+
         nextPageContents = await Promise.all(promises);
       }
-     
+
       const mergedPagesContent = content + nextPageContents.join('');
       fs.writeFileSync(output, mergedPagesContent);
-  
     } else {
-     debugger;
       fs.writeFileSync(output, content);
     }
   } catch (error) {
-    debugger;
     throw error;
   }
 }

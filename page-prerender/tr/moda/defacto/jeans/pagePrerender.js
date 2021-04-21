@@ -2,9 +2,8 @@ const path = require('path');
 const makeDir = require('make-dir');
 const fs = require('fs');
 async function pagePrerender({ input, browser, selector }) {
-  debugger;
   const rawData = fs.readFileSync(input, { encoding: 'utf-8' });
-  debugger;
+
   const dataObject = JSON.parse(rawData);
 
   await Promise.all(
@@ -21,9 +20,7 @@ async function pagePrerender({ input, browser, selector }) {
         await page.waitForSelector(selector); // ensure #posts exists in the DOM.
         const html = await page.content(); // serialized HTML of page DOM.
         fs.writeFileSync(`${process.cwd()}/${outputDirPath}`, html);
-      } catch (error) {
-        debugger;
-      }
+      } catch (error) {}
     })
   );
 }
