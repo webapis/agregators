@@ -28,6 +28,9 @@ jobs:
       - name: dataCollector action step
         id: dataCollector
         run: 'npm run dataCollector'
+      - name: imageOptimizer action step
+        id: imageOptimizer
+        run: 'npm run imageOptimizer'
       - name: Categorize action step
         id: categorizer
         run: 'npm run dataCategorizer'

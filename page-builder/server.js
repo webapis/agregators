@@ -19,7 +19,7 @@ async function build() {
   const pages = defactoPageBuilder();
   const allPages = [...pages, homePage, ...kotonPages];
   allPages.map(async p => {
-    const { htmlOutput, component, json, filterJson } = p;
+    const { htmlOutput, component, json, filterJson, marka } = p;
     const outputFolder = path.dirname(htmlOutput);
     await makeDir(outputFolder);
     const { tagName, relativeComponentPath } = getComponentPath({
@@ -28,7 +28,7 @@ async function build() {
     });
     const dom = new JSDOM(
       `<body>
-          <${tagName}></${tagName}>
+          <${tagName} marka=${marka}></${tagName}>
             <script src="${relativeComponentPath}"></script>
             ${json ? `<script> window.jsonUrl ="${json}" </script>` : ''}
             ${filterJson

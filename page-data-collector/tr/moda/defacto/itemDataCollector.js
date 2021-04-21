@@ -1,16 +1,18 @@
 const { JSDOM } = require('jsdom');
 function itemDataCollector({ html }) {
   const { window: { document } } = new JSDOM(html);
+  const imageSrc = document
+    .querySelector('div.picture > a > img')
+    .getAttribute('data-srcset');
+  const imageUrl = imageSrc
+    .substring(imageSrc.lastIndexOf('//'))
+    .replace('3000w', '').trim();
   const product = {
     detailPageLink:
       `https://www.defacto.com.tr/` +
       document.querySelector('div.picture > a').getAttribute('href'),
     image: {
-      scrset:
-        'https:' +
-        document
-          .querySelector('div.picture > a > img')
-          .getAttribute('data-srcset'),
+      src: 'https:' + imageUrl,
       //   placeHolder:
       //     'https://dfcdn.defacto.com.tr/Assets/dist/images/product-place-holder.svg',
       alt: document.querySelector('div.picture > a > img').getAttribute('alt')
@@ -40,7 +42,7 @@ function itemDataCollector({ html }) {
       document.querySelector('img[alt="patlangac/buyuk-beden-r.png"]') && true,
     organik: document.querySelector('img[alt="patlangac/organic1.png"]') && true
   };
-
+  debugger;
   return product;
 }
 

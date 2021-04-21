@@ -1,5 +1,5 @@
 describe('pageDataCollector test', () => {
-  it('defacto dataCollector', async function() {
+  it.only('defacto dataCollector', async function() {
     this.timeout(50000);
     try {
       const { defactoHtml } = require('./itemHtml');

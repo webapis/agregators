@@ -75,7 +75,10 @@ customElements.define(
           ) {
             console.log('Fetch started');
             const { state: { items: { items } } } = window.pageStore;
-            const itemTags = document.getElementsByTagName('product-view');
+            const marka = this.getAttribute('marka');
+            const itemTags = document.getElementsByTagName(
+              `${marka}-product-view`
+            );
             const nextItems = items.slice(
               itemTags.length,
               itemTags.length + 70
@@ -88,29 +91,33 @@ customElements.define(
     } //render
 
     appendProducts(items) {
-      items.filter((it, i) => i < 70).forEach((item,i) => {
-        const {
-          detailLink,
-          productName,
-          price: { salePrice, marketPrice },
-          discount: { discountRate, discountText },
-          image: { scrset, placeHolder }
-        } = item;
-     
-        var node = document.createElement('product-view');
-        node.classList.add('col-sm-6');
-        node.classList.add('col-xl-3');
+      const marka = this.getAttribute('marka');
+      items.filter((it, i) => i < 70).forEach((item, i) => {
+        var node = document.createElement(`${marka}-product-view`);
+
+      
+        node.classList.add('col-6');
+        node.classList.add('col-md-3');
+        node.classList.add('col-lg-2');
+       
         node.setAttribute('id', i);
-        node.setAttribute('title', productName);
-        node.setAttribute('salePrice', salePrice);
-        node.setAttribute('marketPrice', marketPrice);
-        node.setAttribute('discountRate', discountRate);
-        node.setAttribute('discountText', discountText);
-        node.setAttribute('detailLink', detailLink);
-        node.setAttribute('srcset', scrset);
-        node.setAttribute('placeHolder', placeHolder);
+        readObjProp({ node, obj: item });
+
         document.getElementById('products').appendChild(node);
       });
     }
   }
 );
+
+function readObjProp({ node, obj }) {
+  for (let attribute in obj) {
+    const current = obj[attribute];
+    let type = typeof current;
+
+    if (type === 'string') {
+      node.setAttribute(`${attribute}`, current);
+    } else if (type === 'object') {
+      readObjProp({ node, obj: current });
+    }
+  }
+}

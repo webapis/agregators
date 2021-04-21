@@ -21,6 +21,7 @@
     "axios": "^0.21.1",
     "cross-env": "^7.0.2",
     "eslint": "^7.21.0",
+    "jimp": "^0.16.1",
     "node-watch": "^0.7.1",
     "nodemon": "^2.0.7",
     "puppeteer": "^7.1.0",
@@ -35,6 +36,7 @@
   "scripts": {
     "pageCollector": "node page-collector/server.js",
     "dataCollector": "node page-data-collector/server.js",
+    "imageOptimizer": "node page-image-optimizer/server.js",
     "dataCategorizer": "node page-data-categorizer/server.js",
     "metaCreator": "node page-meta-creator/server.js",
     "pageBuilder": "node page-builder/server.js",
@@ -49,6 +51,7 @@
     "pageDataCorrector:test": "mocha page-data-corrector/test",
     "pageDataCategorizer:test": "mocha page-data-categorizer/test",
     "pageMetaCreator:test": "mocha page-meta-creator/test",
+    "pageImageOptimizer:test": "mocha page-image-optimizer/test",
     "pagePrerender:test": "mocha page-prerender/test"
   },
   "nodemonConfig": {
