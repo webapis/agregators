@@ -1,8 +1,8 @@
 module.exports = [
   {
-    input: `${process.cwd()}/page-data/tr/moda/koton/kadin/jean/pantalon.json`,
-    output: `${process.cwd()}/page-data/tr/moda/koton/kadin/jean/pantalon.json`,
-    imgOutput: `${process.cwd()}/page-build/tr/moda/koton/kadin/jean/pantalon/img`,
+    input: `${process.cwd()}/page-data/tr/moda/koton/kadin/jean/jean-pantolon.json`,
+    output: `${process.cwd()}/page-data/tr/moda/koton/kadin/jean/jean-pantolon.json`,
+    imgOutput: `${process.cwd()}/page-build/tr/moda/koton/kadin/jean/pantolon/img`,
     imageUrl: '/tr/moda/koton/kadin/jean/pantolon/img'
   }
 ];
