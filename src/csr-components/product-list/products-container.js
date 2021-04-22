@@ -6,40 +6,50 @@ customElements.define(
     }
 
     connectedCallback() {
-      const { state: { selected_pl_tab, items } } = window.pageStore;
-      if (selected_pl_tab === 'urunler-tab') {
-        this.render({ value: items });
-      }
-      window.pageStore.subscribe(
-        window.actionTypes.PL_PAGE_TAB_SELECTED,
-        () => {
-          const { state: { selected_pl_tab, items } } = window.pageStore;
-          if (selected_pl_tab === 'urunler-tab') {
-            this.render({ value: items });
-          } else {
-            this.innerHTML = ``;
-          }
-        }
-      );
+      // const { state: { selected_pl_tab, items } } = window.pageStore;
+      // if (selected_pl_tab === 'urunler-tab') {
+      //   this.render({ value: items });
+      // }
+      // window.pageStore.subscribe(
+      //   window.actionTypes.PL_PAGE_TAB_SELECTED,
+      //   () => {
+      //     const { state: { selected_pl_tab, items } } = window.pageStore;
+      //     if (selected_pl_tab === 'urunler-tab') {
+      //       this.render({ value: items });
+      //     } else {
+      //       this.innerHTML = ``;
+      //     }
+      //   }
+      // );
 
-      window.pageStore.subscribe(window.actionTypes.PRODUCT_ITEMS_SET, () => {
+      window.pageStore.subscribe(window.actionTypes.PRERENDER_DATA, () => {
         const { state: { selected_pl_tab, items } } = window.pageStore;
-
+     
         if (selected_pl_tab === 'urunler-tab') {
           this.render({ value: items });
         }
       });
 
-      window.pageStore.subscribe(window.actionTypes.PATTERN_SELECTED, state => {
-        const { items, selected_pl_tab, pattern } = state;
-        const filter = items.items.filter(item => {
-          return item.productName.includes(pattern);
-        });
+      // window.pageStore.subscribe(window.actionTypes.PATTERN_SELECTED, state => {
+      //   const { items, selected_pl_tab, pattern } = state;
+      //   const filter = items.items.filter(item => {
+      //     return item.productName.includes(pattern);
+      //   });
 
-        if (selected_pl_tab === 'urunler-tab') {
-          this.render({ value: { ...items, items: filter } });
-        }
-      });
+      //   if (selected_pl_tab === 'urunler-tab') {
+      //     this.render({ value: { ...items, items: filter } });
+      //   }
+      // });
+
+      // if (window.jsonUrl ) {
+      //   console.log('fetching data...');
+      //   fetch(window.jsonUrl).then(response => response.json()).then(items => {
+      //     window.pageStore.dispatch({
+      //       type: window.actionTypes.PRODUCT_ITEMS_SET,
+      //       payload: items
+      //     });
+      //   });
+      // }
     }
 
     render({ value }) {
@@ -52,7 +62,7 @@ customElements.define(
       </pl-search-result>
       </div>
       </div>
-        <div id="products" class="row" style="height:300px; position:relative;"></div>
+      
         </div>`;
       const productContainer = document.getElementById('products');
 
@@ -95,11 +105,10 @@ customElements.define(
       items.filter((it, i) => i < 70).forEach((item, i) => {
         var node = document.createElement(`${marka}-product-view`);
 
-      
         node.classList.add('col-6');
         node.classList.add('col-md-3');
         node.classList.add('col-lg-2');
-       
+
         node.setAttribute('id', i);
         readObjProp({ node, obj: item });
 

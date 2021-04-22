@@ -23,6 +23,10 @@ customElements.define(
         }
       });
 
+      this.render();
+    }
+
+    render() {
       const { state: { pattern } } = window.pageStore;
       const title = this.getAttribute('productName');
       const salePrice = this.getAttribute('salePrice');

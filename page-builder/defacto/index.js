@@ -16,6 +16,8 @@ function defactoPageBuilder() {
     return {
       htmlOutput: `page-build/tr/moda/defacto/kadin/jean/${lowerCaseProdName}.html`,
       component: 'src/csr-components/product-list/product-list.js',
+      prerenderComponent:
+        'src/csr-components/product-list/prerender-component.js',
       json: `./${lowerCaseProdName}.json`,
       marka: 'defacto'
     };

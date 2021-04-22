@@ -22,14 +22,21 @@ async function build() {
     const { htmlOutput, component, json, filterJson, marka } = p;
     const outputFolder = path.dirname(htmlOutput);
     await makeDir(outputFolder);
-    const { tagName, relativeComponentPath } = getComponentPath({
+    const {
+      tagName,
+      relativeComponentPath,
+      prerenderCompPath
+    } = getComponentPath({
       htmlOutput,
       component
     });
     const dom = new JSDOM(
       `<body>
+      <script src="${relativeComponentPath}"></script>
+      <script src="${prerenderCompPath}"></script>
+    
           <${tagName} marka=${marka}></${tagName}>
-            <script src="${relativeComponentPath}"></script>
+          <prerender-component marka=${marka} jsonurl="${json}"></prerender-component>
             ${json ? `<script> window.jsonUrl ="${json}" </script>` : ''}
             ${filterJson
               ? `<script> window.filterJsonUrl ="${filterJson}" </script>`
@@ -79,5 +86,9 @@ function getComponentPath({ htmlOutput, component }) {
     'components/' +
     forwardComponentDothPath +
     componentName).replace(/\/\//g, '/');
-  return { relativeComponentPath, tagName };
+  const prerenderCompPath = (componentDotPath +
+    'components/' +
+    forwardComponentDothPath +
+    'prerender-component.js').replace(/\/\//g, '/');
+  return { relativeComponentPath, tagName, prerenderCompPath };
 }

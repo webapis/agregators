@@ -13,7 +13,7 @@ export default (state, action) => {
       return { ...state, selected: action.payload };
     case actionTypes.PL_PAGE_TAB_SELECTED:
       return { ...state, selected_pl_tab: action.payload };
-    case actionTypes.PRODUCT_ITEMS_SET:
+    case actionTypes.PRERENDER_DATA:
       return { ...state, items: action.payload };
     case actionTypes.PATTERN_SELECTED:
       return {
@@ -38,5 +38,6 @@ export const actionTypes = {
   PATTERN_SELECTED: 'PATTERN_SELECTED',
   CLEAR_PATTERN: 'CLEAR_PATTERN',
   SCROLLED_TOP: 'SCROLLED_TOP',
-  PAGE_SCROLLED: 'PAGE_SCROLLED'
+  PAGE_SCROLLED: 'PAGE_SCROLLED',
+  PRERENDER_DATA: 'PRERENDER_DATA'
 };

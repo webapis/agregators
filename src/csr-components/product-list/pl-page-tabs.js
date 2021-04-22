@@ -17,8 +17,6 @@ customElements.define(
   }
 );
 
-
-
 customElements.define(
   'page-tabs',
   class extends HTMLElement {

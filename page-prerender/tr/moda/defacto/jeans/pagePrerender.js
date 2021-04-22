@@ -19,7 +19,15 @@ async function pagePrerender({ input, browser, selector }) {
         });
         await page.waitForSelector(selector); // ensure #posts exists in the DOM.
         const html = await page.content(); // serialized HTML of page DOM.
-        fs.writeFileSync(`${process.cwd()}/${outputDirPath}`, html);
+        debugger;
+        const removedPrerenderTag = html
+          .replace(/<prerender-component marka=".*" jsonurl=".*">/g, '')
+          .replace(/<\/prerender-component>/g, '');
+        debugger;
+        fs.writeFileSync(
+          `${process.cwd()}/${outputDirPath}`,
+          removedPrerenderTag
+        );
       } catch (error) {}
     })
   );
