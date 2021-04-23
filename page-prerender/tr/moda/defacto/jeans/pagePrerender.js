@@ -22,13 +22,17 @@ async function pagePrerender({ input, browser, selector }) {
         debugger;
         const removedPrerenderTag = html
           .replace(/<prerender-component marka=".*" jsonurl=".*">/g, '')
-          .replace(/<\/prerender-component>/g, '');
+          .replace(/<\/prerender-component>/g, '')
+          .replace(/<script src=".*prerender-component.js"><\/script>/g, '');
         debugger;
+        
         fs.writeFileSync(
           `${process.cwd()}/${outputDirPath}`,
           removedPrerenderTag
         );
-      } catch (error) {}
+      } catch (error) {
+        debugger;
+      }
     })
   );
 }

@@ -24,7 +24,7 @@ customElements.define(
 
       window.pageStore.subscribe(window.actionTypes.PRERENDER_DATA, () => {
         const { state: { selected_pl_tab, items } } = window.pageStore;
-     
+
         if (selected_pl_tab === 'urunler-tab') {
           this.render({ value: items });
         }
@@ -125,6 +125,9 @@ function readObjProp({ node, obj }) {
 
     if (type === 'string') {
       node.setAttribute(`${attribute}`, current);
+      if (attribute === 'srcset') {
+        console.log('srcset', obj[attribute]);
+      }
     } else if (type === 'object') {
       readObjProp({ node, obj: current });
     }

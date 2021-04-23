@@ -8,7 +8,7 @@ customElements.define(
       this._srcset = false;
     }
     connectedCallback() {
-      // console.log('window.screen.width', window.screen.width);
+  
 
       document.addEventListener('scroll', () => {
         if (this.offsetTop >= window.innerHeight) {
@@ -17,8 +17,8 @@ customElements.define(
           ) {
             const img = this.querySelector('img');
 
-            const src = this.getAttribute('src');
-            img.srcset = src;
+            const srcset = this.getAttribute('data-srcset');
+            img.srcset = srcset;
           }
         }
       });
@@ -37,10 +37,11 @@ customElements.define(
       const detailLink = this.getAttribute('detailLink');
 
       boldenPattern(title, pattern);
+
       // eslint-disable-next-line no-undef
       this.innerHTML = /*html*/ `
         <div class="df-product-item">
-          <img src="/components/product-list/image-placeholder.svg"  srcset=${src} class="df-picture" style="width:150px;hight:auto;">
+          <img class="df-img" src=${src}   class="df-picture" style="width:150px;height:auto;"  sizes="(min-width: 600px) 288px">
           <a href="${detailLink}" class="df-product-info-title-link">
           <div >${boldenPattern(title, pattern)}</div>
           </a>
@@ -57,7 +58,22 @@ customElements.define(
             </div>
           </div>
           </div>
+
         `;
+
+    
+   
+      if (
+        this.offsetTop === 0 ||
+        Math.round(document.body.scrollTop * 100 / this.offsetTop) === 0
+      ) {
+        const img = this.querySelector('img');
+
+        const srcset = this.getAttribute('data-srcset');
+
+        img.srcset = srcset;
+      }
+      
     }
   }
 );
@@ -78,3 +94,4 @@ function boldenPattern(word, pattern) {
   }
   return word;
 }
+//src="/components/product-list/image-placeholder.svg"

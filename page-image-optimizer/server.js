@@ -1,16 +1,16 @@
 const defactoPages = require('./defacto/pages');
 const kotonPages = require('./koton/pages');
-const { imageOptimizer } = require('./imageOptimizer');
+const { imageSizeOptimizer } = require('./imageSizeOptimizer');
 
-const pages = [...defactoPages, ...kotonPages];
+const pages = [...defactoPages];
 
-async function batchImageOptimizer() {
+async function batchImageSizeOptimizer() {
   await Promise.all(
     pages.map(async p => {
       const { input, output, imgOutput, imageUrl } = p;
 
-      await imageOptimizer({ input, output, imgOutput, imageUrl });
+      await imageSizeOptimizer({ input, output, imgOutput, imageUrl });
     })
   );
 }
-batchImageOptimizer();
+batchImageSizeOptimizer();

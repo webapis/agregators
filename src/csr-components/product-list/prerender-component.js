@@ -19,6 +19,17 @@ customElements.define(
               payload: items
             });
           });
+
+          // window.pageStore.subscribe(window.actionTypes.IMG_TAGS_LOADED, () => {
+          //   const images = document.getElementsByTagName('img');
+          //   let i = 0;
+          //   for (i; i < images.length; i++) {
+          //     const img = images[i];
+          //     const dataUrl = getBase64Image(img.src);
+          //     img.src = dataUrl;
+          //   }
+          //   // debugger;
+          // });
         }
       };
     }
