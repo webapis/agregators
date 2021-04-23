@@ -41,7 +41,7 @@ customElements.define(
       // eslint-disable-next-line no-undef
       this.innerHTML = /*html*/ `
         <div class="df-product-item">
-          <img class="df-img" src=${src}   class="df-picture" style="width:150px;height:auto;"  sizes="(min-width: 600px) 288px">
+          <img class="df-img" src="${src}"   class="df-picture" style="width:150px;height:auto;"  sizes="(min-width: 600px) 288px">
           <a href="${detailLink}" class="df-product-info-title-link">
           <div >${boldenPattern(title, pattern)}</div>
           </a>

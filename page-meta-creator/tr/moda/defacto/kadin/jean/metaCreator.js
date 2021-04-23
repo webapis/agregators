@@ -16,13 +16,39 @@ async function metaCreator({ input, output, output2 }) {
       };
     });
 
-    removeUnicode.forEach(d => {
-      const category = d.category;
-
-      fs.writeFileSync(`${output}/${category}.json`, JSON.stringify(d));
-      fs.writeFileSync(`${output2}/${category}.json`, JSON.stringify(d));
-    });
-
+    await Promise.all(
+      removeUnicode.map(async d => {
+        const outputFolder = `${output}/${d.category}`;
+        const outputFolder2 = `${output2}/${d.category}`;
+        await makeDir(outputFolder);
+        await makeDir(outputFolder2);
+        if (d.items.length < 100) {
+          fs.writeFileSync(`${outputFolder}/0.json`, JSON.stringify(d));
+          fs.writeFileSync(`${outputFolder2}/0.json`, JSON.stringify(d));
+          debugger;
+        } else {
+          let i = 0;
+          let p = 0;
+          while (i < d.items.length) {
+            debugger;
+            const items = d.items.slice(i, i + 100);
+            debugger;
+            fs.writeFileSync(
+              `${outputFolder}/${p}.json`,
+              JSON.stringify({ ...d, items })
+            );
+            fs.writeFileSync(
+              `${outputFolder2}/${p}.json`,
+              JSON.stringify({ ...d, items })
+            );
+            i = i + 100;
+            p++;
+            debugger;
+          }
+        }
+        debugger;
+      })
+    );
     return Promise.resolve(true);
   } catch (error) {
     return Promise.reject(error);

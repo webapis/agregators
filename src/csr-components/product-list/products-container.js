@@ -84,16 +84,45 @@ customElements.define(
             document.body.scrollHeight
           ) {
             console.log('Fetch started');
-            const { state: { items: { items } } } = window.pageStore;
+            // const { state: { items: { items } } } = window.pageStore;
             const marka = this.getAttribute('marka');
             const itemTags = document.getElementsByTagName(
               `${marka}-product-view`
             );
-            const nextItems = items.slice(
-              itemTags.length,
-              itemTags.length + 70
-            );
-            this.appendProducts(nextItems);
+            // const nextItems = items.slice(
+            //   itemTags.length,
+            //   itemTags.length + 70
+            // );
+            const jsonUrl = window.jsonUrl;
+            let filePath = '';
+            console.log('length...', itemTags.length);
+            if (itemTags.length === 100 || itemTags.length / 100 > 0) {
+              let pageNum = 0;
+              filePath =
+                jsonUrl.substring(0, jsonUrl.lastIndexOf('/')) +
+                `/${pageNum}.json`;
+
+              if (itemTags.length / 100 > 0) {
+                pageNum = Math.round(itemTags.length / 100);
+                debugger;
+                filePath =
+                  jsonUrl.substring(0, jsonUrl.lastIndexOf('/')) +
+                  `/${pageNum}.json`;
+              }
+
+              if (jsonUrl) {
+                console.log('fetching next data');
+                fetch(filePath)
+                  .then(response => response.json())
+                  .then(data => {
+                    this.appendProducts(data.items);
+                  })
+                  .catch(err => {
+                    debugger;
+                  });
+              }
+            }
+            // this.appendProducts(nextItems);
           }
         }
         //toggle nav tab
@@ -102,7 +131,7 @@ customElements.define(
 
     appendProducts(items) {
       const marka = this.getAttribute('marka');
-      items.filter((it, i) => i < 70).forEach((item, i) => {
+      items.filter((it, i) => i < 100).forEach((item, i) => {
         var node = document.createElement(`${marka}-product-view`);
 
         node.classList.add('col-6');

@@ -18,7 +18,7 @@ function defactoPageBuilder() {
       component: 'src/csr-components/product-list/product-list.js',
       prerenderComponent:
         'src/csr-components/product-list/prerender-component.js',
-      json: `./${lowerCaseProdName}.json`,
+      json: `./${lowerCaseProdName}/0.json`,
       marka: 'defacto'
     };
   });

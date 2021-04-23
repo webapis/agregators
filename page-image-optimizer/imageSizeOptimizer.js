@@ -11,15 +11,18 @@ async function imageSizeOptimizer({ input, output, imgOutput, imageUrl }) {
     let remained = dataObject.length;
     const parallel = 30;
     for (let i = 0; i < dataObject.length; i += parallel) {
-      remained = remained - parallel;
-      console.log('remained', remained);
       const promises = [];
+
       for (let j = 0; j < parallel; j++) {
         const elem = i + j;
-        const d = dataObject[elem];
+        if (elem < dataObject.length) {
+          remained = remained - 1;
+          console.log('remained', remained);
 
-        const { image: { src } } = d;
-        if (src !== null) {
+          const d = dataObject[elem];
+
+          const { image: { src } } = d;
+          console.log('d.', d);
           promises.push(
             optimizeImage({
               imgOutput,
@@ -31,15 +34,14 @@ async function imageSizeOptimizer({ input, output, imgOutput, imageUrl }) {
               imageUrl
             })
           );
-        }
-
-        if (elem === dataObject.length - 1) {
-          console.log('save file');
-          fs.writeFileSync(output, JSON.stringify(dataObject));
+          if (remained === 0) {
+            console.log('save file');
+          }
         }
       }
 
       await Promise.all(promises);
+      fs.writeFileSync(output, JSON.stringify(dataObject));
     }
   } catch (error) {
     debugger;
@@ -93,6 +95,7 @@ async function optimizeImage({
     });
     console.log('src', src);
   } catch (error) {
+    console.log('src Erro........', src);
     debugger;
     throw error;
   }
@@ -123,6 +126,7 @@ async function blurImage({
     await image.writeAsync(`${outputDirName}/${filename}`);
   } catch (err) {
     debugger;
+    console.log('src Erro........');
     console.error(err);
   }
 }
