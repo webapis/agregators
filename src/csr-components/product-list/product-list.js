@@ -65,12 +65,15 @@ customElements.define(
     }
     render() {
       const marka = this.getAttribute('marka');
+      const jsonurl = this.getAttribute('jsonurl');
 
       this.innerHTML = `
         <pl-page-tabs></pl-page-tabs>
-        <products-container marka=${marka}></products-container>
+        <products-container marka=${marka} jsonurl=${jsonurl}></products-container>
         <filter-container></filter-container>
       `;
+
+     
     }
   }
 );

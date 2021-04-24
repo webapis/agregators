@@ -50,6 +50,46 @@ customElements.define(
       //     });
       //   });
       // }
+
+      let pageNum = 0;
+
+      document.onscroll = async () => {
+        console.log('scrolling page.....????/');
+        const { state: { autoscroll } } = window.pageStore;
+        if (autoscroll) {
+          if (
+            document.body.scrollTop + document.body.clientHeight ===
+            document.body.scrollHeight
+          ) {
+            console.log('Fetch started');
+
+            //  const marka = this.getAttribute('marka');
+            // const itemTags = document.getElementsByTagName(
+            //   `${marka}-product-view`
+            // );
+
+            const jsonUrl = JSON.parse(this.getAttribute('jsonurl'));
+            debugger;
+            if (jsonUrl && pageNum <= jsonUrl.length) {
+              console.log('fetching next data');
+              const response = await fetch(jsonUrl[pageNum]);
+              const data = await response.json();
+              pageNum++;
+              window.dynamicRender(data.items);
+
+              debugger;
+            }
+
+            // this.appendProducts(nextItems);
+          }
+        }
+        //toggle nav tab
+      };
+
+      window.dynamicRender = items => {
+        window.fetched=true
+        this.appendProducts(items);
+      };
     }
 
     render({ value }) {
@@ -75,73 +115,58 @@ customElements.define(
         document.querySelector('head').appendChild(descriptionTag);
         this.appendProducts(value.items);
       }
+      // let pageNum = 0;
 
-      document.addEventListener('scroll', () => {
-        const { state: { autoscroll } } = window.pageStore;
-        if (autoscroll) {
-          if (
-            document.body.scrollTop + document.body.clientHeight ===
-            document.body.scrollHeight
-          ) {
-            console.log('Fetch started');
-            // const { state: { items: { items } } } = window.pageStore;
-            const marka = this.getAttribute('marka');
-            const itemTags = document.getElementsByTagName(
-              `${marka}-product-view`
-            );
-            // const nextItems = items.slice(
-            //   itemTags.length,
-            //   itemTags.length + 70
-            // );
-            const jsonUrl = window.jsonUrl;
-            let filePath = '';
-            console.log('length...', itemTags.length);
-            if (itemTags.length === 100 || itemTags.length / 100 > 0) {
-              let pageNum = 0;
-              filePath =
-                jsonUrl.substring(0, jsonUrl.lastIndexOf('/')) +
-                `/${pageNum}.json`;
+      // window.document.onscroll = () => {
+      //   console.log('scrolling page.....????/');
+      //   const { state: { autoscroll } } = window.pageStore;
+      //   if (autoscroll) {
+      //     if (
+      //       document.body.scrollTop + document.body.clientHeight ===
+      //       document.body.scrollHeight
+      //     ) {
+      //       console.log('Fetch started');
 
-              if (itemTags.length / 100 > 0) {
-                pageNum = Math.round(itemTags.length / 100);
-                debugger;
-                filePath =
-                  jsonUrl.substring(0, jsonUrl.lastIndexOf('/')) +
-                  `/${pageNum}.json`;
-              }
+      //       //  const marka = this.getAttribute('marka');
+      //       // const itemTags = document.getElementsByTagName(
+      //       //   `${marka}-product-view`
+      //       // );
 
-              if (jsonUrl) {
-                console.log('fetching next data');
-                fetch(filePath)
-                  .then(response => response.json())
-                  .then(data => {
-                    this.appendProducts(data.items);
-                  })
-                  .catch(err => {
-                    debugger;
-                  });
-              }
-            }
-            // this.appendProducts(nextItems);
-          }
-        }
-        //toggle nav tab
-      });
+      //       const jsonUrl = JSON.parse(this.getAttribute('jsonurl'));
+
+      //       if (jsonUrl && pageNum <= jsonUrl.length) {
+      //         console.log('fetching next data');
+      //         fetch(jsonUrl[pageNum])
+      //           .then(response => response.json())
+      //           .then(data => {
+      //             pageNum++;
+      //             this.appendProducts(data.items);
+      //           })
+      //           .catch(err => {
+      //             debugger;
+      //           });
+      //       }
+
+      //       // this.appendProducts(nextItems);
+      //     }
+      //   }
+      //   //toggle nav tab
+      // };
     } //render
 
     appendProducts(items) {
+      debugger;
       const marka = this.getAttribute('marka');
-      items.filter((it, i) => i < 100).forEach((item, i) => {
+      items.forEach((item, i) => {
         var node = document.createElement(`${marka}-product-view`);
-
         node.classList.add('col-6');
         node.classList.add('col-md-3');
         node.classList.add('col-lg-2');
-
-        node.setAttribute('id', i);
+        node.setAttribute('id', guidGenerator());
         readObjProp({ node, obj: item });
-
-        document.getElementById('products').appendChild(node);
+        const products = document.getElementById('products');
+        debugger;
+        products.appendChild(node);
       });
     }
   }
@@ -161,4 +186,11 @@ function readObjProp({ node, obj }) {
       readObjProp({ node, obj: current });
     }
   }
+}
+
+function guidGenerator() {
+  var S4 = function() {
+    return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+  };
+  return '_' + S4() + S4() + S4() + S4() + S4() + S4();
 }

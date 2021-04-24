@@ -3,7 +3,10 @@ const fs = require('fs');
 const catPage = {
   htmlOutput: 'page-build/tr/moda/defacto/kadin/jean/jean-kategoriler.html',
   component: 'src/csr-components/products-nav.js',
-  json: './jean-kategoriler.json'
+  prerenderComponent: 'src/csr-components/product-list/prerender-component.js',
+  json: './jean-kategoriler.json',
+  prerenderJson: `./jean-kategoriler.json`,
+  marka: 'defacto'
 };
 
 function defactoPageBuilder() {
@@ -18,7 +21,11 @@ function defactoPageBuilder() {
       component: 'src/csr-components/product-list/product-list.js',
       prerenderComponent:
         'src/csr-components/product-list/prerender-component.js',
-      json: `./${lowerCaseProdName}/0.json`,
+      json: JSON.stringify([
+        `./${lowerCaseProdName}/1.json`,
+        `./${lowerCaseProdName}/2.json`
+      ]),
+      prerenderJson: `./${lowerCaseProdName}/0.json`,
       marka: 'defacto'
     };
   });

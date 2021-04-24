@@ -19,7 +19,8 @@ async function build() {
   const pages = defactoPageBuilder();
   const allPages = [...pages, homePage, ...kotonPages];
   allPages.map(async p => {
-    const { htmlOutput, component, json, filterJson, marka } = p;
+    const { htmlOutput, component, json, filterJson, marka, prerenderJson } = p;
+    debugger;
     const outputFolder = path.dirname(htmlOutput);
     await makeDir(outputFolder);
     const {
@@ -35,9 +36,9 @@ async function build() {
       <script src="${relativeComponentPath}"></script>
       <script src="${prerenderCompPath}"></script>
     
-          <${tagName} marka=${marka}></${tagName}>
-          <prerender-component marka=${marka} jsonurl="${json}"></prerender-component>
-            ${json ? `<script> window.jsonUrl ="${json}" </script>` : ''}
+          <${tagName} marka=${marka} jsonurl=${json}></${tagName}>
+          <prerender-component marka=${marka} jsonurl="${prerenderJson}"></prerender-component>
+         
             ${filterJson
               ? `<script> window.filterJsonUrl ="${filterJson}" </script>`
               : ''}
@@ -92,3 +93,5 @@ function getComponentPath({ htmlOutput, component }) {
     'prerender-component.js').replace(/\/\//g, '/');
   return { relativeComponentPath, tagName, prerenderCompPath };
 }
+
+//   ${json ? `<script> window.jsonUrl ="${json}" </script>` : ''}

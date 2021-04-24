@@ -5,25 +5,27 @@ customElements.define(
   class extends HTMLElement {
     constructor() {
       super();
-      this._srcset = false;
     }
     connectedCallback() {
-  
+      if (window.prerender || window.fetched) {
+        this.render();
+      }
 
       document.addEventListener('scroll', () => {
-        if (this.offsetTop >= window.innerHeight) {
-          if (
-            Math.round(document.body.scrollTop * 100 / this.offsetTop) >= 30
-          ) {
-            const img = this.querySelector('img');
+        const img = this.querySelector('img');
+        if (img) {
+          if (this.offsetTop >= window.innerHeight) {
+            if (
+              Math.round(document.body.scrollTop * 100 / this.offsetTop) >= 30
+            ) {
+              // const id = this.getAttribute('id');
 
-            const srcset = this.getAttribute('data-srcset');
-            img.srcset = srcset;
+              const srcset = this.getAttribute('data-srcset');
+              img.srcset = srcset;
+            }
           }
         }
       });
-
-      this.render();
     }
 
     render() {
@@ -35,13 +37,13 @@ customElements.define(
       const discountRate = this.getAttribute('discountRate');
       const discountText = this.getAttribute('discountText');
       const detailLink = this.getAttribute('detailLink');
-
+      const id = this.getAttribute('id');
       boldenPattern(title, pattern);
 
       // eslint-disable-next-line no-undef
       this.innerHTML = /*html*/ `
         <div class="df-product-item">
-          <img class="df-img" src="${src}"   class="df-picture" style="width:150px;height:auto;"  sizes="(min-width: 600px) 288px">
+          <img  class="df-img" src="${src}"   class="df-picture" style="width:150px;height:auto;"  sizes="(min-width: 600px) 288px">
           <a href="${detailLink}" class="df-product-info-title-link">
           <div >${boldenPattern(title, pattern)}</div>
           </a>
@@ -61,8 +63,6 @@ customElements.define(
 
         `;
 
-    
-   
       if (
         this.offsetTop === 0 ||
         Math.round(document.body.scrollTop * 100 / this.offsetTop) === 0
@@ -73,7 +73,6 @@ customElements.define(
 
         img.srcset = srcset;
       }
-      
     }
   }
 );

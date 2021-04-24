@@ -25,7 +25,7 @@ async function pagePrerender({ input, browser, selector }) {
           .replace(/<\/prerender-component>/g, '')
           .replace(/<script src=".*prerender-component.js"><\/script>/g, '');
         debugger;
-        
+
         fs.writeFileSync(
           `${process.cwd()}/${outputDirPath}`,
           removedPrerenderTag
