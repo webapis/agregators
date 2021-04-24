@@ -20,8 +20,9 @@ customElements.define(
         `;
       });
       window.addEventListener('load', () => {
-        console.log('window.jsonUrl', window.jsonUrl);
-        fetch(window.jsonUrl).then(result => result.json()).then(data => {
+        const jsonurl = this.getAttribute('jsonurl');
+
+        fetch(jsonurl).then(result => result.json()).then(data => {
           document.getElementById('root').innerHTML = `${data
             .map(
               d => `

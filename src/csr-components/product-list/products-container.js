@@ -69,15 +69,13 @@ customElements.define(
             // );
 
             const jsonUrl = JSON.parse(this.getAttribute('jsonurl'));
-            debugger;
+
             if (jsonUrl && pageNum <= jsonUrl.length) {
               console.log('fetching next data');
               const response = await fetch(jsonUrl[pageNum]);
               const data = await response.json();
               pageNum++;
               window.dynamicRender(data.items);
-
-              debugger;
             }
 
             // this.appendProducts(nextItems);
@@ -87,7 +85,7 @@ customElements.define(
       };
 
       window.dynamicRender = items => {
-        window.fetched=true
+        window.fetched = true;
         this.appendProducts(items);
       };
     }
@@ -143,7 +141,7 @@ customElements.define(
       //             this.appendProducts(data.items);
       //           })
       //           .catch(err => {
-      //             debugger;
+      //
       //           });
       //       }
 
@@ -155,7 +153,6 @@ customElements.define(
     } //render
 
     appendProducts(items) {
-      debugger;
       const marka = this.getAttribute('marka');
       items.forEach((item, i) => {
         var node = document.createElement(`${marka}-product-view`);
@@ -165,7 +162,7 @@ customElements.define(
         node.setAttribute('id', guidGenerator());
         readObjProp({ node, obj: item });
         const products = document.getElementById('products');
-        debugger;
+
         products.appendChild(node);
       });
     }
