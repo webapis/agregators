@@ -15,22 +15,29 @@ customElements.define(
         this.innerHTML = `
         <pl-search-box></pl-search-box>
         <div class="container">
+        <h3 class="text-center">Defacto Kadın Jean</h3>
+        <div class="row">
+        <div class=" md-6">
         <div id="root" class="row">Loading...</div>
+        </div>
+        </div>
         </div>
         `;
       });
       window.addEventListener('load', () => {
         const jsonurl = this.getAttribute('jsonurl');
-
         fetch(jsonurl).then(result => result.json()).then(data => {
           document.getElementById('root').innerHTML = `${data
             .map(
               d => `
               <div class="col-12 col-md-3">
               <a href="${d.url}">
-              <img src="${d.image.placeHolder}" srcset="${d.image
-                .scrset}" class="img-thumbnail"/>
+              <img src="${d.image.placeHolder}" srcset="${d.image[
+                'data-srcset'
+              ]}" width="150"/>
+              <div>
               ${d.productNameLabel}${' '}${d.totalItems}
+              </div>  
             </a>
             </div>
             `

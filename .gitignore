@@ -12,4 +12,5 @@ aggregation/
 page-data/
 page-meta/
 page-build/
+page-image/
 .env

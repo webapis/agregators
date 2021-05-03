@@ -91,6 +91,7 @@ function getComponentPath({ htmlOutput, component }) {
     'components/' +
     forwardComponentDothPath +
     'prerender-component.js').replace(/\/\//g, '/');
+    debugger;
   return { relativeComponentPath, tagName, prerenderCompPath };
 }
 
