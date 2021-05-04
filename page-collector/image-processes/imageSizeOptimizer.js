@@ -3,7 +3,7 @@ const fs = require('fs');
 const makeDir = require('make-dir');
 const path = require('path');
 const EventEmitter = require('events');
-const { uuidv4 } = require('../../uuidv4');
+const { uuidv4 } = require('../uuidv4');
 const eventEmitter = new EventEmitter();
 let totalConcur = 20;
 let queue = [];
@@ -51,7 +51,7 @@ eventEmitter.on('promiseResolved', promise => {
     console.log('queue is complete');
   }
 });
-function cropImages({ input, imgOutput, sizes }) {
+function imageSizeOptimizer({ input, imgOutput }) {
   try {
     const data = fs.readFileSync(input, { encoding: 'utf-8' });
     const dataObject = JSON.parse(data);
@@ -92,7 +92,7 @@ function cropImages({ input, imgOutput, sizes }) {
   }
 }
 
-module.exports = { cropImages };
+module.exports = { imageSizeOptimizer };
 
 function optimizeImage({ imgOutput, src, dataObject, elem, d, imageUrl }) {
   return () =>
@@ -119,6 +119,15 @@ function optimizeImage({ imgOutput, src, dataObject, elem, d, imageUrl }) {
 
             await image.writeAsync(`page-build/${imageOutputPath}`);
 
+            await blurImage({
+              imgOutput,
+              image: image.clone(),
+              filename,
+              d: updated,
+              elem,
+              dataObject,
+              imageUrl
+            });
             resolve();
           })
           .catch(error => {
@@ -131,4 +140,25 @@ function optimizeImage({ imgOutput, src, dataObject, elem, d, imageUrl }) {
         reject(error);
       }
     });
+}
+
+async function blurImage({ imgOutput, image, filename, dataObject, elem, d }) {
+  try {
+    const outputDirName = `${imgOutput}/blur/288`;
+
+    await makeDir(outputDirName);
+    await image.resize(255, Jimp.AUTO);
+    await image.quality(20);
+    await image.blur(5);
+
+    const dataURL = await image.getBase64Async(Jimp.AUTO);
+    dataObject.splice(elem, 1, {
+      ...d,
+      image: { ...d.image, src: dataURL }
+    });
+
+    await image.writeAsync(`${outputDirName}/${filename}`);
+  } catch (err) {
+    console.log('blurImage() error...', err);
+  }
 }
