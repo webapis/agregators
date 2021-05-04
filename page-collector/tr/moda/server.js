@@ -103,8 +103,8 @@ function download(url, dest) {
 }
 function batchImageCollection() {
   const concurrency = promiseConcurrency({
-    batchConcurrency: 10,
-    totalConcurrency: 20
+    batchConcurrency: 2,
+    totalConcurrency: 10
   });
   walkSync(`${process.cwd()}/page-data/tr/moda`, async filepath => {
     try {
@@ -141,23 +141,24 @@ function batchImageCollection() {
   });
 }
 
-async function batchImageSizeOptimizer() {
-  walkSync(`${process.cwd()}/page-data/tr/moda`, async filepath => {
- 
+function batchImageSizeOptimizer() {
+  walkSync(`${process.cwd()}/page-data/tr/moda`, filepath => {
     if (!filepath.includes('.DS_Store')) {
       const input = filepath;
-      const output = filepath;
+
       const dirname = path.dirname(filepath);
 
-      const imgOutput = dirname.substring(dirname.indexOf('tr/'))+'/img/';
-    
-      console.log('imageOptimization started:', input);
-      const data = await imageSizeOptimizer({ input, imgOutput });
+      const imgOutput = dirname.substring(dirname.indexOf('tr/')) + '/img/';
 
-      fs.writeFileSync(output, JSON.stringify(data));
-      console.log('imageOptimization ended:', output);
+      console.log('imageOptimization started:', input);
+
+      imageSizeOptimizer({ input, imgOutput });
     }
   });
+}
+
+function batchMetaCreation() {
+  debugger;
 }
 
 const env = process.env.NODE_ENV;
@@ -178,3 +179,5 @@ env === 'page_image_optimization' &&
       }
     }
   }) & batchImageSizeOptimizer();
+
+env === 'page_meta_creation' && batchMetaCreation();
