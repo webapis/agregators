@@ -38,6 +38,7 @@
     "pageCollector": "NODE_ENV=page_collection node page-collector/server.js",
     "dataCollector": "NODE_ENV=page_data_collection node page-collector/server.js",
     "imageCollector": "NODE_ENV=page_image_collection node page-collector/server.js",
+    "imageCropper": "NODE_ENV=page_image_crop node page-collector/server.js",
     "imageOptimizer": "NODE_ENV=page_image_optimization node page-collector/tr/moda/server.js",
     "metaCreation": "NODE_ENV=page_meta_creation node page-collector/tr/moda/server.js",
     "dataCategorizer": "node page-data-categorizer/server.js",

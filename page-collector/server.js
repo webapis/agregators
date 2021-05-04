@@ -6,8 +6,10 @@ const path = require('path');
 const nodeUrl = require('url');
 const makeDir = require('make-dir');
 const puppeteer = require('puppeteer');
+const Jimp = require('jimp');
 const { promiseConcurrency } = require('./promiseConcurrency');
 const { imageSizeOptimizer } = require('./image-processes/imageSizeOptimizer');
+
 const ws_domain = 'tr/moda';
 async function batchPageCollector() {
   const concurrency = promiseConcurrency({
@@ -129,6 +131,75 @@ function batchImageCollection() {
   });
 }
 
+function batchImageCropping(size) {
+  const EventEmitter = require('events');
+  const { uuidv4 } = require('./uuidv4');
+  const eventEmitter = new EventEmitter();
+  const parrallel = 10;
+  let queue = [];
+  let promises = [];
+  eventEmitter.on('imageCropped', promise => {
+    const { uuidv4 } = promise;
+    debugger;
+    const promiseToRemoveIndex = promises.findIndex(p => p.uuidv4 === uuidv4);
+    debugger;
+    promises.splice(promiseToRemoveIndex, 1);
+    if (queue.length > 0) {
+      const nextpromise = queue[0];
+      debugger;
+      promises.push(nextpromise);
+      queue.shift();
+      nextpromise();
+      debugger;
+      console.log('queue length', queue.length);
+      console.log('promises length', promises.length);
+    } else {
+      console.log('queue is complete');
+    }
+  });
+  eventEmitter.on('imageCroppedFailed', ({ error, promise }) => {
+    debugger;
+  });
+  walkSync(`${process.cwd()}/page-image/${ws_domain}`, async filepath => {
+    try {
+      if (!filepath.includes('.DS_Store')) {
+        const input = filepath;
+        const output = filepath;
+        console.log('filepath', filepath);
+        if (promises.length <= parrallel) {
+          let promise = Jimp.read(input).then(async image => {
+            console.log('cropping image', path.basename(filepath));
+
+            await image.resize(288, Jimp.AUTO);
+            await image.quality(60);
+            await image.writeAsync(output);
+
+            eventEmitter.emit('imageCropped', promise);
+          });
+          promise.uuidv4 = uuidv4();
+          promises.push(promise);
+        } else {
+          queue.push(() => {
+            const promise = Jimp.read(input).then(async image => {
+              console.log('cropping image', path.basename(filepath));
+              debugger;
+              await image.resize(288, Jimp.AUTO);
+              await image.quality(60);
+              await image.writeAsync(output);
+              eventEmitter.emit('imageCropped', promise);
+            });
+          });
+        }
+      } else {
+        debugger;
+      }
+    } catch (error) {
+      debugger;
+      throw error;
+    }
+  });
+}
+
 function batchImageSizeOptimizer() {
   walkSync(`${process.cwd()}/page-data/${ws_domain}`, filepath => {
     if (!filepath.includes('.DS_Store')) {
@@ -158,6 +229,8 @@ env === 'page_data_collection' &&
 
 env === 'page_image_collection' &&
   removeDerectory('page-image') & batchImageCollection();
+
+env === 'page_image_crop' && batchImageCropping(288);
 
 env === 'page_image_optimization' &&
   walkSync(`${process.cwd()}/page-data/${ws_domain}`, async filepath => {
