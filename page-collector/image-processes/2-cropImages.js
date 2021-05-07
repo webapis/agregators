@@ -1,5 +1,18 @@
-const { parentPort, workerData, isMainThread } = require('worker_threads');
-const { nextSlice, index } = workerData;
+const Jimp = require('jimp');
+const { parentPort, workerData } = require('worker_threads');
+const { nextSlice } = workerData;
 
-console.log(`My index is ${index}`);
-parentPort.postMessage(`My index is ${index}`);
+async function cropImage() {
+  for (let p of nextSlice) {
+    const image = await Jimp.read(p);
+
+    // const filePath = nextSlice[i];
+    // promises.push();
+    debugger;
+  }
+  debugger;
+
+  parentPort.postMessage(`Images are processed`);
+}
+
+cropImage();
