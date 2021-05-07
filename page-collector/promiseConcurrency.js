@@ -8,13 +8,13 @@ let queue = [];
 let promises = [];
 eventEmitter.on('promiseResolved', promise => {
   const { uuidv4 } = promise;
-  debugger;
+
   const promiseToRemoveIndex = promises.findIndex(p => p.uuidv4 === uuidv4);
-  debugger;
+
   promises.splice(promiseToRemoveIndex, 1);
   if (queue.length > 0) {
     const nextpromise = queue[0];
-    debugger;
+
     promises.push(nextpromise);
     queue.shift();
     nextpromise()
@@ -25,7 +25,6 @@ eventEmitter.on('promiseResolved', promise => {
         eventEmitter.emit('promiseRejected', { promise, error });
       });
 
-    debugger;
     console.log('queue length', queue.length);
     console.log('promises length', promises.length);
   } else {
@@ -33,7 +32,6 @@ eventEmitter.on('promiseResolved', promise => {
   }
 });
 eventEmitter.on('promiseRejected', () => {
-  debugger;
   console.log('promiseRejected');
 });
 eventEmitter.on('promiseAttached', promise => {

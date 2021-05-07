@@ -5,6 +5,19 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "type": "node",
+            "request": "launch",
+            "name": "worker_thread",
+            "program": "${workspaceFolder}/page-collector/server.js",
+            "runtimeArgs": [
+                "--experimental-wasm-threads",
+                "--experimental-worker"
+            ],
+            "skipFiles": [
+                "<node_internals>/**"
+            ]
+        },
+        {
             "name": "Attach by Process ID",
             "processId": "${command:PickProcess}",
             "request": "attach",
@@ -20,7 +33,7 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}/page-prerender/defacto/index.js"
+            "program": "${workspaceFolder}/page-collector/server.js"
         }
     ]
 }

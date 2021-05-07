@@ -1,10 +1,10 @@
- function pageCounter() {
+function pageCounter() {
   return {
     selector: '#products',
     countPages: async ({ page }) => {
       try {
         const url = page.url();
-        debugger;
+
         const { pageCount, nextPageUrl } = await page.evaluate(function(_url) {
           const productCount = document
             .querySelector('.product-count')
@@ -23,9 +23,7 @@
         }, url);
 
         return { pageCount, nextPageUrl, selector: '#products' };
-      } catch (error) {
-        debugger;
-      }
+      } catch (error) {}
     }
   };
 }

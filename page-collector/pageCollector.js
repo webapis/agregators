@@ -29,18 +29,16 @@ async function getNextPageContent({ url, page, selector }) {
   }
 }
 
- function pageCollector({ output, url, browser, pageCounter }) {
+function pageCollector({ output, url, browser, pageCounter }) {
   return async () => {
     try {
-      debugger;
       const { selector, countPages } = pageCounter();
-      debugger;
 
       await makeDir(pather.dirname(output));
 
       const page = await browser.newPage();
       await page.setRequestInterception(true);
-      debugger;
+
       page.on('request', req => {
         const resourceType = req.resourceType();
         if (
@@ -68,7 +66,6 @@ async function getNextPageContent({ url, page, selector }) {
 
       let nextPageContents = [];
       if (pageCount > 0) {
-        debugger;
         let promises = [];
         for (let i = 1; i <= pageCount; i++) {
           console.log('Collecting page:', i, `${nextPageUrl}${i}`);
@@ -81,10 +78,10 @@ async function getNextPageContent({ url, page, selector }) {
             })
           );
         }
-      
+
         nextPageContents = await Promise.all(promises);
         const joinContent = [firstPageContent, ...nextPageContents].join(' ');
-     
+
         await page.close();
         fs.writeFileSync(output, joinContent);
       } else {

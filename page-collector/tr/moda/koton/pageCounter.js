@@ -30,9 +30,7 @@ function pageCounter() {
         } else {
           return { pageCount: 0, nextPageUrl: null };
         }
-      } catch (error) {
-        debugger;
-      }
+      } catch (error) {}
     }
   };
 }

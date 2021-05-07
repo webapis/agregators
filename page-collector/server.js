@@ -6,9 +6,12 @@ const path = require('path');
 const nodeUrl = require('url');
 const makeDir = require('make-dir');
 const puppeteer = require('puppeteer');
+const { uuidv4 } = require('./uuidv4');
+
 const Jimp = require('jimp');
 const { promiseConcurrency } = require('./promiseConcurrency');
 const { imageSizeOptimizer } = require('./image-processes/imageSizeOptimizer');
+const { workerService } = require('./workerService');
 
 const ws_domain = 'tr/moda';
 async function batchPageCollector() {
@@ -16,7 +19,7 @@ async function batchPageCollector() {
     batchConcurrency: 2,
     totalConcurrency: 10
   });
-  debugger;
+
   const browser = await puppeteer.launch({ headless: false, timeout: 0 });
   walkSync(
     `${process.cwd()}/page-collector/${ws_domain}/page-urls`,
@@ -32,15 +35,15 @@ async function batchPageCollector() {
           .hostname.replace('www.', '')
           .replace('.com.tr', '')
           .replace('.com', '');
-        debugger;
+
         const {
           pageCounter
         } = require(`./${ws_domain}/${marka}/pageCounter.js`);
-        debugger;
+
         const { pageCollector } = require('./pageCollector');
-        debugger;
+
         const output = `${process.cwd()}/page-collection/${ws_domain}/${pagePath}/${marka}.html`;
-        debugger;
+
         concurrency({
           batchName: marka,
           promise: pageCollector({ url, output, pageCounter, browser })
@@ -57,14 +60,14 @@ async function batchPageCollector() {
 function batchDataCollector() {
   walkSync(`${process.cwd()}/page-collection/${ws_domain}`, async filepath => {
     const marka = path.basename(filepath, '.html');
-    debugger;
+
     const { dataCollector } = require(`./${ws_domain}/${marka}/dataCollector`);
-    debugger;
+
     const input = filepath;
     const output = `${process.cwd()}/page-data/${filepath
       .substring(filepath.indexOf(ws_domain))
       .replace('.html', '.json')}`;
-    debugger;
+
     await makeDir(path.dirname(output));
     const page = fs.readFileSync(input, { encoding: 'utf-8' });
     console.log('dataCollection started:', input);
@@ -111,7 +114,7 @@ function batchImageCollection() {
             filepath.indexOf(ws_domain)
           )}`
         ) + '/img/original';
-      debugger;
+
       await makeDir(output);
       const dataObject = JSON.parse(data);
       for (let d of dataObject) {
@@ -125,82 +128,35 @@ function batchImageCollection() {
           });
         }
       }
-    } catch (error) {
-      debugger;
-    }
+    } catch (error) {}
   });
 }
 
-function batchImageCropping(size) {
-  const EventEmitter = require('events');
-  const { uuidv4 } = require('./uuidv4');
-  const eventEmitter = new EventEmitter();
-  const parrallel = 10;
-  let queue = [];
+async function batchImageCropping(size) {
+  let queque = [];
+  const batch = 100;
+  console.log('start....');
+  walkSync(`${process.cwd()}/page-image/${ws_domain}`, async function(
+    filepath
+  ) {
+    if (!filepath.includes('.DS_Store')) {
+      queque.push(filepath);
+    }
+  });
+  let i;
   let promises = [];
-  eventEmitter.on('imageCropped', promise => {
-    const { uuidv4 } = promise;
-    debugger;
-    const promiseToRemoveIndex = promises.findIndex(p => p.uuidv4 === uuidv4);
-    debugger;
-    promises.splice(promiseToRemoveIndex, 1);
-    if (queue.length > 0) {
-      const nextpromise = queue[0];
-      debugger;
-      promises.push(nextpromise);
-      queue.shift();
-      nextpromise();
-      debugger;
-      console.log('queue length', queue.length);
-      console.log('promises length', promises.length);
-    } else {
-      console.log('queue is complete');
-    }
-  });
-  eventEmitter.on('imageCroppedFailed', ({ error, promise }) => {
-    debugger;
-  });
-  walkSync(`${process.cwd()}/page-image/${ws_domain}`, async filepath => {
-    try {
-      if (!filepath.includes('.DS_Store')) {
-        const input = filepath;
-        const output = filepath;
-        console.log('filepath', filepath);
-        if (promises.length <= parrallel) {
-          let promise = Jimp.read(input).then(async image => {
-            console.log('cropping image', path.basename(filepath));
-
-            await image.resize(288, Jimp.AUTO);
-            await image.quality(60);
-            await image.writeAsync(output);
-
-            eventEmitter.emit('imageCropped', promise);
-          });
-          promise.uuidv4 = uuidv4();
-          promises.push(promise);
-        } else {
-          queue.push(() => {
-            const promise = Jimp.read(input).then(async image => {
-              console.log('cropping image', path.basename(filepath));
-              debugger;
-              await image.resize(288, Jimp.AUTO);
-              await image.quality(60);
-              await image.writeAsync(output);
-              eventEmitter.emit('imageCropped', promise);
-            });
-          });
-        }
-      } else {
-        debugger;
-      }
-    } catch (error) {
-      debugger;
-      throw error;
-    }
-  });
+  for (i = 0; i <= queque.length; i += batch) {
+    const nextSlice = queque.slice(i, i + batch);
+    promises.push(await workerService({ workerData: { nextSlice, index: i } }));
+  }
+  await Promise.all(promises);
+  console.log('queque', queque.length);
+  debugger;
+  console.log('end....');
 }
 
 function batchImageSizeOptimizer() {
+  debugger;
   walkSync(`${process.cwd()}/page-data/${ws_domain}`, filepath => {
     if (!filepath.includes('.DS_Store')) {
       const input = filepath;
@@ -216,9 +172,7 @@ function batchImageSizeOptimizer() {
   });
 }
 
-function batchMetaCreation() {
-  debugger;
-}
+function batchMetaCreation() {}
 
 const env = process.env.NODE_ENV;
 

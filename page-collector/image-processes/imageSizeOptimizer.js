@@ -14,7 +14,6 @@ eventEmitter.on('promiseAttached', promise => {
     promises.push(promise);
     promise()
       .then(() => {
-        debugger;
         eventEmitter.emit('promiseResolved', promise);
       })
       .catch(e => {
@@ -27,13 +26,13 @@ eventEmitter.on('promiseAttached', promise => {
 
 eventEmitter.on('promiseResolved', promise => {
   const { uuidv4 } = promise;
-  debugger;
+
   const promiseToRemoveIndex = promises.findIndex(p => p.uuidv4 === uuidv4);
-  debugger;
+
   promises.splice(promiseToRemoveIndex, 1);
   if (queue.length > 0) {
     const nextpromise = queue[0];
-    debugger;
+
     promises.push(nextpromise);
     queue.shift();
     nextpromise()
@@ -44,7 +43,6 @@ eventEmitter.on('promiseResolved', promise => {
         eventEmitter.emit('promiseRejected', { promise, error });
       });
 
-    debugger;
     console.log('queue length', queue.length);
     console.log('promises length', promises.length);
   } else {
@@ -87,7 +85,6 @@ function imageSizeOptimizer({ input, imgOutput }) {
 
     //fs.writeFileSync(output, JSON.stringify(dataObject));
   } catch (error) {
-    debugger;
     console.log('imageSizeOptimizer error.....', error.message);
   }
 }
@@ -134,7 +131,6 @@ function optimizeImage({ imgOutput, src, dataObject, elem, d, imageUrl }) {
             reject(error);
           });
       } catch (error) {
-        debugger;
         console.log('optimizeImage error src', src);
         console.log('optimizeImage error', error);
         reject(error);
