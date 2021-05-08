@@ -1,13 +1,11 @@
 const { parentPort, isMainThread, Worker } = require('worker_threads');
 let worker = {};
-function workerService({ workerData, workerPath }) {
+function workerService({ workerData, script }) {
+
   return new Promise((resolve, reject) => {
     console.log('Message posted to child worker');
     if (isMainThread) {
-      worker = new Worker(
-        '/Users/personalcomputer/actors/page-collector/image-processes/2-cropImages.js',
-        { workerData }
-      );
+      worker = new Worker(script, { workerData });
       worker.on('message', resolve);
       worker.on('error', reject);
       worker.on('exit', code => {

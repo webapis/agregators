@@ -13,5 +13,6 @@ page-data/
 page-meta/
 page-build/
 page-image/
-page-image-cropped/
+page-image-resized/
+page-image-blurred/
 .env

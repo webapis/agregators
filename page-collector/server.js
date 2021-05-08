@@ -6,11 +6,8 @@ const path = require('path');
 const nodeUrl = require('url');
 const makeDir = require('make-dir');
 const puppeteer = require('puppeteer');
-const { uuidv4 } = require('./uuidv4');
 
-const Jimp = require('jimp');
 const { promiseConcurrency } = require('./promiseConcurrency');
-const { imageSizeOptimizer } = require('./image-processes/imageSizeOptimizer');
 const { workerService } = require('./workerService');
 
 const ws_domain = 'tr/moda';
@@ -132,11 +129,16 @@ function batchImageCollection() {
   });
 }
 
-async function batchImageCropping(size) {
+async function batchImageProcessing({
+  imageWidth,
+  script,
+  folderName,
+  batch = 100
+}) {
   let queque = [];
-  const batch = 100;
+
   console.log('start....');
-  walkSync(`${process.cwd()}/page-image/${ws_domain}`, async function(
+  walkSync(`${process.cwd()}/${folderName}/${ws_domain}`, async function(
     filepath
   ) {
     if (!filepath.includes('.DS_Store')) {
@@ -147,29 +149,17 @@ async function batchImageCropping(size) {
   let promises = [];
   for (i = 0; i <= queque.length; i += batch) {
     const nextSlice = queque.slice(i, i + batch);
-    promises.push(await workerService({ workerData: { nextSlice, index: i } }));
+    promises.push(
+      workerService({
+        workerData: { nextSlice, index: i, imageWidth },
+        script
+      })
+    );
   }
   await Promise.all(promises);
   console.log('queque', queque.length);
   debugger;
   console.log('end....');
-}
-
-function batchImageSizeOptimizer() {
-  debugger;
-  walkSync(`${process.cwd()}/page-data/${ws_domain}`, filepath => {
-    if (!filepath.includes('.DS_Store')) {
-      const input = filepath;
-
-      const dirname = path.dirname(filepath);
-
-      const imgOutput = dirname.substring(dirname.indexOf(ws_domain)) + '/img/';
-
-      console.log('imageOptimization started:', input);
-
-      imageSizeOptimizer({ input, imgOutput });
-    }
-  });
 }
 
 function batchMetaCreation() {}
@@ -184,15 +174,27 @@ env === 'page_data_collection' &&
 env === 'page_image_collection' &&
   removeDerectory('page-image') & batchImageCollection();
 
-env === 'page_image_crop' && batchImageCropping(288);
-
-env === 'page_image_optimization' &&
-  walkSync(`${process.cwd()}/page-data/${ws_domain}`, async filepath => {
-    if (!filepath.includes('.DS_Store')) {
-      if (filepath.includes('.image-optimized-1.json')) {
-        fs.rmSync(filepath);
-      }
-    }
-  }) & batchImageSizeOptimizer();
+env === 'page_image_crop' &&
+  batchImageProcessing({
+    imageWidth: 288,
+    folderName: 'page-image',
+    script:
+      '/Users/personalcomputer/actors/page-collector/image-processes/2-cropImages.js'
+  });
+env === 'page_image_blur' &&
+  batchImageProcessing({
+    imageWidth: 288,
+    folderName: 'page-image-resized',
+    script:
+      '/Users/personalcomputer/actors/page-collector/image-processes/3-blurImages.js'
+  });
+env === 'page_image_embed' &&
+  batchImageProcessing({
+    imageWidth: 288,
+    folderName: 'page-data',
+    batch: 2,
+    script:
+      '/Users/personalcomputer/actors/page-collector/image-processes/4-embedImages.js'
+  });
 
 env === 'page_meta_creation' && batchMetaCreation();
