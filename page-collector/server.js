@@ -234,12 +234,10 @@ function getTrees({ files, reduced }) {
 }
 
 function pageLeaves() {
-  debugger;
   let files = [];
   console.log('page tree creation started....');
   walkSync(`${process.cwd()}/page-tree/${ws_domain}`, async function(filepath) {
     if (!filepath.includes('.DS_Store')) {
-      //files.push(filepath);
       files.push(filepath);
     }
   });
@@ -258,12 +256,9 @@ function pageLeaves() {
       const slice = dataObject.slice(i, i + 100);
       fs.writeFileSync(outoutFilePath, JSON.stringify(slice));
       count++;
-      debugger;
     }
-
-    debugger;
   });
-  debugger;
+
   console.log('page tree creation ended....');
 }
 
