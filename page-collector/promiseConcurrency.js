@@ -22,6 +22,7 @@ eventEmitter.on('promiseResolved', promise => {
         eventEmitter.emit('promiseResolved', promise);
       })
       .catch(error => {
+        console.log('error fetching image', error);
         eventEmitter.emit('promiseRejected', { promise, error });
       });
 
@@ -47,6 +48,7 @@ eventEmitter.on('promiseAttached', promise => {
         eventEmitter.emit('promiseResolved', promise);
       })
       .catch(error => {
+        console.log('error fetching image', error);
         eventEmitter.emit('promiseRejected', { promise, error });
       });
   } else {
