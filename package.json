@@ -42,6 +42,7 @@
     "imageBlur": "NODE_ENV=page_image_blur node  page-collector/server.js",
     "imageEmbed": "NODE_ENV=page_image_embed node  page-collector/server.js",
     "pageTreeCreation": "NODE_ENV=page_nav_data_tree_creation node page-collector/server.js",
+    "pageLeavesCreation": "NODE_ENV=page_leaves_creation node page-collector/server.js",
     "metaCreator": "node page-meta-creator/server.js",
     "pageBuilder": "node page-builder/server.js",
     "pagePrerender": "node page-prerender/server.js",
