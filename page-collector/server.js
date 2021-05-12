@@ -9,7 +9,10 @@ const puppeteer = require('puppeteer');
 
 const { promiseConcurrency } = require('./promiseConcurrency');
 const { workerService } = require('./workerService');
-
+const { pageGeneration } = require('./pageGenerator');
+const { pageScriptAttacher } = require('./pageScriptAttacher');
+const { pageComponentAttacher } = require('./pageComponentAttacher');
+const { pageComponentAttrSetter } = require('./pageComponentAttrSetter');
 const ws_domain = 'tr/moda';
 async function batchPageCollector() {
   const concurrency = promiseConcurrency({
@@ -297,3 +300,35 @@ env === 'page_image_embed' &&
 
 env === 'page_nav_data_tree_creation' && navDataTree();
 env === 'page_leaves_creation' && pageLeaves();
+env === 'page_generation' &&
+  pageGeneration() &&
+  pageComponentAttacher({
+    source: `<product-list></product-list>
+    <prerender-component></prerender-component>
+    `,
+    innterHtmlTo: 'body',
+    inputFolder: 'page-list-pages'
+  }) &&
+  pageScriptAttacher({
+    source: [
+      'https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css'
+    ],
+    inputFolder: 'page-list-pages',
+    prop: 'href',
+    tag: 'link',
+    appendTo: 'head',
+    rel: 'stylesheet',
+    cdn: true
+  }) &&
+  pageScriptAttacher({
+    source: [
+      '/components/product-list/product-list.js',
+      '/components/product-list/prerender-component.js'
+    ],
+    inputFolder: 'page-list-pages',
+    prop: 'src',
+    tag: 'script',
+    appendTo: 'body',
+    cdn: false
+  }) &&
+  pageComponentAttrSetter({ inputFolder: 'page-list-pages' });
