@@ -12,7 +12,7 @@ const { workerService } = require('./workerService');
 const { pageGeneration } = require('./pageGenerator');
 const { pageScriptAttacher } = require('./pageScriptAttacher');
 const { pageComponentAttacher } = require('./pageComponentAttacher');
-const { pageComponentAttrSetter } = require('./pageComponentAttrSetter');
+
 const ws_domain = 'tr/moda';
 async function batchPageCollector() {
   const concurrency = promiseConcurrency({
@@ -330,5 +330,4 @@ env === 'page_generation' &&
     tag: 'script',
     appendTo: 'body',
     cdn: false
-  }) &&
-  pageComponentAttrSetter({ inputFolder: 'page-list-pages' });
+  });
