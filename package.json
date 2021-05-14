@@ -45,6 +45,7 @@
     "pageLeavesCreation": "NODE_ENV=page_leaves_creation node page-collector/server.js",
     "pageGenerator": "NODE_ENV=page_generation node page-collector/server.js",
     "pageComponentAttachment": "NODE_ENV=page_component_attachment node page-collector/server.js",
+    "pageBuilder": "NODE_ENV=page_builder node page-collector/server.js",
     "metaCreator": "node page-meta-creator/server.js",
     "pagePrerender": "node page-prerender/server.js",
     "dev": "NODE_ENV=dev npm run pageBuilder & NODE_ENV=dev  npm run metaCreator & NODE_ENV=dev node page-serve/server.js",

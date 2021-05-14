@@ -29,7 +29,7 @@ async function getNextPageContent({ url, page, selector }) {
   }
 }
 
-function pageCollector({ output, url, browser, pageCounter }) {
+function pageCollector({ output, url, browser, pageCounter, counter }) {
   return async () => {
     try {
       const { selector, countPages } = pageCounter();
@@ -80,6 +80,8 @@ function pageCollector({ output, url, browser, pageCounter }) {
         }
 
         nextPageContents = await Promise.all(promises);
+        counter--;
+        console.log(`${counter} pages of total  is left >>>>`);
         const joinContent = [firstPageContent, ...nextPageContents].join(' ');
 
         await page.close();

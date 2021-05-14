@@ -1,7 +1,7 @@
 //import './df-product-view.css';
 
 customElements.define(
-  'defacto-product-view',
+  'product-view',
   class extends HTMLElement {
     constructor() {
       super();

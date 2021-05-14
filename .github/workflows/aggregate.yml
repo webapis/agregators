@@ -1,5 +1,8 @@
 name: aggregate
-on: [push]
+on:
+  push:
+    branches:
+      - master
 jobs:
   aggregator:
     runs-on: ubuntu-latest

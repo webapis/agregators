@@ -19,9 +19,9 @@ customElements.define(
         'https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css';
       document.head.appendChild(s);
       var pds = document.createElement('link');
-      const marka = this.getAttribute('marka');
+
       pds.rel = 'stylesheet';
-      pds.href = `/components/product-list/${marka}-product-view.css`;
+      pds.href = `/components/product-list/product-view.css`;
       document.head.appendChild(pds);
       Promise.all([
         import('../air-store.js'),
@@ -36,7 +36,7 @@ customElements.define(
       });
       Promise.all([
         import('./product-item-scroller.js'),
-        import(`./${marka}-product-view.js`),
+        import(`./product-view.js`),
         import('./pl-page-tabs.js'),
         import('./pl-secenekler.js'),
         import('./pl-search-result.js'),
@@ -72,8 +72,6 @@ customElements.define(
         <products-container marka=${marka} jsonurl=${jsonurl}></products-container>
         <filter-container></filter-container>
       `;
-
-     
     }
   }
 );

@@ -12,49 +12,66 @@ const { workerService } = require('./workerService');
 const { pageGeneration } = require('./pageGenerator');
 const { pageScriptAttacher } = require('./pageScriptAttacher');
 const { pageComponentAttacher } = require('./pageComponentAttacher');
-
+const { pageBuilder } = require('./pageBuilder');
+const { diff_minutes } = require('./diff_time');
 const ws_domain = 'tr/moda';
 async function batchPageCollector() {
+  const files = [];
+  const startDateTime = Date.now();
   const concurrency = promiseConcurrency({
     batchConcurrency: 2,
     totalConcurrency: 10
   });
 
-  const browser = await puppeteer.launch({ headless: false, timeout: 0 });
+  console.log('page collection started....');
   walkSync(
     `${process.cwd()}/page-collector/${ws_domain}/page-urls`,
     async filepath => {
-      const pagePath = filepath
-        .substring(filepath.indexOf('page-urls') + 9)
-        .replace('.js', '');
-
-      const sourcePages = require(filepath);
-      sourcePages.forEach(url => {
-        const marka = nodeUrl
-          .parse(url, true)
-          .hostname.replace('www.', '')
-          .replace('.com.tr', '')
-          .replace('.com', '');
-
-        const {
-          pageCounter
-        } = require(`./${ws_domain}/${marka}/pageCounter.js`);
-
-        const { pageCollector } = require('./pageCollector');
-
-        const output = `${process.cwd()}/page-collection/${ws_domain}/${pagePath}/${marka}.html`;
-
-        concurrency({
-          batchName: marka,
-          promise: pageCollector({ url, output, pageCounter, browser })
-        });
-        console.log(
-          'filepath',
-          filepath.substring(filepath.indexOf('page-urls') + 9)
-        );
-      });
+      files.push(filepath);
     }
   );
+  debugger;
+  const browser = await puppeteer.launch({ headless: false, timeout: 0 });
+  let counter = files.length;
+  for (let filepath of files) {
+    debugger;
+    const pagePath = filepath
+      .substring(filepath.indexOf('page-urls') + 9)
+      .replace('.js', '');
+
+    const sourcePages = require(filepath);
+    sourcePages.forEach(url => {
+      const marka = nodeUrl
+        .parse(url, true)
+        .hostname.replace('www.', '')
+        .replace('.com.tr', '')
+        .replace('.com', '');
+
+      const { pageCounter } = require(`./${ws_domain}/${marka}/pageCounter.js`);
+
+      const { pageCollector } = require('./pageCollector');
+
+      const output = `${process.cwd()}/page-collection/${ws_domain}/${pagePath}/${marka}.html`;
+
+      concurrency({
+        batchName: marka,
+        promise: pageCollector({ url, output, pageCounter, browser, counter })
+      });
+      console.log(
+        'filepath',
+        filepath.substring(filepath.indexOf('page-urls') + 9)
+      );
+    });
+    if (filepath === files[files.length]) {
+      await browser.close();
+      console.log(
+        `page collection ended in ${diff_minutes(
+          startDateTime,
+          Date.now()
+        )} ....`
+      );
+    }
+  }
 }
 
 function batchDataCollector() {
@@ -331,3 +348,5 @@ env === 'page_generation' &&
     appendTo: 'body',
     cdn: false
   });
+
+env === 'page_builder' && pageBuilder();
