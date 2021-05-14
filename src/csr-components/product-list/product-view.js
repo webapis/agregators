@@ -19,9 +19,9 @@ customElements.define(
               Math.round(document.body.scrollTop * 100 / this.offsetTop) >= 30
             ) {
               // const id = this.getAttribute('id');
-
-              const srcset = this.getAttribute('data-srcset');
-              img.srcset = srcset;
+              debugger;
+             const srcset = this.getAttribute('datasrcset');
+               img.srcset = srcset;
             }
           }
         }
@@ -33,6 +33,7 @@ customElements.define(
       const title = this.getAttribute('productName');
       const salePrice = this.getAttribute('salePrice');
       const src = this.getAttribute('src');
+    
       const marketPrice = this.getAttribute('marketPrice');
       const discountRate = this.getAttribute('discountRate');
       const discountText = this.getAttribute('discountText');
@@ -43,8 +44,8 @@ customElements.define(
       // eslint-disable-next-line no-undef
       this.innerHTML = /*html*/ `
         <div class="df-product-item">
-          <img  class="df-img" src="${src}"   class="df-picture" style="width:150px;height:auto;"  sizes="(min-width: 600px) 288px">
-          <a href="${detailLink}" class="df-product-info-title-link">
+          <img  class="df-img" src=${src}   class="df-picture" style="width:150px;height:auto;"  sizes="(min-width: 600px) 288px">
+          <a href="${detailLink}" class=" df-product-info-title-link">
           <div >${boldenPattern(title, pattern)}</div>
           </a>
           <div class="df-price-info">
@@ -69,9 +70,8 @@ customElements.define(
       ) {
         const img = this.querySelector('img');
 
-        const srcset = this.getAttribute('data-srcset');
-
-        img.srcset = srcset;
+        const srcset = this.getAttribute('datasrcset');
+               img.srcset = srcset;
       }
     }
   }

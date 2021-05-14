@@ -30,7 +30,7 @@ describe('workerService test', () => {
         '/Users/personalcomputer/actors/page-collector/image-processes/3-blurImages.js'
     });
   });
-  it('image embed test', async function() {
+  it.only('image embed test', async function() {
     this.timeout(50000);
     debugger;
     const result = await workerService({

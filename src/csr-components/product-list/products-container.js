@@ -5,7 +5,22 @@ customElements.define(
       super();
     }
 
-    connectedCallback() {
+    async connectedCallback() {
+      const env = document.querySelector('head meta[name=env]').content;
+
+      if (env === 'dev') {
+        const fileName = document.location.href
+          .substr(document.location.href.lastIndexOf('/') + 1)
+          .replace('.html', '');
+        const response = await fetch(`./${fileName}-0.json`);
+        const data = await response.json();
+        window.fetched = true;
+        this.appendProducts(data);
+        debugger;
+      }
+      debugger;
+
+      debugger;
       // const { state: { selected_pl_tab, items } } = window.pageStore;
       // if (selected_pl_tab === 'urunler-tab') {
       //   this.render({ value: items });
@@ -69,7 +84,7 @@ customElements.define(
             // );
 
             const jsonUrl = JSON.parse(this.getAttribute('jsonurl'));
-
+            debugger;
             if (jsonUrl && pageNum <= jsonUrl.length) {
               console.log('fetching next data');
               const response = await fetch(jsonUrl[pageNum]);
@@ -153,9 +168,8 @@ customElements.define(
     } //render
 
     appendProducts(items) {
-      const marka = this.getAttribute('marka');
       items.forEach((item, i) => {
-        var node = document.createElement(`${marka}-product-view`);
+        var node = document.createElement(`product-view`);
         node.classList.add('col-6');
         node.classList.add('col-md-3');
         node.classList.add('col-lg-2');

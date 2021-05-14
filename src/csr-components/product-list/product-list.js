@@ -13,6 +13,7 @@ customElements.define(
       document.head.appendChild(viewport);
     }
     connectedCallback() {
+  
       var s = document.createElement('link');
       s.rel = 'stylesheet';
       s.href =
@@ -64,12 +65,12 @@ customElements.define(
       });
     }
     render() {
-      const marka = this.getAttribute('marka');
-      const jsonurl = this.getAttribute('jsonurl');
+    
+    
 
       this.innerHTML = `
         <pl-page-tabs></pl-page-tabs>
-        <products-container marka=${marka} jsonurl=${jsonurl}></products-container>
+        <products-container></products-container>
         <filter-container></filter-container>
       `;
     }

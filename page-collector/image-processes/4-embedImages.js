@@ -22,12 +22,23 @@ async function embedImage() {
           .replace('page-data', 'page-image-blurred');
         const imageFolder = `/img/${imageWidth}/`;
         const imagePath = `${directory}${imageFolder}${filename}`;
+        const relativeImagepath = imagePath.substring(
+          imagePath.indexOf('/tr/')
+        );
+        debugger;
         if (fs.existsSync(imagePath)) {
           const image = await Jimp.read(imagePath);
 
           const dataURL = await image.getBase64Async(Jimp.AUTO);
 
-          const nextState = { ...d, image: { ...d.image, src: `${dataURL}` } };
+          const nextState = {
+            ...d,
+            image: {
+              ...d.image,
+              src: `${dataURL}`,
+              dataSrcset: relativeImagepath
+            }
+          };
 
           return nextState;
         } else {

@@ -27,6 +27,10 @@ function pageScriptAttacher({
     const data = fs.readFileSync(f, { encoding: 'utf-8' });
     const dom = new JSDOM(data);
     const document = dom.window.document;
+    const headTag = document.createElement('meta');
+    headTag.name = 'env';
+    headTag.content = 'dev';
+    document.head.appendChild(headTag);
     source.forEach(s => {
       const scr = document.createElement(tag);
       if (rel) {
