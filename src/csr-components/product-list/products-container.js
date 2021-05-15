@@ -7,20 +7,17 @@ customElements.define(
 
     async connectedCallback() {
       const env = document.querySelector('head meta[name=env]').content;
-
+      const fileName = document.location.href
+        .substr(document.location.href.lastIndexOf('/') + 1)
+        .replace('.html', '');
       if (env === 'dev') {
-        const fileName = document.location.href
-          .substr(document.location.href.lastIndexOf('/') + 1)
-          .replace('.html', '');
         const response = await fetch(`./${fileName}-0.json`);
         const data = await response.json();
         window.fetched = true;
         this.appendProducts(data);
-        debugger;
+       
       }
-      debugger;
-
-      debugger;
+ 
       // const { state: { selected_pl_tab, items } } = window.pageStore;
       // if (selected_pl_tab === 'urunler-tab') {
       //   this.render({ value: items });
@@ -66,7 +63,7 @@ customElements.define(
       //   });
       // }
 
-      let pageNum = 0;
+      let pageNum = 1;
 
       document.onscroll = async () => {
         console.log('scrolling page.....????/');
@@ -77,23 +74,11 @@ customElements.define(
             document.body.scrollHeight
           ) {
             console.log('Fetch started');
-
-            //  const marka = this.getAttribute('marka');
-            // const itemTags = document.getElementsByTagName(
-            //   `${marka}-product-view`
-            // );
-
-            const jsonUrl = JSON.parse(this.getAttribute('jsonurl'));
-            debugger;
-            if (jsonUrl && pageNum <= jsonUrl.length) {
-              console.log('fetching next data');
-              const response = await fetch(jsonUrl[pageNum]);
-              const data = await response.json();
-              pageNum++;
-              window.dynamicRender(data.items);
-            }
-
-            // this.appendProducts(nextItems);
+            const response = await fetch(`./${fileName}-${pageNum}.json`);
+            const data = await response.json();
+            window.fetched = true;
+            this.appendProducts(data);
+            pageNum++;
           }
         }
         //toggle nav tab

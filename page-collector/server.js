@@ -271,6 +271,7 @@ function pageLeaves() {
     makeDir.sync(outputDir);
     let i;
     let count = 0;
+    let pages = Math.round(dataObject.length / 100);
     for (i = 0; i < dataObject.length; i += 100) {
       const outoutFilePath = `${outputDir}/${filename}-${count}.json`;
       const slice = dataObject.slice(i, i + 100);

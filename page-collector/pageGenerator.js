@@ -23,12 +23,12 @@ async function pageGeneration() {
     const htmlOutput = `${process.cwd()}/page-list-pages/tr/${path.dirname(
       firstJson[i]
     )}`;
-    const pageName = path.basename(firstJson[i], '.json').replace('-0', '');
+    const pageName = path.basename(firstJson[i], '.json').replace(/-0.*/i, '');
 
     makeDir.sync(htmlOutput);
     const dom = new JSDOM(
       `<body>
-            </body>`,
+       </body>`,
       { includeNodeLocations: true }
     );
 

@@ -19,7 +19,7 @@ customElements.define(
               Math.round(document.body.scrollTop * 100 / this.offsetTop) >= 30
             ) {
               // const id = this.getAttribute('id');
-              debugger;
+         
              const srcset = this.getAttribute('datasrcset');
                img.srcset = srcset;
             }
