@@ -29,7 +29,7 @@ async function getNextPageContent({ url, page, selector }) {
   }
 }
 
-function pageCollector({ output, url, browser, pageCounter, counter }) {
+function pageCollector({ output, url, browser, pageCounter,cb }) {
   return async () => {
     try {
       const { selector, countPages } = pageCounter();
@@ -68,10 +68,10 @@ function pageCollector({ output, url, browser, pageCounter, counter }) {
       if (pageCount > 0) {
         let promises = [];
         for (let i = 1; i <= pageCount; i++) {
-          console.log('Collecting page:', i, `${nextPageUrl}${i}`);
+          //console.log('Collecting page:', i, `${nextPageUrl}${i}`);
 
           promises.push(
-            getNextPageContent({
+            await getNextPageContent({
               url: `${nextPageUrl}${i}`,
               page: await browser.newPage(),
               selector
@@ -80,14 +80,17 @@ function pageCollector({ output, url, browser, pageCounter, counter }) {
         }
 
         nextPageContents = await Promise.all(promises);
-        counter--;
-        console.log(`${counter} pages of total  is left >>>>`);
+
         const joinContent = [firstPageContent, ...nextPageContents].join(' ');
 
         await page.close();
+        cb(url)
+     
         fs.writeFileSync(output, joinContent);
       } else {
+        cb(url)
         await page.close();
+      
         fs.writeFileSync(output, firstPageContent);
       }
     } catch (error) {

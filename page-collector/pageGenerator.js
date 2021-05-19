@@ -9,22 +9,34 @@ const ws_domain = 'tr/moda';
 async function pageGeneration() {
   let files = [];
   console.log('page genegation started....');
-  walkSync(`${process.cwd()}/page-leave/${ws_domain}`, async function(
-    filepath
-  ) {
-    if (!filepath.includes('.DS_Store')) {
-      files.push(filepath.substring(filepath.indexOf('moda/')));
-    }
+  walkSync(`${process.cwd()}/page-leave`, async function(filepath) {
+    //if (!filepath.includes('.DS_Store')) {
+    //files.push(filepath.substring(filepath.indexOf('page-leave/')));
+    files.push(filepath);
+    //}
   });
+  debugger;
   const firstJson = files.filter(f => f.includes('-0.json'));
 
   let i = 0;
   for (i = 0; i < firstJson.length; i++) {
-    const htmlOutput = `${process.cwd()}/page-list-pages/tr/${path.dirname(
-      firstJson[i]
-    )}`;
+    let htmlOutput = '';
     const pageName = path.basename(firstJson[i], '.json').replace(/-0.*/i, '');
-
+    const lastFolder = firstJson[i]
+      .substring(firstJson[i].lastIndexOf('/') + 1)
+      .replace('-0.json', '');
+    debugger;
+    if (lastFolder === pageName) {
+      htmlOutput = `${path.dirname(firstJson[i])}`
+        .replace(`/${lastFolder}`, '')
+        .replace('page-leave', 'page-list-pages');
+    } else {
+      htmlOutput = `${path.dirname(firstJson[i])}`.replace(
+        'page-leave',
+        'page-list-pages'
+      );
+    }
+    debugger;
     makeDir.sync(htmlOutput);
     const dom = new JSDOM(
       `<body>

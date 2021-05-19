@@ -15,7 +15,7 @@ function pageScriptAttacher({
 }) {
   let files = [];
   console.log('page script atachment started....');
-  walkSync(`${process.cwd()}/${inputFolder}/${ws_domain}`, async function(
+  walkSync(`${process.cwd()}/${inputFolder}`, async function(
     filepath
   ) {
     if (!filepath.includes('.DS_Store')) {

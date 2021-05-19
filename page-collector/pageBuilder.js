@@ -5,6 +5,7 @@ const makeDir = require('make-dir');
 const path = require('path');
 const ws_domain = 'tr/moda';
 const { copyComponents } = require('./copyComponents');
+
 function pageBuilder() {
   console.log('PAGE BUILD STARTED....');
   copyComponents();
@@ -34,9 +35,11 @@ function pageBuilder() {
 function copyFiles({ source, destination }) {
   debugger;
   console.log(`copy files from ${source} to ${destination} started....`);
-  walkSync(`${process.cwd()}/${source}/${ws_domain}`, async function(filepath) {
+  walkSync(`${process.cwd()}/${source}`, async function(filepath) {
     if (!filepath.includes('.DS_Store')) {
-      const newDestination = filepath.replace(source, destination);
+      const newDestination = 
+        filepath.replace(source, destination)
+      
       makeDir.sync(path.dirname(newDestination));
       debugger;
       fs.copyFileSync(filepath, newDestination);

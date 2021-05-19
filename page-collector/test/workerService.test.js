@@ -36,7 +36,7 @@ describe('workerService test', () => {
     const result = await workerService({
       workerData: {
         nextSlice: [
-          '/Users/personalcomputer/actors/page-data/tr/moda/kadin/giyim/alt-giyim/jean-etek/koton.json'
+          '/Users/personalcomputer/actors/page-data/tr/moda/kadın/giyim/dış-giyim/jean-çeket/koton.json'
         ],
         imageWidth: 288,
         index: 1

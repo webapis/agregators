@@ -10,6 +10,8 @@ customElements.define(
       const fileName = document.location.href
         .substr(document.location.href.lastIndexOf('/') + 1)
         .replace('.html', '');
+      const prefolder = document.location.href
+      debugger;
       if (env === 'dev') {
         const response = await fetch(`./${fileName}-0.json`);
         const data = await response.json();

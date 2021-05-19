@@ -6,7 +6,7 @@ const ws_domain = 'tr/moda';
 function pageComponentAttacher({ source, innterHtmlTo, inputFolder }) {
   let files = [];
   console.log('page component attachment started....');
-  walkSync(`${process.cwd()}/${inputFolder}/${ws_domain}`, async function(
+  walkSync(`${process.cwd()}/${inputFolder}`, async function(
     filepath
   ) {
     if (!filepath.includes('.DS_Store')) {

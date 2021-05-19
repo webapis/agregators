@@ -7,7 +7,7 @@ const nodeUrl = require('url');
 const makeDir = require('make-dir');
 const puppeteer = require('puppeteer');
 
-const { promiseConcurrency } = require('./promiseConcurrency');
+const { promiseConcurrency, eventEmitter } = require('./promiseConcurrency');
 const { workerService } = require('./workerService');
 const { pageGeneration } = require('./pageGenerator');
 const { pageScriptAttacher } = require('./pageScriptAttacher');
@@ -17,28 +17,33 @@ const { diff_minutes } = require('./diff_time');
 const ws_domain = 'tr/moda';
 async function batchPageCollector() {
   const files = [];
-  const startDateTime = Date.now();
   const concurrency = promiseConcurrency({
     batchConcurrency: 2,
     totalConcurrency: 10
   });
-
   console.log('page collection started....');
-  walkSync(
-    `${process.cwd()}/page-collector/${ws_domain}/page-urls`,
-    async filepath => {
-      files.push(filepath);
-    }
-  );
+  walkSync(`${process.cwd()}/page-structure/${ws_domain}/`, async filepath => {
+    files.push(filepath);
+  });
   debugger;
-  const browser = await puppeteer.launch({ headless: false, timeout: 0 });
-  let counter = files.length;
+  const browser = await puppeteer.launch({ headless: true, timeout: 0 });
+  let totalPagesToScan = 0;
+  let counter = 0;
+  let pageurls = [];
+  files.map(f => {
+    const sourcePages = require(f);
+    totalPagesToScan += sourcePages.length;
+    sourcePages.forEach(s => {
+      pageurls.push(s);
+    });
+    return sourcePages;
+  });
+  debugger;
   for (let filepath of files) {
     debugger;
     const pagePath = filepath
-      .substring(filepath.indexOf('page-urls') + 9)
+      .substring(filepath.indexOf('/tr/moda/') + 9)
       .replace('.js', '');
-
     const sourcePages = require(filepath);
     sourcePages.forEach(url => {
       const marka = nodeUrl
@@ -53,24 +58,35 @@ async function batchPageCollector() {
 
       const output = `${process.cwd()}/page-collection/${ws_domain}/${pagePath}/${marka}.html`;
 
+      debugger;
       concurrency({
         batchName: marka,
-        promise: pageCollector({ url, output, pageCounter, browser, counter })
+        promise: pageCollector({
+          url,
+          output,
+          pageCounter,
+          browser,
+          counter,
+          eventEmitter,
+          cb: async url => {
+            if (pageurls.length === 0) {
+              console.log('browser is closed');
+              await browser.close();
+            }
+            counter++;
+            console.log(
+              'is complete..., totalPagesToScan:',
+              totalPagesToScan,
+              'counter:',
+              counter
+            );
+            pageurls.splice(pageurls.indexOf(url), 1);
+            console.log('total remained:', pageurls.length);
+            console.info('urls', pageurls);
+          }
+        })
       });
-      console.log(
-        'filepath',
-        filepath.substring(filepath.indexOf('page-urls') + 9)
-      );
     });
-    if (filepath === files[files.length]) {
-      await browser.close();
-      console.log(
-        `page collection ended in ${diff_minutes(
-          startDateTime,
-          Date.now()
-        )} ....`
-      );
-    }
   }
 }
 
@@ -96,6 +112,7 @@ function batchDataCollector() {
 function download(url, dest) {
   /* Create an empty file where we can save data */
   const file = fs.createWriteStream(dest);
+  debugger;
   return () => {
     /* Using Promises so that we can use the ASYNC AWAIT syntax */
     return new Promise((resolve, reject) => {
@@ -166,6 +183,7 @@ async function batchImageProcessing({
     }
   });
   let i;
+
   let promises = [];
   for (i = 0; i <= queque.length; i += batch) {
     const nextSlice = queque.slice(i, i + batch);
@@ -178,7 +196,7 @@ async function batchImageProcessing({
   }
   await Promise.all(promises);
   console.log('queque', queque.length);
-  debugger;
+
   console.log('end....');
 }
 
@@ -267,13 +285,15 @@ function pageLeaves() {
     const dataObject = JSON.parse(data);
     const filename = path.basename(s, '.json');
     const outputDir = path.dirname(s).replace('page-tree', 'page-leave');
-
+    const outputDir2 = outputDir.substring(0, outputDir.lastIndexOf('/'));
+    debugger;
     makeDir.sync(outputDir);
     let i;
     let count = 0;
-    let pages = Math.round(dataObject.length / 100);
+
     for (i = 0; i < dataObject.length; i += 100) {
-      const outoutFilePath = `${outputDir}/${filename}-${count}.json`;
+      const outoutFilePath = `${outputDir2}/${filename}-${count}.json`;
+      debugger;
       const slice = dataObject.slice(i, i + 100);
       fs.writeFileSync(outoutFilePath, JSON.stringify(slice));
       count++;
@@ -294,6 +314,7 @@ env === 'page_image_collection' &&
   removeDerectory('page-image') & batchImageCollection();
 
 env === 'page_image_crop' &&
+  removeDerectory('page-image-resized') &&
   batchImageProcessing({
     imageWidth: 288,
     folderName: 'page-image',
@@ -301,6 +322,7 @@ env === 'page_image_crop' &&
       '/Users/personalcomputer/actors/page-collector/image-processes/2-cropImages.js'
   });
 env === 'page_image_blur' &&
+  removeDerectory('page-image-blurred') &&
   batchImageProcessing({
     imageWidth: 288,
     folderName: 'page-image-resized',
@@ -316,9 +338,12 @@ env === 'page_image_embed' &&
       '/Users/personalcomputer/actors/page-collector/image-processes/4-embedImages.js'
   });
 
-env === 'page_nav_data_tree_creation' && navDataTree();
-env === 'page_leaves_creation' && pageLeaves();
+env === 'page_nav_data_tree_creation' &&
+  removeDerectory('page-tree') &&
+  navDataTree();
+env === 'page_leaves_creation' && removeDerectory('page-leave') && pageLeaves();
 env === 'page_generation' &&
+  removeDerectory('page-list-pages') &&
   pageGeneration() &&
   pageComponentAttacher({
     source: `<product-list></product-list>
@@ -350,4 +375,4 @@ env === 'page_generation' &&
     cdn: false
   });
 
-env === 'page_builder' && pageBuilder();
+env === 'page_builder' && removeDerectory('page-build') && pageBuilder();

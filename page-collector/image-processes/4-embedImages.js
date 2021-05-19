@@ -1,14 +1,12 @@
 const Jimp = require('jimp');
-const makeDir = require('make-dir');
+
 const path = require('path');
 const { parentPort, workerData } = require('worker_threads');
 const fs = require('fs');
 const { nextSlice, imageWidth, index } = workerData;
 
 async function embedImage() {
-  let remained = nextSlice.length;
 
-  debugger;
   for (let p of nextSlice) {
     const data = fs.readFileSync(p);
     const dataObject = JSON.parse(data);
@@ -25,18 +23,19 @@ async function embedImage() {
         const relativeImagepath = imagePath.substring(
           imagePath.indexOf('/tr/')
         );
-        debugger;
+
         if (fs.existsSync(imagePath)) {
           const image = await Jimp.read(imagePath);
 
           const dataURL = await image.getBase64Async(Jimp.AUTO);
-
+          const dataSrcset = relativeImagepath;
+       
           const nextState = {
             ...d,
             image: {
               ...d.image,
               src: `${dataURL}`,
-              dataSrcset: relativeImagepath
+              dataSrcset
             }
           };
 
@@ -49,6 +48,7 @@ async function embedImage() {
     console.log(
       `image embeded wt is :${index} total:${dataObject.length} file${p}`
     );
+    debugger;
     fs.writeFileSync(p, JSON.stringify(embeddedDataObject));
     debugger;
   }
