@@ -13,6 +13,7 @@ const { pageGeneration } = require('./pageGenerator');
 const { pageScriptAttacher } = require('./pageScriptAttacher');
 const { pageComponentAttacher } = require('./pageComponentAttacher');
 const { pageBuilder } = require('./pageBuilder');
+const { pageNavigationItems } = require('./pageNavigationItems');
 const { diff_minutes } = require('./diff_time');
 const ws_domain = 'tr/moda';
 async function batchPageCollector() {
@@ -374,5 +375,5 @@ env === 'page_generation' &&
     appendTo: 'body',
     cdn: false
   });
-
+env === 'page_nav_items' && pageNavigationItems();
 env === 'page_builder' && removeDerectory('page-build') && pageBuilder();
