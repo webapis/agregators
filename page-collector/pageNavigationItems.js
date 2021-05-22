@@ -33,27 +33,39 @@ function pageNavigationItems() {
           document.body.appendChild(el);
         } else {
           let parentid = id.replace(`/${p}`, '');
-          let childel = document.createElement('ul');
-          childel.id = id;
           let parentElement = document.getElementById(parentid);
-          parentElement.appendChild(childel);
+          if (array.length === i && i > 0) {
+            let fileName = path.basename(relpath, '.html');
+            let childel = document.createElement('a');
+            childel.id = fileName;
+            childel.href = relpath;
+            childel.textContent = fileName;
+
+            parentElement.appendChild(childel);
+          } else {
+            let childel = document.createElement('ul');
+            childel.id = id;
+
+            parentElement.appendChild(childel);
+          }
         }
       }
 
-      if (array.length - 1 === i && i > 0) {
-        let parentid = id.replace(`/${p}`, '');
+      // if (array.length - 1 === i && i > 0) {
+      //   let parentid = id.replace(`/${p}`, '');
 
-        let fileName = path.basename(relpath, '.html');
-        let childel = document.createElement('a');
-        childel.id = fileName;
-        childel.href = relpath;
-        childel.textContent = fileName;
-        let parentElement = document.getElementById(parentid);
-        if (!parentElement) {
-          debugger;
-        }
-        parentElement.appendChild(childel);
-      }
+      //   let fileName = path.basename(relpath, '.html');
+      //   let childel = document.createElement('a');
+      //   childel.id = fileName;
+      //   childel.href = relpath;
+      //   childel.textContent = fileName;
+      //   let parentElement = document.getElementById(parentid);
+      //   debugger;
+      //   if (!parentElement) {
+      //     debugger;
+      //   }
+      //   parentElement.appendChild(childel);
+      // }
     });
   });
   const content = dom.serialize();
