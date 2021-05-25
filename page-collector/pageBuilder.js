@@ -18,6 +18,10 @@ function pageBuilder() {
     destination: 'page-build'
   });
   copyFiles({
+    source: `page-navigation`,
+    destination: 'page-build'
+  });
+  copyFiles({
     source: `page-image-resized`,
     destination: 'page-build'
   });
@@ -37,9 +41,8 @@ function copyFiles({ source, destination }) {
   console.log(`copy files from ${source} to ${destination} started....`);
   walkSync(`${process.cwd()}/${source}`, async function(filepath) {
     if (!filepath.includes('.DS_Store')) {
-      const newDestination = 
-        filepath.replace(source, destination)
-      
+      const newDestination = filepath.replace(source, destination);
+
       makeDir.sync(path.dirname(newDestination));
       debugger;
       fs.copyFileSync(filepath, newDestination);

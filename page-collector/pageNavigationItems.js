@@ -2,93 +2,77 @@ const { walkSync } = require('./walkSync');
 const fs = require('fs');
 const path = require('path');
 const makeDir = require('make-dir');
-const dirTree = require('directory-tree');
 const { JSDOM } = require('jsdom');
 function pageNavigationItems() {
   let files = [];
 
   console.log('page nav item collection started....');
 
-  const dir = `${process.cwd()}/page-list-pages/tr/moda`;
+  const dir = `${process.cwd()}/page-list-pages/`;
 
   walkSync(dir, filepath => {
-    files.push(filepath.substring(filepath.indexOf('/tr/') + 3));
+    files.push(filepath.substring(filepath.indexOf('moda')));
   });
   const dom = new JSDOM(``);
   const { document } = dom.window;
+  //--------
+  let i = 1;
+  while (i < 6) {
+    let mapped = files.map(f =>
+      f.substring(0, getPosition(f, '/', i)).replace('.html', '')
+    );
+
+    if (i === 1) {
+      mapped.forEach(m => {
+        let id = m;
+        let element = document.getElementById(id);
+        if (!element) {
+          let element = document.createElement('ul');
+          element.id = id;
+          document.body.appendChild(element);
+        }
+      });
+    } else {
+      mapped.forEach(m => {
+        let id = m;
+        const parentId = m.substring(0, getPosition(m, '/', i - 1));
+        let parentElement = document.getElementById(parentId);
+
+        let element = document.getElementById(id);
+        if (!element) {
+          let element = document.createElement('ul');
+          element.id = id;
+          parentElement.appendChild(element);
+        }
+      });
+    }
+
+    i++;
+  }
 
   files.forEach(f => {
-    const relpath = f.substring(f.indexOf('/moda'));
-
-    const dr = path.dirname(relpath);
-    const pathNames = dr.split('/').filter(f => f !== '');
-    let id = '';
-    pathNames.forEach((p, i, array) => {
-      id += '/' + p;
-      let element = document.getElementById(id);
-      if (!element) {
-        let el = document.createElement('ul');
-        el.id = id;
-        if (i === 0) {
-          document.body.appendChild(el);
-        } else {
-          let parentid = id.replace(`/${p}`, '');
-          let parentElement = document.getElementById(parentid);
-          if (array.length === i && i > 0) {
-            let fileName = path.basename(relpath, '.html');
-            let childel = document.createElement('a');
-            childel.id = fileName;
-            childel.href = relpath;
-            childel.textContent = fileName;
-
-            parentElement.appendChild(childel);
-          } else {
-            let childel = document.createElement('ul');
-            childel.id = id;
-
-            parentElement.appendChild(childel);
-          }
-        }
-      }
-
-      // if (array.length - 1 === i && i > 0) {
-      //   let parentid = id.replace(`/${p}`, '');
-
-      //   let fileName = path.basename(relpath, '.html');
-      //   let childel = document.createElement('a');
-      //   childel.id = fileName;
-      //   childel.href = relpath;
-      //   childel.textContent = fileName;
-      //   let parentElement = document.getElementById(parentid);
-      //   debugger;
-      //   if (!parentElement) {
-      //     debugger;
-      //   }
-      //   parentElement.appendChild(childel);
-      // }
-    });
+    const id = f.replace('.html', '');
+    const element = document.getElementById(id);
+    const a = document.createElement('a');
+    a.href = `/tr/${f}`;
+    a.textContent = path.basename(f, '.html').replace('-', ' ');
+    element.prepend(a);
   });
+
+  //--------
   const content = dom.serialize();
   const dirName = `${process.cwd()}/page-navigation`;
   makeDir.sync(dirName);
   fs.writeFileSync(`${dirName}/nav.html`, content);
   debugger;
-  // const tree = dirTree(dir, {}, function(item, PATH, stats) {
-  //   const relpath = PATH.substr(PATH.indexOf('/moda/'));
-  //   const { type } = item;
-  //   let xpath = relpath;
-  //   if (type === 'file') {
-  //     xpath = relpath.substring(0, relpath.lastIndexOf('/'));
-  //   }
-  //   debugger;
-  // });
-  debugger;
+
   console.log('page nav item collection ended....');
 }
 
 function getPosition(string, subString, index) {
   return string.split(subString, index).join(subString).length;
 }
+
 
 module.exports = {
   pageNavigationItems
