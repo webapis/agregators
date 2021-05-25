@@ -52,11 +52,24 @@ function pageNavigationItems() {
 
   files.forEach(f => {
     const id = f.replace('.html', '');
+    const moreThanOne = files.filter(f => f.includes(id)).length;
     const element = document.getElementById(id);
-    const a = document.createElement('a');
-    a.href = `/tr/${f}`;
-    a.textContent = path.basename(f, '.html').replace('-', ' ');
-    element.prepend(a);
+    const textContent = path.basename(f, '.html').replace('-', ' ');
+    if (moreThanOne > 1) {
+      const a = document.createElement('a');
+      a.href = `/tr/${f}`;
+      a.textContent = `tümü (${textContent})`;
+      element.prepend(a);
+      const spn = document.createElement('div');
+      spn.textContent = textContent;
+      element.prepend(spn);
+      debugger;
+    } else {
+      const a = document.createElement('a');
+      a.href = `/tr/${f}`;
+      a.textContent = textContent;
+      element.prepend(a);
+    }
   });
 
   //--------
@@ -72,7 +85,6 @@ function pageNavigationItems() {
 function getPosition(string, subString, index) {
   return string.split(subString, index).join(subString).length;
 }
-
 
 module.exports = {
   pageNavigationItems
