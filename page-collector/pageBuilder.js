@@ -31,6 +31,14 @@ function pageBuilder() {
       console.log('%s changed.', name);
       copyComponents();
     });
+
+    watch('page-navigation', { recursive: true }, function(evt, name) {
+      console.log('%s changed.', name);
+      copyFiles({
+        source: `page-navigation`,
+        destination: 'page-build'
+      });
+    });
   }
   console.log('PAGE BUILD ENDED....');
   debugger;

@@ -29,6 +29,7 @@ function pageNavigationItems() {
         if (!element) {
           let element = document.createElement('ul');
           element.id = id;
+
           document.body.appendChild(element);
         }
       });
@@ -39,7 +40,7 @@ function pageNavigationItems() {
         let parentElement = document.getElementById(parentId);
 
         let element = document.getElementById(id);
-        debugger;
+
         if (!element) {
           if (i === 5) {
             let element = document.createElement('li');
@@ -47,8 +48,15 @@ function pageNavigationItems() {
             parentElement.appendChild(element);
           } else {
             let element = document.createElement('ul');
-            element.id = id;
-            element.classList.add('nested');
+
+            let container = document.createElement('div');
+            container.classList.add('collapse');
+
+            container.id = id;
+            element.appendChild(container);
+
+            // element.classList.add('collapse');
+
             parentElement.appendChild(element);
           }
         }
@@ -70,11 +78,15 @@ function pageNavigationItems() {
       let li = document.createElement('li');
       li.appendChild(a);
       element.prepend(li);
-      const spn = document.createElement('div');
+      const spn = document.createElement('ul');
+      //spn.setAttribute('data-bs-toggle', 'collapse');
+      spn.setAttribute('data-bs-target', id);
+      spn.setAttribute('aria-expanded', true);
+      spn.setAttribute('role', 'button');
       spn.textContent = textContent;
-      spn.classList.add('caret');
-      element.prepend(spn);
-      debugger;
+      spn.classList.add('arrow');
+      //spn.classList.add('btn');
+      element.parentNode.prepend(spn);
     } else {
       const a = document.createElement('a');
       a.href = `/tr/${f}`;
@@ -82,19 +94,43 @@ function pageNavigationItems() {
       element.prepend(a);
     }
   });
+  document.querySelectorAll('*').forEach(node => {
+    const str = node.id;
+    if (str && str !== '' && str.includes('/')) {
+      const replaced = str.replace(/\//g, '-');
 
+      node.setAttribute('id', replaced);
+    }
+  });
+  document.querySelectorAll('*').forEach(node => {
+    const str = node.getAttribute('data-bs-target');
+    if (str && str !== '' && str.includes('/')) {
+      const replaced = str.replace(/\//g, '-');
+      debugger;
+      node.setAttribute('data-bs-target', replaced);
+    }
+  });
   //--------
-  const content = document.body.innerHTML;
+  const content = `<div class="side-nav">${document.body.innerHTML}</div>`;
   const dirName = `${process.cwd()}/page-navigation`;
   makeDir.sync(dirName);
   fs.writeFileSync(`${dirName}/nav.html`, content);
   debugger;
 
-  console.log('page nav item collection ended....');
+  console.log('page nav item collection ended...');
 }
 
 function getPosition(string, subString, index) {
   return string.split(subString, index).join(subString).length;
+}
+
+function comId(str) {
+  if (str && str !== '' && str.includes('/')) {
+    const replaced = str.replace(/\//, '-');
+    debugger;
+    return replaced;
+  }
+  return str;
 }
 
 module.exports = {

@@ -384,6 +384,16 @@ env === 'page_generation' &&
     tag: 'script',
     appendTo: 'body',
     cdn: false
-  });
+  }) //&&
+  // pageScriptAttacher({
+  //   source: [
+  //     'https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js'
+  //   ],
+  //   inputFolder: 'page-list-pages',
+  //   prop: 'src',
+  //   tag: 'script',
+  //   appendTo: 'body',
+  //   cdn: true
+  // });
 env === 'page_nav_items' && pageNavigationItems();
 env === 'page_builder' && removeDerectory('page-build') && pageBuilder();
