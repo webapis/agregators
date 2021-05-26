@@ -347,7 +347,8 @@ env === 'page_generation' &&
   removeDerectory('page-list-pages') &&
   pageGeneration() &&
   pageComponentAttacher({
-    source: `<product-list></product-list>
+    source: `
+    <product-list></product-list>
     <prerender-component></prerender-component>
     `,
     innterHtmlTo: 'body',
@@ -363,6 +364,15 @@ env === 'page_generation' &&
     appendTo: 'head',
     rel: 'stylesheet',
     cdn: true
+  }) &&
+  pageScriptAttacher({
+    source: ['/components/nav.css'],
+    inputFolder: 'page-list-pages',
+    prop: 'href',
+    tag: 'link',
+    appendTo: 'head',
+    rel: 'stylesheet',
+    cdn: false
   }) &&
   pageScriptAttacher({
     source: [

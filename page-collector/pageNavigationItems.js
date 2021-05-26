@@ -39,10 +39,18 @@ function pageNavigationItems() {
         let parentElement = document.getElementById(parentId);
 
         let element = document.getElementById(id);
+        debugger;
         if (!element) {
-          let element = document.createElement('ul');
-          element.id = id;
-          parentElement.appendChild(element);
+          if (i === 5) {
+            let element = document.createElement('li');
+            element.id = id;
+            parentElement.appendChild(element);
+          } else {
+            let element = document.createElement('ul');
+            element.id = id;
+            element.classList.add('nested');
+            parentElement.appendChild(element);
+          }
         }
       });
     }
@@ -59,9 +67,12 @@ function pageNavigationItems() {
       const a = document.createElement('a');
       a.href = `/tr/${f}`;
       a.textContent = `tümü (${textContent})`;
-      element.prepend(a);
+      let li = document.createElement('li');
+      li.appendChild(a);
+      element.prepend(li);
       const spn = document.createElement('div');
       spn.textContent = textContent;
+      spn.classList.add('caret');
       element.prepend(spn);
       debugger;
     } else {
@@ -73,7 +84,7 @@ function pageNavigationItems() {
   });
 
   //--------
-  const content = dom.serialize();
+  const content = document.body.innerHTML;
   const dirName = `${process.cwd()}/page-navigation`;
   makeDir.sync(dirName);
   fs.writeFileSync(`${dirName}/nav.html`, content);

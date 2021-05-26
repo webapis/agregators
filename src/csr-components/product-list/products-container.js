@@ -6,20 +6,20 @@ customElements.define(
     }
 
     async connectedCallback() {
+      this.innerHTML = `<nav-component></nav-component>`;
       const env = document.querySelector('head meta[name=env]').content;
       const fileName = document.location.href
         .substr(document.location.href.lastIndexOf('/') + 1)
         .replace('.html', '');
-      const prefolder = document.location.href
-      debugger;
+      const prefolder = document.location.href;
+
       if (env === 'dev') {
         const response = await fetch(`./${fileName}-0.json`);
         const data = await response.json();
         window.fetched = true;
         this.appendProducts(data);
-       
       }
- 
+
       // const { state: { selected_pl_tab, items } } = window.pageStore;
       // if (selected_pl_tab === 'urunler-tab') {
       //   this.render({ value: items });
@@ -93,9 +93,12 @@ customElements.define(
     }
 
     render({ value }) {
+      debugger;
       const height = document.body.clientHeight;
       this.innerHTML = `<div class="container">
+    
       <div class="row">
+
       <div class="col">
       <pl-search-result length=${value && value.items && value.items.length}>
       

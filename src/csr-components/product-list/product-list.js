@@ -13,7 +13,6 @@ customElements.define(
       document.head.appendChild(viewport);
     }
     connectedCallback() {
-  
       var s = document.createElement('link');
       s.rel = 'stylesheet';
       s.href =
@@ -43,7 +42,8 @@ customElements.define(
         import('./pl-search-result.js'),
         import('./products-container.js'),
         import('./filter-container.js'),
-        import('../pl-search-box.js')
+        import('../pl-search-box.js'),
+        import('../nav-component.js')
       ]).then(() => {
         const { state: { selected_pl_tab } } = window.pageStore;
         this.render({ selected: selected_pl_tab });
@@ -65,9 +65,6 @@ customElements.define(
       });
     }
     render() {
-    
-    
-
       this.innerHTML = `
         <pl-page-tabs></pl-page-tabs>
         <products-container></products-container>
