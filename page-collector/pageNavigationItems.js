@@ -18,24 +18,30 @@ function pageNavigationItems() {
   //--------
   const allLinks = [];
   files.forEach(f => {
-    const pathNames = f.substring(0, f.lastIndexOf('/')).split('/');
     let id = '';
-    pathNames.forEach((p, i) => {
-      id += i === 0 ? p : `-${p}`;
+    const pathNames = f.substring(0, f.lastIndexOf('/')).split('/');
 
+    let i;
+    for (i = 0; i < pathNames.length; i++) {
+      let p = pathNames[i];
+
+      //  pathNames.forEach((p, i) => {
+      id += i === 0 ? p : `-${p}`;
+      if (id === '') {
+        continue;
+      }
       let parentId = id.replace(`-${p}`, '');
       let parentElement = parentId
         ? document.getElementById(parentId)
         : document.body;
       if (!parentElement) {
-        debugger;
         parentElement = document.createElement('ul');
         parentElement.id = parentId;
         let span = document.createElement('li');
         span.textContent = p;
         span.classList.add('arrow');
 
-        span.setAttribute('aria-expanded', 'false');
+        span.setAttribute('aria-expanded', 'true');
         span.setAttribute('data-bs-toggle', 'collapse');
         span.setAttribute('data-bs-target', id);
         document.body.prepend(span);
@@ -54,11 +60,7 @@ function pageNavigationItems() {
             let a = document.createElement('a');
             a.href = linkFromParent;
             let textContent = 'tüm ' + path.basename(linkFromParent, '.html');
-            if (textContent === 'tüm moda') {
-              debugger;
-              const tagName = parentElement.tagName;
-              debugger;
-            }
+
             a.textContent = textContent;
             linkElementParent.appendChild(a);
 
@@ -79,7 +81,7 @@ function pageNavigationItems() {
         element.classList.add('collapse');
         parentElement.appendChild(element);
       }
-    });
+    }
     let parentId = f.substring(0, f.lastIndexOf('/')).replace(/\//g, '-');
     let fileName = path.basename(f, '.html');
     let parentElement = document.getElementById(parentId);
@@ -110,13 +112,13 @@ function pageNavigationItems() {
     let a = document.createElement('a');
     a.textContent = 'tüm ' + fileName.replace(/-/g, ' ');
     let href = `/tr/` + file + '.html';
-    debugger;
+
     a.href = href;
     li.appendChild(a);
     parentElement.prepend(li);
   });
 
-  debugger;
+
 
   // --------
   const content = `<div class="side-nav">${document.body.innerHTML}</div>`;
