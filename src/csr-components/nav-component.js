@@ -28,7 +28,7 @@ customElements.define(
               id += `-${p}`;
 
               if (i !== 0) {
-               // document.getElementById(id).classList.toggle('collapse');
+                document.getElementById(id).classList.toggle('collapse');
                 console.log('id', id);
               }
             }
@@ -46,7 +46,7 @@ customElements.define(
                 element.setAttribute('aria-expanded', true);
               }
 
-             // expander.classList.toggle('collapse');
+              expander.classList.toggle('collapse');
             });
           });
         });

@@ -7,10 +7,22 @@
 }
 
 .arrow::before {
-  
   transform: rotate(90deg);
-  background-color: tomato;
+
 }
 .side-nav {
   position: fixed;
+}
+
+.side-nav a {
+  padding: .1875rem .5rem;
+  margin-top: .125rem;
+  margin-left: 1.25rem;
+  color: rgba(0, 0, 0, 0.65);
+  text-decoration: none;
+}
+
+.side-nav ul,li {
+  list-style-type: none;
+  padding-left: 1em;
 }
