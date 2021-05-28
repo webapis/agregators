@@ -24,24 +24,46 @@ function pageNavigationItems() {
       id += i === 0 ? p : `-${p}`;
 
       let parentId = id.replace(`-${p}`, '');
-      let parentElement =
-        i === 0 ? document.body : document.getElementById(parentId);
+      let parentElement = parentId
+        ? document.getElementById(parentId)
+        : document.body;
+      if (!parentElement) {
+        debugger;
+        parentElement = document.createElement('ul');
+        parentElement.id = parentId;
+        let span = document.createElement('li');
+        span.textContent = p;
+        span.classList.add('arrow');
 
+        span.setAttribute('aria-expanded', 'false');
+        span.setAttribute('data-bs-toggle', 'collapse');
+        span.setAttribute('data-bs-target', id);
+        document.body.prepend(span);
+        document.body.appendChild(parentElement);
+      }
       let element = document.getElementById(id);
       if (!element) {
         let element = document.createElement('ul');
 
         let linkFromParent = `/tr/` + parentId.replace(/-/g, '/') + '.html';
-        debugger;
+
         if (!document.querySelector(`[href='${linkFromParent}']`)) {
-          let linkElementParent = document.createElement('li');
-          let a = document.createElement('a');
-          a.href = linkFromParent;
+          let pageName = path.basename(linkFromParent);
+          if (pageName !== '.html') {
+            let linkElementParent = document.createElement('li');
+            let a = document.createElement('a');
+            a.href = linkFromParent;
+            let textContent = 'tüm ' + path.basename(linkFromParent, '.html');
+            if (textContent === 'tüm moda') {
+              debugger;
+              const tagName = parentElement.tagName;
+              debugger;
+            }
+            a.textContent = textContent;
+            linkElementParent.appendChild(a);
 
-          a.textContent = 'tüm ' + path.basename(linkFromParent, '.html');
-          linkElementParent.appendChild(a);
-
-          parentElement.appendChild(linkElementParent);
+            parentElement.appendChild(linkElementParent);
+          }
         }
 
         let span = document.createElement('li');
@@ -104,7 +126,7 @@ function pageNavigationItems() {
   debugger;
 
   console.log('page nav item collection ended...');
-} 
+}
 
 function getPosition(string, subString, index) {
   return string.split(subString, index).join(subString).length;

@@ -29,7 +29,7 @@ customElements.define(
 
               //if (i !== 0) {
                 debugger;
-                document.getElementById(id).classList.toggle('collapse');
+              //  document.getElementById(id).classList.toggle('collapse');
                 // const arrow =document.querySelector(`li[data-bs-target=${id}]`)
                 // //const isExpaded = arrow.getAttribute('aria-expanded');
                 // arrow.setAttribute('aria-expanded', 'true');
@@ -37,7 +37,7 @@ customElements.define(
                 console.log('id', id);
               //}
             }
-            document.getElementById(id).classList.toggle('collapse');
+           // document.getElementById(id).classList.toggle('collapse');
           });
 
           document.querySelectorAll('.arrow').forEach(element => {
