@@ -26,11 +26,11 @@ function pageNavigationItems() {
       let p = pathNames[i];
 
       //  pathNames.forEach((p, i) => {
-      id += i === 0 ? p : `-${p}`;
+      id += i === 0 ? p : `/${p}`;
       if (id === '') {
         continue;
       }
-      let parentId = id.replace(`-${p}`, '');
+      let parentId = id.replace(`/${p}`, '');
       let parentElement = parentId
         ? document.getElementById(parentId)
         : document.body;
@@ -38,9 +38,9 @@ function pageNavigationItems() {
         parentElement = document.createElement('ul');
         parentElement.id = parentId;
         let span = document.createElement('li');
-        span.textContent = p;
+        span.textContent = p.replace('-', ' ');
         span.classList.add('arrow');
-
+        span.classList.add('text-capitalize');
         span.setAttribute('aria-expanded', 'true');
         span.setAttribute('data-bs-toggle', 'collapse');
         span.setAttribute('data-bs-target', id);
@@ -51,15 +51,18 @@ function pageNavigationItems() {
       if (!element) {
         let element = document.createElement('ul');
 
-        let linkFromParent = `/tr/` + parentId.replace(/-/g, '/') + '.html';
-
+        let linkFromParent = `/tr/` + parentId + '.html';
+        debugger;
         if (!document.querySelector(`[href='${linkFromParent}']`)) {
           let pageName = path.basename(linkFromParent);
           if (pageName !== '.html') {
             let linkElementParent = document.createElement('li');
             let a = document.createElement('a');
             a.href = linkFromParent;
-            let textContent = 'tüm ' + path.basename(linkFromParent, '.html');
+
+            a.classList.add('text-capitalize');
+            a.setAttribute('aria-selected', 'false');
+            let textContent = 'Tümümi göster'; //'tüm ' + path.basename(linkFromParent, '.html');
 
             a.textContent = textContent;
             linkElementParent.appendChild(a);
@@ -69,12 +72,13 @@ function pageNavigationItems() {
         }
 
         let span = document.createElement('li');
-        span.textContent = p;
+        span.textContent = p.replace('-', ' ');
         span.classList.add('arrow');
-
+        span.classList.add('text-capitalize');
         span.setAttribute('aria-expanded', 'false');
         span.setAttribute('data-bs-toggle', 'collapse');
         span.setAttribute('data-bs-target', id);
+
         parentElement.appendChild(span);
 
         element.id = id;
@@ -82,8 +86,9 @@ function pageNavigationItems() {
         parentElement.appendChild(element);
       }
     }
-    let parentId = f.substring(0, f.lastIndexOf('/')).replace(/\//g, '-');
+    let parentId = f.substring(0, f.lastIndexOf('/')); //.replace(/\//g, '-');
     let fileName = path.basename(f, '.html');
+
     let parentElement = document.getElementById(parentId);
     let uniqueNames = files.map(f => f.substring(0, f.lastIndexOf('/')));
     const file = uniqueNames.find(f => f.includes(fileName));
@@ -92,6 +97,8 @@ function pageNavigationItems() {
       let li = document.createElement('li');
       let a = document.createElement('a');
       a.textContent = fileName.replace(/-/g, ' ');
+      a.classList.add('text-capitalize');
+      a.setAttribute('aria-selected', 'false');
       a.href = `/tr/` + f;
 
       li.appendChild(a);
@@ -104,21 +111,20 @@ function pageNavigationItems() {
     return allLinks.indexOf(item) == pos;
   });
   allLinksWithoutDublicate.forEach(file => {
-    let fileName = path.basename(file, '.html');
-    const parentId = file.replace(/\//g, '-');
+    const parentId = file; //.replace(/\//g, '-');
     const parentElement = document.getElementById(parentId);
 
     let li = document.createElement('li');
     let a = document.createElement('a');
-    a.textContent = 'tüm ' + fileName.replace(/-/g, ' ');
+    a.classList.add('text-capitalize');
+    a.setAttribute('aria-selected', 'false');
+    a.textContent = 'Tümümi göster';
     let href = `/tr/` + file + '.html';
 
     a.href = href;
     li.appendChild(a);
     parentElement.prepend(li);
   });
-
-
 
   // --------
   const content = `<div class="side-nav">${document.body.innerHTML}</div>`;

@@ -12,37 +12,44 @@ customElements.define(
 
           const paths = decodeURI(
             window.location.pathname.substring(
-              window.location.pathname.indexOf('/moda') + 1,
-              window.location.pathname.lastIndexOf('/')
+              window.location.pathname.indexOf('/moda') + 1
             )
           );
+
+          const selectedATag = document.querySelector(
+            `a[href='${decodeURI(window.location.pathname)}']`
+          );
+          selectedATag.setAttribute('aria-selected', 'true');
 
           const pathNames = paths.split('/');
 
           let id = '';
-          pathNames.forEach((p, i) => {
+          pathNames.forEach((p, i, array) => {
             if (i === 0) {
               id = '';
               id += p;
             } else {
-              id += `-${p}`;
-
-              //if (i !== 0) {
-                debugger;
-              //  document.getElementById(id).classList.toggle('collapse');
-                // const arrow =document.querySelector(`li[data-bs-target=${id}]`)
-                // //const isExpaded = arrow.getAttribute('aria-expanded');
-                // arrow.setAttribute('aria-expanded', 'true');
-                //debugger;
-                console.log('id', id);
-              //}
+              id += `/${p}`;
             }
-           // document.getElementById(id).classList.toggle('collapse');
+            if (array.length - 1 === i) {
+              id = id.replace('.html', '');
+            }
+            let ul = document.getElementById(id);
+            debugger;
+            if (i !== 0 && ul) {
+              ul.classList.toggle('collapse');
+            }
+            if (ul) {
+              const arrow = document.querySelector(
+                `li[data-bs-target='${id}']`
+              );
+
+              arrow.setAttribute('aria-expanded', 'true');
+              console.log('id', id);
+            }
           });
 
           document.querySelectorAll('.arrow').forEach(element => {
-            
-
             element.addEventListener('click', function() {
               let id = element.getAttribute('data-bs-target');
               const expander = document.getElementById(id);
