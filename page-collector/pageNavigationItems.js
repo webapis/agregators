@@ -38,7 +38,7 @@ function pageNavigationItems() {
         parentElement = document.createElement('ul');
         parentElement.id = parentId;
         let span = document.createElement('li');
-        span.textContent = 'Anasayfa'//p.replace('-', ' ');
+        span.textContent = 'Anasayfa'; //p.replace('-', ' ');
         span.classList.add('arrow');
         span.classList.add('text-capitalize');
         span.setAttribute('aria-expanded', 'true');
@@ -52,7 +52,6 @@ function pageNavigationItems() {
         let element = document.createElement('ul');
 
         let linkFromParent = `/tr/` + parentId + '.html';
-        debugger;
         if (!document.querySelector(`[href='${linkFromParent}']`)) {
           let pageName = path.basename(linkFromParent);
           if (pageName !== '.html') {
@@ -131,8 +130,6 @@ function pageNavigationItems() {
   const dirName = `${process.cwd()}/page-navigation`;
   makeDir.sync(dirName);
   fs.writeFileSync(`${dirName}/nav.html`, content);
-  debugger;
-
   console.log('page nav item collection ended...');
 }
 

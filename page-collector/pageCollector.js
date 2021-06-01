@@ -21,8 +21,8 @@ function fetchPageContent({ url, browser, selector, eventEmitter }) {
         }
       });
 
-      await page.goto(url, { waitUntil: 'domcontentloaded'});
-      await page.waitForSelector(selector);
+      await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 });
+      await page.waitForSelector(selector, { timeout: 60000 });
       const content = await page.$eval(selector, elem => elem.innerHTML);
 
       eventEmitter.emit('promiseResolved', {
@@ -33,6 +33,7 @@ function fetchPageContent({ url, browser, selector, eventEmitter }) {
         page
       });
     } catch (error) {
+      debugger;
       eventEmitter.emit('promiseRejected', { url, error, batchName, uuidv4 });
     }
   };

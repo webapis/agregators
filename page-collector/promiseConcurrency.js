@@ -1,5 +1,6 @@
 const EventEmitter = require('events');
 const fs = require('fs');
+const { uuidv4 } = require('./uuidv4');
 const { printTable } = require('console-table-printer');
 const eventEmitter = new EventEmitter();
 eventEmitter.setMaxListeners(30);
@@ -16,18 +17,41 @@ let promiseStates = [
   { state: 'rejected', promises: rejected }
 ];
 eventEmitter.on('promiseResolved', promise => {
-  const { uuidv4 } = promise;
+  const { uuidv4, batchName, id } = promise;
   resolved.push(promise);
-  const promiseToRemoveIndex = promises.findIndex(p => p.uuidv4 === uuidv4);
+  const promiseToRemoveIndex = promises.findIndex(p => p.id === id);
 
   promises.splice(promiseToRemoveIndex, 1);
-  if (queue.length > 0) {
-    const nextpromise = queue[0];
-    const { uuidv4, batchName, promiseName } = nextpromise;
 
-    promises.push(nextpromise);
-    queue.shift();
-    nextpromise({ uuidv4, batchName, promiseName });
+  if (queue.length > 0 && promises.length < totalConcur) {
+    const countBatchInProcess = reduceQueue(promises)[batchName].length;
+    if (countBatchInProcess === 0) {
+    }
+    if (countBatchInProcess < batchConcur && reduceQueue(queue)[batchName]) {
+      const candidateInqueue = reduceQueue(queue)[batchName][0];
+
+      const nextpromise = candidateInqueue;
+      const { uuidv4, promiseName } = nextpromise;
+      promises.push(nextpromise);
+      const queueToRemoveIndex = queue.findIndex(
+        p => p.id === candidateInqueue.id
+      );
+
+      queue.splice(queueToRemoveIndex, 1);
+      nextpromise({ uuidv4, batchName, promiseName });
+    } else {
+      const avaiablePromises = Object.entries(reduceQueue(queue)).filter(f => {
+        const bName = f[0];
+        if (bName !== batchName) {
+          return f;
+        }
+      });
+      const nextpromise = avaiablePromises[0][1][0];
+      const { uuidv4, promiseName } = nextpromise;
+      const queueToRemoveIndex = queue.findIndex(p => p.id === nextpromise.id);
+      queue.splice(queueToRemoveIndex, 1);
+      nextpromise({ uuidv4, batchName, promiseName });
+    }
   }
   updateConsoleTable(promiseStates);
 });
@@ -35,33 +59,31 @@ eventEmitter.on('promiseRejected', promise => {
   const { batchName, url, error } = promise;
   const { message } = error;
   const result = { errorMessage: message, url, batchName };
-  debugger;
+
   let filePath = `${process.cwd()}/page-result/page-collection-result.json`;
   let dataObject = [];
   if (fs.existsSync(filePath)) {
-    debugger;
     const data = fs.readFileSync(filePath, { encoding: 'utf-8' });
     dataObject = JSON.parse(data);
     dataObject.push(result);
   } else {
-    debugger;
     dataObject.push(result);
   }
   fs.writeFileSync(filePath, JSON.stringify(dataObject));
-  debugger;
+
   rejected.push(promise);
   promises.shift();
   updateConsoleTable(promiseStates);
 });
 eventEmitter.on('promiseAttached', promise => {
-  const { uuidv4, batchName, promiseName } = promise;
-
+  const { uuidv4: pageId, batchName, promiseName } = promise;
+  promise.id = uuidv4();
   const batchCount = promises.filter(q => q.batchName === batchName).length;
   const totalCount = promises.length;
-  if (batchCount <= batchConcur && totalCount <= totalConcur) {
+  if (batchCount < batchConcur && totalCount < totalConcur) {
     promises.push(promise);
 
-    promise({ uuidv4, batchName, promiseName });
+    promise({ uuidv4: pageId, batchName, promiseName });
     updateConsoleTable(promiseStates);
   } else {
     updateConsoleTable(promiseStates);
@@ -123,6 +145,7 @@ function updateConsoleTable(items) {
 
   console.clear();
   printTable(rows);
+
   promiseExecCompleted();
 }
 function promiseExecCompleted() {
@@ -131,4 +154,27 @@ function promiseExecCompleted() {
     console.log('promiseExecCompleted');
   }
 }
-module.exports = { promiseConcurrency, eventEmitter, updateConsoleTable };
+
+function reduceQueue(promisesInQueue) {
+  const result = groupBy(promisesInQueue, 'batchName');
+
+  return result;
+}
+
+function groupBy(arr, property) {
+  return arr.reduce(function(memo, x) {
+    if (!memo[x[property]]) {
+      memo[x[property]] = [];
+    }
+    memo[x[property]].push(x);
+    return memo;
+  }, {});
+}
+
+function invokeNextPromise() {}
+module.exports = {
+  promiseConcurrency,
+  eventEmitter,
+  updateConsoleTable,
+  reduceQueue
+};

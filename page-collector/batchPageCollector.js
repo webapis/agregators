@@ -9,10 +9,14 @@ const ws_domain = 'tr/moda';
 const { promiseConcurrency, eventEmitter } = require('./promiseConcurrency');
 
 async function batchPageCollector() {
-  fs.unlinkSync(`${process.cwd()}/page-result/page-collection-result.json`);
+  const logPath = `${process.cwd()}/page-result/page-collection-result.json`;
+  if (fs.existsSync(logPath)) {
+    fs.unlinkSync(logPath);
+  }
+
   const files = []; //url files
   promiseConcurrency({
-    batchConcurrency: 2,
+    batchConcurrency: 4,
     totalConcurrency: 10
   });
   console.log('page collection started....');
@@ -21,7 +25,6 @@ async function batchPageCollector() {
   walkSync(`${process.cwd()}/page-structure/${ws_domain}/`, async filepath => {
     files.push(filepath);
   });
-  debugger;
   const browser = await puppeteer.launch({ headless: true, timeout: 60000 });
   eventEmitter.on('promiseExecCompleted', async () => {
     await browser.close();

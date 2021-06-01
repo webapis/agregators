@@ -41,18 +41,15 @@ function pageBuilder() {
     });
   }
   console.log('PAGE BUILD ENDED....');
-  debugger;
 }
 
 function copyFiles({ source, destination }) {
-  debugger;
   console.log(`copy files from ${source} to ${destination} started....`);
   walkSync(`${process.cwd()}/${source}`, async function(filepath) {
     if (!filepath.includes('.DS_Store')) {
       const newDestination = filepath.replace(source, destination);
 
       makeDir.sync(path.dirname(newDestination));
-      debugger;
       fs.copyFileSync(filepath, newDestination);
     }
   });

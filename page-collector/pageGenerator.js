@@ -15,7 +15,6 @@ async function pageGeneration() {
     files.push(filepath);
     //}
   });
-  debugger;
   const firstJson = files.filter(f => f.includes('-0.json'));
 
   let i = 0;
@@ -25,7 +24,6 @@ async function pageGeneration() {
     const lastFolder = firstJson[i]
       .substring(firstJson[i].lastIndexOf('/') + 1)
       .replace('-0.json', '');
-    debugger;
     if (lastFolder === pageName) {
       htmlOutput = `${path.dirname(firstJson[i])}`
         .replace(`/${lastFolder}`, '')
@@ -36,7 +34,6 @@ async function pageGeneration() {
         'page-list-pages'
       );
     }
-    debugger;
     makeDir.sync(htmlOutput);
     const dom = new JSDOM(
       `<body>

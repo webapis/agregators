@@ -24,7 +24,6 @@ async function cropImage() {
           `image inside worder ${index} processed, remained: ${remained} ${index}`
         );
       }
-      debugger;
     } catch (error) {
       console.log('cropImage error from file||||||||', p);
       console.log('Error is ', error);

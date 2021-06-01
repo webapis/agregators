@@ -10,9 +10,7 @@ function copyComponents() {
         'src/csr-components',
         'page-build/components'
       );
-      debugger;
       makeDir.sync(path.dirname(newDestination));
-      debugger;
       fs.copyFileSync(filepath, newDestination);
     }
     console.log(`copy components ended....`);

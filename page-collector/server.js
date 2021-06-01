@@ -15,7 +15,7 @@ const { pageComponentAttacher } = require('./pageComponentAttacher');
 const { pageBuilder } = require('./pageBuilder');
 const { pageNavigationItems } = require('./pageNavigationItems');
 const { diff_minutes } = require('./diff_time');
-const {batchPageCollector}=require('./batchPageCollector')
+const { batchPageCollector } = require('./batchPageCollector');
 const ws_domain = 'tr/moda';
 // async function batchPageCollector() {
 //   const files = [];
@@ -27,7 +27,7 @@ const ws_domain = 'tr/moda';
 //   walkSync(`${process.cwd()}/page-structure/${ws_domain}/`, async filepath => {
 //     files.push(filepath);
 //   });
-//   debugger;
+//   ;
 //   const browser = await puppeteer.launch({ headless: true, timeout: 0 });
 //   let totalPagesToScan = 0;
 //   let counter = 0;
@@ -40,9 +40,9 @@ const ws_domain = 'tr/moda';
 //     });
 //     return sourcePages;
 //   });
-//   debugger;
+//   ;
 //   for (let filepath of files) {
-//     debugger;
+//     ;
 //     const pagePath = filepath
 //       .substring(filepath.indexOf('/tr/moda/') + 9)
 //       .replace('.js', '');
@@ -60,7 +60,7 @@ const ws_domain = 'tr/moda';
 
 //       const output = `${process.cwd()}/page-collection/${ws_domain}/${pagePath}/${marka}.html`;
 
-//       debugger;
+//       ;
 //       concurrency({
 //         batchName: marka,
 //         promise: pageCollector({
@@ -114,7 +114,6 @@ function batchDataCollector() {
 function download(url, dest) {
   /* Create an empty file where we can save data */
   const file = fs.createWriteStream(dest);
-  debugger;
   return () => {
     /* Using Promises so that we can use the ASYNC AWAIT syntax */
     return new Promise((resolve, reject) => {
@@ -237,9 +236,6 @@ function navDataTree() {
     fs.writeFileSync(outputFilePath, JSON.stringify(mergedData));
   });
 
-  debugger;
-
-  debugger;
   console.log('nav data tree creation ended....');
 }
 function getTrees({ files, reduced }) {
@@ -288,14 +284,12 @@ function pageLeaves() {
     const filename = path.basename(s, '.json');
     const outputDir = path.dirname(s).replace('page-tree', 'page-leave');
     const outputDir2 = outputDir.substring(0, outputDir.lastIndexOf('/'));
-    debugger;
     makeDir.sync(outputDir);
     let i;
     let count = 0;
 
     for (i = 0; i < dataObject.length; i += 100) {
       const outoutFilePath = `${outputDir2}/${filename}-${count}.json`;
-      debugger;
       const slice = dataObject.slice(i, i + 100);
       fs.writeFileSync(outoutFilePath, JSON.stringify(slice));
       count++;
@@ -385,16 +379,16 @@ env === 'page_generation' &&
     tag: 'script',
     appendTo: 'body',
     cdn: false
-  }) //&&
-  // pageScriptAttacher({
-  //   source: [
-  //     'https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js'
-  //   ],
-  //   inputFolder: 'page-list-pages',
-  //   prop: 'src',
-  //   tag: 'script',
-  //   appendTo: 'body',
-  //   cdn: true
-  // });
+  }); //&&
+// pageScriptAttacher({
+//   source: [
+//     'https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js'
+//   ],
+//   inputFolder: 'page-list-pages',
+//   prop: 'src',
+//   tag: 'script',
+//   appendTo: 'body',
+//   cdn: true
+// });
 env === 'page_nav_items' && pageNavigationItems();
 env === 'page_builder' && removeDerectory('page-build') && pageBuilder();

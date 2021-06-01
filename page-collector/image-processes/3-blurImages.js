@@ -13,13 +13,11 @@ async function blurImage() {
       await makeDir(path.dirname(output));
 
       const image = await Jimp.read(p);
-      debugger;
       await image.resize(imageWidth, Jimp.AUTO);
       await image.quality(20);
       await image.blur(5);
       await image.writeAsync(output);
 
-      debugger;
       remained--;
       console.log(
         `image inside worder ${index} blurred, remained: ${remained} ${index}`

@@ -1,7 +1,7 @@
-const { updateConsoleTable } = require('../promiseConcurrency');
+const { updateConsoleTable, reduceQueue } = require('../promiseConcurrency');
 
 describe('updateConsoleTable test', () => {
-  it.only('updateConsoleTable test', function() {
+  it('updateConsoleTable test', function() {
     this.timeout(200000);
     const promisesInQueue = [
       { batchName: 'defacto', uuid: 1 },
@@ -18,5 +18,16 @@ describe('updateConsoleTable test', () => {
       { state: 'queque', promises: promisesInQueue },
       { state: 'proccess', promises: promisesInprocess }
     ]);
+  });
+
+  it.only('reduceQueue test', function() {
+    this.timeout(200000);
+    const promisesInQueue = [
+      { batchName: 'defacto', uuid: 4 },
+      { batchName: 'defacto', uuid: 5 },
+      { batchName: 'koton', uuid: 7 },
+      { batchName: 'koton', uuid: 9 }
+    ];
+    reduceQueue(promisesInQueue);
   });
 });

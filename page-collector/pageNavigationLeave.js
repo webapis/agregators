@@ -1,7 +1,5 @@
 const fs = require('fs');
 const ws_domain = 'tr/moda';
-function pageNavigationLeave() {
-  debugger;
-}
+function pageNavigationLeave() {}
 
 module.exports = { pageNavigationLeave };

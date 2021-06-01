@@ -6,7 +6,6 @@ const fs = require('fs');
 const { nextSlice, imageWidth, index } = workerData;
 
 async function embedImage() {
-
   for (let p of nextSlice) {
     const data = fs.readFileSync(p);
     const dataObject = JSON.parse(data);
@@ -29,7 +28,7 @@ async function embedImage() {
 
           const dataURL = await image.getBase64Async(Jimp.AUTO);
           const dataSrcset = relativeImagepath;
-       
+
           const nextState = {
             ...d,
             image: {
@@ -48,12 +47,8 @@ async function embedImage() {
     console.log(
       `image embeded wt is :${index} total:${dataObject.length} file${p}`
     );
-    debugger;
     fs.writeFileSync(p, JSON.stringify(embeddedDataObject));
-    debugger;
   }
-  debugger;
-
   parentPort.postMessage(`Images are processed`);
 }
 
