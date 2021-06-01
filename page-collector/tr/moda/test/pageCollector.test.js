@@ -16,7 +16,7 @@ describe('pageCollector test', function() {
       browser
     });
   });
-  it.only('tr/defacto/pageCollector test', async function() {
+  it('tr/defacto/pageCollector test', async function() {
     this.timeout(100000);
     const browser = await puppeteer.launch({ headless: false, timeout: 0 });
 

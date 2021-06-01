@@ -15,81 +15,82 @@ const { pageComponentAttacher } = require('./pageComponentAttacher');
 const { pageBuilder } = require('./pageBuilder');
 const { pageNavigationItems } = require('./pageNavigationItems');
 const { diff_minutes } = require('./diff_time');
+const {batchPageCollector}=require('./batchPageCollector')
 const ws_domain = 'tr/moda';
-async function batchPageCollector() {
-  const files = [];
-  const concurrency = promiseConcurrency({
-    batchConcurrency: 2,
-    totalConcurrency: 10
-  });
-  console.log('page collection started....');
-  walkSync(`${process.cwd()}/page-structure/${ws_domain}/`, async filepath => {
-    files.push(filepath);
-  });
-  debugger;
-  const browser = await puppeteer.launch({ headless: true, timeout: 0 });
-  let totalPagesToScan = 0;
-  let counter = 0;
-  let pageurls = [];
-  files.map(f => {
-    const sourcePages = require(f);
-    totalPagesToScan += sourcePages.length;
-    sourcePages.forEach(s => {
-      pageurls.push(s);
-    });
-    return sourcePages;
-  });
-  debugger;
-  for (let filepath of files) {
-    debugger;
-    const pagePath = filepath
-      .substring(filepath.indexOf('/tr/moda/') + 9)
-      .replace('.js', '');
-    const sourcePages = require(filepath);
-    sourcePages.forEach(url => {
-      const marka = nodeUrl
-        .parse(url, true)
-        .hostname.replace('www.', '')
-        .replace('.com.tr', '')
-        .replace('.com', '');
+// async function batchPageCollector() {
+//   const files = [];
+//   const concurrency = promiseConcurrency({
+//     batchConcurrency: 2,
+//     totalConcurrency: 10
+//   });
+//   console.log('page collection started....');
+//   walkSync(`${process.cwd()}/page-structure/${ws_domain}/`, async filepath => {
+//     files.push(filepath);
+//   });
+//   debugger;
+//   const browser = await puppeteer.launch({ headless: true, timeout: 0 });
+//   let totalPagesToScan = 0;
+//   let counter = 0;
+//   let pageurls = [];
+//   files.map(f => {
+//     const sourcePages = require(f);
+//     totalPagesToScan += sourcePages.length;
+//     sourcePages.forEach(s => {
+//       pageurls.push(s);
+//     });
+//     return sourcePages;
+//   });
+//   debugger;
+//   for (let filepath of files) {
+//     debugger;
+//     const pagePath = filepath
+//       .substring(filepath.indexOf('/tr/moda/') + 9)
+//       .replace('.js', '');
+//     const sourcePages = require(filepath);
+//     sourcePages.forEach(url => {
+//       const marka = nodeUrl
+//         .parse(url, true)
+//         .hostname.replace('www.', '')
+//         .replace('.com.tr', '')
+//         .replace('.com', '');
 
-      const { pageCounter } = require(`./${ws_domain}/${marka}/pageCounter.js`);
+//       const { pageCounter } = require(`./${ws_domain}/${marka}/pageCounter.js`);
 
-      const { pageCollector } = require('./pageCollector');
+//       const { pageCollector } = require('./pageCollector');
 
-      const output = `${process.cwd()}/page-collection/${ws_domain}/${pagePath}/${marka}.html`;
+//       const output = `${process.cwd()}/page-collection/${ws_domain}/${pagePath}/${marka}.html`;
 
-      debugger;
-      concurrency({
-        batchName: marka,
-        promise: pageCollector({
-          url,
-          output,
-          pageCounter,
-          browser,
-          counter,
-          eventEmitter,
-          cb: async url => {
-            if (pageurls.length === 0) {
-              console.log('browser is closed');
-              await browser.close();
-            }
-            counter++;
-            console.log(
-              'is complete..., totalPagesToScan:',
-              totalPagesToScan,
-              'counter:',
-              counter
-            );
-            pageurls.splice(pageurls.indexOf(url), 1);
-            console.log('total remained:', pageurls.length);
-            console.info('urls', pageurls);
-          }
-        })
-      });
-    });
-  }
-}
+//       debugger;
+//       concurrency({
+//         batchName: marka,
+//         promise: pageCollector({
+//           url,
+//           output,
+//           pageCounter,
+//           browser,
+//           counter,
+//           eventEmitter,
+//           cb: async url => {
+//             if (pageurls.length === 0) {
+//               console.log('browser is closed');
+//               await browser.close();
+//             }
+//             counter++;
+//             console.log(
+//               'is complete..., totalPagesToScan:',
+//               totalPagesToScan,
+//               'counter:',
+//               counter
+//             );
+//             pageurls.splice(pageurls.indexOf(url), 1);
+//             console.log('total remained:', pageurls.length);
+//             console.info('urls', pageurls);
+//           }
+//         })
+//       });
+//     });
+//   }
+// }
 
 function batchDataCollector() {
   walkSync(`${process.cwd()}/page-collection/${ws_domain}`, async filepath => {

@@ -38,7 +38,7 @@ function pageNavigationItems() {
         parentElement = document.createElement('ul');
         parentElement.id = parentId;
         let span = document.createElement('li');
-        span.textContent = p.replace('-', ' ');
+        span.textContent = 'Anasayfa'//p.replace('-', ' ');
         span.classList.add('arrow');
         span.classList.add('text-capitalize');
         span.setAttribute('aria-expanded', 'true');

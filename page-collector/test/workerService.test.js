@@ -2,7 +2,7 @@ const { workerService } = require('../workerService');
 describe('workerService test', () => {
   it('image cropping test', async function() {
     this.timeout(50000);
-    debugger;
+ 
     const result = await workerService({
       workerData: {
         nextSlice: [
@@ -17,7 +17,7 @@ describe('workerService test', () => {
   });
   it('image blur test', async function() {
     this.timeout(50000);
-    debugger;
+  
     const result = await workerService({
       workerData: {
         nextSlice: [
@@ -30,9 +30,9 @@ describe('workerService test', () => {
         '/Users/personalcomputer/actors/page-collector/image-processes/3-blurImages.js'
     });
   });
-  it.only('image embed test', async function() {
+  it('image embed test', async function() {
     this.timeout(50000);
-    debugger;
+
     const result = await workerService({
       workerData: {
         nextSlice: [
