@@ -25,7 +25,7 @@ async function batchPageCollector() {
   walkSync(`${process.cwd()}/page-structure/${ws_domain}/`, async filepath => {
     files.push(filepath);
   });
-  const browser = await puppeteer.launch({ headless: true, timeout: 60000 });
+  const browser = await puppeteer.launch({ headless: false, timeout: 60000 });
   eventEmitter.on('promiseExecCompleted', async () => {
     await browser.close();
   });

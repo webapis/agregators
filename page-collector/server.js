@@ -1,171 +1,23 @@
 const fs = require('fs');
-const request = require('request');
+//const request = require('request');
 const { walkSync } = require('./walkSync');
 const { removeDerectory } = require('./removeDerectory');
 const path = require('path');
-const nodeUrl = require('url');
+//const nodeUrl = require('url');
 const makeDir = require('make-dir');
-const puppeteer = require('puppeteer');
+//const puppeteer = require('puppeteer');
 
-const { promiseConcurrency, eventEmitter } = require('./promiseConcurrency');
 const { workerService } = require('./workerService');
 const { pageGeneration } = require('./pageGenerator');
 const { pageScriptAttacher } = require('./pageScriptAttacher');
 const { pageComponentAttacher } = require('./pageComponentAttacher');
 const { pageBuilder } = require('./pageBuilder');
 const { pageNavigationItems } = require('./pageNavigationItems');
-const { diff_minutes } = require('./diff_time');
+//const { diff_minutes } = require('./diff_time');
 const { batchPageCollector } = require('./batchPageCollector');
+const { batchDataCollector } = require('./batchDataCollector');
+const { batchImageCollection } = require('./batchImageCollection');
 const ws_domain = 'tr/moda';
-// async function batchPageCollector() {
-//   const files = [];
-//   const concurrency = promiseConcurrency({
-//     batchConcurrency: 2,
-//     totalConcurrency: 10
-//   });
-//   console.log('page collection started....');
-//   walkSync(`${process.cwd()}/page-structure/${ws_domain}/`, async filepath => {
-//     files.push(filepath);
-//   });
-//   ;
-//   const browser = await puppeteer.launch({ headless: true, timeout: 0 });
-//   let totalPagesToScan = 0;
-//   let counter = 0;
-//   let pageurls = [];
-//   files.map(f => {
-//     const sourcePages = require(f);
-//     totalPagesToScan += sourcePages.length;
-//     sourcePages.forEach(s => {
-//       pageurls.push(s);
-//     });
-//     return sourcePages;
-//   });
-//   ;
-//   for (let filepath of files) {
-//     ;
-//     const pagePath = filepath
-//       .substring(filepath.indexOf('/tr/moda/') + 9)
-//       .replace('.js', '');
-//     const sourcePages = require(filepath);
-//     sourcePages.forEach(url => {
-//       const marka = nodeUrl
-//         .parse(url, true)
-//         .hostname.replace('www.', '')
-//         .replace('.com.tr', '')
-//         .replace('.com', '');
-
-//       const { pageCounter } = require(`./${ws_domain}/${marka}/pageCounter.js`);
-
-//       const { pageCollector } = require('./pageCollector');
-
-//       const output = `${process.cwd()}/page-collection/${ws_domain}/${pagePath}/${marka}.html`;
-
-//       ;
-//       concurrency({
-//         batchName: marka,
-//         promise: pageCollector({
-//           url,
-//           output,
-//           pageCounter,
-//           browser,
-//           counter,
-//           eventEmitter,
-//           cb: async url => {
-//             if (pageurls.length === 0) {
-//               console.log('browser is closed');
-//               await browser.close();
-//             }
-//             counter++;
-//             console.log(
-//               'is complete..., totalPagesToScan:',
-//               totalPagesToScan,
-//               'counter:',
-//               counter
-//             );
-//             pageurls.splice(pageurls.indexOf(url), 1);
-//             console.log('total remained:', pageurls.length);
-//             console.info('urls', pageurls);
-//           }
-//         })
-//       });
-//     });
-//   }
-// }
-
-function batchDataCollector() {
-  walkSync(`${process.cwd()}/page-collection/${ws_domain}`, async filepath => {
-    const marka = path.basename(filepath, '.html');
-
-    const { dataCollector } = require(`./${ws_domain}/${marka}/dataCollector`);
-
-    const input = filepath;
-    const output = `${process.cwd()}/page-data/${filepath
-      .substring(filepath.indexOf(ws_domain))
-      .replace('.html', '.json')}`;
-
-    await makeDir(path.dirname(output));
-    const page = fs.readFileSync(input, { encoding: 'utf-8' });
-    console.log('dataCollection started:', input);
-    const data = dataCollector({ page });
-    fs.writeFileSync(output, JSON.stringify(data));
-    console.log('dataCollection ended:', output);
-  });
-}
-function download(url, dest) {
-  /* Create an empty file where we can save data */
-  const file = fs.createWriteStream(dest);
-  return () => {
-    /* Using Promises so that we can use the ASYNC AWAIT syntax */
-    return new Promise((resolve, reject) => {
-      request({
-        /* Here you should specify the exact link to the file you are trying to download */
-        uri: url,
-        gzip: true
-      })
-        .pipe(file)
-        .on('finish', async () => {
-          console.log(`The file is finished downloading.`);
-          resolve();
-        })
-        .on('error', error => {
-          reject(error);
-        });
-    });
-  };
-}
-function batchImageCollection() {
-  const concurrency = promiseConcurrency({
-    batchConcurrency: 2,
-    totalConcurrency: 10
-  });
-  walkSync(`${process.cwd()}/page-data/${ws_domain}`, async filepath => {
-    try {
-      const batchName = path.basename(filepath, '.json');
-
-      const data = fs.readFileSync(filepath, { encoding: 'utf-8' });
-      const output =
-        path.dirname(
-          `${process.cwd()}/page-image/${filepath.substring(
-            filepath.indexOf(ws_domain)
-          )}`
-        ) + '/img/original';
-
-      await makeDir(output);
-      const dataObject = JSON.parse(data);
-      for (let d of dataObject) {
-        const { image: { optsrc } } = d;
-        if (optsrc) {
-          const filename = path.basename(optsrc);
-          const fileEndPath = `${output}/${filename}`;
-          concurrency({
-            batchName,
-            promise: download(optsrc, fileEndPath)
-          });
-        }
-      }
-    } catch (error) {}
-  });
-}
 
 async function batchImageProcessing({
   imageWidth,

@@ -3,7 +3,7 @@ const pather = require('path');
 const fs = require('fs');
 const { uuidv4 } = require('./uuidv4');
 function fetchPageContent({ url, browser, selector, eventEmitter }) {
-  return async ({ uuidv4, batchName, promiseName }) => {
+  return async ({ uuidv4, batchName, promiseName, id }) => {
     const page = await browser.newPage();
     try {
       await page.setRequestInterception(true);
@@ -30,11 +30,18 @@ function fetchPageContent({ url, browser, selector, eventEmitter }) {
         batchName,
         promiseName,
         content,
-        page
+        page,
+        id
       });
+
     } catch (error) {
-      debugger;
-      eventEmitter.emit('promiseRejected', { url, error, batchName, uuidv4 });
+      eventEmitter.emit('promiseRejected', {
+        url,
+        error,
+        batchName,
+        uuidv4,
+        id
+      });
     }
   };
 }
