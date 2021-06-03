@@ -57,6 +57,7 @@
     "test": "mocha test/**/*.test.js",
     "prerender:test": "mocha page-prerender/test",
     "pageCollector:test": "mocha page-collector/test",
+    "promiseConcur:test": "mocha page-collector/test/promiseConcurrencyManager.test.js",
     "pageDataCorrector:test": "mocha page-data-corrector/test",
     "pageDataCategorizer:test": "mocha page-data-categorizer/test",
     "pageMetaCreator:test": "mocha page-meta-creator/test",

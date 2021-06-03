@@ -1,7 +1,82 @@
-const EventEmitter = require('events');
 const fs = require('fs');
 const { uuidv4 } = require('./uuidv4');
 const { printTable } = require('console-table-printer');
+const EventEmitter = require('events');
+
+class PromiseEmitter extends EventEmitter {
+  constructor(batchConcur, totalConcur) {
+    super();
+    this.batchConcur = batchConcur;
+    this.totalConcur = totalConcur;
+    this.queue = [];
+    this.promises = [];
+    this.rejected = [];
+    this.resolved = [];
+    this.total = [];
+    this.on('promiseAttached', function(promise) {
+      debugger;
+      const { batchName, id } = promise;
+      debugger;
+      //1. promises is empty
+      if (this.promises.length === 0) {
+        debugger;
+        promise();
+
+        this.promises.push(promise);
+        this.promiseAttachmentHandled();
+        return;
+      }
+      //2. promises is not empty
+      //2.1 total promises length limit is reached
+      if (this.promises.length === this.totalConcur) {
+        debugger;
+        this.queue.push(promise);
+        this.promiseAttachmentHandled();
+        return;
+      }
+      //2.2 total promises length limit is not reached
+      //2.2.1 batch limit is reached
+      const batchCount = this.promises.filter(q => q.batchName === batchName)
+        .length;
+
+      if (
+        this.promises.length < this.totalConcur &&
+        batchCount === this.batchConcur
+      ) {
+        debugger;
+        this.queue.push(promise);
+        this.promiseAttachmentHandled();
+        return;
+      }
+      //2.2.2 batch limit is not reached
+      if (
+        this.promises.length < this.totalConcur &&
+        batchCount < this.batchConcur
+      ) {
+        debugger;
+        promise();
+        this.promises.push(promise);
+        this.promiseAttachmentHandled();
+        return;
+      }
+    });
+    this.on('setInitialState', initialState => {
+      this.promises =
+        initialState.promises !== undefined ? initialState.promises : [];
+      debugger;
+      this.queue = initialState.queue !== undefined ? initialState.queue : [];
+    });
+  }
+  promiseAttachmentHandled() {
+    this.emit('promiseAttachmentHandled', {
+      queue: this.queue,
+      promises: this.promises,
+      rejected: this.rejected,
+      total: this.total,
+      resolved: this.resolved
+    });
+  }
+}
 const eventEmitter = new EventEmitter();
 eventEmitter.setMaxListeners(30);
 let batchConcur = 0;
@@ -42,7 +117,6 @@ eventEmitter.on('promiseRejected', promise => {
 
   const promiseToRemoveIndex = promises.findIndex(p => p.id === id);
   if (promiseToRemoveIndex !== -1) {
-
     promises.splice(promiseToRemoveIndex, 1);
     //  updateConsoleTable(promiseStates);
     invokeNextPromise({ promise });
@@ -51,29 +125,58 @@ eventEmitter.on('promiseRejected', promise => {
   }
   updateConsoleTable(promiseStates);
 });
-eventEmitter.on('promiseAttached', promise => {
-  const { uuidv4: pageId, batchName, promiseName } = promise;
-  total.push(promise);
-  const id = uuidv4();
-  promise.id = id;
-  const batchCount = promises.filter(q => q.batchName === batchName).length;
-  const totalCount = promises.length;
-  if (batchCount < batchConcur && totalCount < totalConcur) {
-    promises.push(promise);
 
-    promise({ uuidv4: pageId, batchName, promiseName, id });
-    updateConsoleTable(promiseStates);
-    console.log('promiseAttached-1');
-  } else {
-    updateConsoleTable(promiseStates);
-    console.log('promiseAttached-2');
-    queue.push(promise);
-  }
-});
 function promiseConcurrency({ batchConcurrency, totalConcurrency }) {
-  batchConcur = batchConcurrency;
-  totalConcur = totalConcurrency;
-  totalConcurrency;
+  const promiseEmitter = new PromiseEmitter(batchConcurrency, totalConcurrency);
+  // promiseEmitter.on('promiseAttached', function(promise) {
+  //   const { batchName, id } = promise;
+  //   debugger;
+  //   //1. promises is empty
+  //   if (promises.length === 0) {
+  //     debugger;
+  //     promise();
+
+  //     promiseEmitter.promises.push(promise);
+  //     promiseEmitter.promiseAttachmentHandled();
+  //     return;
+  //   }
+  //   //2. promises is not empty
+  //   //2.1 total promises length limit is reached
+  //   if (promises.length === totalConcur) {
+  //     debugger;
+  //     promiseEmitter.queue.push(promise);
+  //     promiseEmitter.promiseAttachmentHandled();
+  //     return;
+  //   }
+  //   //2.2 total promises length limit is not reached
+  //   //2.2.1 batch limit is reached
+  //   const batchCount = promises.filter(q => q.batchName === batchName).length;
+
+  //   if (promises.length < totalConcur && batchCount === batchConcur) {
+  //     debugger;
+  //     promiseEmitter.queue.push(promise);
+  //     promiseEmitter.promiseAttachmentHandled();
+  //     return;
+  //   }
+  //   //2.2.2 batch limit is not reached
+  //   if (promises.length < totalConcur && batchCount < batchConcur) {
+  //     debugger;
+  //     promise();
+  //     promiseEmitter.promises.push(promise);
+  //     promiseEmitter.promiseAttachmentHandled();
+  //     return;
+  //   }
+  // });
+
+  eventEmitter.on('setInitialState', initialState => {
+    promiseEmitter.promises =
+      initialState.promises !== undefined ? initialState.promises : [];
+    debugger;
+    promiseEmitter.queue =
+      initialState.queue !== undefined ? initialState.queue : [];
+  });
+
+  return promiseEmitter;
 }
 
 function updateConsoleTable(items) {

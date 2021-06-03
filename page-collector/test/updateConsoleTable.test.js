@@ -20,7 +20,7 @@ describe('updateConsoleTable test', () => {
     ]);
   });
 
-  it.only('reduceQueue test', function() {
+  it('reduceQueue test', function() {
     this.timeout(200000);
     const promisesInQueue = [
       { batchName: 'defacto', uuid: 4 },
