@@ -21,8 +21,8 @@ function fetchPageContent({ url, browser, selector, eventEmitter }) {
         }
       });
 
-      await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 });
-      await page.waitForSelector(selector, { timeout: 60000 });
+      await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 120000 });
+      await page.waitForSelector(selector, { timeout: 120000 });
       const content = await page.$eval(selector, elem => elem.innerHTML);
 
       eventEmitter.emit('promiseResolved', {
@@ -33,12 +33,13 @@ function fetchPageContent({ url, browser, selector, eventEmitter }) {
         page,
         id
       });
-
     } catch (error) {
       eventEmitter.emit('promiseRejected', {
         url,
         error,
         batchName,
+        promiseName,
+        page,
         uuidv4,
         id
       });
@@ -53,12 +54,34 @@ async function pageCollector({
   pageCounter,
   cb,
   eventEmitter,
-  marka
+  marka,
+  rejections
 }) {
   let pageContents = [];
   const { selector, countPages } = pageCounter();
 
   let localUidv4 = uuidv4();
+
+  eventEmitter.on('promiseRejected', async resolvedPromise => {
+    const { id } = resolvedPromise;
+  
+    if (rejections.length === 0) {
+      rejections.push(resolvedPromise);
+     
+      recordError(resolvedPromise);
+    } else {
+      const findError = rejections.find(f => f.id === id);
+      
+      if (findError === undefined) {
+        rejections.push(resolvedPromise);
+      
+        recordError(resolvedPromise);
+      }
+    }
+    //  const pageTitle = await page.title();
+
+    // await page.close();
+  });
   eventEmitter.on('promiseResolved', async resolvedPromise => {
     const { uuidv4, batchName, promiseName, content, page } = resolvedPromise;
     if (
@@ -83,6 +106,7 @@ async function pageCollector({
           });
           nextPagePromise.uuidv4 = localUidv4;
           nextPagePromise.batchName = marka;
+          nextPagePromise.output = output;
           if (pageCount === i) {
             nextPagePromise.promiseName = 'lastPage';
           } else {
@@ -124,113 +148,33 @@ async function pageCollector({
   firstPagePromise.uuidv4 = localUidv4;
   firstPagePromise.batchName = marka;
   firstPagePromise.promiseName = 'firstPage';
+  firstPagePromise.output = output;
   eventEmitter.emit('promiseAttached', firstPagePromise);
 }
 
-module.exports = { pageCollector };
+async function recordError(promise) {
+  const { page, error, batchName, promiseName, url, id } = promise;
+  const { message, name } = error;
 
-/*
-const makeDir = require('make-dir');
-const pather = require('path');
-const fs = require('fs');
-async function getNextPageContent({ url, page, selector }) {
-  try {
-    await page.setRequestInterception(true);
-    page.on('request', req => {
-      const resourceType = req.resourceType();
-
-      if (
-        resourceType === 'document' ||
-        resourceType === 'stylesheet' ||
-        resourceType === 'script'
-      ) {
-        req.continue();
-      } else {
-        req.abort();
-      }
-    });
-
-    await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 0 });
-    await page.waitForSelector(selector, { timeout: 0 });
-    const content = await page.$eval(selector, elem => elem.innerHTML);
-    await page.close();
-    return content;
-  } catch (error) {
-    console.log('getNextPageContent url:', url);
-    console.log('getNextPageContent url error:>>>>>', error);
-  }
-}
-
-function pageCollector({ output, url, browser, pageCounter,cb }) {
-  return async () => {
-    try {
-      const { selector, countPages } = pageCounter();
-
-      await makeDir(pather.dirname(output));
-
-      const page = await browser.newPage();
-      await page.setRequestInterception(true);
-
-      page.on('request', req => {
-        const resourceType = req.resourceType();
-        if (
-          resourceType === 'document' ||
-          resourceType === 'stylesheet' ||
-          resourceType === 'script'
-        ) {
-          req.continue();
-        } else {
-          req.abort();
-        }
-      });
-
-      await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 0 });
-      await page.waitForSelector(selector, { timeout: 0 });
-
-      const firstPageContent = await page.$eval(
-        selector,
-        elem => elem.innerHTML
-      );
-      const { pageCount, nextPageUrl } = await countPages({
-        page,
-        url
-      });
-
-      let nextPageContents = [];
-      if (pageCount > 0) {
-        let promises = [];
-        for (let i = 1; i <= pageCount; i++) {
-          //console.log('Collecting page:', i, `${nextPageUrl}${i}`);
-
-          promises.push(
-            await getNextPageContent({
-              url: `${nextPageUrl}${i}`,
-              page: await browser.newPage(),
-              selector
-            })
-          );
-        }
-
-        nextPageContents = await Promise.all(promises);
-
-        const joinContent = [firstPageContent, ...nextPageContents].join(' ');
-
-        await page.close();
-        cb(url)
-     
-        fs.writeFileSync(output, joinContent);
-      } else {
-        cb(url)
-        await page.close();
-      
-        fs.writeFileSync(output, firstPageContent);
-      }
-    } catch (error) {
-      console.log('pageCollector url:', url);
-      console.log('pageCollector url error:>>>>>', error);
-    }
+  const result = {
+    id,
+    errorMessage: message,
+    errorName: name,
+    url,
+    batchName,
+    pageTitle: page && (await page.title()),
+    promiseName,
+    dateTime: Date.now()
   };
+  let filePath = `${process.cwd()}/page-result/page-collection-result.json`;
+  let dataObject = [];
+  if (fs.existsSync(filePath)) {
+    const data = fs.readFileSync(filePath, { encoding: 'utf-8' });
+    dataObject = JSON.parse(data);
+    dataObject.push(result);
+  } else {
+    dataObject.push(result);
+  }
+  fs.writeFileSync(filePath, JSON.stringify(dataObject));
 }
-
 module.exports = { pageCollector };
-*/

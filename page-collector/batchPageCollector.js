@@ -6,7 +6,7 @@ const nodeUrl = require('url');
 
 const puppeteer = require('puppeteer');
 const ws_domain = 'tr/moda';
-const { promiseConcurrency, eventEmitter } = require('./promiseConcurrency');
+const { promiseConcurrency } = require('./promiseConcurrency');
 
 async function batchPageCollector() {
   const logPath = `${process.cwd()}/page-result/page-collection-result.json`;
@@ -15,9 +15,9 @@ async function batchPageCollector() {
   }
 
   const files = []; //url files
-  promiseConcurrency({
-    batchConcurrency: 4,
-    totalConcurrency: 10
+  let eventEmitter = promiseConcurrency({
+    batchConcurrency: 6,
+    totalConcurrency: 12
   });
   console.log('page collection started....');
 
@@ -25,8 +25,11 @@ async function batchPageCollector() {
   walkSync(`${process.cwd()}/page-structure/${ws_domain}/`, async filepath => {
     files.push(filepath);
   });
-  const browser = await puppeteer.launch({ headless: false, timeout: 60000 });
-  eventEmitter.on('promiseExecCompleted', async () => {
+  const browser = await puppeteer.launch({ headless: true, timeout: 120000 });
+  let rejections = [];
+  eventEmitter.on('promiseExecComplete', async () => {
+    eventEmitter = null;
+    console.log('Execution complete');
     await browser.close();
   });
   let totalPagesToScan = 0;
@@ -70,6 +73,7 @@ async function batchPageCollector() {
       //  concurrency({
       //  batchName: marka,
       pageCollector({
+        rejections,
         url,
         output,
         pageCounter,

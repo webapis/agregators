@@ -4,16 +4,19 @@ const { walkSync } = require('./walkSync');
 const path = require('path');
 const makeDir = require('make-dir');
 const { uuidv4 } = require('./uuidv4');
-const { promiseConcurrency, eventEmitter } = require('./promiseConcurrency');
-
+const { promiseConcurrency } = require('./promiseConcurrency');
+let eventEmitter = promiseConcurrency({
+  batchConcurrency: 5,
+  totalConcurrency: 10
+});
 const ws_domain = 'tr/moda';
-function download(url, dest, result) {
-  const { batchName, uuidv4 } = result;
-  /* Create an empty file where we can save data */
+function download(url, dest) {
   const file = fs.createWriteStream(dest);
-  return () => {
+
+  return function({ batchName, id }) {
     /* Using Promises so that we can use the ASYNC AWAIT syntax */
-    return new Promise((resolve, reject) => {
+    // return new Promise((resolve, reject) => {
+    try {
       request({
         /* Here you should specify the exact link to the file you are trying to download */
         uri: url,
@@ -22,20 +25,29 @@ function download(url, dest, result) {
         .pipe(file)
         .on('finish', async () => {
           console.log(`The file is finished downloading.`);
-          resolve();
-          eventEmitter.emit('promiseResolved', { batchName, uuidv4 });
+          eventEmitter.emit('promiseResolved', { id, batchName });
+          // resolve();
         })
         .on('error', error => {
-          reject(error);
+          console.error('____', error);
+          eventEmitter.emit('promiseRejected', { id, batchName, error });
+          //reject(error);
         });
-    });
+    } catch (error) {
+      debugger;
+    }
+
+    // })
   };
+
+  /* Create an empty file where we can save data */
 }
 function batchImageCollection() {
-  promiseConcurrency({
-    batchConcurrency: 2,
-    totalConcurrency: 10
-  });
+  process.on('unhandledRejection', (reason, promise) => {
+    console.log('Unhandled Rejection at:', reason.stack || reason)
+    // Recommended: send the information to sentry.io
+    // or whatever crash reporting service you use
+  })
   walkSync(`${process.cwd()}/page-data/${ws_domain}`, async filepath => {
     try {
       const batchName = path.basename(filepath, '.json');
@@ -59,12 +71,13 @@ function batchImageCollection() {
             batchName
           });
 
-          promise.uuidv4 = uuidv4();
           promise.batchName = batchName;
           eventEmitter.emit('promiseAttached', promise);
         }
       }
-    } catch (error) {}
+    } catch (error) {
+      debugger;
+    }
   });
 }
 
