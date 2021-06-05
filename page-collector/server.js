@@ -26,7 +26,6 @@ async function batchImageProcessing({
   batch = 100
 }) {
   let queque = [];
-
   console.log('start....');
   walkSync(`${process.cwd()}/${folderName}/${ws_domain}`, async function(
     filepath
@@ -161,7 +160,7 @@ env === 'page_data_collection' &&
 env === 'page_image_collection' && batchImageCollection();
 
 env === 'page_image_crop' &&
-  removeDerectory('page-image-resized') &&
+ // removeDerectory('page-image-resized') &&
   batchImageProcessing({
     imageWidth: 288,
     folderName: 'page-image',
@@ -169,7 +168,7 @@ env === 'page_image_crop' &&
       '/Users/personalcomputer/actors/page-collector/image-processes/2-cropImages.js'
   });
 env === 'page_image_blur' &&
-  removeDerectory('page-image-blurred') &&
+ // removeDerectory('page-image-blurred') &&
   batchImageProcessing({
     imageWidth: 288,
     folderName: 'page-image-resized',

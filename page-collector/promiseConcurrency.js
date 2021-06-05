@@ -73,7 +73,8 @@ class PromiseEmitter extends EventEmitter {
       if (
         this.queue.length === 0 &&
         this.total.length === totalResult &&
-        totalResult > 0
+        totalResult > 0 &&
+        this.promises.length === 0
       ) {
         this.emit('promiseExecComplete', true);
         clearInterval(this.setTimeInterVal);
