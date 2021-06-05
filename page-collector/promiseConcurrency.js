@@ -80,7 +80,7 @@ class PromiseEmitter extends EventEmitter {
 
         updateConsoleTable(promiseStates);
       }
-    }, 3000);
+    }, 200);
   }
   invokeNextPromise() {
     //1.queue is empty

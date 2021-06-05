@@ -15,6 +15,7 @@
     "jsdom": "^16.5.1",
     "make-dir": "^3.1.0",
     "mocha": "^8.3.0",
+    "node-fetch": "^2.6.1",
     "request": "^2.88.2",
     "rollup-plugin-cpy": "^2.0.1",
     "sinon": "^9.2.4"

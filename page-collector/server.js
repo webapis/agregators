@@ -158,8 +158,7 @@ env === 'page_collection' &&
 env === 'page_data_collection' &&
   removeDerectory('page-data') & batchDataCollector();
 
-env === 'page_image_collection' &&
-  removeDerectory('page-image') & batchImageCollection();
+env === 'page_image_collection' && batchImageCollection();
 
 env === 'page_image_crop' &&
   removeDerectory('page-image-resized') &&
