@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actions</title>
+</head>
+<script type="module">
+    import { request } from "https://cdn.skypack.dev/@octokit/request";
+    request("POST /repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches", {
+        headers: {
+            authorization: "token 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",
+            Accept: 'application/vnd.github.v3+json'
+        },
+        data: { ref: "master" },
+        repo: "agregators",
+        owner: "webapis",
+        workflow_id: 'helloworld.yml'
+    }).then(result => {
+        debugger;
+        console.log(`${result.data} repos found.`);
+
+    }).catch(err => {
+        debugger;
+    })
+
+</script>
+
+<body>
+
+</body>
+
+</html>
