@@ -16,8 +16,10 @@ jobs:
     name: Add 3 and 7
     runs-on: ubuntu-latest
     steps:
-        run: expr 3 + 7 > math-homework.txt
-      name: Upload math result for job 1
+      - shell: bash
+        run: |
+          expr 3 + 7 > math-homework.txt
+      - name: Upload math result for job 1
         uses: actions/upload-artifact@v2
         with:
           name: homework
