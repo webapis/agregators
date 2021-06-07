@@ -16,7 +16,6 @@ jobs:
     name: Add 3 and 7
     runs-on: ubuntu-latest
     steps:
-      shell: bash
         run: |
           expr 3 + 7 > math-homework.txt
       name: Upload math result for job 1
