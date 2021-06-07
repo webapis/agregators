@@ -12,13 +12,11 @@ on:
         default: 'The Octoverse'
 
 jobs:
-  say_hello:
+  job_1:
+    name: Add 3 and 7
     runs-on: ubuntu-latest
     steps:
-        run: |
-          echo "Hello ${{ github.event.inputs.name }}!"
-          echo "- in ${{ github.event.inputs.home }}!"
-             echo "- in ${{ github.run_id }}!"
+      - shell: bash
         run: |
           expr 3 + 7 > math-homework.txt
       - name: Upload math result for job 1
