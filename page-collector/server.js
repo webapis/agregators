@@ -7,7 +7,7 @@ const path = require('path');
 const makeDir = require('make-dir');
 //const puppeteer = require('puppeteer');
 
-const { workerService } = require('./workerService');
+
 const { pageGeneration } = require('./pageGenerator');
 const { pageScriptAttacher } = require('./pageScriptAttacher');
 const { pageComponentAttacher } = require('./pageComponentAttacher');
@@ -17,40 +17,41 @@ const { pageNavigationItems } = require('./pageNavigationItems');
 const { batchPageCollector } = require('./batchPageCollector');
 const { batchDataCollector } = require('./batchDataCollector');
 const { batchImageCollection } = require('./batchImageCollection');
+const { batchImageProcessing } = require('./batchImageProcessing');
 const ws_domain = 'tr/moda';
 
-async function batchImageProcessing({
-  imageWidth,
-  script,
-  folderName,
-  batch = 100
-}) {
-  let queque = [];
-  console.log('start....');
-  walkSync(`${process.cwd()}/${folderName}/${ws_domain}`, async function(
-    filepath
-  ) {
-    if (!filepath.includes('.DS_Store')) {
-      queque.push(filepath);
-    }
-  });
-  let i;
+// async function batchImageProcessing({
+//   imageWidth,
+//   script,
+//   folderName,
+//   batch = 100
+// }) {
+//   let queque = [];
+//   console.log('start....');
+//   walkSync(`${process.cwd()}/${folderName}/${ws_domain}`, async function(
+//     filepath
+//   ) {
+//     if (!filepath.includes('.DS_Store')) {
+//       queque.push(filepath);
+//     }
+//   });
+//   let i;
 
-  let promises = [];
-  for (i = 0; i <= queque.length; i += batch) {
-    const nextSlice = queque.slice(i, i + batch);
-    promises.push(
-      workerService({
-        workerData: { nextSlice, index: i, imageWidth },
-        script
-      })
-    );
-  }
-  await Promise.all(promises);
-  console.log('queque', queque.length);
+//   let promises = [];
+//   for (i = 0; i <= queque.length; i += batch) {
+//     const nextSlice = queque.slice(i, i + batch);
+//     promises.push(
+//       workerService({
+//         workerData: { nextSlice, index: i, imageWidth },
+//         script
+//       })
+//     );
+//   }
+//   await Promise.all(promises);
+//   console.log('queque', queque.length);
 
-  console.log('end....');
-}
+//   console.log('end....');
+// }
 
 function navDataTree() {
   let files = [];

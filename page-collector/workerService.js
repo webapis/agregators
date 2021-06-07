@@ -17,25 +17,4 @@ function workerService({ workerData, script }) {
 
 module.exports = { workerService };
 
-// function createWorker() {
-//
-//   const worker = new Worker(__filename);
-//   worker.parentPort = parentPort;
-//   worker.parentPort.on('message', task => {
-//
-//   });
-//
-//   worker.on('message', result => {
-//
-//   });
 
-//   worker.on('error', error => {
-//     console.log(error);
-//   });
-
-//   worker.on('exit', exitCode => {
-//     console.log(exitCode);
-//   });
-
-//   return worker;
-// }
