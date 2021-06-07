@@ -1,0 +1,13 @@
+name: 'MetaCreator'
+description: 'Create page metaData from'
+inputs:
+  pageData:  # id of input
+    description: 'page data collected from a page'
+    required: true
+    default: 'World'
+outputs:
+  pageMeta: # id of output
+    description: 'page metadata created from pageData'
+runs:
+  using: 'node12'
+  main: 'metacreator.js'
