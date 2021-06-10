@@ -2,7 +2,9 @@ const path = require('path');
 const ws_domain = 'tr/moda';
 const { walkSync } = require('./walkSync');
 const fs = require('fs');
+const { uploadImage } = require('./uploadImage');
 const makeDir = require('make-dir');
+
 function batchDataCollector() {
   walkSync(`${process.cwd()}/page-collection/${ws_domain}`, async filepath => {
     const marka = path.basename(filepath, '.html');
@@ -19,6 +21,7 @@ function batchDataCollector() {
     console.log('dataCollection started:', input);
     const data = dataCollector({ page });
     fs.writeFileSync(output, JSON.stringify(data));
+     uploadImage(output);
     console.log('dataCollection ended:', output);
   });
 }

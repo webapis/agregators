@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Actions</title>
+  <!-- CSS only -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+</head>
+<script type="module">
+ 
+    // request("POST /repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches", {
+    //     headers: {
+    //         authorization: "token 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",
+    //         Accept: 'application/vnd.github.v3+json'
+    //     },
+    //     data: { ref: "master" },
+    //     repo: "agregators",
+    //     owner: "webapis",
+    //     workflow_id: 'helloworld.yml'
+    // }).then(result => {
+    //     
+    //     console.log(`${result.data} repos found.`);
+
+    // }).catch(err => {
+    //     
+    // })
+    //65742567
+    // request("GET /repos/{owner}/{repo}/actions/artifacts", {
+    //     headers: {
+    //        // authorization: "token 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",
+    //         Accept: 'application/vnd.github.v3+json'
+    //     },
+    //     data: { ref: "master" },
+    //     repo: "agregators",
+    //     owner: "webapis",
+    //     artifact_id: 'homework'
+    // }).then(result => {
+    //     
+    //     console.log(`${result.data} repos found.`);
+
+    // }).catch(err => {
+    //     
+    // })
+
+    // request("GET /{owner}/agregators/suites/2928592635/artifacts/{artifact_id}", {
+    //     //   https://github.com/{owner}/agregators/suites/2928592635/artifacts/65742567
+    //     headers: {
+    //         // authorization: "token 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",
+    //         // Accept: 'application/vnd.github.v3+json',
+
+    //     },
+    //     // data: { ref: "master" },
+    //     repo: "agregators",
+    //     owner: "webapis",
+    //     artifact_id: "65742567",
+    //     archive_format: "zip"
+    // }).then(result => {
+    //     
+    //     console.log(`${result.data} repos found.`);
+
+    // }).catch(err => {
+    //     
+    // })
+
+</script>
+
+<body>
+
+  <app-shell></app-shell>
+  <script src="./app-shell.js"></script>
+  <!-- The core Firebase JS SDK is always required and must be listed first -->
+  <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-database.js"></script>
+  <!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+
+  <script>
+    // Your web app's Firebase configuration
+    var firebaseConfig = {
+      apiKey: "AIzaSyDb8Z27Ut0WJ-RH7Exi454Bpit9lbARJeA",
+      authDomain: "turkmenistan-market.firebaseapp.com",
+      databaseURL: "https://turkmenistan-market.firebaseio.com",
+      projectId: "turkmenistan-market",
+      storageBucket: "turkmenistan-market.appspot.com",
+      messagingSenderId: "117708549296",
+      appId: "1:117708549296:web:7e0b59b9a61acdec261f75"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+  </script>
+</body>
+
+</html>

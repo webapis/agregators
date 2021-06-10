@@ -28,26 +28,6 @@ jobs:
       - name: pageCollector action step
         id: pageCollector
         run: 'npm run pageCollector'
-      - name: dataCollector action step
-        id: dataCollector
-        run: 'npm run dataCollector'
-      - name: imageOptimizer action step
-        id: imageOptimizer
-        run: 'npm run imageOptimizer'
-      - name: Categorize action step
-        id: categorizer
-        run: 'npm run dataCategorizer'
-      - name: Meta creator action step
-        id: creator
-        run: npm run metaCreator
-      - name: build
-        run: npm run pageBuilder
-      - name: Prerender action step
-        id: prerender
-        run: npm run pagePrerender
-      - name: install firebase cli
-        run: sudo npm install -g firebase-tools
-      - name: deploy to firebase
-        run: firebase deploy --token ${{secrets.FIREBASE_TOKEN}}
+   
 
 

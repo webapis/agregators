@@ -1,4 +1,13 @@
 {
+  "targets": {
+    "turkmenistan-market": {
+      "hosting": {
+        "monitor": [
+          "scrape-monitor"
+        ]
+      }
+    }
+  },
   "projects": {
     "default": "turkmenistan-market"
   }

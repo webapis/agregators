@@ -188,11 +188,22 @@ function updateConsoleTable(items) {
       const value = current[subState];
       row[subState] = value;
     }
+
     rows.push(row);
   }
 
+  const addPercentage = rows.map(r => {
+    const { queque, proccess } = r;
+
+    const total = queque + proccess;
+    const left = queque * 100 / total;
+    const progress = total ? Math.round(100 - left) : '';
+
+    return { ...r, progress };
+  });
+  debugger;
   console.clear();
-  printTable(rows);
+  printTable(addPercentage);
 
   // promiseExecCompleted();
 }
