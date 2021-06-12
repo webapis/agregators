@@ -39,7 +39,7 @@
     "rollup-plugin-serve": "^1.1.0"
   },
   "scripts": {
-    "pageCollector": "NODE_ENV=page_collection node page-collector/server.js",
+    "pageCollector": "projectName=defacto node page-collector/server.js",
     "dataCollector": "NODE_ENV=page_data_collection node page-collector/server.js",
     "imageCollector": "NODE_ENV=page_image_collection node page-collector/server.js",
     "imageCropper": "NODE_ENV=page_image_crop node  page-collector/server.js",
@@ -61,6 +61,7 @@
     "pageCollector:test": "mocha page-collector/test",
     "promiseConcur:test": "mocha page-collector/test/promiseConcurrencyManager.test.js",
     "imageUpload:test": "mocha page-collector/test/imageUpload.test.js",
+     "taskSequelizer:test": "mocha page-collector/test/taskSequelizer.test.js",
     "pageDataCorrector:test": "mocha page-data-corrector/test",
     "pageDataCategorizer:test": "mocha page-data-categorizer/test",
     "pageMetaCreator:test": "mocha page-meta-creator/test",

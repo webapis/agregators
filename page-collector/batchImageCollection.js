@@ -34,7 +34,7 @@ function download(url, dest) {
 
   /* Create an empty file where we can save data */
 }
-function batchImageCollection() {
+async function batchImageCollection() {
 
   walkSync(`${process.cwd()}/page-data/${ws_domain}`, async filepath => {
     try {

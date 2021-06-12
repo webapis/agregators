@@ -31,7 +31,10 @@ customElements.define(
         .addEventListener('click', function() {
           const { state: { projectName } } = window.pageStore;
           debugger;
-          firebase.database().ref('projects').push({ projectName });
+          firebase
+            .database()
+            .ref(`projects/${projectName}`)
+            .set({ ready: true });
           window.pageStore.dispatch({
             type: window.actionTypes.VIEW_CHANGED,
             payload: 'project-list'

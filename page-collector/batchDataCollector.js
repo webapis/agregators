@@ -5,7 +5,7 @@ const fs = require('fs');
 const { uploadImage } = require('./uploadImage');
 const makeDir = require('make-dir');
 
-function batchDataCollector() {
+async function batchDataCollector() {
   walkSync(`${process.cwd()}/page-collection/${ws_domain}`, async filepath => {
     const marka = path.basename(filepath, '.html');
 

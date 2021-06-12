@@ -1,4 +1,5 @@
 const fs = require('fs');
+const { projects } = require('./project.config');
 //const request = require('request');
 const { walkSync } = require('./walkSync');
 const { removeDerectory } = require('./removeDerectory');
@@ -6,7 +7,6 @@ const path = require('path');
 //const nodeUrl = require('url');
 const makeDir = require('make-dir');
 //const puppeteer = require('puppeteer');
-
 
 const { pageGeneration } = require('./pageGenerator');
 const { pageScriptAttacher } = require('./pageScriptAttacher');
@@ -19,8 +19,6 @@ const { batchDataCollector } = require('./batchDataCollector');
 const { batchImageCollection } = require('./batchImageCollection');
 const { batchImageProcessing } = require('./batchImageProcessing');
 const ws_domain = 'tr/moda';
-
-
 
 function navDataTree() {
   let files = [];
@@ -120,98 +118,104 @@ function pageLeaves() {
   console.log('page tree creation ended....');
 }
 
-const env = process.env.NODE_ENV;
 
-env === 'page_collection' &&
-  removeDerectory('page-collection') & batchPageCollector();
-env === 'page_data_collection' &&
-  removeDerectory('page-data') & batchDataCollector();
+async function change(){
+if(projects[process.env.projectName]['page_collection']){
+  console.log('page_collection started !!!!!!')
+  await batchPageCollector()
+    console.log('page_collection ended !!!!!!')
+}
+// if(projects[process.env.projectName]['page_data_collection']){
+//     console.log('page_data_collection started')
+// removeDerectory('page-data') && await  batchDataCollector()
+//  console.log('page_data_collection ended')
+// }
 
-env === 'page_image_collection' && batchImageCollection();
+// if(projects[process.env.projectName]['page_image_collection']){
+//      console.log('page_image_collection started')
+// await batchImageCollection()
+//    console.log('page_image_collection ended')
+// }
+}
 
-env === 'page_image_crop' &&
- // removeDerectory('page-image-resized') &&
-  batchImageProcessing({
-    imageWidth: 288,
-    folderName: 'page-image',
-    script:
-      '/Users/personalcomputer/actors/page-collector/image-processes/2-cropImages.js'
-  });
-env === 'page_image_blur' &&
- // removeDerectory('page-image-blurred') &&
-  batchImageProcessing({
-    imageWidth: 288,
-    folderName: 'page-image-resized',
-    script:
-      '/Users/personalcomputer/actors/page-collector/image-processes/3-blurImages.js'
-  });
-env === 'page_image_embed' &&
-  batchImageProcessing({
-    imageWidth: 288,
-    folderName: 'page-data',
-    batch: 2,
-    script:
-      '/Users/personalcomputer/actors/page-collector/image-processes/4-embedImages.js'
-  });
+change()
 
-env === 'page_nav_data_tree_creation' &&
-  removeDerectory('page-tree') &&
-  navDataTree();
-env === 'page_leaves_creation' && removeDerectory('page-leave') && pageLeaves();
-env === 'page_generation' &&
-  removeDerectory('page-list-pages') &&
-  pageGeneration() &&
-  pageComponentAttacher({
-    source: `
-    <product-list></product-list>
-    <prerender-component></prerender-component>
-    `,
-    innterHtmlTo: 'body',
-    inputFolder: 'page-list-pages'
-  }) &&
-  pageScriptAttacher({
-    source: [
-      'https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css'
-    ],
-    inputFolder: 'page-list-pages',
-    prop: 'href',
-    tag: 'link',
-    appendTo: 'head',
-    rel: 'stylesheet',
-    cdn: true
-  }) &&
-  pageScriptAttacher({
-    source: ['/components/nav.css'],
-    inputFolder: 'page-list-pages',
-    prop: 'href',
-    tag: 'link',
-    appendTo: 'head',
-    rel: 'stylesheet',
-    cdn: false
-  }) &&
-  pageScriptAttacher({
-    source: [
-      '/components/product-list/product-list.js',
-      '/components/product-list/prerender-component.js'
-    ],
-    inputFolder: 'page-list-pages',
-    prop: 'src',
-    tag: 'script',
-    appendTo: 'body',
-    cdn: false
-  }); //&&
-// pageScriptAttacher({
-//   source: [
-//     'https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js'
-//   ],
-//   inputFolder: 'page-list-pages',
-//   prop: 'src',
-//   tag: 'script',
-//   appendTo: 'body',
-//   cdn: true
-// });
-env === 'page_nav_items' && pageNavigationItems();
-env === 'page_builder' && removeDerectory('page-build') && pageBuilder();
+  
+//   projects[process.env.projectName]['page_image_crop'] &&
+//   // removeDerectory('page-image-resized') &&
+//   batchImageProcessing({
+//     imageWidth: 288,
+//     folderName: 'page-image',
+//     script:
+//       '/Users/personalcomputer/actors/page-collector/image-processes/2-cropImages.js'
+//   }) &&
+//   projects[process.env.projectName]['page_image_blur'] &&
+//   // removeDerectory('page-image-blurred') &&
+//   batchImageProcessing({
+//     imageWidth: 288,
+//     folderName: 'page-image-resized',
+//     script:
+//       '/Users/personalcomputer/actors/page-collector/image-processes/3-blurImages.js'
+//   }) &&
+//   projects[process.env.projectName]['page_image_embed'] &&
+//   batchImageProcessing({
+//     imageWidth: 288,
+//     folderName: 'page-data',
+//     batch: 2,
+//     script:
+//       '/Users/personalcomputer/actors/page-collector/image-processes/4-embedImages.js'
+//   }) &&
+//   projects[process.env.projectName]['page_nav_data_tree_creation'] &&
+//   removeDerectory('page-tree') &&
+//   navDataTree() &&
+//   projects[process.env.projectName]['page_leaves_creation'] &&
+//   removeDerectory('page-leave') &&
+//   pageLeaves() &&
+//   projects[process.env.projectName]['page_generation'] &&
+//   removeDerectory('page-list-pages') &&
+//   pageGeneration() &&
+//   pageComponentAttacher({
+//     source: `
+//     <product-list></product-list>
+//     <prerender-component></prerender-component>
+//     `,
+//     innterHtmlTo: 'body',
+//     inputFolder: 'page-list-pages'
+//   }) &&
+//   pageScriptAttacher({
+//     source: [
+//       'https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css'
+//     ],
+//     inputFolder: 'page-list-pages',
+//     prop: 'href',
+//     tag: 'link',
+//     appendTo: 'head',
+//     rel: 'stylesheet',
+//     cdn: true
+//   }) &&
+//   pageScriptAttacher({
+//     source: ['/components/nav.css'],
+//     inputFolder: 'page-list-pages',
+//     prop: 'href',
+//     tag: 'link',
+//     appendTo: 'head',
+//     rel: 'stylesheet',
+//     cdn: false
+//   }) &&
+//   pageScriptAttacher({
+//     source: [
+//       '/components/product-list/product-list.js',
+//       '/components/product-list/prerender-component.js'
+//     ],
+//     inputFolder: 'page-list-pages',
+//     prop: 'src',
+//     tag: 'script',
+//     appendTo: 'body',
+//     cdn: false
+//   }); 
+// projects[process.env.projectName]['page_nav_items'] && pageNavigationItems();
+// projects[process.env.projectName]['page_builder'] &&
+//   removeDerectory('page-build') &&
+//   pageBuilder();
 
-
-// firebase deploy --only hosting:monitor 
+// firebase deploy --only hosting:monitor

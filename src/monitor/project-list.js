@@ -12,7 +12,9 @@ customElements.define(
       var commentsRef = database.ref('projects');
       const container = document.getElementById('project-name-container');
       commentsRef.on('child_added', data => {
-        const projectName = data.val().projectName;
+      
+        const projectName = data.key;
+        debugger;
         const a = document.createElement('a');
         a.href = '#';
         a.textContent = projectName;

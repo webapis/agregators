@@ -1,7 +1,7 @@
 const fs = require('fs');
 
 const { walkSync } = require('./walkSync');
-
+const { firebaseInit } = require('./firebaseInit');
 const nodeUrl = require('url');
 
 const puppeteer = require('puppeteer');
@@ -9,6 +9,10 @@ const ws_domain = 'tr/moda';
 const { promiseConcurrency } = require('./promiseConcurrency');
 
 async function batchPageCollector() {
+  const { database } = firebaseInit();
+  database.ref(`projects/${process.env.projectName}/pageCollection`).set({
+    state: 1
+  });
   const logPath = `${process.cwd()}/page-result/page-collection-result.json`;
   if (fs.existsSync(logPath)) {
     fs.unlinkSync(logPath);
@@ -19,7 +23,8 @@ async function batchPageCollector() {
     batchConcurrency: 6,
     totalConcurrency: 12
   });
-  console.log('page collection started....');
+
+
 
   //1.Fetch url declared files
   walkSync(`${process.cwd()}/page-structure/${ws_domain}/`, async filepath => {
@@ -30,7 +35,11 @@ async function batchPageCollector() {
   eventEmitter.on('promiseExecComplete', async () => {
     eventEmitter = null;
     console.log('Execution complete');
+    database
+      .ref(`projects/${process.env.projectName}/pageCollection`)
+      .set({ state: 2 });
     await browser.close();
+    
   });
   let totalPagesToScan = 0;
   let counter = 0;
