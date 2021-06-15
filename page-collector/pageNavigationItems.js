@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const makeDir = require('make-dir');
 const { JSDOM } = require('jsdom');
-function pageNavigationItems() {
+function pageNavigationItems({  taskSequelizerEventEmitter}) {
   let files = [];
 
   console.log('page nav item collection started....');
@@ -131,6 +131,7 @@ function pageNavigationItems() {
   makeDir.sync(dirName);
   fs.writeFileSync(`${dirName}/nav.html`, content);
   console.log('page nav item collection ended...');
+  taskSequelizerEventEmitter.emit('taskComplete', 'page_nav_items')
 }
 
 function getPosition(string, subString, index) {

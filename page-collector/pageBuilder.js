@@ -6,7 +6,7 @@ const path = require('path');
 const ws_domain = 'tr/moda';
 const { copyComponents } = require('./copyComponents');
 
-function pageBuilder() {
+function pageBuilder({taskSequelizerEventEmitter={}}) {
   console.log('PAGE BUILD STARTED....');
   copyComponents();
   copyFiles({
@@ -40,7 +40,9 @@ function pageBuilder() {
       });
     });
   }
+
   console.log('PAGE BUILD ENDED....');
+  taskSequelizerEventEmitter && taskSequelizerEventEmitter.emit('taskComplete', 'page_nav_items')
 }
 
 function copyFiles({ source, destination }) {

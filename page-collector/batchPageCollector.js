@@ -8,7 +8,8 @@ const puppeteer = require('puppeteer');
 const ws_domain = 'tr/moda';
 const { promiseConcurrency } = require('./promiseConcurrency');
 
-async function batchPageCollector() {
+async function batchPageCollector({taskSequelizerEventEmitter}) {
+
   const { database } = firebaseInit();
   database.ref(`projects/${process.env.projectName}/pageCollection`).set({
     state: 1
@@ -39,7 +40,7 @@ async function batchPageCollector() {
       .ref(`projects/${process.env.projectName}/pageCollection`)
       .set({ state: 2 });
     await browser.close();
-    
+    taskSequelizerEventEmitter.emit('taskComplete', 'page_collection')
   });
   let totalPagesToScan = 0;
   let counter = 0;

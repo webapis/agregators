@@ -3,9 +3,9 @@ const jsdom = require('jsdom');
 const { JSDOM } = jsdom;
 const { walkSync } = require('./walkSync');
 const ws_domain = 'tr/moda';
-function pageComponentAttacher({ source, innterHtmlTo, inputFolder }) {
+function pageComponentAttacher({ source, innterHtmlTo, inputFolder,taskSequelizerEventEmitter }) {
   let files = [];
-  console.log('page component attachment started....');
+  //console.log('page component attachment started....');
   walkSync(`${process.cwd()}/${inputFolder}`, async function(
     filepath
   ) {
@@ -26,7 +26,8 @@ function pageComponentAttacher({ source, innterHtmlTo, inputFolder }) {
   });
 
   console.log('page component attachment ended....');
-  return true;
+  taskSequelizerEventEmitter.emit('taskComplete', 'page_component_attacher')
+  //return true;
 }
 
 module.exports = { pageComponentAttacher };

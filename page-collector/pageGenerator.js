@@ -6,7 +6,12 @@ const path = require('path');
 const makeDir = require('make-dir');
 const ws_domain = 'tr/moda';
 
-async function pageGeneration() {
+async function pageGeneration({taskSequelizerEventEmitter}) {
+
+  try {
+    
+  
+  debugger;
   let files = [];
   console.log('page genegation started....');
   walkSync(`${process.cwd()}/page-leave`, async function(filepath) {
@@ -16,25 +21,30 @@ async function pageGeneration() {
     //}
   });
   const firstJson = files.filter(f => f.includes('-0.json'));
-
+debugger;
   let i = 0;
   for (i = 0; i < firstJson.length; i++) {
+    
     let htmlOutput = '';
     const pageName = path.basename(firstJson[i], '.json').replace(/-0.*/i, '');
     const lastFolder = firstJson[i]
       .substring(firstJson[i].lastIndexOf('/') + 1)
       .replace('-0.json', '');
     if (lastFolder === pageName) {
+    
       htmlOutput = `${path.dirname(firstJson[i])}`
         .replace(`/${lastFolder}`, '')
         .replace('page-leave', 'page-list-pages');
     } else {
+    
       htmlOutput = `${path.dirname(firstJson[i])}`.replace(
         'page-leave',
         'page-list-pages'
       );
     }
+  
     makeDir.sync(htmlOutput);
+   
     const dom = new JSDOM(
       `<body>
        </body>`,
@@ -42,10 +52,19 @@ async function pageGeneration() {
     );
 
     const content = dom.serialize();
+    console.log('page generatred',`${htmlOutput}/${pageName}.html`)
     fs.writeFileSync(`${htmlOutput}/${pageName}.html`, content);
+    if(firstJson.length-1===i){
+     
+    }
   }
-  console.log('page genegation ended....');
-  return true;
+  taskSequelizerEventEmitter.emit('taskComplete', 'page_generation')
+ // console.log('page genegation ended....');
+ 
+ debugger;
+} catch (error) {
+    debugger;
+}
 }
 
 module.exports = { pageGeneration };

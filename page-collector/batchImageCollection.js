@@ -17,7 +17,7 @@ function download(url, dest) {
   return async function({ batchName, id }) {
     try {
       if (fs.existsSync(dest)) {
-        debugger;
+   
         eventEmitter.emit('promiseResolved', { id, batchName });
       } else {
         
@@ -34,37 +34,48 @@ function download(url, dest) {
 
   /* Create an empty file where we can save data */
 }
-async function batchImageCollection() {
+async function batchImageCollection({taskSequelizerEventEmitter}) {
 
+  eventEmitter.on('promiseExecComplete', async () => {
+
+    taskSequelizerEventEmitter.emit('taskComplete', 'page_image_collection')
+  })
+let files =[]
   walkSync(`${process.cwd()}/page-data/${ws_domain}`, async filepath => {
-    try {
-      const batchName = path.basename(filepath, '.json');
-
-      const data = fs.readFileSync(filepath, { encoding: 'utf-8' });
-      const output =
-        path.dirname(
-          `${process.cwd()}/page-image/${filepath.substring(
-            filepath.indexOf(ws_domain)
-          )}`
-        ) + '/img/original';
-
-      await makeDir(output);
-      const dataObject = JSON.parse(data);
-      for (let d of dataObject) {
-        const { image: { optsrc } } = d;
-        if (optsrc) {
-          const filename = path.basename(optsrc);
-          const fileEndPath = `${output}/${filename}`;
-          const promise = download(optsrc, fileEndPath, {
-            batchName
-          });
-
-          promise.batchName = batchName;
-          eventEmitter.emit('promiseAttached', promise);
-        }
-      }
-    } catch (error) {}
+      files.push(filepath)
   });
+debugger;
+  for (let filepath of files){
+    debugger;
+    const batchName = path.basename(filepath, '.json');
+
+    const data = fs.readFileSync(filepath, { encoding: 'utf-8' });
+    const output =
+      path.dirname(
+        `${process.cwd()}/page-image/${filepath.substring(
+          filepath.indexOf(ws_domain)
+        )}`
+      ) + '/img/original';
+
+    await makeDir(output);
+    const dataObject = JSON.parse(data);
+    for (let d of dataObject) {
+      const { image: { optsrc } } = d;
+      if (optsrc) {
+        const filename = path.basename(optsrc);
+        const fileEndPath = `${output}/${filename}`;
+        const promise = download(optsrc, fileEndPath, {
+          batchName
+        });
+
+        promise.batchName = batchName;
+        eventEmitter.emit('promiseAttached', promise);
+      }
+    }
+
+  }
+  debugger;
+//  taskSequelizerEventEmitter.emit('taskComplete', 'page_image_collection')
 }
 
 module.exports = {

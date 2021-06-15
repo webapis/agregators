@@ -201,7 +201,7 @@ function updateConsoleTable(items) {
 
     return { ...r, progress };
   });
-  debugger;
+ 
   console.clear();
   printTable(addPercentage);
 

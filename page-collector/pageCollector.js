@@ -78,9 +78,7 @@ async function pageCollector({
         recordError(resolvedPromise);
       }
     }
-    //  const pageTitle = await page.title();
-
-    // await page.close();
+ 
   });
   eventEmitter.on('promiseResolved', async resolvedPromise => {
     const { uuidv4, batchName, promiseName, content, page } = resolvedPromise;
