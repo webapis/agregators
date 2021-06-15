@@ -4,7 +4,7 @@ const { walkSync } = require('./walkSync');
 const fs = require('fs');
 const { uploadImage } = require('./uploadImage');
 const makeDir = require('make-dir');
-debugger;
+
 async function batchDataCollector({taskSequelizerEventEmitter}) {
   debugger;
 const files =[]

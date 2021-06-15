@@ -22,18 +22,18 @@ const { batchImageProcessing } = require('./batchImageProcessing');
 const {pageNavDataTreeCreation}=require('./pageNavTreeCreation')
 const {pageLeaves}=require('./pageLeaves')
 const ws_domain = 'tr/moda';
-debugger;
+
 
 
 
 
 
 function change() {
-  debugger;
+
   const tasks = projects[process.env.projectName]
   const taskSequelizerEventEmitter = taskSequelizer({ tasks })
   taskSequelizerEventEmitter.on('nextTask', async function (nextTaskName) {
-debugger;
+
     switch (nextTaskName) {
       case 'page_collection':
         await batchPageCollector({ taskSequelizerEventEmitter })
@@ -152,7 +152,7 @@ debugger;
   })
 
 
-  debugger;
+
   console.log('nextTask started', process.env.NEXT_TASK)
   taskSequelizerEventEmitter.emit('nextTask', process.env.NEXT_TASK)
 
