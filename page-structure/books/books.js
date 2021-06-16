@@ -1,38 +1,43 @@
 
-function itemDataCollector({ containerElement }) {
-debugger;
+const { fetchPageContent } = require('../../page-collector/pageCollector')
+async function pageController({ eventEmitter, batchName, browser, parentUrl, page }) {
+  const urlsExist = await page.$$('.image_container a')
+  const sideCategoriesExist = await page.$('.side_categories')
+  if (urlsExist.length > 0 && sideCategoriesExist) {
+    const urls = await page.$$eval('.image_container a', (els) => els.map(e => e.href))
+    urls.forEach(url => {
+      const nextPagePromise = fetchPageContent({
+        url,
+        browser,
+        eventEmitter,
+        pageController,
+        parentUrl
+      })
+      nextPagePromise.batchName = batchName;
+      eventEmitter.emit('promiseAttached', { promise: nextPagePromise, unshift: false });
+    })
+  }
+  const nextPageExist = await page.$('.pager a')
 
-    return containerElement;
+  if (nextPageExist && sideCategoriesExist) {
+    const nextPageUrl = await page.$eval('.pager a', (el) => el.href)
+    const nextPagePromise = fetchPageContent({
+      url: nextPageUrl,
+      browser,
+      eventEmitter,
+      pageController
+    })
+    nextPagePromise.batchName = batchName;
+    eventEmitter.emit('promiseAttached', { promise: nextPagePromise, unshift: true });
+  }
 
+
+  
 }
- async function pageController({  eventEmitter, page,dataElements,navigationElements }) {
-    debugger;
-    const elem =navigationElements[0].href
-    debugger;
-    // interestSelectors.forEach(s => {
-    //     const { selector, element } = s
-    //     switch (selector) {
-    //         case '.image_container a':
-    //             const urlForQueueOne = element.baseURI
-    //             pageQueue.push(urlForQueueOne)
-    //             break;
-    //         case '.pager > li.next > a':
-    //             const urlForQueue = element.baseURI
-    //             pageQueue.push(urlForQueue)
-    //             break;
-    //         case '#product_description':
-    //             itemDataCollector({containerElement: element })
-    //             break;
-    //         default:
-    //             throw 'unknown page...'
-    //     }
-    // })
-
-}
 
 
-const pages = [{ startUrl: 'https://books.toscrape.com/', path: '/', pageController, dataSelectors: ['#product_description'], navigationSelectors:['.image_container a', '.pager > li.next > a'] }]
+const pages = [{ startUrl: 'https://books.toscrape.com/', pageController, batchName: 'books' }]
 
 module.exports = {
-    pages
+  pages
 }

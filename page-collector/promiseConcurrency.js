@@ -14,10 +14,14 @@ class PromiseEmitter extends EventEmitter {
     this.resolved = [];
     this.total = [];
 
-    this.on('promiseAttached', function(promise) {
+    this.on('promiseAttached', function ({ promise, unshift }) {
       const promiseWithId = promise;
       promiseWithId.id = uuidv4();
-      this.queue.push(promiseWithId);
+      if (unshift) {
+        this.queue.unshift(promiseWithId);
+      } else {
+        this.queue.push(promiseWithId);
+      }
       this.total.push(promiseWithId);
     });
     this.on('setInitialState', initialState => {
@@ -32,7 +36,7 @@ class PromiseEmitter extends EventEmitter {
       this.total = initialState.total !== undefined ? initialState.total : [];
     });
 
-    this.on('promiseResolved', function(promise) {
+    this.on('promiseResolved', function (promise) {
       const { id } = promise;
 
       this.resolved.push(promise);
@@ -41,7 +45,7 @@ class PromiseEmitter extends EventEmitter {
       this.promises.splice(promiseToRemoveIndex, 1);
       this.promiseStateChanged();
     });
-    this.on('promiseRejected', function(promise) {
+    this.on('promiseRejected', function (promise) {
       const { id } = promise;
       this.rejected.push(promise);
       const promiseToRemoveIndex = this.promises.findIndex(p => p.id === id);
@@ -50,7 +54,7 @@ class PromiseEmitter extends EventEmitter {
       this.promiseStateChanged();
     });
 
-    this.on('invokeNextPromise', function() {
+    this.on('invokeNextPromise', function () {
       this.invokeNextPromise();
     });
     this.setTimeInterVal = setInterval(() => {
@@ -201,7 +205,7 @@ function updateConsoleTable(items) {
 
     return { ...r, progress };
   });
- 
+
   console.clear();
   printTable(addPercentage);
 
@@ -215,7 +219,7 @@ function reduceQueue(promisesInQueue) {
 }
 
 function groupBy(arr, property) {
-  return arr.reduce(function(memo, x) {
+  return arr.reduce(function (memo, x) {
     if (!memo[x[property]]) {
       memo[x[property]] = [];
     }
