@@ -1,7 +1,7 @@
 
 const fs = require('fs');
 const { URL } =require('url');
-function fetchPageContent({ url, browser, eventEmitter, pageController,parentUrl }) {
+function fetchPageContent({ url, browser, eventEmitter, pageController,parentUrl,output }) {
 
   return async ({ batchName, id }) => {
     const page = await browser.newPage();
@@ -40,7 +40,8 @@ function fetchPageContent({ url, browser, eventEmitter, pageController,parentUrl
         content,
         browser,
         parentUrl:host,
-        page
+        page,
+        output
       })
      
       eventEmitter.emit('promiseResolved', {

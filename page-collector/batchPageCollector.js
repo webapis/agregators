@@ -8,7 +8,7 @@ const ws_domain = process.env.projectName;
 const { promiseConcurrency } = require('./promiseConcurrency');
 const { fetchPageContent } = require('./pageCollector')
 async function batchPageCollector({ taskSequelizerEventEmitter }) {
-  let pageurls = [];
+
   const { database } = firebaseInit();
   database.ref(`projects/${process.env.projectName}/pageCollection`).set({
     state: 1
@@ -23,24 +23,7 @@ async function batchPageCollector({ taskSequelizerEventEmitter }) {
     batchConcurrency: 6,
     totalConcurrency: 12
   });
-  // eventEmitter.on('urls_queued', (data) => {
-  //   debugger;
-  //   const { pageController, urls, batchName } = data
-  //   debugger;
-  //   urls.forEach(url => {
-  //     debugger;
-  //     const nextPagePromise = fetchPageContent({
-  //       url,
-  //       browser,
-  //       eventEmitter,
-  //       pageController
-  //     })
-  //     firstPagePromise.batchName = batchName;
-  //     debugger;
-  //     eventEmitter.emit('promiseAttached', nextPagePromise);
-  //   })
 
-  // })
   //1.Fetch url declared files
   walkSync(`${process.cwd()}/page-structure/${ws_domain}/`, async filepath => {
 
@@ -66,12 +49,14 @@ async function batchPageCollector({ taskSequelizerEventEmitter }) {
 
     const { pages } = require(file);
     for (page of pages) {
-      const { pageController, startUrl, batchName } = page
+      const { pageController, startUrl, batchName,output } = page
+      debugger;
       const firstPagePromise = fetchPageContent({
         url: startUrl,
         browser,
         eventEmitter,
-        pageController
+        pageController,
+        output
       })
       firstPagePromise.batchName = batchName;
       eventEmitter.emit('promiseAttached', { promise: firstPagePromise, unshift: false });
