@@ -16,15 +16,10 @@ const { pageBuilder } = require('./pageBuilder');
 const { pageNavigationItems } = require('./pageNavigationItems');
 
 const { batchPageCollector } = require('./batchPageCollector');
-const { batchDataCollector } = require('./batchDataCollector');
 const { batchImageCollection } = require('./batchImageCollection');
 const { batchImageProcessing } = require('./batchImageProcessing');
-const {pageNavDataTreeCreation}=require('./pageNavTreeCreation')
-const {pageLeaves}=require('./pageLeaves')
-const ws_domain = 'tr/moda';
-
-
-
+const { pageNavDataTreeCreation } = require('./pageNavTreeCreation')
+const { pageLeaves } = require('./pageLeaves')
 
 
 
@@ -36,18 +31,15 @@ function change() {
 
     switch (nextTaskName) {
       case 'page_collection':
-        await batchPageCollector({ taskSequelizerEventEmitter })
-        break;
-      case 'page_data_collection':
-        removeDerectory('page-data') && await batchDataCollector({ taskSequelizerEventEmitter })
+        await batchPageCollector({ taskSequelizerEventEmitter, uploadFile: true, output: `${process.cwd()}/page-data/${process.env.projectName}.json` })
         break;
       case 'page_image_collection':
         await batchImageCollection({ taskSequelizerEventEmitter })
         break;
       case 'page_image_crop':
         batchImageProcessing({
-          skipProcessed:true,
-          processType:'crop',
+          skipProcessed: true,
+          processType: 'crop',
           taskSequelizerEventEmitter,
           imageWidth: 288,
           folderName: 'page-image',
@@ -56,10 +48,9 @@ function change() {
         })
         break;
       case 'page_image_blur':
-        // removeDerectory('page-image-blurred') &&
         batchImageProcessing({
-          skipProcessed:true,
-          processType:'blur',
+          skipProcessed: true,
+          processType: 'blur',
           taskSequelizerEventEmitter,
           imageWidth: 288,
           folderName: 'page-image-resized',
@@ -69,8 +60,8 @@ function change() {
         break;
       case 'page_image_embed':
         batchImageProcessing({
-          skipProcessed:false,
-          processType:'embed',
+          skipProcessed: false,
+          processType: 'embed',
           taskSequelizerEventEmitter,
           imageWidth: 288,
           folderName: 'page-data',
@@ -81,7 +72,7 @@ function change() {
         break;
       case 'page_nav_data_tree_creation':
         removeDerectory('page-tree') &&
-        pageNavDataTreeCreation({ taskSequelizerEventEmitter })
+          pageNavDataTreeCreation({ taskSequelizerEventEmitter })
         break;
       case 'page_leaves_creation':
         removeDerectory('page-leave') &&

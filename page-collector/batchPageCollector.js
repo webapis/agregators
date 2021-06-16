@@ -4,10 +4,11 @@ const { walkSync } = require('./walkSync');
 const { firebaseInit } = require('./firebaseInit');
 
 const puppeteer = require('puppeteer');
+const { fileUploader } = require('./fileUploader')
 const ws_domain = process.env.projectName;
 const { promiseConcurrency } = require('./promiseConcurrency');
 const { fetchPageContent } = require('./pageCollector')
-async function batchPageCollector({ taskSequelizerEventEmitter }) {
+async function batchPageCollector({ taskSequelizerEventEmitter, output, uploadFile }) {
 
   const { database } = firebaseInit();
   database.ref(`projects/${process.env.projectName}/pageCollection`).set({
@@ -37,7 +38,16 @@ async function batchPageCollector({ taskSequelizerEventEmitter }) {
       .ref(`projects/${process.env.projectName}/pageCollection`)
       .set({ state: 2 });
     await browser.close();
-    taskSequelizerEventEmitter.emit('taskComplete', 'page_collection')
+    if (uploadFile) {
+      fileUploader({
+        output, cb: () => {
+          taskSequelizerEventEmitter.emit('taskComplete', 'page_collection')
+        }
+      })
+    } else {
+      taskSequelizerEventEmitter.emit('taskComplete', 'page_collection')
+    }
+
   });
 
 
@@ -46,11 +56,10 @@ async function batchPageCollector({ taskSequelizerEventEmitter }) {
      */
 
   for (let file of files) {
-
     const { pages } = require(file);
     for (page of pages) {
-      const { pageController, startUrl, batchName,output } = page
-      debugger;
+      const { pageController, startUrl, batchName } = page
+      
       const firstPagePromise = fetchPageContent({
         url: startUrl,
         browser,
@@ -59,8 +68,8 @@ async function batchPageCollector({ taskSequelizerEventEmitter }) {
         output
       })
       firstPagePromise.batchName = batchName;
-      eventEmitter.emit('promiseAttached', { promise: firstPagePromise, unshift: false });
 
+      eventEmitter.emit('promiseAttached', { promise: firstPagePromise, unshift: false });
     }
   }
 

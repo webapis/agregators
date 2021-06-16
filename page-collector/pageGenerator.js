@@ -11,7 +11,7 @@ async function pageGeneration({taskSequelizerEventEmitter}) {
   try {
     
   
-  debugger;
+  
   let files = [];
   console.log('page genegation started....');
   walkSync(`${process.cwd()}/page-leave`, async function(filepath) {
@@ -21,7 +21,7 @@ async function pageGeneration({taskSequelizerEventEmitter}) {
     //}
   });
   const firstJson = files.filter(f => f.includes('-0.json'));
-debugger;
+
   let i = 0;
   for (i = 0; i < firstJson.length; i++) {
     
@@ -61,9 +61,9 @@ debugger;
   taskSequelizerEventEmitter.emit('taskComplete', 'page_generation')
  // console.log('page genegation ended....');
  
- debugger;
+ 
 } catch (error) {
-    debugger;
+    
 }
 }
 

@@ -44,9 +44,9 @@ let files =[]
   walkSync(`${process.cwd()}/page-data/${ws_domain}`, async filepath => {
       files.push(filepath)
   });
-debugger;
+
   for (let filepath of files){
-    debugger;
+    
     const batchName = path.basename(filepath, '.json');
 
     const data = fs.readFileSync(filepath, { encoding: 'utf-8' });
@@ -74,7 +74,7 @@ debugger;
     }
 
   }
-  debugger;
+  
 //  taskSequelizerEventEmitter.emit('taskComplete', 'page_image_collection')
 }
 

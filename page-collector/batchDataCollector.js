@@ -6,7 +6,7 @@ const { uploadImage } = require('./uploadImage');
 const makeDir = require('make-dir');
 
 async function batchDataCollector({taskSequelizerEventEmitter}) {
-  debugger;
+  
 const files =[]
   walkSync(`${process.cwd()}/page-collection/${ws_domain}`, async f => {
     files.push(f)
@@ -15,7 +15,7 @@ const files =[]
 
 for (let filepath of files){
 
-debugger;
+
   const marka = path.basename(filepath, '.html');
 
   const { dataCollector } = require(`./${ws_domain}/${marka}/dataCollector`);
@@ -33,9 +33,9 @@ debugger;
    
   //uploadImage(output);
   console.log('dataCollection ended:', output);
-  debugger;
+  
 }
-debugger;
+
   taskSequelizerEventEmitter.emit('taskComplete', 'page_data_collection')
 }
 

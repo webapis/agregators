@@ -26,7 +26,7 @@ function fetchPageContent({ url, browser, eventEmitter, pageController,parentUrl
       const title =await page.title()
       if(title.includes('404')|| url.includes('..')){
         const pUrl =parentUrl
-        debugger;
+        
       }
       const host =await page.url()
       const origin = new URL(host).origin;
@@ -41,7 +41,8 @@ function fetchPageContent({ url, browser, eventEmitter, pageController,parentUrl
         browser,
         parentUrl:host,
         page,
-        output
+        output,
+      
       })
      
       eventEmitter.emit('promiseResolved', {
@@ -50,7 +51,7 @@ function fetchPageContent({ url, browser, eventEmitter, pageController,parentUrl
       });
       await page.close()
     } catch (error) {
-      debugger;
+      
       eventEmitter.emit('promiseRejected', {
         url,
         error,

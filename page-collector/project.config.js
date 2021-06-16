@@ -16,7 +16,8 @@ const projects = {
 //https://books.toscrape.com/
   books: [
     { page_collection: true },
-    { page_data_collection: true },
+    { page_data_upload: true },
+    //{ page_data_collection: true },
     { page_image_collection: true },
   //  { page_image_upload: true },
   //  { page_data_upload: true },
