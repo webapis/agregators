@@ -1,4 +1,5 @@
-const fs = require('fs');
+require('dotenv').config()
+const fs = require('fs'); 
 const { projects } = require('./project.config');
 
 const { walkSync } = require('./walkSync');

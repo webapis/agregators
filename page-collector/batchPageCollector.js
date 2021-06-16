@@ -39,7 +39,7 @@ async function batchPageCollector({ taskSequelizerEventEmitter, output, uploadFi
       .set({ state: 2 });
     await browser.close();
     if (uploadFile) {
-      fileUploader({
+      fileUploader({database,
         output, cb: () => {
           taskSequelizerEventEmitter.emit('taskComplete', 'page_collection')
         }

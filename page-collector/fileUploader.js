@@ -1,18 +1,25 @@
 const admin = require('firebase-admin');
 const path = require('path');
-const { firebaseInit } = require('./firebaseInit');
+
 
 async function fileUploader({output,cb}) {
-  debugger;
-  firebaseInit();
-  const fileName = path.basename(output);
-  const filePath = output;
-  const destFileName = output.replace(process.cwd() + '/', ''); //`images/${fileName}`;
+  try {
+    const fileName = path.basename(output);
+    const filePath = output;
   
-  const bucket = admin.storage().bucket();
-  await bucket.upload(filePath, {
-    destination: destFileName
-  });
+  
+    const bucket = admin.storage().bucket();
+  
+    await bucket.upload(filePath, {
+      destination: fileName
+    });
+    console.log('file upload succeful')
+    cb()
+  } catch (error) {
+    console.log('file upload failed')
+    throw error
+  }
+
 }
 
 module.exports = {
