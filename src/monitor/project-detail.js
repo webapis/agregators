@@ -37,7 +37,7 @@ customElements.define(
             'POST /repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches',
             {
               headers: {
-                authorization: 'token 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',
+                authorization: 'token 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',
                 Accept: 'application/vnd.github.v3+json'
               },
               data: { ref: 'action', inputs: { projectName: 'books' } },
