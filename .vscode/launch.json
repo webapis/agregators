@@ -10,6 +10,17 @@
         "<node_internals>/**"
       ],
       "type": "pwa-node"
+    },
+
+    {
+      "name": "Launch gpg",
+      "program": "${workspaceFolder}/page-collector/generateGbp.js",
+      "request": "launch",
+      "envFile": "${workspaceFolder}/.env",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "type": "pwa-node"
     }
  
   ]
