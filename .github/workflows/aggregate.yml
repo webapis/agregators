@@ -30,7 +30,7 @@ jobs:
         run: 'npm install'
       - name: aggregation step
         id: collection
-        run: projectName=${{env.INPUT_PROJECTNAME}} NEXT_TASK=page_collection ALL=TRUE PRIVATE_KEY_ID=${{secrets.PKIDG}} PRIVATE_KEY=${{secrets.PKG}} node page-collector/server.js
+        run: projectName=${{github.event.inputs.projectName}} NEXT_TASK=page_collection ALL=TRUE PRIVATE_KEY_ID=${{secrets.PKIDG}} PRIVATE_KEY=${{secrets.PKG}} node page-collector/server.js
    
 
 
