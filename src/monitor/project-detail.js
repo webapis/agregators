@@ -40,10 +40,10 @@ customElements.define(
                 authorization: 'token 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',
                 Accept: 'application/vnd.github.v3+json'
               },
-              data: { ref: 'master' },
+              data: { ref: 'action', inputs: { projectName: 'books' } },
               repo: 'agregators',
               owner: 'webapis',
-              workflow_id: 'helloworld.yml'
+              workflow_id: 'aggregate.yml'
             }
           )
             .then(result => {

@@ -1,13 +1,10 @@
 name: 'Collector'
 description: 'Collect product items'
 inputs:
-  page-url:  # id of input
-    description: 'Who to greet'
+  projectName:  # id of input
+    description: 'Project to trigger'
     required: true
-    default: 'World'
-outputs:
-  time: # id of output
-    description: 'The time we greeted you'
+    default: 'defacto'
 runs:
   using: 'node12'
   main: 'collector.js'

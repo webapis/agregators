@@ -1,8 +1,11 @@
 name: aggregate
 on:
-  push:
-    branches:
-      - master
+  workflow_dispatch:
+    inputs:
+      projectName:
+        description: 'Project Name'
+        required: true
+        default: 'books'
 jobs:
   aggregator:
     runs-on: ubuntu-latest
@@ -25,9 +28,9 @@ jobs:
             ${{ runner.os }}-
       - name: Install dependencies
         run: 'npm install'
-      - name: pageCollector action step
-        id: pageCollector
-        run: 'npm run pageCollector'
+      - name: aggregation step
+        id: collection
+        run: projectName=${{env.INPUT_PROJECTNAME}} NEXT_TASK=page_collection ALL=TRUE node page-collector/server.js
    
 
 
