@@ -1,7 +1,7 @@
 const admin = require('firebase-admin');
 
 var publicServiceAccountInfo = require('../turkmenistan-market-74b0fe0d7246.json');
-const serviceAccount = { ...publicServiceAccountInfo, private_key_id: process.env.private_key_id, private_key: process.env.private_key }
+const serviceAccount = { ...publicServiceAccountInfo, private_key_id: process.env.PRIVATE_KEY_ID, private_key: process.env.PRIVATE_KEY }
 debugger;
 function firebaseInit() {
   admin.initializeApp({
