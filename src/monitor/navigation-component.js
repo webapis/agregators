@@ -30,7 +30,7 @@ customElements.define(
     </li>`
         : ''}
      
-      ${user === null
+      ${true
         ? `<li class="nav-item" id="login">
           <a class="nav-link" href="#">
             Signin
