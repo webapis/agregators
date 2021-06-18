@@ -6,7 +6,7 @@ debugger;
 function firebaseInit() {
   try {
     admin.initializeApp({
-      credential: admin.credential.cert(process.env.PRIVATE_KEY), //admin.credential.applicationDefault(),
+      credential: admin.credential.cert(JSON.parse(process.env.PRIVATE_KEY)), //admin.credential.applicationDefault(),
       storageBucket: 'gs://turkmenistan-market.appspot.com',
       databaseURL: 'https://turkmenistan-market.firebaseio.com'
     });
