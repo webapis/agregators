@@ -10,6 +10,7 @@ customElements.define(
         import('./air-store.js'),
         import('./reducer.js'),
         import('./navigation-component.js'),
+        import('./project-card.js'),
         import('./project-list.js'),
         import('./projects-container.js'),
         import('./project-detail.js')

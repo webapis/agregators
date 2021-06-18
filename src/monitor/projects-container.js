@@ -39,32 +39,21 @@ customElements.define(
         
         this.innerHTML =
           user &&
-          `<div>
-          <div>
-          <button class="btn btn-primary" id ="add-project">Add Project</button>
-          </div>
+          `<div class="container">
+   <div class="row">
           
-          ${view === 'project-edit' ? `<edit-project></edit-project>` : ''}
-          ${view === 'project-list' ? `<project-list></project-list>` : ''}
+          ${view === 'project-edit' ? `<edit-project class="col"></edit-project>` : ''}
+          ${view === 'project-list' ? `<project-list class="col"></project-list>` : ''}
           ${view === 'project-detail'
             ? `<project-detail></project-detail>`
             : ''}
+
+            </div>
           </div>`;
-        document
-          .getElementById('add-project')
-          .addEventListener('click', function() {
-            addProject();
-          });
+
       }
     }
   }
 );
 
-function addProject() {
-  import('./edit-project.js').then(() => {});
 
-  window.pageStore.dispatch({
-    type: window.actionTypes.VIEW_CHANGED,
-    payload: 'project-edit'
-  });
-}

@@ -1,29 +1,25 @@
-
 {
   "database": {
     "rules": "database.rules.json"
   },
-  "hosting": [ {
-      "target": "monitor",  // "blog" is the applied TARGET_NAME for the Hosting site "myapp-blog"
-      "public": "src/monitor",  // contents of this folder are deployed to the site "myapp-blog"
+  "hosting": [
+    {
+      "target": "monitor",
+      "public": "src/monitor",
       "ignore": [
         "firebase.json",
         "**/.*",
         "**/node_modules/**"
       ]
-
-      // ...
     },
     {
-      "target": "app",  // "app" is the applied TARGET_NAME for the Hosting site "myapp-app"
-      "public": "page-build",  // contents of this folder are deployed to the site "myapp-app"
+      "target": "app",
+      "public": "page-build",
       "ignore": [
         "firebase.json",
         "**/.*",
         "**/node_modules/**"
       ]
-      // ...
-
     }
   ]
 }

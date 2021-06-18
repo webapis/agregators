@@ -10,9 +10,10 @@ customElements.define(
     }
 
     render() {
-      const { state: { user, view, selectedProjectName } } = window.pageStore;
+      const { state: { user:{ticket}, view, selectedProjectName } } = window.pageStore;
+debugger;
       this.innerHTML = `<div>
-        <a href="#" id="show-projest-list">Projest List</a>
+  
         <div>
         ${selectedProjectName}
         <div>
@@ -20,15 +21,7 @@ customElements.define(
         </div>
         </div>
         </div>`;
-      document
-        .getElementById('show-projest-list')
-        .addEventListener('click', e => {
-          e.preventDefault();
-          window.pageStore.dispatch({
-            type: window.actionTypes.VIEW_CHANGED,
-            payload: 'project-list'
-          });
-        });
+
 
       document.getElementById('start-scrape').addEventListener('click', () => {
         import('https://cdn.skypack.dev/@octokit/request').then(module => {
@@ -37,7 +30,7 @@ customElements.define(
             'POST /repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches',
             {
               headers: {
-                authorization: 'token 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',
+                authorization: `token ${ticket}`,
                 Accept: 'application/vnd.github.v3+json'
               },
               data: { ref: 'action', inputs: { projectName: 'books' } },
