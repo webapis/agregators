@@ -70,7 +70,7 @@
     "pageMetaCreator:test": "mocha page-meta-creator/test",
     "pageImageOptimizer:test": "mocha page-image-optimizer/test",
     "pagePrerender:test": "mocha page-prerender/test",
-    "gpg":"node page-collector/generateGbp.js"
+    "gpg":"node page-collector/generateGbp.js --inspect-brk"
   },
   "nodemonConfig": {
     "ignore": [
