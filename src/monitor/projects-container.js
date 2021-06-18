@@ -43,6 +43,7 @@ customElements.define(
    <div class="row">
           
           ${view === 'project-edit' ? `<edit-project class="col"></edit-project>` : ''}
+          ${view === 'home-component' ? `<home-component class="col"></home-component>` : ''}
           ${view === 'project-list' ? `<project-list class="col"></project-list>` : ''}
           ${view === 'project-detail'
             ? `<project-detail></project-detail>`

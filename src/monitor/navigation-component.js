@@ -33,7 +33,7 @@ customElements.define(
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0 d">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#">Home</a>
+          <a class="nav-link active" aria-current="page" href="#" id="show-home-component">Home</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="#" id="show-projest-list">Projects</a>
@@ -67,25 +67,36 @@ customElements.define(
       }
 
       document
-      .getElementById('show-projest-list')
-      .addEventListener('click', e => {
-        e.preventDefault();
-        window.pageStore.dispatch({
-          type: window.actionTypes.VIEW_CHANGED,
-          payload: 'project-list'
+        .getElementById('show-projest-list')
+        .addEventListener('click', e => {
+          e.preventDefault();
+          window.pageStore.dispatch({
+            type: window.actionTypes.VIEW_CHANGED,
+            payload: 'project-list'
+          });
         });
-      });
 
       document
-      .getElementById('add-project')
-      .addEventListener('click', function() {
-        import('./edit-project.js').then(() => {});
+        .getElementById('add-project')
+        .addEventListener('click', function () {
+          import('./edit-project.js').then(() => { });
 
-window.pageStore.dispatch({
-type: window.actionTypes.VIEW_CHANGED,
-payload: 'project-edit'
-});
-      });
+          window.pageStore.dispatch({
+            type: window.actionTypes.VIEW_CHANGED,
+            payload: 'project-edit'
+          });
+        });
+
+      document
+        .getElementById('show-home-component')
+        .addEventListener('click', function () {
+
+
+          window.pageStore.dispatch({
+            type: window.actionTypes.VIEW_CHANGED,
+            payload: 'home-component'
+          });
+        });
     }
   }
 );
