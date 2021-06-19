@@ -11,8 +11,8 @@ const { fetchPageContent } = require('./pageCollector')
 async function batchPageCollector({ taskSequelizerEventEmitter, output, uploadFile }) {
 
   const { database } = firebaseInit();
-  database.ref(`projects/${process.env.projectName}/dataCollection`).set({
-    state: 2
+  database.ref(`projects/${process.env.projectName}`).set({
+    dataCollection: 2
   });
   const logPath = `${process.cwd()}/page-result/page-collection-result.json`;
   if (fs.existsSync(logPath)) {
