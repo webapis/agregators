@@ -18,11 +18,11 @@ export default (state, action) => {
       return { ...state, user: action.payload };
     case actionTypes.PROJECT_NAME_CHANGED:
       return { ...state, projectName: action.payload };
-      case actionTypes.PROJECT_STARTED:
+      case actionTypes.PROJECT_START_REQUIRED:
         return { ...state, [action.payload]:true};
         case actionTypes.PROJECT_DESCRIPTION_CHANGED:
           return { ...state, projectDescription: action.payload };
-          case actionTypes.PROJECT_STOPPED:
+          case actionTypes.PROJECT_START_NOT_REQUIRED:
             return { ...state,  [action.payload]:false };
     case actionTypes.VIEW_CHANGED:
       return {
@@ -48,6 +48,6 @@ export const actionTypes = {
   PROJECT_DESCRIPTION_CHANGED:'PROJECT_DESCRIPTION_CHANGED',
   VIEW_CHANGED: 'VIEW_CHANGED',
   PROJECT_NAME_SELECTED: 'PROJECT_NAME_SELECTED',
-  PROJECT_STARTED:'PROJECT_STARTED',
-  PROJECT_STOPPED:'PROJECT_STOPPED'
+  PROJECT_START_REQUIRED:'PROJECT_START_REQUIRED',
+  PROJECT_START_NOT_REQUIRED:'PROJECT_START_NOT_REQUIRED'
 };

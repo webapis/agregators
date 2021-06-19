@@ -23,7 +23,7 @@ customElements.define(
           dispatchAction({projectName:selectedProjectName,ticket})
           
         } else
-          if(state<2    ){
+          if(state=>2    ){
             window.pageStore.dispatch({
               type: window.actionTypes.PROJECT_STOPPED,
               payload:   selectedProjectName
