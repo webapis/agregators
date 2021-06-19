@@ -79,7 +79,7 @@ customElements.define(
       document
         .getElementById('add-project')
         .addEventListener('click', function () {
-          import('./edit-project.js').then(() => { });
+         // import('./edit-project.js').then(() => { });
 
           window.pageStore.dispatch({
             type: window.actionTypes.VIEW_CHANGED,

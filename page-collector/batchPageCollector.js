@@ -11,8 +11,8 @@ const { fetchPageContent } = require('./pageCollector')
 async function batchPageCollector({ taskSequelizerEventEmitter, output, uploadFile }) {
 
   const { database } = firebaseInit();
-  database.ref(`projects/${process.env.projectName}`).set({
-    dataCollection: 2
+  database.ref(`projects/${process.env.projectName}`).update({
+    dataCollection: 3
   });
   const logPath = `${process.cwd()}/page-result/page-collection-result.json`;
   if (fs.existsSync(logPath)) {
@@ -35,8 +35,8 @@ async function batchPageCollector({ taskSequelizerEventEmitter, output, uploadFi
     eventEmitter = null;
     console.log('Execution complete');
     database
-      .ref(`projects/${process.env.projectName}/pageCollection`)
-      .set({ state: 2 });
+      .ref(`projects/${process.env.projectName}`)
+      .update({ dataCollection: 4 });
     await browser.close();
     if (uploadFile) {
       fileUploader({database,

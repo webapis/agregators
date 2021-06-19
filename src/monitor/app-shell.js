@@ -15,7 +15,8 @@ customElements.define(
         import('./projects-container.js'),
         import('./project-detail.js'),
         import('./home-component.js'),  
-        import('./scraping-result.js')
+        import('./scraping-result.js'),
+        import('./edit-project.js')
       ]).then(modules => {
         window.pageStore = modules[0].createStore(
           modules[1].default,

@@ -14,17 +14,29 @@ customElements.define(
       dataCollection.on('value',(snapshot)=>{
         const state =snapshot.val()
         this.render({dataCollection:state,selectedProjectName});
-        if(state===1 && started===false){  
-          started=true
+        if(state===1 && !window.pageStore.state[selectedProjectName]){ 
+          debugger; 
+          window.pageStore.dispatch({
+            type: window.actionTypes.PROJECT_STARTED,
+            payload: selectedProjectName
+          });
           dispatchAction({projectName:selectedProjectName,ticket})
-          debugger;
-        }
+          
+        } else
+          if(state<2    ){
+            window.pageStore.dispatch({
+              type: window.actionTypes.PROJECT_STOPPED,
+              payload:   selectedProjectName
+            });
+          }
+        
+    
       })
-   
+     
     }
 
     render({dataCollection,selectedProjectName}) {
-      debugger;
+    
      // const { state: { user:{ticket}, view, selectedProjectName } } = window.pageStore;
 
       this.innerHTML = `
@@ -51,11 +63,24 @@ customElements.define(
         <div class="row border border-1 p-5 rounded mt-1" id="progress-monitor-container">
         <h3 class="fw-light">Progress Monitor</h3>
         <div class="col-12 d-flex justify-content-center" id ="spinner-container">
-      ${dataCollection===2 ? `<div class="spinner-border" style="width: 4rem; height: 4rem;" role="status">
+        ${dataCollection===3 ? `
+        <div class="spinner-border text-success" style="width: 4rem; height: 4rem;" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div> <div>Scraping data... </div>`:'' }
+      ${dataCollection===2 ? `
+      <div class="spinner-border text-info" style="width: 4rem; height: 4rem;" role="status">
       <span class="visually-hidden">Loading...</span>
-    </div>`:'' }
+    </div> <div>Starting server... </div>`:'' }
        
+      ${dataCollection===1 ?`
+      <div>
+      <div class="spinner-grow text-info" role="status">
+  <span class="visually-hidden">Loading...</span>
+</div>
+</div>
+      <div>Please wait... </div>`:""}
 
+      
         </div>
 
 
@@ -92,7 +117,7 @@ customElements.define(
 
      firebase
         .database()
-        .ref(`projects/${selectedProjectName}`).set({dataCollection:1})
+        .ref(`projects/${selectedProjectName}`).update({dataCollection:1})
    
      
       });
@@ -118,6 +143,9 @@ function dispatchAction({projectName,ticket}){
             }
           )
             .then(result => {
+              firebase
+              .database()
+              .ref(`projects/${selectedProjectName}`).update({dataCollection:2})
               debugger;
               console.log(`${result.data} repos found.`);
             })

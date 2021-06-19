@@ -4,6 +4,7 @@ export const initState = stateFromLS
   : {
       user: null,
       projectName: '',
+      projectDescription:'',
       projectNames: [],
       view: 'project-list',
       selectedProjectName: ''
@@ -17,6 +18,12 @@ export default (state, action) => {
       return { ...state, user: action.payload };
     case actionTypes.PROJECT_NAME_CHANGED:
       return { ...state, projectName: action.payload };
+      case actionTypes.PROJECT_STARTED:
+        return { ...state, [action.payload]:true};
+        case actionTypes.PROJECT_DESCRIPTION_CHANGED:
+          return { ...state, projectDescription: action.payload };
+          case actionTypes.PROJECT_STOPPED:
+            return { ...state,  [action.payload]:false };
     case actionTypes.VIEW_CHANGED:
       return {
         ...state,
@@ -38,6 +45,9 @@ export const actionTypes = {
   SIGNED_OUT: 'SIGNED_OUT',
   ADD_PROJECT: 'ADD_PROJECT',
   PROJECT_NAME_CHANGED: 'PROJECT_NAME_CHANGED',
+  PROJECT_DESCRIPTION_CHANGED:'PROJECT_DESCRIPTION_CHANGED',
   VIEW_CHANGED: 'VIEW_CHANGED',
-  PROJECT_NAME_SELECTED: 'PROJECT_NAME_SELECTED'
+  PROJECT_NAME_SELECTED: 'PROJECT_NAME_SELECTED',
+  PROJECT_STARTED:'PROJECT_STARTED',
+  PROJECT_STOPPED:'PROJECT_STOPPED'
 };

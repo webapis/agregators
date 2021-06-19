@@ -4,6 +4,7 @@ customElements.define('project-card', class extends HTMLElement {
     }
     connectedCallback() {
         const projectName = this.getAttribute('project-name')
+      const projectDescription=  this.getAttribute('project-description')
         this.innerHTML = `<div>
         <div class="card" style="">
         <img src="https://nocodewebscraping.com/wp-content/uploads/2016/03/extract-multiple-web-pages-into-excel.jpg" class="card-img-top img-thumbnail" height="70" alt="...">
@@ -13,7 +14,7 @@ customElements.define('project-card', class extends HTMLElement {
           <h5 class="card-title">${projectName}</h5>
          
           <h6 class="card-subtitle mb-2 text-muted">Description:</h6>
-          <p class="card-text">Console for managing data collection</p>
+          <p class="card-text">${projectDescription}</p>
           <a id="project-view-link-${projectName}" href="#" class="btn btn-primary">Dashboard </a>
         </div>
       </div>   </div>`

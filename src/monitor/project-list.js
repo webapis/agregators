@@ -19,12 +19,13 @@ customElements.define(
       commentsRef.on('child_added', data => {
       
         const projectName = data.key;
+        const projectDescription= data.val()['projectDescription']
         debugger;
 
         const projectCard = document.createElement('project-card');
         projectCard.classList.add('col-3')
         projectCard.setAttribute('project-name',projectName)
-  
+        projectCard.setAttribute('project-description',projectDescription)
         container.appendChild(projectCard);
       });
     }

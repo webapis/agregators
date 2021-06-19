@@ -6,7 +6,7 @@ customElements.define(
     }
     connectedCallback() {
       const { state: { user, view } } = window.pageStore;
-   
+  
       this.render({ user, view });
 
       window.pageStore.subscribe(window.actionTypes.SIGNED_IN, state => {
@@ -35,10 +35,10 @@ customElements.define(
     }
 
     render({ user, view }) {
-      if (user) {
+     ///   if (user) {
         
         this.innerHTML =
-          user &&
+        
           `<div class="container">
    <div class="row">
           
@@ -52,7 +52,7 @@ customElements.define(
             </div>
           </div>`;
 
-      }
+     // }
     }
   }
 );
