@@ -13,7 +13,7 @@ customElements.define('home-component', class extends HTMLElement {
         <h2>WDS's Web Data Scraping Process Explaned</h2>
         <h5>Start of the process... </h5>
         <ul>
-        <li>Tell us the names of websites and data you  want to be collected;</li>
+        <li>Tell the names of websites and data you  want to be collected;</li>
         <li>Let the developer to prepare and customize web scraping process for you;</li>
         <li>Select the Project that is prepared for you and initialize scaping process by click of a button;</li>
         <li>Enjoy monitoring the scraping process;</li>
