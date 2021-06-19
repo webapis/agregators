@@ -7,13 +7,15 @@ customElements.define(
 
     connectedCallback() {
       const { state: { user:{ticket}, view, selectedProjectName } } = window.pageStore;
+      let started =false
      const dataCollection= firebase
       .database()
       .ref(`projects/${selectedProjectName}/dataCollection`)
       dataCollection.on('value',(snapshot)=>{
         const state =snapshot.val()
         this.render({dataCollection:state,selectedProjectName});
-        if(state===1){  
+        if(state===1 && started===false){  
+          started=true
           dispatchAction({projectName:selectedProjectName,ticket})
           debugger;
         }
