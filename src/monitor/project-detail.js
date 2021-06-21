@@ -6,39 +6,27 @@ customElements.define(
     }
 
     connectedCallback() {
-      const { state: { user:{ticket}, view, selectedProjectName } } = window.pageStore;
-      let started =false
-     const dataCollection= firebase
-      .database()
-      .ref(`projects/${selectedProjectName}/dataCollection`)
-      dataCollection.on('value',(snapshot)=>{
-        const state =snapshot.val()
-        this.render({dataCollection:state,selectedProjectName});
-        if(state===1 && !window.pageStore.state[selectedProjectName]){ 
-          debugger; 
+      const { state: { user: { ticket }, view, selectedProjectName } } = window.pageStore;
+
+      const dataCollection = firebase
+        .database()
+        .ref(`projects/${selectedProjectName}/dataCollection`)
+      dataCollection.on('value', (snapshot) => {
+        const state = snapshot.val()
+        this.render({ dataCollection: state, selectedProjectName });
+        if (state === 1 && !window.pageStore.state[selectedProjectName]) {
+          debugger;
           window.pageStore.dispatch({
             type: window.actionTypes.PROJECT_STARTED,
             payload: selectedProjectName
           });
-          dispatchAction({projectName:selectedProjectName,ticket})
-          
-        } else
-          if(state=>2    ){
-            window.pageStore.dispatch({
-              type: window.actionTypes.PROJECT_STOPPED,
-              payload:   selectedProjectName
-            });
-          }
-        
-    
+        }
       })
-     
+
     }
 
-    render({dataCollection,selectedProjectName}) {
-    
-     // const { state: { user:{ticket}, view, selectedProjectName } } = window.pageStore;
-
+    render({ dataCollection, selectedProjectName }) {
+debugger;
       this.innerHTML = `
 
         <div class="container">
@@ -50,11 +38,11 @@ customElements.define(
         </div>
       
         <div class="col-2">
-        <button class="btn btn-primary" id='start-scrape' ${dataCollection!==0 && 'disabled'}>Start Scraping</button>
+        <button class="btn btn-primary" id='start-scrape' ${dataCollection > 0 && 'disabled'}>Start Scraping</button>
         </div>
        
         <div class="col-2"> 
-        <button class="btn btn-warning" id='start-scrape' ${dataCollection===0 && 'disabled'}>Cancel</button>
+        <button class="btn btn-warning" id='start-scrape' ${dataCollection > 0 && 'disabled'}>Cancel</button>
         </div>
      
            </div>
@@ -63,22 +51,22 @@ customElements.define(
         <div class="row border border-1 p-5 rounded mt-1" id="progress-monitor-container">
         <h3 class="fw-light">Progress Monitor</h3>
         <div class="col-12 d-flex justify-content-center" id ="spinner-container">
-        ${dataCollection===3 ? `
+        ${dataCollection === 3 ? `
         <div class="spinner-border text-success" style="width: 4rem; height: 4rem;" role="status">
         <span class="visually-hidden">Loading...</span>
-      </div> <div>Scraping data... </div>`:'' }
-      ${dataCollection===2 ? `
+      </div> <div>Scraping data... </div>`: ''}
+      ${dataCollection === 2 ? `
       <div class="spinner-border text-info" style="width: 4rem; height: 4rem;" role="status">
       <span class="visually-hidden">Loading...</span>
-    </div> <div>Starting server... </div>`:'' }
+    </div> <div>Starting server... </div>`: ''}
        
-      ${dataCollection===1 ?`
+      ${dataCollection === 1 ? `
       <div>
       <div class="spinner-grow text-info" role="status">
   <span class="visually-hidden">Loading...</span>
 </div>
 </div>
-      <div>Please wait... </div>`:""}
+      <div>Please wait... </div>`: ""}
 
       
         </div>
@@ -100,9 +88,6 @@ customElements.define(
 
 
 
-
-
-
         <div class="row border border-1 p-5 rounded mt-1" id="scrape-result-container">
         <h3 class="fw-light">Data collection Result:</h3>
         <scraping-result class="col-12  m-4"></scraping-result>
@@ -114,43 +99,62 @@ customElements.define(
 
 
       document.getElementById('start-scrape').addEventListener('click', () => {
-
-     firebase
-        .database()
-        .ref(`projects/${selectedProjectName}`).update({dataCollection:1})
-   
-     
+        dispatchAction()
       });
     }
   }
 );
 
-
-function dispatchAction({projectName,ticket}){
-   import('https://cdn.skypack.dev/@octokit/request').then(module => {
-          const { request } = module;
-          request(
-            'POST /repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches',
-            {
-              headers: {
-                authorization: `token ${ticket}`,
-                Accept: 'application/vnd.github.v3+json'
-              },
-              data: { ref: 'action', inputs: { projectName } },
-              repo: 'agregators',
-              owner: 'webapis',
-              workflow_id: 'aggregate.yml'
-            }
-          )
-            .then(result => {
-              firebase
-              .database()
-              .ref(`projects/${selectedProjectName}`).update({dataCollection:2})
-              debugger;
-              console.log(`${result.data} repos found.`);
+function dispatchAction() {
+  const { state: { user: { ticket }, view, selectedProjectName } } = window.pageStore;
+  const dataCollectionRef = firebase
+    .database()
+    .ref(`projects/${selectedProjectName}`)
+  dataCollectionRef.update({ dataCollection: 1 }, (error) => {
+    if (error) {
+      debugger;
+      errorHandler({ error })
+    } else {
+      debugger;
+      import('https://cdn.skypack.dev/@octokit/request').then(module => {
+        const { request } = module;
+        request(
+          'POST /repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches',
+          {
+            headers: {
+              authorization: `token ${ticket}`,
+              Accept: 'application/vnd.github.v3+json'
+            },
+            data: { ref: 'action', inputs: { projectName:selectedProjectName } },
+            repo: 'agregators',
+            owner: 'webapis',
+            workflow_id: 'aggregate.yml'
+          }
+        )
+          .then(() => {
+            debugger;
+            dataCollectionRef.update({ dataCollection: 2 }, (error) => {
+              if (error) {
+                debugger;
+                errorHandler({ error })
+              }
             })
-            .catch(err => {
-              debugger;
-            });
-        });
+          })
+          .catch(error => {
+            debugger;
+            errorHandler({ error })
+          });
+      });
+    }
+  })
+
+}
+
+
+
+function errorHandler(error) {
+  window.pageStore.dispatch({
+    type: window.actionTypes.ERROR,
+    payload: error
+  });
 }

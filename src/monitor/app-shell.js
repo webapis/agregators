@@ -16,7 +16,8 @@ customElements.define(
         import('./project-detail.js'),
         import('./home-component.js'),  
         import('./scraping-result.js'),
-        import('./edit-project.js')
+        import('./edit-project.js'),
+        import('./error-component.js')
       ]).then(modules => {
         window.pageStore = modules[0].createStore(
           modules[1].default,
@@ -30,6 +31,7 @@ customElements.define(
 
     render() {
       this.innerHTML = `<div>
+      <error-component></error-component>
       <navigation-component></navigation-component>
       <projects-container></projects-container>
       </div>`;

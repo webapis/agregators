@@ -16,11 +16,14 @@ class TaskListender extends EventEmitter {
                     
                     this.emit('nextTask', nextTaskName)
                     console.log('nextTask', nextTaskName)
+                }else{
+                    this.emit('no_more_task')
                 }
 
                 
             } else {
                 console.log('single task complete:', taskName)
+             process.exit(0)
             }
 
 

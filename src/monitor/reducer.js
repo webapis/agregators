@@ -2,13 +2,14 @@ const stateFromLS = JSON.parse(localStorage.getItem('page-store'));
 export const initState = stateFromLS
   ? stateFromLS
   : {
-      user: null,
-      projectName: '',
-      projectDescription:'',
-      projectNames: [],
-      view: 'project-list',
-      selectedProjectName: ''
-    };
+    user: null,
+    projectName: '',
+    projectDescription: '',
+    projectNames: [],
+    view: 'project-list',
+    selectedProjectName: '',
+    error: null
+  };
 
 export default (state, action) => {
   switch (action.type) {
@@ -18,12 +19,12 @@ export default (state, action) => {
       return { ...state, user: action.payload };
     case actionTypes.PROJECT_NAME_CHANGED:
       return { ...state, projectName: action.payload };
-      case actionTypes.PROJECT_START_REQUIRED:
-        return { ...state, [action.payload]:true};
-        case actionTypes.PROJECT_DESCRIPTION_CHANGED:
-          return { ...state, projectDescription: action.payload };
-          case actionTypes.PROJECT_START_NOT_REQUIRED:
-            return { ...state,  [action.payload]:false };
+    case actionTypes.PROJECT_START_REQUIRED:
+      return { ...state, [action.payload]: true };
+    case actionTypes.PROJECT_DESCRIPTION_CHANGED:
+      return { ...state, projectDescription: action.payload };
+    case actionTypes.PROJECT_START_NOT_REQUIRED:
+      return { ...state, [action.payload]: false };
     case actionTypes.VIEW_CHANGED:
       return {
         ...state,
@@ -35,6 +36,16 @@ export default (state, action) => {
         view: 'project-detail',
         selectedProjectName: action.payload
       };
+    case actionTypes.ERROR_DISMISSED:
+      return {
+        ...state,
+        error: null
+      };
+      case actionTypes.ERROR:
+        return {
+          ...state,
+          error: action.payload
+        };
     default:
       return state;
   }
@@ -45,9 +56,9 @@ export const actionTypes = {
   SIGNED_OUT: 'SIGNED_OUT',
   ADD_PROJECT: 'ADD_PROJECT',
   PROJECT_NAME_CHANGED: 'PROJECT_NAME_CHANGED',
-  PROJECT_DESCRIPTION_CHANGED:'PROJECT_DESCRIPTION_CHANGED',
+  PROJECT_DESCRIPTION_CHANGED: 'PROJECT_DESCRIPTION_CHANGED',
   VIEW_CHANGED: 'VIEW_CHANGED',
   PROJECT_NAME_SELECTED: 'PROJECT_NAME_SELECTED',
-  PROJECT_START_REQUIRED:'PROJECT_START_REQUIRED',
-  PROJECT_START_NOT_REQUIRED:'PROJECT_START_NOT_REQUIRED'
+  ERROR_DISMISSED: "ERROR_DISMISSED",
+  ERROR:"ERROR"
 };
