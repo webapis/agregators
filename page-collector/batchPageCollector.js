@@ -9,7 +9,7 @@ const ws_domain = process.env.projectName;
 const { promiseConcurrency } = require('./promiseConcurrency');
 const { fetchPageContent } = require('./pageCollector')
 async function batchPageCollector({ taskSequelizerEventEmitter, output, uploadFile }) {
-
+  let dataCollected = 0
   const { database } = firebaseInit();
   database.ref(`projects/${process.env.projectName}`).update({
     dataCollection: 3
@@ -31,7 +31,25 @@ async function batchPageCollector({ taskSequelizerEventEmitter, output, uploadFi
     files.push(filepath);
   });
   const browser = await puppeteer.launch({ headless: true, timeout: 120000 });
-  eventEmitter.on('no_more_task',function(){
+  eventEmitter.on('data_collected', () => {
+    console.log('data_collected....')
+    debugger;
+    dataCollected ++;
+
+  })
+
+  let lastDataCollected=0
+  setInterval(()=>{
+    const collectedFromTheLastTime =dataCollected-lastDataCollected
+  //  if(dataCollected> lastDataCollected && collectedFromTheLastTime>=3){
+
+      database.ref(`projects/${process.env.projectName}`).update({
+        dataCollected
+      });
+   // }
+  },300)
+
+  eventEmitter.on('no_more_task', function () {
     console.log('ALL TASKS COMPLETE')
     process.exit(0)
   })
@@ -43,7 +61,8 @@ async function batchPageCollector({ taskSequelizerEventEmitter, output, uploadFi
       .update({ dataCollection: 4 });
     await browser.close();
     if (uploadFile) {
-      fileUploader({database,
+      fileUploader({
+        database,
         output, cb: () => {
           taskSequelizerEventEmitter.emit('taskComplete', 'page_collection')
         }
@@ -63,7 +82,7 @@ async function batchPageCollector({ taskSequelizerEventEmitter, output, uploadFi
     const { pages } = require(file);
     for (page of pages) {
       const { pageController, startUrl, batchName } = page
-      
+
       const firstPagePromise = fetchPageContent({
         url: startUrl,
         browser,

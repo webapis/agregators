@@ -9,7 +9,7 @@ async function pageController({ eventEmitter, batchName, browser, parentUrl, pag
   const sideCategoriesExist = await page.$('.side_categories')
   if (urlsExist.length > 0 && sideCategoriesExist) {
     const urls = await page.$$eval('.image_container a', (els) => els.map(e => e.href))
-    urls.filter((f,i)=>i<4).forEach(url => {
+    urls.filter((f,i)=>i<10).forEach(url => {
       const nextPagePromise = fetchPageContent({
         url,
         browser,
@@ -69,10 +69,12 @@ async function pageController({ eventEmitter, batchName, browser, parentUrl, pag
     }
     fs.writeFileSync(output, JSON.stringify(dataObject));
 
-    if(uploadFile){
-      fileUploader({})
 
-    }
+    eventEmitter.emit('data_collected')
+    // if(uploadFile){
+    //   fileUploader({})
+
+    // }
   
   }
 }

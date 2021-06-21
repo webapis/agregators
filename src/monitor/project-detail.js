@@ -8,25 +8,20 @@ customElements.define(
     connectedCallback() {
       const { state: { user: { ticket }, view, selectedProjectName } } = window.pageStore;
 
-      const dataCollection = firebase
+      const dataCollectionRef = firebase
         .database()
-        .ref(`projects/${selectedProjectName}/dataCollection`)
-      dataCollection.on('value', (snapshot) => {
-        const state = snapshot.val()
-        this.render({ dataCollection: state, selectedProjectName });
-        if (state === 1 && !window.pageStore.state[selectedProjectName]) {
-          debugger;
-          window.pageStore.dispatch({
-            type: window.actionTypes.PROJECT_STARTED,
-            payload: selectedProjectName
-          });
-        }
+        .ref(`projects/${selectedProjectName}`)
+        dataCollectionRef.on('value', (snapshot) => {
+        const {dataCollection,dataCollected} = snapshot.val()
+        this.render({ dataCollection,dataCollected, selectedProjectName });
+    
       })
+
 
     }
 
-    render({ dataCollection, selectedProjectName }) {
-debugger;
+    render({ dataCollection, dataCollected,selectedProjectName }) {
+
       this.innerHTML = `
 
         <div class="container">
@@ -38,7 +33,7 @@ debugger;
         </div>
       
         <div class="col-2">
-        <button class="btn btn-primary" id='start-scrape' ${dataCollection > 0 && 'disabled'}>Start Scraping</button>
+        <button class="btn btn-primary" id='start-scrape' ${(dataCollection > 0 && dataCollection!==4) && 'disabled'}>Start Scraping</button>
         </div>
        
         <div class="col-2"> 
@@ -51,6 +46,10 @@ debugger;
         <div class="row border border-1 p-5 rounded mt-1" id="progress-monitor-container">
         <h3 class="fw-light">Progress Monitor</h3>
         <div class="col-12 d-flex justify-content-center" id ="spinner-container">
+        ${dataCollection === 4 ? `
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="green" class="bi bi-check-lg" viewBox="0 0 16 16">
+  <path d="M13.485 1.431a1.473 1.473 0 0 1 2.104 2.062l-7.84 9.801a1.473 1.473 0 0 1-2.12.04L.431 8.138a1.473 1.473 0 0 1 2.084-2.083l4.111 4.112 6.82-8.69a.486.486 0 0 1 .04-.045z"/>
+</svg> <div>Scraping Completed... </div>`: ''}
         ${dataCollection === 3 ? `
         <div class="spinner-border text-success" style="width: 4rem; height: 4rem;" role="status">
         <span class="visually-hidden">Loading...</span>
@@ -77,7 +76,7 @@ debugger;
         
         </div>
 
-        <div class="col-12" id ="collected-data-counter">Data Rows collected:<b class="text-decoration-underline">0</b>
+        <div class="col-12" id ="collected-data-counter">Data Rows collected:<b class="text-decoration-underline">${dataCollected}</b>
         </div>
 
         <div class="col-12" id ="duration-container">Duration Container:<b class="text-decoration-underline">0</b>
