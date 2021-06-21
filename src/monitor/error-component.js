@@ -5,7 +5,7 @@ customElements.define('error-component', class extends HTMLElement {
     connectedCallback() {
 
         const { state: { error } } = window.pageStore;
-        debugger;
+     
         if (error) {
             this.render({ error })
         } else {
@@ -28,7 +28,7 @@ customElements.define('error-component', class extends HTMLElement {
       </div>`
 
         document.getElementById('dismiss-btn').addEventListener('click', function () {
-            debugger;
+        
             window.pageStore.dispatch({
                 type: window.actionTypes.ERROR_DISMISSED,
 

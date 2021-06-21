@@ -60,6 +60,7 @@ customElements.define(
             .database()
             .ref(`projects/${projectName}`)
             .set({ dataCollection: 0,projectDescription });
+          
           window.pageStore.dispatch({
             type: window.actionTypes.VIEW_CHANGED,
             payload: 'project-list'

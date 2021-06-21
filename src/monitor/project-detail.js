@@ -6,7 +6,7 @@ customElements.define(
     }
 
     connectedCallback() {
-      const { state: { user: { ticket }, view, selectedProjectName } } = window.pageStore;
+      const { state: {  view, selectedProjectName } } = window.pageStore;
 
       const dataCollectionRef = firebase
         .database()
@@ -16,9 +16,24 @@ customElements.define(
         this.render({ dataCollection,dataCollected, selectedProjectName });
     
       })
+   const collectionRef = firebase
+   .database()
+   .ref(`collections/${selectedProjectName}`)
+   collectionRef.on('child_added',(shapshot)=>{
+     debugger;
+    const date = Date(shapshot.key).toLocaleString('en')
+    const {uploadPath}=shapshot.val()
+    const scrapeResult =document.createElement('scraping-result')
+    scrapeResult.setAttribute('upload-path',uploadPath)
+    scrapeResult.setAttribute('date',date)
+
+    const resultContainer =document.getElementById('scrape-result-container')
+    resultContainer.appendChild(scrapeResult)
+     debugger;
+   })
 
 
-    }
+    }//connectedCallback
 
     render({ dataCollection, dataCollected,selectedProjectName }) {
 
@@ -72,14 +87,12 @@ customElements.define(
 
 
         
-        <div class="col-12" id ="pages-retrieved">Pages retrieved: <b class="text-decoration-underline">0</b>
-        
+     
+
+        <div class="col-12" id ="collected-data-counter">Data collected:<b class="text-decoration-underline">${dataCollected}</b>
         </div>
 
-        <div class="col-12" id ="collected-data-counter">Data Rows collected:<b class="text-decoration-underline">${dataCollected}</b>
-        </div>
-
-        <div class="col-12" id ="duration-container">Duration Container:<b class="text-decoration-underline">0</b>
+        <div class="col-12" id ="duration-container">Duration:<b class="text-decoration-underline">0</b>
         </div>
 
         </div>
@@ -89,8 +102,7 @@ customElements.define(
 
         <div class="row border border-1 p-5 rounded mt-1" id="scrape-result-container">
         <h3 class="fw-light">Data collection Result:</h3>
-        <scraping-result class="col-12  m-4"></scraping-result>
-        <scraping-result class="col-12  m-4"></scraping-result>  
+
         </div>
 
 
@@ -109,7 +121,7 @@ function dispatchAction() {
   const dataCollectionRef = firebase
     .database()
     .ref(`projects/${selectedProjectName}`)
-  dataCollectionRef.update({ dataCollection: 1 }, (error) => {
+  dataCollectionRef.update({ dataCollection: 1,dataCollected:0 }, (error) => {
     if (error) {
       debugger;
       errorHandler({ error })
@@ -130,7 +142,7 @@ function dispatchAction() {
             workflow_id: 'aggregate.yml'
           }
         )
-          .then(() => {
+          .then((result) => {
             debugger;
             dataCollectionRef.update({ dataCollection: 2 }, (error) => {
               if (error) {
