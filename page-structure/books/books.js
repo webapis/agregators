@@ -59,7 +59,7 @@ async function pageController({ eventEmitter, batchName, browser, parentUrl, pag
     
     let dataObject = [];
     makeDir.sync(path.dirname(output))
-    debugger;
+  
     if (fs.existsSync(output)) {
       const data = fs.readFileSync(output, { encoding: 'utf-8' });
       dataObject = JSON.parse(data);
@@ -73,7 +73,7 @@ async function pageController({ eventEmitter, batchName, browser, parentUrl, pag
       fileUploader({})
 
     }
-    debugger;
+  
   }
 }
 

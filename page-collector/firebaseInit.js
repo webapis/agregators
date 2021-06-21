@@ -2,7 +2,7 @@ const admin = require('firebase-admin');
 
 //var publicServiceAccountInfo = require('../turkmenistan-market-74b0fe0d7246.json');
 
-debugger;
+
 function firebaseInit() {
   try {
     if(process.env.LOCAL){
@@ -20,7 +20,7 @@ function firebaseInit() {
       });
     }
  
-    debugger;
+    
     const database = admin.database();
   
     return { admin, database };
