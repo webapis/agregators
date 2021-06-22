@@ -22,9 +22,12 @@ customElements.define(
    collectionRef.on('child_added',(shapshot)=>{
      debugger;
     const date = Date(shapshot.key).toLocaleString('en')
-    const {uploadPath}=shapshot.val()
+    const {json,xlsx} =shapshot.val()
+    debugger;
+
     const scrapeResult =document.createElement('scraping-result')
-    scrapeResult.setAttribute('upload-path',uploadPath)
+    scrapeResult.setAttribute('upload-path-xlsx',xlsx)
+    scrapeResult.setAttribute('upload-path-json',json)
     scrapeResult.setAttribute('date',date)
 
     const resultContainer =document.getElementById('scrape-result-container')
@@ -54,10 +57,7 @@ customElements.define(
         <div class="col-2"> 
         <button class="btn btn-warning" id='start-scrape' ${dataCollection > 0 && 'disabled'}>Cancel</button>
         </div>
-     
            </div>
-
-
         <div class="row border border-1 p-5 rounded mt-1" id="progress-monitor-container">
         <h3 class="fw-light">Progress Monitor</h3>
         <div class="col-12 d-flex justify-content-center" id ="spinner-container">

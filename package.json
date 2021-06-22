@@ -28,6 +28,7 @@
     "cross-env": "7.0.2",
     "eslint": "7.21.0",
     "jimp": "0.16.1",
+    "json2xls": "^0.1.2",
     "node-watch": "0.7.1",
     "nodemon": "2.0.7",
     "puppeteer": "7.1.0",
@@ -70,7 +71,7 @@
     "pageMetaCreator:test": "mocha page-meta-creator/test",
     "pageImageOptimizer:test": "mocha page-image-optimizer/test",
     "pagePrerender:test": "mocha page-prerender/test",
-    "gpg":"node page-collector/generateGbp.js --inspect-brk"
+    "gpg": "node page-collector/generateGbp.js --inspect-brk"
   },
   "nodemonConfig": {
     "ignore": [

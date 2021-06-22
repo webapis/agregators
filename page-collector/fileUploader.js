@@ -4,11 +4,62 @@ const admin = require('firebase-admin');
 const path = require('path')
 async function fileUploader({ output, cb,database }) {
   try {
-    const fileName = path.basename(output);
-    const filePath = output;
     const datetimefolder = Date.now()
-    const projectName =fileName.replace('.json','')
-    const uploadPath =projectName  + '/' + datetimefolder + '/'+fileName
+    const fileName =path.basename(output)
+    const changedoutput =output.replace(`${fileName}`,`excel/${fileName.replace('.json','.xlsx')}`)
+    debugger;
+    await uploadFileByExtention({ext:'.xlsx',output:changedoutput,datetimefolder})
+    //await uploadFileByExtention({ext:'.json',output,datetimefolder})
+//     const fileName = path.basename(output);
+//     const filePath = output;
+//     const datetimefolder = Date.now()
+//     const projectName =fileName.replace('.json','')
+//     const uploadPath =projectName  + '/' + datetimefolder + '/'+fileName
+//     console.log('uploadPath',uploadPath)
+//     debugger;
+//     const bucket = admin.storage().bucket();
+
+//     await bucket.upload(filePath, {
+//       destination: uploadPath
+//     });
+
+// const collectionsRef=  admin.database().ref(`collections/${projectName}/${datetimefolder}`)
+// console.log('file upload succeful')
+// await collectionsRef.set({uploadPath})
+//   const projectsRef =  admin.database().ref(`projects/${projectName}`)
+  
+//   await  projectsRef.update({
+//       uploadPath
+//     });
+//     await  projectsRef.update({
+//       uploadPath:uploadPath
+//     });
+
+    //excell
+
+
+    cb()
+  } catch (error) {
+    console.log('file upload failed',error)
+    throw error
+  }
+
+}
+
+module.exports = {
+  fileUploader
+};
+
+
+async function uploadFileByExtention({ext,output,datetimefolder}){
+  try {
+    debugger;
+    const savePath =ext.replace('.','')
+    const fileName = path.basename(output);
+    const filePath = output.replace('.json',ext);
+  
+    const projectName =fileName.replace(ext,'')
+    const uploadPath =projectName  + '/' + datetimefolder + '/'+fileName.replace('.json',ext);
     console.log('uploadPath',uploadPath)
     debugger;
     const bucket = admin.storage().bucket();
@@ -19,21 +70,22 @@ async function fileUploader({ output, cb,database }) {
 
 const collectionsRef=  admin.database().ref(`collections/${projectName}/${datetimefolder}`)
 console.log('file upload succeful')
-await collectionsRef.set({uploadPath})
-  const projectsRef =  admin.database().ref(`projects/${projectName}`)
+ await collectionsRef.update({  [savePath]:uploadPath})
+  const projectsRef =  admin.database().ref(`projects/${projectName}/${savePath}`)
   
   await  projectsRef.update({
-      uploadPath
+   [savePath]:uploadPath
     });
+    // await  projectsRef.update({
+    //   [savePath]:uploadPath
+    // });
 
-    cb()
+    //excell
+
+
+  
   } catch (error) {
     console.log('file upload failed')
     throw error
   }
-
 }
-
-module.exports = {
-  fileUploader
-};

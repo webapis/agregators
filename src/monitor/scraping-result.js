@@ -5,7 +5,7 @@ customElements.define('scraping-result', class extends HTMLElement{
 
     connectedCallback(){
         const date =this.getAttribute('date')
-        const uploadPath =this.getAttribute('upload-path')
+        const uploadPathXlsx =this.getAttribute('upload-path-xlsx')
         debugger;
         this.innerHTML=`<div class="row border shadow-sm mt-2">
 
@@ -23,9 +23,10 @@ customElements.define('scraping-result', class extends HTMLElement{
         <table-column class="col" colname='Date' coldata="${date}">
     
         </table-column>
-        <download-button class="col" title='Excel' downloadpath=${uploadPath}>
+        <download-button class="col" title='Excel' downloadpath=${uploadPathXlsx}>
     
         </download-button>
+
         </div>`
     }
 })
@@ -55,13 +56,14 @@ customElements.define('download-button', class extends HTMLElement{
       
         const btnTitle =this.getAttribute('title')
         const downloadpath =this.getAttribute('downloadpath')
+        const ext =downloadpath.substring(downloadpath.lastIndexOf('.'))
         this.innerHTML=`
         <div class="row">
             <div class="col-12 border-start border-bottom p-2 bg-light fw-normal">Download</div>
-            <a class="col-12 border-start  p-2 fw-light btn btn-link text-start" id =${downloadpath} href="#" download='books.json'/>Excell</a>
+            <a class="col-12 border-start  p-2 fw-light btn btn-link text-start" id =${downloadpath} href="#" />Excell</a>
         </div>
         `
-        document.getElementById(downloadpath).addEventListener('click',()=>{
+        document.getElementById(downloadpath).addEventListener('click',function (){
             downloadFile({downloadpath})
         })
     }
@@ -72,31 +74,47 @@ customElements.define('download-button', class extends HTMLElement{
 
 
 function downloadFile ({downloadpath}){
-    var storageRef = firebase.storage().ref()
-    debugger;
-    storageRef.child(downloadpath).getDownloadURL()
-  .then((url) => {
+    var storage = firebase.storage()
+    var pathReference = storage.ref(downloadpath).getDownloadURL().then(url=>{
 
-    fetch("http://example.com/ExportExcel", {
-        method: 'GET',
-        headers: new Headers({
-            'Access-Control-Allow-Origin':'*'
-        })
+        var a = document.createElement('a');
+                    a.href = url;
+                    a.download = "filename.xlsx";
+                    document.body.appendChild(a); // we need to append the element to the dom -> otherwise it will not work in firefox
+                    a.click();    
+                    a.remove();  //afterwards we remove the element again    
+        console.log('url', url)
     })
-    .then(response => response.blob())
-    .then(blob => {
-        var url = window.URL.createObjectURL(blob);
-        var a = document.getElementById(downloadpath);
-        a.download = "books.json";
-        document.body.appendChild(a); // we need to append the element to the dom -> otherwise it will not work in firefox
-        a.click();    
-        a.remove();  //afterwards we remove the element again         
-    });
+  
+    debugger;
+//     const ext =downloadpath.substring(downloadpath.lastIndexOf('.'))
+//     var storageRef = firebase.storage().ref()
+//     debugger;
+//     storageRef.child(downloadpath).getDownloadURL()
+//   .then((url) => {
+//     console.log('excel url',url)
+//     fetch(url, {
+//         method: 'GET',
+//         headers: new Headers({
+//             'Access-Control-Allow-Origin':'*'
+//         })
+//     })
+//     .then(response => response.blob())
+//     .then(blob => {
+//             var url = window.URL.createObjectURL(blob);
+//             var a = document.createElement('a');
+//             a.href = url;
+//             a.download = "filename.xlsx";
+//             document.body.appendChild(a); // we need to append the element to the dom -> otherwise it will not work in firefox
+//             a.click();    
+//             a.remove();  //afterwards we remove the element again         
+            
+//     });
     
-  })
-  .catch((error) => {
-    // Handle any errors
-  });
+//   })
+//   .catch((error) => {
+//     // Handle any errors
+//   });
 }
 
 

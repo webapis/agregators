@@ -3,7 +3,7 @@ const { fetchPageContent } = require('../../page-collector/pageCollector')
 const fs = require('fs')
 const makeDir = require('make-dir')
 const path = require('path')
-
+var json2xls = require('json2xls');
 async function pageController({ eventEmitter, batchName, browser, parentUrl, page, output }) {
   const urlsExist = await page.$$('.image_container a')
   const sideCategoriesExist = await page.$('.side_categories')
@@ -68,8 +68,14 @@ async function pageController({ eventEmitter, batchName, browser, parentUrl, pag
       dataObject.push(product);
     }
     fs.writeFileSync(output, JSON.stringify(dataObject));
-
-
+    var xls = json2xls(dataObject);
+    const excelFolder =path.dirname(output)+'/excel/'
+    const excellFileName =path.basename(output).replace('.json','')+'.xlsx'
+    const excelloutput=excelFolder+excellFileName
+    makeDir.sync( path.dirname(excelloutput))
+    console.log('excelloutput',excelloutput)
+  
+    fs.writeFileSync(excelloutput, xls,'binary');
     eventEmitter.emit('data_collected')
     // if(uploadFile){
     //   fileUploader({})
