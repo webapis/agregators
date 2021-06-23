@@ -17,7 +17,9 @@ customElements.define(
         import('./home-component.js'),  
         import('./scraping-result.js'),
         import('./edit-project.js'),
-        import('./error-component.js')
+        import('./error-component.js'),
+        import('./progress-monitor.js'),
+        import('./diff.js')
       ]).then(modules => {
         window.pageStore = modules[0].createStore(
           modules[1].default,
@@ -25,7 +27,11 @@ customElements.define(
           'page-store'
         );
         window.actionTypes = modules[1].actionTypes;
+        window.diff =modules[12].diff
+        window.downloadFile=modules[12].downloadFile
         this.render();
+
+
       });
     }
 

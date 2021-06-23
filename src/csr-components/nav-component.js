@@ -35,7 +35,7 @@ customElements.define(
               id = id.replace('.html', '');
             }
             let ul = document.getElementById(id);
-            debugger;
+            
             if (i !== 0 && ul) {
               ul.classList.toggle('collapse');
             }

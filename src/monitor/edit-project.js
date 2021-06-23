@@ -55,7 +55,7 @@ customElements.define(
         .getElementById('save-project-btn')
         .addEventListener('click', function () {
           const { state: { projectName,projectDescription } } = window.pageStore;
-          debugger;
+          
           firebase
             .database()
             .ref(`projects/${projectName}`)
@@ -65,7 +65,7 @@ customElements.define(
             type: window.actionTypes.VIEW_CHANGED,
             payload: 'project-list'
           });
-          debugger;
+          
         });
     }
   }

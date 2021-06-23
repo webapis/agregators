@@ -83,14 +83,11 @@ console.log('file upload succeful')
        await collectionsRef.update({  [savePath]:uploadPath,end,start})
        cb()
   })
-
+  
     // await  projectsRef.update({
     //   [savePath]:uploadPath
     // });  
-
     //excell
-
-
   
   } catch (error) {
     console.log('file upload failed')

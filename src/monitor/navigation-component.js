@@ -112,21 +112,21 @@ function signin() {
       // This gives you a Google Access Token. You can use it to access the Google API.
       var token = credential.accessToken;
       // const firebase =firebase
-      debugger;
+      
       // The signed-in user info.
       var user = result.user;
       const ticket = firebase
         .database()
         .ref(`gitticket`)
       ticket.once('value', data => {
-        debugger;
+        
         const tkt = data.val()
         window.pageStore.dispatch({
           type: window.actionTypes.SIGNED_IN,
           payload: { user, ticket: tkt },
 
         });
-        debugger;
+        
       })
 
 

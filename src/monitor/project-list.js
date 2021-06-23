@@ -20,7 +20,7 @@ customElements.define(
       
         const projectName = data.key;
         const projectDescription= data.val()['projectDescription']
-        debugger;
+        
 
         const projectCard = document.createElement('project-card');
         projectCard.classList.add('col-3')

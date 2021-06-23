@@ -93,7 +93,7 @@ customElements.define(
     }
 
     render({ value }) {
-      debugger;
+      
       const height = document.body.clientHeight;
       this.innerHTML = `<div class="container">
     
