@@ -8,7 +8,7 @@ async function fileUploader({ output, cb,database }) {
     const fileName =path.basename(output)
     const changedoutput =output.replace(`${fileName}`,`excel/${fileName.replace('.json','.xlsx')}`)
     debugger;
-    await uploadFileByExtention({ext:'.xlsx',output:changedoutput,datetimefolder})
+    await uploadFileByExtention({ext:'.xlsx',output:changedoutput,datetimefolder,cb})
     //await uploadFileByExtention({ext:'.json',output,datetimefolder})
 //     const fileName = path.basename(output);
 //     const filePath = output;
@@ -38,7 +38,7 @@ async function fileUploader({ output, cb,database }) {
     //excell
 
 
-    cb()
+   // cb()
   } catch (error) {
     console.log('file upload failed',error)
     throw error
@@ -51,8 +51,9 @@ module.exports = {
 };
 
 
-async function uploadFileByExtention({ext,output,datetimefolder}){
+async function uploadFileByExtention({ext,output,datetimefolder,cb}){
   try {
+    const end =   Date.now()
     debugger;
     const savePath =ext.replace('.','')
     const fileName = path.basename(output);
@@ -70,16 +71,22 @@ async function uploadFileByExtention({ext,output,datetimefolder}){
 
 const collectionsRef=  admin.database().ref(`collections/${projectName}/${datetimefolder}`)
 console.log('file upload succeful')
- await collectionsRef.update({  [savePath]:uploadPath})
-  const projectsRef =  admin.database().ref(`projects/${projectName}/${savePath}`)
-  
-  await  projectsRef.update({
-   [savePath]:uploadPath,
-   end: Date.now()
-    });
+
+  const projectsRef =  admin.database().ref(`projects/${projectName}`)
+  projectsRef.on('value',async (snapshot)=>{
+    const {start} =snapshot.val()
+    await  projectsRef.update({
+      [savePath]:uploadPath,
+      end
+       });
+
+       await collectionsRef.update({  [savePath]:uploadPath,end,start})
+       cb()
+  })
+
     // await  projectsRef.update({
     //   [savePath]:uploadPath
-    // });
+    // });  
 
     //excell
 
