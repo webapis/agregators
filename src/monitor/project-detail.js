@@ -16,24 +16,7 @@ customElements.define(
         this.render({ dataCollection,dataCollected, selectedProjectName });
     
       })
-   const collectionRef = firebase
-   .database()
-   .ref(`collections/${selectedProjectName}`)
-   collectionRef.on('child_added',(shapshot)=>{
-     debugger;
-    const date = Date(shapshot.key).toLocaleString('en')
-    const {json,xlsx} =shapshot.val()
-    debugger;
 
-    const scrapeResult =document.createElement('scraping-result')
-    scrapeResult.setAttribute('upload-path-xlsx',xlsx)
-    scrapeResult.setAttribute('upload-path-json',json)
-    scrapeResult.setAttribute('date',date)
-
-    const resultContainer =document.getElementById('scrape-result-container')
-    resultContainer.appendChild(scrapeResult)
-     debugger;
-   })
 
 
     }//connectedCallback
@@ -112,7 +95,26 @@ customElements.define(
       document.getElementById('start-scrape').addEventListener('click', () => {
         dispatchAction()
       });
-    }
+
+      const collectionRef = firebase
+      .database()
+      .ref(`collections/${selectedProjectName}`)
+      collectionRef.on('child_added',(shapshot)=>{
+        debugger;
+       const date = Date(shapshot.key).toLocaleString('en')
+       const {json,xlsx} =shapshot.val()
+       debugger;
+   
+       const scrapeResult =document.createElement('scraping-result')
+       scrapeResult.setAttribute('upload-path-xlsx',xlsx)
+       scrapeResult.setAttribute('upload-path-json',json)
+       scrapeResult.setAttribute('date',date)
+   
+       const resultContainer =document.getElementById('scrape-result-container')
+       resultContainer.appendChild(scrapeResult)
+        debugger;
+      })
+    }//render
   }
 );
 
@@ -121,7 +123,7 @@ function dispatchAction() {
   const dataCollectionRef = firebase
     .database()
     .ref(`projects/${selectedProjectName}`)
-  dataCollectionRef.update({ dataCollection: 1,dataCollected:0 }, (error) => {
+  dataCollectionRef.update({ dataCollection: 1,dataCollected:0,start: Date.now() }, (error) => {
     if (error) {
       debugger;
       errorHandler({ error })

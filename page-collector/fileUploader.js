@@ -74,7 +74,8 @@ console.log('file upload succeful')
   const projectsRef =  admin.database().ref(`projects/${projectName}/${savePath}`)
   
   await  projectsRef.update({
-   [savePath]:uploadPath
+   [savePath]:uploadPath,
+   end: Date.now()
     });
     // await  projectsRef.update({
     //   [savePath]:uploadPath
