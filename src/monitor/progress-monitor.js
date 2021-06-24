@@ -217,8 +217,5 @@ ${dataCollection === 1 ? `
 </div>
 </div>
 `
-
-
-
     }
 })
