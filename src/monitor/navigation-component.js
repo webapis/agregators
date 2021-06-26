@@ -23,7 +23,7 @@ customElements.define(
     }
 
     render({ user }) {
-      this.innerHTML = `
+      this.innerHTML= `
       <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <div class="container-fluid">
     <a class="navbar-brand" href="#">WDS</a>
@@ -90,8 +90,6 @@ customElements.define(
       document
         .getElementById('show-home-component')
         .addEventListener('click', function () {
-
-
           window.pageStore.dispatch({
             type: window.actionTypes.VIEW_CHANGED,
             payload: 'home-component'

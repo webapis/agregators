@@ -28,7 +28,7 @@ customElements.define('home-component', class extends HTMLElement {
         </div>
 
         <div class=" d-flex justify-content-center">
-        <button class="btn btn-primary">Go to projects</button>
+        <button class="btn btn-primary" id="go-to-projects">Go to projects</button>
         <div>
         </div>
         </div>
@@ -36,5 +36,13 @@ customElements.define('home-component', class extends HTMLElement {
 
         </div>
         </div>`
+
+        document.getElementById('go-to-projects').addEventListener('click',()=>{
+            window.pageStore.dispatch({
+                type: window.actionTypes.VIEW_CHANGED,
+                payload: 'project-list'
+              });
+        })
+        
     }
 })
