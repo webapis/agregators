@@ -6,7 +6,7 @@ customElements.define(
     }
 
     connectedCallback() {
-      const { state: { view, selectedProjectName } } = window.pageStore;
+      const { state: { view, selectedProjectName,user } } = window.pageStore;
 
       const dataCollectionRef = firebase
         .database()
@@ -16,15 +16,13 @@ customElements.define(
         const startDate = new Date(start)
         const endDate = end === '' ? '' : new Date(end)
         const duration = end === '' ? '' : window.diff(start, end)
-        this.render({ dataCollection, dataCollected, selectedProjectName, duration, startDate, endDate,xlsx,projectDescription });
+        this.render({ dataCollection, dataCollected, selectedProjectName, duration, startDate, endDate,xlsx,projectDescription,user });
 
       })
 
-
-
     }//connectedCallback
 
-    render({ dataCollection, dataCollected, selectedProjectName, duration, startDate, endDate, xlsx,projectDescription}) {
+    render({ dataCollection, dataCollected, selectedProjectName, duration, startDate, endDate, xlsx,projectDescription,user}) {
 
 
 
@@ -49,8 +47,6 @@ customElements.define(
         </div>
 
   
-
-
       
         <progress-monitor class="row border border-1  rounded mt-5 "></progress-monitor>
         <div class="row border border-1 border-bottom-0  mt-5" >
@@ -66,7 +62,23 @@ customElements.define(
      
 
       document.getElementById('start-scrape').addEventListener('click', () => {
-        dispatchAction()
+        const ticket = firebase
+        .database()
+        .ref(`gitticket`)
+      ticket.once('value', data => {
+        
+        const tkt = data.val()
+
+        dispatchAction({ticket:tkt})
+      })
+        
+      
+          // window.pageStore.dispatch({
+          //   type: window.actionTypes.VIEW_CHANGED,
+          //   payload: 'signin-google'
+          // });
+        
+       
       });
       const resultContainer = document.getElementById('scrape-result-container')
       resultContainer.innerHTML = ``
@@ -95,8 +107,8 @@ customElements.define(
   }
 );
 
-function dispatchAction() {
-  const { state: { user: { ticket }, view, selectedProjectName } } = window.pageStore;
+function dispatchAction({ticket}) {
+  const { state: { user, view, selectedProjectName } } = window.pageStore;
   const dataCollectionRef = firebase
     .database()
     .ref(`projects/${selectedProjectName}`)

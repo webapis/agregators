@@ -45,6 +45,7 @@ customElements.define(
           ${view === 'project-edit' ? `<edit-project class="col"></edit-project>` : ''}
           ${view === 'home-component' ? `<home-component class="col"></home-component>` : ''}
           ${view === 'project-list' ? `<project-list class="col"></project-list>` : ''}
+          ${view === 'signin-google' ? `<signin-google class="col"></signin-google>` : ''}
           ${view === 'project-detail'
             ? `<project-detail></project-detail>`
             : ''}

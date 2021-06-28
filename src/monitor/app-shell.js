@@ -19,7 +19,9 @@ customElements.define(
         import('./edit-project.js'),
         import('./error-component.js'),
         import('./progress-monitor.js'),
-        import('./diff.js')
+        import('./diff.js',
+        import('./signin-google.js'),
+        )
       ]).then(modules => {
         window.pageStore = modules[0].createStore(
           modules[1].default,
@@ -31,8 +33,6 @@ customElements.define(
         window.downloadFile=modules[12].downloadFile
         window.signin=modules[12].signin
         this.render();
-
-
       });
     }
 
