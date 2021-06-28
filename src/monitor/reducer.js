@@ -16,7 +16,7 @@ export default (state, action) => {
     case actionTypes.SIGNED_IN:
       return { ...state, user: action.payload };
     case actionTypes.SIGNED_OUT:
-      return { ...state, user: action.payload };
+      return { ...state, user: null};
     case actionTypes.PROJECT_NAME_CHANGED:
       return { ...state, projectName: action.payload };
     case actionTypes.PROJECT_START_REQUIRED:
@@ -42,6 +42,7 @@ export default (state, action) => {
         error: null
       };
       case actionTypes.ERROR:
+        debugger;
         return {
           ...state,
           error: action.payload

@@ -43,7 +43,7 @@ customElements.define(
         </div>
        
         <div class="col-2"> 
-        <button class="btn btn-warning" id='start-scrape' ${dataCollection > 0 && 'disabled'}>Cancel</button>
+
         </div>
         
         </div>

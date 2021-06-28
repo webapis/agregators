@@ -29,6 +29,7 @@ customElements.define(
         window.actionTypes = modules[1].actionTypes;
         window.diff =modules[12].diff
         window.downloadFile=modules[12].downloadFile
+        window.signin=modules[12].signin
         this.render();
 
 

@@ -11,19 +11,44 @@ customElements.define(
       this.render({ user });
 
       window.pageStore.subscribe(window.actionTypes.SIGNED_IN, state => {
-        const { user } = state;
+        const { user: { user: { uid, email } } } = state;
+        debugger;
+        const userRef = firebase
+          .database()
+          .ref(`users/${uid}`)
+        userRef.on('value', (snapshot) => {
+          const user = snapshot.val()
+          if (!user) {
+            userRef.set({ email })
+          }
+          debugger;
+        })
 
-        this.render({ user });
+        const userRoleRef = firebase
+          .database()
+          .ref(`users/${uid}/role`)
+        userRoleRef.on('value', (snapshot) => {
+          const role = snapshot.val()
+          debugger;
+          if (role === 'admin') {
+            this.render({ user, role: 'admin' });
+          } else {
+            this.render({ user, role: 'user' });
+          }
+        })
+          this.render({ user,role:'user' });
       });
+
+
       window.pageStore.subscribe(window.actionTypes.SIGNED_OUT, state => {
         const { user } = state;
 
-        this.render({ user });
+        this.render({ user, role:'user' });
       });
     }
 
-    render({ user }) {
-      this.innerHTML= `
+    render({ user, role }) {
+      this.innerHTML = `
       <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <div class="container-fluid">
     <a class="navbar-brand" href="#">WDS</a>
@@ -38,17 +63,19 @@ customElements.define(
         <li class="nav-item">
           <a class="nav-link" href="#" id="show-projest-list">Projects</a>
         </li>
-        <li class="nav-item">
+        ${role === 'admin' ? `   <li class="nav-item">
         <a class="nav-link" href="#" id ="add-project">Add Project</a>
-      </li>
+      </li>`: ''}
+     
       </ul>
       <ul class="navbar-nav ">
-      <li class="nav-item">
+      ${user ? `<li class="nav-link ">welcome,${user.user.email}</li>` : `  <li class="nav-item">
       <a class="nav-link " href="#" tabindex="-1" aria-disabled="true" id="login">Sign in</a>
-    </li>
-    <li class="nav-item">
+    </li>`}
+    ${user ? `   <li class="nav-item">
     <a class="nav-link " href="#" tabindex="-1" aria-disabled="true" id="signout">Sign out</a>
-  </li>
+  </li>`:''}
+ 
   </ul>
     </div>
   </div>
@@ -57,7 +84,7 @@ customElements.define(
       if (!user) {
         document.getElementById('login').addEventListener('click', e => {
           e.preventDefault();
-          signin();
+          window.signin();
         });
       } else {
         document.getElementById('signout').addEventListener('click', e => {
@@ -75,17 +102,20 @@ customElements.define(
             payload: 'project-list'
           });
         });
+      if (role === 'admin') {
 
-      document
-        .getElementById('add-project')
-        .addEventListener('click', function () {
-         // import('./edit-project.js').then(() => { });
+        document
+          .getElementById('add-project')
+          .addEventListener('click', function () {
+            // import('./edit-project.js').then(() => { });
 
-          window.pageStore.dispatch({
-            type: window.actionTypes.VIEW_CHANGED,
-            payload: 'project-edit'
+            window.pageStore.dispatch({
+              type: window.actionTypes.VIEW_CHANGED,
+              payload: 'project-edit'
+            });
           });
-        });
+      }
+
 
       document
         .getElementById('show-home-component')
@@ -99,48 +129,7 @@ customElements.define(
   }
 );
 
-function signin() {
-  var provider = new firebase.auth.GoogleAuthProvider();
-  firebase
-    .auth()
-    .signInWithPopup(provider)
-    .then(result => {
-      var credential = result.credential;
 
-      // This gives you a Google Access Token. You can use it to access the Google API.
-      var token = credential.accessToken;
-      // const firebase =firebase
-      
-      // The signed-in user info.
-      var user = result.user;
-      const ticket = firebase
-        .database()
-        .ref(`gitticket`)
-      ticket.once('value', data => {
-        
-        const tkt = data.val()
-        window.pageStore.dispatch({
-          type: window.actionTypes.SIGNED_IN,
-          payload: { user, ticket: tkt },
-
-        });
-        
-      })
-
-
-      // ...
-    })
-    .catch(error => {
-      // Handle Errors here.
-      var errorCode = error.code;
-      var errorMessage = error.message;
-      // The email of the user's account used.
-      var email = error.email;
-      // The firebase.auth.AuthCredential type that was used.
-      var credential = error.credential;
-      // ...
-    });
-}
 
 function signout() {
   firebase

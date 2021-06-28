@@ -2,8 +2,10 @@
   "rules": {
     ".read": "true",
     "users":{
-   ".write":"false"
+      "$uid": {
+        ".read": "auth != null && auth.uid == $uid",
+        ".write": "auth != null && auth.uid == $uid"
+      }
     }
-
   }
 }

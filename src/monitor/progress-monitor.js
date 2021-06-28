@@ -107,18 +107,22 @@ customElements.define('monitor-log', class extends HTMLElement {
    
   Download:
   </div>
-  <b class="text-decoration-underline btn btn-link" id="download-last"> Excel </b>
+  <b class="text-decoration-underline btn btn-link" id="download-last-scrape"> Excel </b>
 </li>`}
 
 </ol>
 </div>
         `
-        document.getElementById('download-last').addEventListener('click', () => {
-            window.downloadFile({ downloadpath: xlsx })
-        })
+        if(xlsx && document.getElementById('download-last-scrape')){
+            debugger;
+            document.getElementById('download-last-scrape').addEventListener('click', () => {
+                window.downloadFile({ downloadpath: xlsx })
+            })
+        }
+  
 
 
-
+       const durcounter = document.getElementById("duration-counter")
         let liveDurationInterval = null
         const endRef = firebase
             .database()
@@ -133,9 +137,13 @@ customElements.define('monitor-log', class extends HTMLElement {
                     document.getElementById("duration-counter").innerHTML = spantime
                 }, 1000)
             } else {
-                debugger;
-                clearInterval(liveDurationInterval)
-                document.getElementById("duration-counter").innerHTML = `${duration}`
+                if(durcounter){
+                    clearInterval(liveDurationInterval)
+                    durcounter.innerHTML = `${duration}`;
+                }
+          
+            
+              
 
             }
         
