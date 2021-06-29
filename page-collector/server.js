@@ -35,7 +35,7 @@ function change() {
 
     switch (nextTaskName) {
       case 'page_collection':
-        await batchPageCollector({ taskSequelizerEventEmitter, uploadFile: false, output: `${process.cwd()}/page-data/${process.env.projectName}.json` })
+        await batchPageCollector({ taskSequelizerEventEmitter, uploadFile: true, output: `${process.cwd()}/page-data/${process.env.projectName}.json` })
         break;
       case 'page_image_collection':
         await batchImageCollection({ taskSequelizerEventEmitter })
