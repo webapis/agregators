@@ -9,7 +9,7 @@ const ws_domain = process.env.projectName;
 const { promiseConcurrency } = require('./promiseConcurrency');
 const { fetchPageContent } = require('./pageCollector')
 async function batchPageCollector({ taskSequelizerEventEmitter, output, uploadFile }) {
-  let dataCollected = 0
+  let dataCollectedTotal = 0
   const { database } = firebaseInit();
   database.ref(`projects/${process.env.projectName}`).update({
     dataCollection: 3
@@ -31,12 +31,12 @@ async function batchPageCollector({ taskSequelizerEventEmitter, output, uploadFi
     files.push(filepath);
   });
   const browser = await puppeteer.launch({ headless: true, timeout: 120000 });
-  eventEmitter.on('data_collected', () => {
+  eventEmitter.on('data_collected', async () => {
     console.log('data_collected....')
-    
-    dataCollected ++;
-    database.ref(`projects/${process.env.projectName}`).update({
-      dataCollected
+    debugger;
+    dataCollectedTotal ++;
+  await  database.ref(`projects/${process.env.projectName}`).update({
+      dataCollecteds: dataCollectedTotal
     });
   })
 

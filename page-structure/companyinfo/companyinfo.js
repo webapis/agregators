@@ -21,19 +21,19 @@ const search = process.env.search;
 
   const pageUrl =await page.url()
    const searchBox =await page.$eval('#site-search-text',el=> el.value)
-   debugger;
+
   if(pageUrl==='https://find-and-update.company-information.service.gov.uk/' && searchBox===''){
  
   
- debugger;
+
     await page.goto(parentUrl+`search/companies?q=apple`)
-    debugger;
+
     const urlsExist = await page.$$('.pager .page')
     if (urlsExist.length > 0) {
-      debugger;
+
       const urls = await page.$$eval('.pager .page', (els) => els.map(e => e.href))
       const withoutLastUrl = urls.filter((u,i)=> i<urls.length-1).filter((u,i)=>i<2)
-    debugger;
+ 
       //urls.filter((f,i)=>i<10).forEach(url => {
         withoutLastUrl.forEach(url => {
         const nextPagePromise = fetchPageContent({
@@ -55,7 +55,7 @@ const search = process.env.search;
 
 
 if(pageUrl.includes('search/companies?q=')){
-debugger;
+
   await page.waitForSelector('#results .type-company')
   const typeCompany  = await page.$$('.type-company a')
   if(typeCompany.length>0){
@@ -63,7 +63,7 @@ debugger;
   
     urls.forEach((url,i) => {
 
-      if(i<5){
+   //   if(i<5){
         
       
       const offierurl =url+'/officers'
@@ -80,21 +80,21 @@ debugger;
   
       eventEmitter.emit('promiseAttached', { promise: nextPagePromise, unshift: false });
 
-    }
+   // }
     })
   }
 
 }
 
 if(pageUrl.includes('/officers')){
-  debugger;
+
   await page.waitForSelector('[class*="appointment-"]')
 
 
 const appointmentListExists  = await page.$$('[class*="appointment-"]')
 
 if(appointmentListExists.length>0){
-  debugger; 
+ 
   const companyNumber = await page.$eval('#company-number > strong',el=> el.innerText)
   const companyName =await page.$eval('#content-container > div.company-header > p.heading-xlarge',el=> el.innerText)
   const officer  = await page.$$eval('[class*="appointment-"]',(els,_company_name,_company_number)=>{
@@ -113,7 +113,7 @@ if(appointmentListExists.length>0){
 
     return data
   },companyName,companyNumber)
-debugger;
+
   let dataObject = [];
   makeDir.sync(path.dirname(output))
 
@@ -136,7 +136,7 @@ debugger;
   debugger;
   eventEmitter.emit('data_collected')
 
-  debugger;
+
   console.log('data reached..')
 }
 
