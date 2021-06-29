@@ -42,6 +42,7 @@
   },
   "scripts": {
     "bookCollector": "projectName=books NEXT_TASK=page_collection ALL=TRUE node page-collector/server.js",
+    "companyInfoCollector": "projectName=companyinfo search=100 NEXT_TASK=page_collection ALL=TRUE node page-collector/server.js",
     "taskSequelizer": "projectName=defacto NEXT_TASK=page_collection ALL=TRUE node page-collector/server.js",
     "dataCollector": "projectName=defacto NEXT_TASK=page_data_collection node page-collector/server.js --inspect-brk",
     "imageCollector": "projectName=defacto NEXT_TASK=page_image_collection node page-collector/server.js",

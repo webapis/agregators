@@ -30,7 +30,24 @@ const projects = {
     { page_component_attacher: false },
     { page_script_attacher: false },
     { page_nav_items: false },
-    { page_builder: false }]
+    { page_builder: false }],
+    companyinfo: [
+      { page_collection: true },
+      //{ page_data_upload: true },
+      //{ page_data_collection: true },
+      { page_image_collection: false },
+    //  { page_image_upload: true },
+    //  { page_data_upload: true },
+      { page_image_crop: false },
+      { page_image_blur: false },
+      { page_image_embed: false },
+      { page_nav_data_tree_creation: false },
+      { page_leaves_creation: false },
+      { page_generation: false },
+      { page_component_attacher: false },
+      { page_script_attacher: false },
+      { page_nav_items: false },
+      { page_builder: false }]
 
 };
 
