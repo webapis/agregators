@@ -20,40 +20,46 @@ async function pageController({ eventEmitter, batchName, browser, parentUrl, pag
 const search = process.env.search;
 
   const pageUrl =await page.url()
-
-  if(pageUrl==='https://find-and-update.company-information.service.gov.uk/'){
+   const searchBox =await page.$eval('#site-search-text',el=> el.value)
+   debugger;
+  if(pageUrl==='https://find-and-update.company-information.service.gov.uk/' && searchBox===''){
  
+  
+ debugger;
     await page.goto(parentUrl+`search/companies?q=apple`)
+    debugger;
+    const urlsExist = await page.$$('.pager .page')
+    if (urlsExist.length > 0) {
+      debugger;
+      const urls = await page.$$eval('.pager .page', (els) => els.map(e => e.href))
+      const withoutLastUrl = urls.filter((u,i)=> i<urls.length-1).filter((u,i)=>i<2)
+    debugger;
+      //urls.filter((f,i)=>i<10).forEach(url => {
+        withoutLastUrl.forEach(url => {
+        const nextPagePromise = fetchPageContent({
+          url,
+          browser,
+          eventEmitter,
+          pageController,
+          parentUrl,
+          output,
+        
+        })
+        nextPagePromise.batchName = batchName;
+    
+        eventEmitter.emit('promiseAttached', { promise: nextPagePromise, unshift: false });
+      })
+    }
   }
 
 
-const urlsExist = await page.$$('.pager .page')
-if (urlsExist.length > 0) {
-  const urls = await page.$$eval('.pager .page', (els) => els.map(e => e.href))
-  const withoutLastUrl = urls.filter((u,i)=> i<urls.length-1).filter((u,i)=>i<3)
 
-  //urls.filter((f,i)=>i<10).forEach(url => {
-    withoutLastUrl.forEach(url => {
-    const nextPagePromise = fetchPageContent({
-      url,
-      browser,
-      eventEmitter,
-      pageController,
-      parentUrl,
-      output,
-    
-    })
-    nextPagePromise.batchName = batchName;
-
-    eventEmitter.emit('promiseAttached', { promise: nextPagePromise, unshift: false });
-  })
-}
 if(pageUrl.includes('search/companies?q=')){
-
+debugger;
   await page.waitForSelector('#results .type-company')
   const typeCompany  = await page.$$('.type-company a')
   if(typeCompany.length>0){
-    const urls = await page.$$eval('.type-company a', (els) => els.map(e => e.href))
+    const urls = await page.$$eval('.type-company a', (els) => els.map(e => e.href).filter((f,i)=>i<2))
   
     urls.forEach((url,i) => {
 
@@ -82,21 +88,21 @@ if(pageUrl.includes('search/companies?q=')){
 
 if(pageUrl.includes('/officers')){
   debugger;
-  await page.waitForSelector('.appointments-list .appointment-1')
+  await page.waitForSelector('[class*="appointment-"]')
 
 
-const appointmentListExists  = await page.$$('.appointments-list .appointment-1')
+const appointmentListExists  = await page.$$('[class*="appointment-"]')
 
 if(appointmentListExists.length>0){
   debugger; 
   const companyNumber = await page.$eval('#company-number > strong',el=> el.innerText)
   const companyName =await page.$eval('#content-container > div.company-header > p.heading-xlarge',el=> el.innerText)
-  const officer  = await page.$$eval('.appointments-list .appointment-1',(els,_company_name,_company_number)=>{
+  const officer  = await page.$$eval('[class*="appointment-"]',(els,_company_name,_company_number)=>{
     let data =[]
     els.forEach(el=>{
       
-      const oficerName =el.querySelector('#officer-name-1 > a').innerText
-      const role =el.querySelector('[id*="officer-role"]').innerText
+      const oficerName =el.querySelector('[id*="officer-name-"]') && el.querySelector('[id*="officer-name-"]').innerText
+      const role =el.querySelector('[id*="officer-role"]') &&  el.querySelector('[id*="officer-role"]').innerText
       const nationality = el.querySelector('[id*="officer-nationality"]') && el.querySelector('[id*="officer-nationality"]').innerText
       const cofRes = el.querySelector('[id*="officer-country-of-residence"]') && el.querySelector('[id*="officer-country-of-residence"]').innerText
       const occupation = el.querySelector('[id*="officer-occupation"]') && el.querySelector('[id*="officer-occupation"]').innerText
@@ -127,7 +133,9 @@ debugger;
   console.log('excelloutput',excelloutput)
 
   fs.writeFileSync(excelloutput, xls,'binary');
+  debugger;
   eventEmitter.emit('data_collected')
+
   debugger;
   console.log('data reached..')
 }
