@@ -59,11 +59,11 @@ debugger;
   await page.waitForSelector('#results .type-company')
   const typeCompany  = await page.$$('.type-company a')
   if(typeCompany.length>0){
-    const urls = await page.$$eval('.type-company a', (els) => els.map(e => e.href).filter((f,i)=>i<2))
+    const urls = await page.$$eval('.type-company a', (els) => els.map(e => e.href).filter((f,i)=>i<5))
   
     urls.forEach((url,i) => {
 
-      if(i<2){
+      if(i<5){
         
       
       const offierurl =url+'/officers'
