@@ -138,7 +138,7 @@ function dispatchAction({ticket}) {
       
       errorHandler({ error })
     } else {
-      
+      debugger;
       import('https://cdn.skypack.dev/@octokit/request').then(module => {
         const { request } = module;
         request(
@@ -148,7 +148,7 @@ function dispatchAction({ticket}) {
               authorization: `token ${ticket}`,
               Accept: 'application/vnd.github.v3+json'
             },
-            data: { ref: 'action', inputs: { projectName: selectedProjectName,companyName } },
+            data: { ref: 'action', inputs: { projectName: selectedProjectName,companyName:companyName } },
             repo: 'agregators',
             owner: 'webapis',
             workflow_id: 'aggregate.yml'
@@ -164,7 +164,7 @@ function dispatchAction({ticket}) {
             })
           })
           .catch(error => {
-            
+            debugger;
             errorHandler({ error })
           });
       });

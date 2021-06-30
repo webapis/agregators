@@ -6,6 +6,10 @@ on:
         description: 'Project Name'
         required: true
         default: 'books'
+      projectName:
+        description: 'Company Name'
+        required: true
+        default: 'sony'
 jobs:
   aggregator:
     runs-on: ubuntu-latest
@@ -32,7 +36,7 @@ jobs:
         run: 'npm install'
       - name: aggregation step
         id: collection
-        run: projectName=${{github.event.inputs.projectName}} NEXT_TASK=page_collection ALL=TRUE PRIVATE_KEY_ID="$PRIVATE_KEY_ID" PRIVATE_KEY="$PRIVATE_KEY" node page-collector/server.js
+        run: projectName=${{github.event.inputs.projectName}} companyName=${{github.event.inputs.companyName}} NEXT_TASK=page_collection ALL=TRUE PRIVATE_KEY_ID="$PRIVATE_KEY_ID" PRIVATE_KEY="$PRIVATE_KEY" node page-collector/server.js
         env:
           PRIVATE_KEY_ID: ${{ secrets.PKIDG }}
           PRIVATE_KEY: ${{ secrets.PKG }}
