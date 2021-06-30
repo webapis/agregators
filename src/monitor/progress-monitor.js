@@ -26,6 +26,7 @@ customElements.define('progress-monitor', class extends HTMLElement {
         
       
 <div class="row">
+
 <h3 class="fw-light col-12 pb-2 border-bottom">Progress Monitor</h3>
 <monitor-log class="col-6"></monitor-log>
 <progress-status class="col-6 d-flex flex-column justify-content-center"></progress-status>
@@ -223,6 +224,20 @@ ${dataCollection === 1 ? `
 
 
 </div>
+</div>
+`
+    }
+})
+
+
+customElements.define('search-box', class extends HTMLElement{
+    constructor(){
+        super()
+
+    }
+    connectedCallback(){
+        this.innerHTML=`<div class="row">
+<h3 class="fw-light col-12 pb-2 border-bottom">Enter company name:</h3>
 </div>
 `
     }

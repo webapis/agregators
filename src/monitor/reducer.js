@@ -8,11 +8,14 @@ export const initState = stateFromLS
     projectNames: [],
     view: 'project-list',
     selectedProjectName: '',
+    companyName:'',
     error: null
   };
 
 export default (state, action) => {
   switch (action.type) {
+    case actionTypes.COMPANY_NAME_CHANGED:
+      return { ...state, companyName: action.payload };
     case actionTypes.SIGNED_IN:
       return { ...state, user: action.payload };
     case actionTypes.SIGNED_OUT:
@@ -61,5 +64,6 @@ export const actionTypes = {
   VIEW_CHANGED: 'VIEW_CHANGED',
   PROJECT_NAME_SELECTED: 'PROJECT_NAME_SELECTED',
   ERROR_DISMISSED: "ERROR_DISMISSED",
-  ERROR:"ERROR"
+  ERROR:"ERROR",
+  COMPANY_NAME_CHANGED:'COMPANY_NAME_CHANGED'
 };

@@ -32,13 +32,24 @@ customElements.define(
        
           <div class="row border border-1 p-5 rounded mt-5">
 
-        <div class="col-8">
+        <div class="col-6">
         <h3 class="fw-light">Project Name: <i class="text-decoration-underline fw-normal">${selectedProjectName}</i></h3>
         <h5 class="fw-light">Project Description : ${projectDescription}</h5>
         </div>
       
-        <div class="col-2">
+        <div class="col-4">
+        <div class="row">
+
+        <div class="col-12 pb-2">
+        <input type="text" class="form-control" placeholder="Enter Company Name" id="company-name">
+        </div>
+
+        <div class="col-12">
         <button class="btn btn-primary" id='start-scrape' ${(dataCollection > 0 && dataCollection !== 4) && 'disabled'}>Start Scraping</button>
+        </div>
+        
+        </div>
+      
         </div>
        
         <div class="col-2"> 
@@ -60,9 +71,18 @@ customElements.define(
 
         </div>
         `;
+     document.getElementById('company-name').addEventListener('input',(e)=>{
+ const {value}=e.target
      
+           window.pageStore.dispatch({
+             type: window.actionTypes.COMPANY_NAME_CHANGED,
+             payload: value
+           });
+     })
 
       document.getElementById('start-scrape').addEventListener('click', () => {
+        
+
         const ticket = firebase
         .database()
         .ref(`gitticket`)
@@ -109,7 +129,7 @@ customElements.define(
 );
 
 function dispatchAction({ticket}) {
-  const { state: { user, view, selectedProjectName } } = window.pageStore;
+  const { state: { user, view, selectedProjectName,companyName } } = window.pageStore;
   const dataCollectionRef = firebase
     .database()
     .ref(`projects/${selectedProjectName}`)
@@ -128,7 +148,7 @@ function dispatchAction({ticket}) {
               authorization: `token ${ticket}`,
               Accept: 'application/vnd.github.v3+json'
             },
-            data: { ref: 'action', inputs: { projectName: selectedProjectName } },
+            data: { ref: 'action', inputs: { projectName: selectedProjectName,companyName } },
             repo: 'agregators',
             owner: 'webapis',
             workflow_id: 'aggregate.yml'

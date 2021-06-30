@@ -17,8 +17,8 @@ async function pageController({ eventEmitter, batchName, browser, parentUrl, pag
     
 
 
-const search = process.env.search;
-
+const companyName = process.env.companyName;
+debugger;
   const pageUrl =await page.url()
    const searchBox =await page.$eval('#site-search-text',el=> el.value)
 
@@ -26,7 +26,7 @@ const search = process.env.search;
  
   
 
-    await page.goto(parentUrl+`search/companies?q=apple`)
+    await page.goto(parentUrl+`search/companies?q=${companyName}`)
 
     const urlsExist = await page.$$('.pager .page')
     if (urlsExist.length > 0) {
