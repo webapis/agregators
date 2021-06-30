@@ -80,7 +80,9 @@ console.log('file upload succeful')
       end
        });
 
-       await collectionsRef.update({  [savePath]:uploadPath,end,start})
+       await collectionsRef.update({  [savePath]:uploadPath,end,start},(error)=>{
+         debugger;
+       })
        cb()
   })
   

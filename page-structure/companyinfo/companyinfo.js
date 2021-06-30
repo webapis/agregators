@@ -134,9 +134,14 @@ if(appointmentListExists.length>0){
 
   fs.writeFileSync(excelloutput, xls,'binary');
   debugger;
-  eventEmitter.emit('data_collected')
-
-
+  //eventEmitter.emit('data_collected')
+debugger;
+  await  database.ref(`projects/${process.env.projectName}`).update({
+      totalDataCollected: dataObject.length
+    },(error)=>{
+      debugger;
+    });
+debugger;
   console.log('data reached..')
 }
 

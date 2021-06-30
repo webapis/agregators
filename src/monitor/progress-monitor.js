@@ -54,17 +54,17 @@ customElements.define('monitor-log', class extends HTMLElement {
             .database()
             .ref(`projects/${selectedProjectName}`)
         dataCollectionRef.on('value', (snapshot) => {
-            const { dataCollection, dataCollecteds, end, start, xlsx } = snapshot.val()
+            const { dataCollection, totalDataCollected, end, start, xlsx } = snapshot.val()
             const startDate = new Date(start)
             const endDate = end === '' ? '' : new Date(end)
             const duration = end === '' ? '' : window.diff(start, end)
-            this.render({ dataCollecteds, startDate, endDate, duration,xlsx })
+            this.render({ totalDataCollected, startDate, endDate, duration,xlsx })
 
         })
 
     }
 
-    render({ dataCollecteds, startDate, endDate, duration, xlsx,selectedProjectName }) {
+    render({ totalDataCollected, startDate, endDate, duration, xlsx,selectedProjectName }) {
 
         this.innerHTML = ` 
         <div>
@@ -74,7 +74,7 @@ customElements.define('monitor-log', class extends HTMLElement {
  
     Data collected:
     </div>
-    <span class="badge bg-primary rounded-pill">${dataCollecteds}</span>
+    <span class="badge bg-primary rounded-pill">${totalDataCollected}</span>
   </li>
   
   <li class="list-group-item d-flex justify-content-between align-items-start">

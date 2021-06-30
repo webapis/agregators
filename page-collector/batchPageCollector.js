@@ -9,8 +9,9 @@ const ws_domain = process.env.projectName;
 const { promiseConcurrency } = require('./promiseConcurrency');
 const { fetchPageContent } = require('./pageCollector')
 async function batchPageCollector({ taskSequelizerEventEmitter, output, uploadFile }) {
-  let dataCollectedTotal = 0
+  global.dataCollected = 0
   const { database } = firebaseInit();
+  global.database=database
   database.ref(`projects/${process.env.projectName}`).update({
     dataCollection: 3
   });
@@ -34,10 +35,10 @@ async function batchPageCollector({ taskSequelizerEventEmitter, output, uploadFi
   eventEmitter.on('data_collected', async () => {
     console.log('data_collected....')
     debugger;
-    dataCollectedTotal ++;
-  await  database.ref(`projects/${process.env.projectName}`).update({
-      dataCollecteds: dataCollectedTotal
-    });
+  //   dataCollectedTotal ++;
+  // await  database.ref(`projects/${process.env.projectName}`).update({
+  //     dataCollecteds: dataCollectedTotal
+  //   });
   })
 
   let lastDataCollected=0
@@ -89,6 +90,7 @@ async function batchPageCollector({ taskSequelizerEventEmitter, output, uploadFi
         eventEmitter,
         pageController,
         output
+        
       })
       firstPagePromise.batchName = batchName;
 

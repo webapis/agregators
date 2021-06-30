@@ -12,17 +12,18 @@ customElements.define(
         .database()
         .ref(`projects/${selectedProjectName}`)
       dataCollectionRef.on('value', (snapshot) => {
-        const { dataCollection, dataCollecteds, end, start,xlsx,projectDescription } = snapshot.val()
+        const { dataCollection, totalDataCollected, end, start,xlsx,projectDescription } = snapshot.val()
+       
         const startDate = new Date(start)
         const endDate = end === '' ? '' : new Date(end)
         const duration = end === '' ? '' : window.diff(start, end)
-        this.render({ dataCollection, dataCollecteds, selectedProjectName, duration, startDate, endDate,xlsx,projectDescription,user });
+        this.render({ dataCollection, totalDataCollected, selectedProjectName, duration, startDate, endDate,xlsx,projectDescription,user });
 
       })
 
     }//connectedCallback
 
-    render({ dataCollection, dataCollecteds, selectedProjectName, duration, startDate, endDate, xlsx,projectDescription,user}) {
+    render({ dataCollection, totalDataCollected, selectedProjectName, duration, startDate, endDate, xlsx,projectDescription,user}) {
 
 
 
@@ -112,7 +113,7 @@ function dispatchAction({ticket}) {
   const dataCollectionRef = firebase
     .database()
     .ref(`projects/${selectedProjectName}`)
-  dataCollectionRef.update({ dataCollection: 1, dataCollecteds: 0, start: Date.now(), end: '',xlsx:'' }, (error) => {
+  dataCollectionRef.update({ dataCollection: 1, totalDataCollected: 0, start: Date.now(), end: '',xlsx:'' }, (error) => {
     if (error) {
       
       errorHandler({ error })
