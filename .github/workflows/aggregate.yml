@@ -6,7 +6,7 @@ on:
         description: 'Project Name'
         required: true
         default: 'books'
-      projectName:
+      companyName:
         description: 'Company Name'
         required: true
         default: 'sony'
