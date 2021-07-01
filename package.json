@@ -41,10 +41,9 @@
     "rollup-plugin-serve": "1.1.0"
   },
   "scripts": {
-    "bookCollector": "projectName=books NEXT_TASK=page_collection ALL=TRUE node page-collector/server.js",
+    "dataCollector": "NEXT_TASK=page_collection ALL=FALSE node page-collector/server.js",
     "companyInfoCollector": "projectName=companyinfo search=100 NEXT_TASK=page_collection ALL=TRUE node page-collector/server.js",
     "taskSequelizer": "projectName=defacto NEXT_TASK=page_collection ALL=TRUE node page-collector/server.js",
-    "dataCollector": "projectName=defacto NEXT_TASK=page_data_collection node page-collector/server.js --inspect-brk",
     "imageCollector": "projectName=defacto NEXT_TASK=page_image_collection node page-collector/server.js",
     "imageCropper": "projectName=defacto NEXT_TASK=page_image_crop node  page-collector/server.js",
     "imageBlur": "projectName=defacto NEXT_TASK=page_image_blur node  page-collector/server.js",

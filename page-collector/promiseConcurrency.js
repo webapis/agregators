@@ -149,6 +149,7 @@ function promiseConcurrency({ batchConcurrency, totalConcurrency }) {
 }
 
 function updateConsoleTable(items) {
+ 
   let reduced = items.reduce((pacc, curr) => {
     const { state, promises } = curr;
 
