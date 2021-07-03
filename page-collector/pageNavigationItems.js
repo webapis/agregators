@@ -51,7 +51,7 @@ function pageNavigationItems({  taskSequelizerEventEmitter}) {
       if (!element) {
         let element = document.createElement('ul');
 
-        let linkFromParent = `/tr/` + parentId + '.html';
+        let linkFromParent = `/` + parentId + '.html';
         if (!document.querySelector(`[href='${linkFromParent}']`)) {
           let pageName = path.basename(linkFromParent);
           if (pageName !== '.html') {
@@ -98,7 +98,7 @@ function pageNavigationItems({  taskSequelizerEventEmitter}) {
       a.textContent = fileName.replace(/-/g, ' ');
       a.classList.add('text-capitalize');
       a.setAttribute('aria-selected', 'false');
-      a.href = `/tr/` + f;
+      a.href = `/` + f;
 
       li.appendChild(a);
       parentElement.appendChild(li);
@@ -118,7 +118,7 @@ function pageNavigationItems({  taskSequelizerEventEmitter}) {
     a.classList.add('text-capitalize');
     a.setAttribute('aria-selected', 'false');
     a.textContent = 'Tümümi göster';
-    let href = `/tr/` + file + '.html';
+    let href = `/` + file + '.html';
 
     a.href = href;
     li.appendChild(a);

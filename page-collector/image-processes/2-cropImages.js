@@ -1,18 +1,21 @@
 const Jimp = require('jimp');
 const makeDir = require('make-dir');
 const path = require('path');
+const fs =require('fs')
 const { parentPort, workerData } = require('worker_threads');
-const { nextSlice, imageWidth, index } = workerData;
+const { nextSlice, imageWidth, index,skipProcessed } = workerData;
 
 async function cropImage() {
   let remained = nextSlice.length;
   for (let p of nextSlice) {
     try {
       const output = p
-        .replace('page-image', 'page-image-resized')
-        .replace('original', imageWidth);
+        .replace(`page-image/${process.env.projectName}`, `page-image-resized/${process.env.projectName}/${imageWidth}`)
+        if(skipProcessed && fs.existsSync(output) ){
+          continue;
+        }
+        
       await makeDir(path.dirname(output));
-
       const image = await Jimp.read(p);
       const imageBugger = await image.getBufferAsync(Jimp.AUTO);
       if (imageBugger) {

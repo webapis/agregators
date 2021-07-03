@@ -18,8 +18,8 @@ async function extractPageData ({page}){
      const salePrice =el.querySelector('.sale-price') &&el.querySelector('.sale-price').innerHTML
      const marketPrice =el.querySelector('.market-price') &&el.querySelector('.market-price').innerHTML
      const discountInBasket =el.querySelector('.sale > span.percentage') &&el.querySelector('.sale > span.percentage').innerHTML //sepette indirim
-     const src =  'https:' +imageSrc.substring(imageSrc.lastIndexOf('//')).replace('3000w', '').trim();
-      data.push({detailPageLink,productName,price:{salePrice,discountInBasket,marketPrice}, image:{src}})
+     const optsrc =  'https:' +imageSrc.substring(imageSrc.lastIndexOf('//')).replace('3000w', '').trim();
+      data.push({detailPageLink,productName,price:{salePrice,discountInBasket,marketPrice}, image:{optsrc}})
     })
     return data;
   })
@@ -36,11 +36,11 @@ async function saveData({data,output}){
     makeDir.sync(path.dirname(i))
   
     if (fs.existsSync(i)) {
-      const data = fs.readFileSync(i, { encoding: 'utf-8' });
-      dataObject = JSON.parse(data);
-      dataObject.push(data);
+      const dataFromFile = fs.readFileSync(i, { encoding: 'utf-8' });
+      dataObject = JSON.parse(dataFromFile);
+      dataObject.push(...data);
     } else {
-      dataObject.push(data);
+      dataObject.push(...data);
     }
     fs.writeFileSync(i, JSON.stringify(dataObject));
 
@@ -94,7 +94,6 @@ async function pageController({ eventEmitter, batchName, browser, parentUrl, pag
 
 debugger;
 
-
 } catch (error) {
     debugger;
 }
@@ -102,12 +101,10 @@ debugger;
 
 
 
-
-
 const pages = [
-  { startUrl: 'https://www.defacto.com.tr/kadin-jean-pantolon',output:['page-data/tr/moda/kadın/giyim/alt-giyim/jean-pantolon/defacto.json'], pageController, batchName: 'defacto' },
-  { startUrl: 'https://www.defacto.com.tr/erkek-denim-pantolon',output:['page-data/tr/moda/erkek/giyim/alt-giyim/jean-pantolon/defacto.json'], pageController, batchName: 'defacto' },
-  { startUrl: 'https://www.defacto.com.tr/kiz-cocuk-jean-pantolon',output:['page-data/tr/moda/kız-çocuk/giyim/alt-giyim/jean-pantolon/defacto.json'], pageController, batchName: 'defacto' },
+  { startUrl: 'https://www.defacto.com.tr/kadin-jean-pantolon',output:['page-data/moda/kadın/giyim/alt-giyim/jean-pantolon/defacto.json'], pageController, batchName: 'defacto' },
+  { startUrl: 'https://www.defacto.com.tr/erkek-denim-pantolon',output:['page-data/moda/erkek/giyim/alt-giyim/jean-pantolon/defacto.json'], pageController, batchName: 'defacto' },
+  { startUrl: 'https://www.defacto.com.tr/kiz-cocuk-jean-pantolon',output:['page-data/moda/kız-çocuk/giyim/alt-giyim/jean-pantolon/defacto.json'], pageController, batchName: 'defacto' },
 ]
 
 module.exports = {

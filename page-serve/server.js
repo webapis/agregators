@@ -3,7 +3,7 @@ const express = require('express');
 const staticApp = express();
 const { pageBuilder } = require('../page-collector/pageBuilder');
 
-pageBuilder();
+pageBuilder({taskSequelizerEventEmitter:null});
 
 staticApp.use(express.static('page-build'));
 

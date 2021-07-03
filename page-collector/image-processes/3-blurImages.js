@@ -1,15 +1,20 @@
 const Jimp = require('jimp');
 const makeDir = require('make-dir');
 const path = require('path');
+const fs =require('fs')
 const { parentPort, workerData } = require('worker_threads');
-const { nextSlice, imageWidth, index } = workerData;
+const { nextSlice, imageWidth, index,skipProcessed } = workerData;
 
 async function blurImage() {
   let remained = nextSlice.length;
   for (let p of nextSlice) {
     try {
-      const output = p.replace('page-image-resized', 'page-image-blurred');
-
+      const filename =path.basename(p)
+      const output = `${process.cwd()}/page-image-blurred/${process.env.projectName}/${filename}`//p.replace(`page-image-resized/${process.env.projectName}`, `page-image-blurred/${process.env.projectName}`)
+      if(skipProcessed && fs.existsSync(output) ){
+        continue;
+      }
+      
       await makeDir(path.dirname(output));
 
       const image = await Jimp.read(p);

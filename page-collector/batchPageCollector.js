@@ -25,7 +25,7 @@ async function batchPageCollector({ taskSequelizerEventEmitter, output, uploadFi
     batchConcurrency: 6,
     totalConcurrency: 12
   });
-debugger;
+
   //1.Fetch url declared files
   walkSync(`${process.cwd()}/page-projects/${process.env.projectName}`, async filepath => {
 
@@ -34,21 +34,11 @@ debugger;
   const browser = await puppeteer.launch({ headless: true, timeout: 120000 });
   eventEmitter.on('data_collected', async () => {
     console.log('data_collected....')
-    debugger;
-  //   dataCollectedTotal ++;
-  // await  database.ref(`projects/${process.env.projectName}`).update({
-  //     dataCollecteds: dataCollectedTotal
-  //   });
+    
+
   })
 
   let lastDataCollected=0
-  // setInterval(()=>{
-  //   const collectedFromTheLastTime =dataCollected-lastDataCollected
-  // //  if(dataCollected> lastDataCollected && collectedFromTheLastTime>=3){
-
-   
-  //  // }
-  // },300)
 
   eventEmitter.on('no_more_task', function () {
     console.log('ALL TASKS COMPLETE')
@@ -80,26 +70,23 @@ debugger;
      */
 
   for (let file of files) {
-    debugger;
+    
     const { pages } = require(file);
-    debugger;
+    
     for (page of pages) {
       const { pageController, startUrl, batchName,output } = page
-
       const firstPagePromise = fetchPageContent({
         url: startUrl,
         browser,
         eventEmitter,
         pageController,
         output,
-    
-        
       })
       firstPagePromise.batchName = batchName;
       if (fs.existsSync(output)) {
-        debugger;
+        
       fs.unlinkSync(output)
-       debugger;
+       
       } 
       eventEmitter.emit('promiseAttached', { promise: firstPagePromise, unshift: false });
     }

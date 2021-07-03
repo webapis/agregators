@@ -5,39 +5,37 @@ const fs=require('fs')
 function pageNavDataTreeCreation({taskSequelizerEventEmitter}) {
     let files = [];
     console.log('nav data tree creation started....');
-    walkSync(`${process.cwd()}/page-data/${ws_domain}`, async function (filepath) {
+    walkSync(`${process.cwd()}/page-data/${process.env.projectName}`, async function (filepath) {
       if (!filepath.includes('.DS_Store')) {
-        //files.push(filepath);
         files.push(filepath.substring(filepath.indexOf('moda/')));
       }
     });
-    let recures = true;
+ 
     let reduced = [];
   
-    const withoutdub = getTrees({ files, reduced });
+    const breadcrumbs = getBreadCrumbs({ files, reduced });
   
-    withoutdub.forEach(w => {
+      breadcrumbs.forEach(w => {
       const { files, filter } = w;
-      // const filePath = `${process.cwd()}/page-data/tr/${filter}`;
       const pathNames = filter.split('/').filter(f => f !== '');
       const fileName = pathNames[pathNames.length - 1];
       let mergedData = [];
   
       files.forEach(f => {
-        const filePath = `${process.cwd()}/page-data/tr/${f}`;
-  
+        const filePath = `${process.cwd()}/page-data/${f}`;
+
         const data = fs.readFileSync(filePath, { encoding: 'utf-8' });
         const dataObject = JSON.parse(data);
         mergedData.push(...dataObject);
       });
-      const output = `${process.cwd()}/page-tree/tr/${filter}`;
+      const output = `${process.cwd()}/page-tree/${filter}`;
+  
       makeDir.sync(output);
       const outputFilePath = `${output}${fileName}.json`;
   
       fs.writeFileSync(outputFilePath, JSON.stringify(mergedData));
     });
   
-
     taskSequelizerEventEmitter.emit('taskComplete', `page_nav_data_tree_creation`)
   }
 
@@ -47,7 +45,7 @@ function pageNavDataTreeCreation({taskSequelizerEventEmitter}) {
 
 
 
-  function getTrees({ files, reduced }) {
+  function getBreadCrumbs({ files, reduced }) {
     let i = 0;
   
     while (i < files.length) {

@@ -4,14 +4,11 @@ const { JSDOM } = jsdom;
 const fs = require('fs');
 const path = require('path');
 const makeDir = require('make-dir');
-const ws_domain = 'tr/moda';
 
 async function pageGeneration({taskSequelizerEventEmitter}) {
 
   try {
     
-  
-  
   let files = [];
   console.log('page genegation started....');
   walkSync(`${process.cwd()}/page-leave`, async function(filepath) {

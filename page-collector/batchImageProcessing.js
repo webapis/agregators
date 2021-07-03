@@ -13,19 +13,12 @@ async function batchImageProcessing({
 }) {
   let queque = [];
   console.log('start....');
-  walkSync(`${process.cwd()}/${folderName}/${ws_domain}`, async function (
+  
+  walkSync(`${process.cwd()}/${folderName}/${process.env.projectName}`, async function (
     filepath
   ) {
     if (!filepath.includes('.DS_Store')) {
-      if (!skipProcessed) {
-        queque.push(filepath);
-      }
-      else
-        if (skipProcessed && !fs.existsSync(filepath)) {
-
           queque.push(filepath);
-        }
-
     }
   });
   let i;
@@ -33,10 +26,12 @@ async function batchImageProcessing({
   let promises = [];
   
   for (i = 0; i <= queque.length; i += batch) {
+    
     const nextSlice = queque.slice(i, i + batch);
+    
     promises.push(
       workerService({
-        workerData: { nextSlice, index: i, imageWidth },
+        workerData: { nextSlice, index: i, imageWidth, skipProcessed },
         script
       })
     );

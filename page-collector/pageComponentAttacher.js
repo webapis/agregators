@@ -2,7 +2,7 @@ const fs = require('fs');
 const jsdom = require('jsdom');
 const { JSDOM } = jsdom;
 const { walkSync } = require('./walkSync');
-const ws_domain = 'tr/moda';
+
 function pageComponentAttacher({ source, innterHtmlTo, inputFolder,taskSequelizerEventEmitter }) {
   let files = [];
   //console.log('page component attachment started....');

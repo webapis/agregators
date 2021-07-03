@@ -1,13 +1,13 @@
 
 const { walkSync } = require('./walkSync');
-const ws_domain = 'tr/moda';
+
 const fs =require('fs')
 const path =require('path')
 const makeDir =require('make-dir')
-function pageLeaves({taskSequelizerEventEmitter}) {
+function pageLeavesBy100({taskSequelizerEventEmitter}) {
     let files = [];
   
-    walkSync(`${process.cwd()}/page-tree/${ws_domain}`, async function (filepath) {
+    walkSync(`${process.cwd()}/page-tree/${process.env.projectName}`, async function (filepath) {
       if (!filepath.includes('.DS_Store')) {
         files.push(filepath);
       }
@@ -35,4 +35,4 @@ function pageLeaves({taskSequelizerEventEmitter}) {
   }
 
 
-  module.exports={pageLeaves}
+  module.exports={pageLeavesBy100}

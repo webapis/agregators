@@ -23,17 +23,17 @@ const { batchPageCollector } = require('./batchPageCollector');
 const { batchImageCollection } = require('./batchImageCollection');
 const { batchImageProcessing } = require('./batchImageProcessing');
 const { pageNavDataTreeCreation } = require('./pageNavTreeCreation')
-const { pageLeaves } = require('./pageLeaves')
+const { pageLeavesBy100 } = require('./pageLeavesBy100')
 
 
 
 function change() {
-
   const tasks = projects[process.env.projectName]
   const taskSequelizerEventEmitter = taskSequelizer({ tasks })
   taskSequelizerEventEmitter.on('nextTask', async function (nextTaskName) {
-
+    
     switch (nextTaskName) {
+   
       case 'page_collection':
         await batchPageCollector({ taskSequelizerEventEmitter, uploadFile: false })
         break;
@@ -63,6 +63,7 @@ function change() {
         })
         break;
       case 'page_image_embed':
+        
         batchImageProcessing({
           skipProcessed: false,
           processType: 'embed',
@@ -73,6 +74,7 @@ function change() {
           script:
             '/Users/personalcomputer/actors/page-collector/image-processes/4-embedImages.js'
         })
+
         break;
       case 'page_nav_data_tree_creation':
         removeDerectory('page-tree') &&
@@ -80,7 +82,7 @@ function change() {
         break;
       case 'page_leaves_creation':
         removeDerectory('page-leave') &&
-          pageLeaves({ taskSequelizerEventEmitter })
+        pageLeavesBy100({ taskSequelizerEventEmitter })
         break;
       case 'page_generation':
         removeDerectory('page-list-pages') &&

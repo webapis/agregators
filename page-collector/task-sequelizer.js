@@ -8,9 +8,9 @@ class TaskListender extends EventEmitter {
                 const completeTaskIndex = tasks.findIndex((element) => element.hasOwnProperty(taskName))
               const activeTasks =tasks.filter(t => Object.values(t)[0] === true)
               const isLastTask =activeTasks[activeTasks.length-1].hasOwnProperty(taskName)
-              
+              debugger;
             if (process.env.ALL === 'TRUE'  && activeTasks.length>1 && isLastTask===true) {
-
+                debugger;
                 console.log('task complete', taskName)
            
             
@@ -31,6 +31,7 @@ class TaskListender extends EventEmitter {
 
                 
             } else {
+                debugger;
                 console.log('single task complete:', taskName)
              process.exit(0)
             }  

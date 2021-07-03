@@ -9,6 +9,7 @@ function workerService({ workerData, script }) {
       worker.on('message', resolve);
       worker.on('error', reject);
       worker.on('exit', code => {
+        console.log('worker error',code)
         reject(new Error(`Worker stopped with exit code ${code}`));
       });
     }

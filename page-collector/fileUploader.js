@@ -7,7 +7,7 @@ async function fileUploader({ output, cb,database }) {
     const datetimefolder = Date.now()
     const fileName =path.basename(output)
     const changedoutput =output.replace(`${fileName}`,`excel/${fileName.replace('.json','.xlsx')}`)
-    debugger;
+    
     await uploadFileByExtention({ext:'.xlsx',output:changedoutput,datetimefolder,cb})
     //await uploadFileByExtention({ext:'.json',output,datetimefolder})
 //     const fileName = path.basename(output);
@@ -16,7 +16,7 @@ async function fileUploader({ output, cb,database }) {
 //     const projectName =fileName.replace('.json','')
 //     const uploadPath =projectName  + '/' + datetimefolder + '/'+fileName
 //     console.log('uploadPath',uploadPath)
-//     debugger;
+//     
 //     const bucket = admin.storage().bucket();
 
 //     await bucket.upload(filePath, {
@@ -54,7 +54,7 @@ module.exports = {
 async function uploadFileByExtention({ext,output,datetimefolder,cb}){
   try {
     const end =   Date.now()
-    debugger;
+    
     const savePath =ext.replace('.','')
     const fileName = path.basename(output);
     const filePath = output.replace('.json',ext);
@@ -62,7 +62,7 @@ async function uploadFileByExtention({ext,output,datetimefolder,cb}){
     const projectName =fileName.replace(ext,'')
     const uploadPath =projectName  + '/' + datetimefolder + '/'+fileName.replace('.json',ext);
     console.log('uploadPath',uploadPath)
-    debugger;
+    
     const bucket = admin.storage().bucket();
 
     await bucket.upload(filePath, {
@@ -81,7 +81,7 @@ console.log('file upload succeful')
        });
 
        await collectionsRef.update({  [savePath]:uploadPath,end,start},(error)=>{
-         debugger;
+         
        })
        cb()
   })
