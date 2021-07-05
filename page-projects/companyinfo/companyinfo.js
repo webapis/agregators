@@ -18,7 +18,7 @@ async function pageController({ eventEmitter, batchName, browser, parentUrl, pag
 
 
 const companyName = process.env.companyName;
-debugger;
+
   const pageUrl =await page.url()
    const searchBox =await page.$eval('#site-search-text',el=> el.value)
 
@@ -133,21 +133,21 @@ if(appointmentListExists.length>0){
   console.log('excelloutput',excelloutput)
 
   fs.writeFileSync(excelloutput, xls,'binary');
-  debugger;
+  
   //eventEmitter.emit('data_collected')
-debugger;
+
   await  database.ref(`projects/${process.env.projectName}`).update({
       totalDataCollected: dataObject.length
     },(error)=>{
-      debugger;
+      
     });
-debugger;
+
   console.log('data reached..')
 }
 
 }
 } catch (error) {
-    debugger;
+    
 }
 }
 

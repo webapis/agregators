@@ -38,6 +38,7 @@ class PromiseEmitter extends EventEmitter {
     });
 
     this.on('promiseResolved', function (promise) {
+      
       const { id } = promise;
 
       this.resolved.push(promise);
@@ -47,6 +48,7 @@ class PromiseEmitter extends EventEmitter {
       this.promiseStateChanged();
     });
     this.on('promiseRejected', function (promise) {
+      
       const { id } = promise;
       this.rejected.push(promise);
       const promiseToRemoveIndex = this.promises.findIndex(p => p.id === id);
@@ -68,6 +70,7 @@ class PromiseEmitter extends EventEmitter {
         { state: 'rejected', promises: this.rejected ? this.rejected : [] }
       ];
       if (this.queue.length > 0) {
+        
         this.emit('invokeNextPromise');
 
         updateConsoleTable(promiseStates);
@@ -83,10 +86,9 @@ class PromiseEmitter extends EventEmitter {
       ) {
         this.emit('promiseExecComplete', true);
         clearInterval(this.setTimeInterVal);
-
         updateConsoleTable(promiseStates);
       }
-    }, 1000);
+    }, 2000);
   }
   invokeNextPromise() {
     //1.queue is empty

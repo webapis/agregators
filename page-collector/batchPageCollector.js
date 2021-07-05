@@ -31,7 +31,7 @@ async function batchPageCollector({ taskSequelizerEventEmitter, output, uploadFi
 
     files.push(filepath);
   });
-  const browser = await puppeteer.launch({ headless: true, timeout: 120000 });
+  const browser = await puppeteer.launch({ headless: false, timeout: 120000 });
   eventEmitter.on('data_collected', async () => {
     console.log('data_collected....')
     
@@ -41,16 +41,20 @@ async function batchPageCollector({ taskSequelizerEventEmitter, output, uploadFi
   let lastDataCollected=0
 
   eventEmitter.on('no_more_task', function () {
+    
     console.log('ALL TASKS COMPLETE')
     process.exit(0)
   })
   eventEmitter.on('promiseExecComplete', async () => {
+    
+    
     eventEmitter = null;
     console.log('Execution complete');
     database
       .ref(`projects/${process.env.projectName}`)
       .update({ dataCollection: 4 });
     await browser.close();
+    
     if (uploadFile) {
       fileUploader({
         database,

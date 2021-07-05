@@ -1,7 +1,7 @@
 const projects = {
   moda: [
     { page_collection: true },
-    { page_data_collection: true },
+   // { page_data_collection: true },
     { page_data_export: false },
     { page_data_upload: false },
     { page_image_collection: true },

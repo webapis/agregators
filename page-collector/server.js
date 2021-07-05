@@ -33,9 +33,9 @@ function change() {
   taskSequelizerEventEmitter.on('nextTask', async function (nextTaskName) {
     
     switch (nextTaskName) {
-   
+ 
       case 'page_collection':
-        await batchPageCollector({ taskSequelizerEventEmitter, uploadFile: false })
+        removeDerectory('page-data') &&  await batchPageCollector({ taskSequelizerEventEmitter, uploadFile: false })
         break;
       case 'page_image_collection':
         await batchImageCollection({ taskSequelizerEventEmitter })

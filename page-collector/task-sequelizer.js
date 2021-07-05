@@ -5,12 +5,13 @@ class TaskListender extends EventEmitter {
 
         this.on('taskComplete', (taskName) => {
             try {
-                const completeTaskIndex = tasks.findIndex((element) => element.hasOwnProperty(taskName))
+              
               const activeTasks =tasks.filter(t => Object.values(t)[0] === true)
+              const completeTaskIndex = activeTasks.findIndex((element) => element.hasOwnProperty(taskName))
               const isLastTask =activeTasks[activeTasks.length-1].hasOwnProperty(taskName)
-              debugger;
-            if (process.env.ALL === 'TRUE'  && activeTasks.length>1 && isLastTask===true) {
-                debugger;
+            debugger;
+            if (process.env.ALL === 'TRUE'  && activeTasks.length>1 && isLastTask===false) {
+                
                 console.log('task complete', taskName)
            
             
@@ -20,7 +21,7 @@ class TaskListender extends EventEmitter {
                     const nextTask = activeTasks.find((o, i) => i === completeTaskIndex + 1)
                  
                     const nextTaskName = Object.keys(nextTask)[0]
-                 
+                 debugger;
                     this.emit('nextTask', nextTaskName)
                     console.log('nextTask', nextTaskName)
                 }else{
@@ -31,7 +32,7 @@ class TaskListender extends EventEmitter {
 
                 
             } else {
-                debugger;
+                
                 console.log('single task complete:', taskName)
              process.exit(0)
             }  
