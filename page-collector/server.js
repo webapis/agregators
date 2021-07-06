@@ -120,7 +120,7 @@ function change() {
             rel: 'stylesheet',
             cdn: false
           }, {
-            source: [
+            source: [ 
               '/components/product-list/product-list.js',
               '/components/product-list/prerender-component.js'
             ],

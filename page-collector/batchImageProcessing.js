@@ -1,5 +1,6 @@
 const { workerService } = require('./workerService');
 const { walkSync } = require('./walkSync');
+const {cpuTaskController}=require('./cpuTaskController')
 const fs = require('fs')
 const ws_domain = 'tr/moda';
 async function batchImageProcessing({
@@ -7,12 +8,13 @@ async function batchImageProcessing({
   imageWidth,
   script,
   folderName,
-  batch = 100,
+  batch = 10,
   processType,
   skipProcessed
 }) {
+  const cpuEventEmitter = cpuTaskController({batch,totalConcurrency:1})
   let queque = [];
-  console.log('start....');
+
   
   walkSync(`${process.cwd()}/${folderName}/${process.env.projectName}`, async function (
     filepath
@@ -23,24 +25,26 @@ async function batchImageProcessing({
   });
   let i;
 
-  let promises = [];
-  
   for (i = 0; i <= queque.length; i += batch) {
     
     const nextSlice = queque.slice(i, i + batch);
+  //console.log('nextSlice',nextSlice.length)
+    cpuEventEmitter.emit('taskAttached',{ workerData:{nextSlice, index: i, imageWidth, skipProcessed, batchName:process.env.projectName},script,eventEmitter:cpuEventEmitter,processType })
+    // promises.push(
+    //   workerService({
+    //     workerData: { nextSlice, index: i, imageWidth, skipProcessed,eventEmitter:cpuEventEmitter },
+    //     script
+    //   })
+    // );
     
-    promises.push(
-      workerService({
-        workerData: { nextSlice, index: i, imageWidth, skipProcessed },
-        script
-      })
-    );
   }
-  await Promise.all(promises);
-  console.log('queque', queque.length);
-  taskSequelizerEventEmitter.emit('taskComplete', `page_image_${processType}`)
+  cpuEventEmitter.emit('all_tasks_attached',queque.length)
+  cpuEventEmitter.on('all_tasks_complete',()=>{
+     taskSequelizerEventEmitter.emit('taskComplete', `page_image_${processType}`)
+  })
 
-  console.log('end....');
+
+
 }
 
 module.exports = {

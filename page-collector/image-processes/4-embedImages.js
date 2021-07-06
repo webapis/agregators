@@ -46,12 +46,12 @@ async function embedImage() {
         }
       })
     )
-    console.log(
-      `image embeded wt is :${index} total:${dataObject.length} file${p}`
-    );
+   // console.log(
+   //   `image embeded wt is :${index} total:${dataObject.length} file${p}`
+   // );
     fs.writeFileSync(p, JSON.stringify(embeddedDataObject));
   }
-  parentPort.postMessage(`Images are processed`);
+ parentPort.postMessage(`Images are processed`);
 } catch (error) {
     
 }
