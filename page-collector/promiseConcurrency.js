@@ -42,17 +42,17 @@ class PromiseEmitter extends EventEmitter {
       const { id } = promise;
 
       this.resolved.push(promise);
-      const promiseToRemoveIndex = this.promises.findIndex(p => p.id === id);
-
-      this.promises.splice(promiseToRemoveIndex, 1);
+      //const promiseToRemoveIndex = this.promises.findIndex(p => p.id === id);
+      this.promises.shift();
+    //  this.promises.splice(promiseToRemoveIndex, 1);
       this.promiseStateChanged();
     });
     this.on('promiseRejected', function (promise) {
       
       const { id } = promise;
       this.rejected.push(promise);
-      const promiseToRemoveIndex = this.promises.findIndex(p => p.id === id);
-      this.promises.splice(promiseToRemoveIndex, 1);
+    //  const promiseToRemoveIndex = this.promises.findIndex(p => p.id === id);
+      this.promises.shift()//splice(promiseToRemoveIndex, 1);
 
       this.promiseStateChanged();
     });
@@ -116,7 +116,7 @@ class PromiseEmitter extends EventEmitter {
           f => f.batchName === batchName
         );
         const freeBatchSpaces = this.batchConcur - batchCounter.length;
-        if (this.promises.length < this.totalConcur) {
+        if (this.promises.length <= this.totalConcur) {
           var b;
           for (b = 0; b < promisesInQueue.length && b < freeBatchSpaces; b++) {
             const nextpromise = promisesInQueue[b];
@@ -130,7 +130,6 @@ class PromiseEmitter extends EventEmitter {
           }
         }
       }
-
       this.promiseStateChanged();
     }
   }
@@ -205,12 +204,12 @@ function updateConsoleTable(items) {
 
     const total = queque + proccess;
     const left = queque * 100 / total;
-    const progress = total ? Math.round(100 - left) : '';
+    const progress = total ? Math.ceil(100 - left) : '';
 
     return { ...r, progress };
   });
 
-  console.clear();
+ // console.clear();
   printTable(addPercentage);
 
   // promiseExecCompleted();

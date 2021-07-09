@@ -1,0 +1,269 @@
+const fs = require('fs');
+const { printTable } = require('console-table-printer');
+const { uuidv4 } = require('./uuidv4');
+const fetch = require('node-fetch');
+const EventEmitter = require('events');
+
+async function download({url, dest, batchName, id, cb}) {
+  try {
+    if (fs.existsSync(dest)) {
+      cb({ message: 'taskComplete', id, batchName })
+      //eventEmitter.emit('taskComplete', { id, batchName });
+    } else {
+      const response = await fetch(url,{timeout: 60000});
+      const buffer = await response.buffer();
+      debugger;
+      fs.writeFileSync(dest, buffer)
+
+      cb({ message: 'taskComplete', id, batchName })
+    }
+  } catch (error) {
+          
+    cb({ message: 'taskFailed', id, batchName, error })
+  }
+
+
+  /* Create an empty file where we can save data */
+}
+class PromiseEmitter extends EventEmitter {
+  constructor(batchConcur, totalConcur) {
+    super();
+    this.batchConcur = batchConcur;
+    this.totalConcur = totalConcur;
+    this.queue = [];
+    this.promises = [];
+    this.rejected = [];
+    this.resolved = [];
+    this.total = [];
+
+    this.on('taskAttached', async function (task) {
+      const { batchName } = task
+      const taskwithId = { ...task, id: uuidv4() }
+
+      this.total.push(taskwithId);
+      this.queue.push(taskwithId);
+      debugger;
+      const log = [
+        { batchName, total: this.total.length, inQueue: this.queue.length, inProccess: this.promises.length, resolved: this.resolved.length, rejected: this.rejected.length },
+      ];
+      printTable(log);
+      this.invokeNextPromise({ batchName })
+    });
+
+
+    this.on('taskComplete', async function (task) {
+      const { batchName } = task
+
+      this.resolved.push(task);
+
+      this.promises.shift();
+      const log = [
+        { batchName, total: this.total.length, inQueue: this.queue.length, inProccess: this.promises.length, resolved: this.resolved.length, rejected: this.rejected.length },
+
+      ];
+      printTable(log);
+
+      await this.invokeNextPromise({ batchName })
+
+    });
+    this.on('taskFailed', async function (task) {
+      const { batchName } = task
+      this.rejected.push(task);
+      this.promises.shift()
+      const log = [
+        { batchName, total: this.total.length, inQueue: this.queue.length, inProccess: this.promises.length, resolved: this.resolved.length, rejected: this.rejected.length },
+
+      ];
+      printTable(log);
+
+      await this.invokeNextPromise({ batchName })
+    });
+
+    this.on('error',(error)=>{
+      console.log('error....',error)
+    })
+
+  }
+  async invokeNextPromise({ batchName }) {
+    if (this.queue.length > 0) {
+      for (let i = 0; i < this.queue.length; i++) {
+        const { batchName } = this.queue[i]
+        const batchCounter = this.promises.length === 0 ? 0 : this.promises.filter(f => f.batchName === batchName).length;
+        const freeBatchSpaces = this.batchConcur - batchCounter;
+
+     //   if (this.promises.length <= this.totalConcur && freeBatchSpaces > 0) {
+
+          const nextpromise = this.queue[i];
+          const {  url, dest, id } = nextpromise;
+          this.promises.push(nextpromise);
+          const queueToRemoveIndex = this.queue.findIndex(
+            p => p.id === nextpromise.id
+          );
+     
+          this.queue.splice(queueToRemoveIndex, 1);
+          await download({
+            url, dest, batchName, id, cb: ({ message, id, batchName, error }) => {
+              if (message === 'taskComplete') {
+             
+                this.emit('taskComplete', { id, batchName })
+              } else {
+            
+                this.emit('taskFailed', { id, batchName, error })
+              }
+            }
+          });
+       // } else {
+       //   continue;
+      //  }
+        debugger;
+      }
+    } else {
+      if (this.promises.length === 0) {
+        const log = [
+          { batchName, total: this.total.length, inQueue: this.queue.length, inProccess: this.promises.length, resolved: this.resolved.length, rejected: this.rejected.length }
+        ];
+        printTable(log);
+        console.log('all images collected')
+        this.emit('promiseExecComplete')
+      }
+    }
+  }
+
+}
+
+function promiseConcurrency({ batchConcurrency, totalConcurrency }) {
+  const promiseEmitter = new PromiseEmitter(batchConcurrency, totalConcurrency);
+  promiseEmitter.setMaxListeners(50);
+  return promiseEmitter;
+}
+
+
+
+
+
+
+module.exports = {
+  promiseConcurrency,
+
+
+};
+
+
+/*
+const fs = require('fs');
+const { printTable } = require('console-table-printer');
+const { uuidv4 } = require('./uuidv4');
+const EventEmitter = require('events');
+
+class PromiseEmitter extends EventEmitter {
+  constructor(batchConcur, totalConcur) {
+    super();
+    this.batchConcur = batchConcur;
+    this.totalConcur = totalConcur;
+    this.queue = [];
+    this.promises = [];
+    this.rejected = [];
+    this.resolved = [];
+    this.total = [];
+
+    this.on('promiseAttached', async function ({ promise, unshift }) {
+const {batchName}=promise
+      const promiseWithId = promise;
+      promiseWithId.id = uuidv4();
+      if (unshift) {
+        this.queue.unshift(promiseWithId);
+      } else {
+        this.queue.push(promiseWithId);
+      }
+      this.total.push(promiseWithId);
+
+const log = [
+  { batchName, total: this.total.length, inQueue:this.queue.length,inProccess:this.promises.length,resolved:this.resolved.length,rejected:this.rejected.length },
+
+];
+printTable(log);
+await this.invokeNextPromise({batchName})
+
+    });
+
+
+    this.on('promiseResolved', async function (promise) {
+      const {batchName}=promise
+
+
+      this.resolved.push(promise);
+
+      this.promises.shift();
+      const log = [
+        { batchName, total: this.total.length, inQueue:this.queue.length,inProccess:this.promises.length,resolved:this.resolved.length,rejected:this.rejected.length },
+
+      ];
+      printTable(log);
+      await this.invokeNextPromise({batchName})
+
+    });
+    this.on('promiseRejected',async function (promise) {
+      const {batchName}=promise
+      this.rejected.push(promise);
+      this.promises.shift()
+      const log = [
+        { batchName, total: this.total.length, inQueue:this.queue.length,inProccess:this.promises.length,resolved:this.resolved.length,rejected:this.rejected.length },
+
+      ];
+      printTable(log);
+
+     await this.invokeNextPromise({batchName})
+
+
+    });
+
+
+  }
+ async invokeNextPromise({batchName}) {
+
+    if (this.queue.length > 0) {
+      for (let i = 0; i < this.queue.length; i++) {
+
+        const { batchName } = this.queue[i]
+
+        const batchCounter =this.promises.length===0?   0: this.promises.filter(f => f.batchName === batchName).length;
+        const freeBatchSpaces = this.batchConcur - batchCounter;
+
+        if (this.promises.length <= this.totalConcur && freeBatchSpaces > 0) {
+
+          const nextpromise = this.queue[i];
+          const { uuidv4, batchName, promiseName, id } = nextpromise;
+          this.promises.push(nextpromise);
+                  const queueToRemoveIndex = this.queue.findIndex(
+               p => p.id === nextpromise.id
+             );
+           this.queue.splice(queueToRemoveIndex, 1);
+          await  nextpromise({ uuidv4, batchName, promiseName, id });
+
+        } else {
+          continue;
+        }
+        debugger;
+      }
+    } else{
+      if(this.promises.length===0  ){
+        const log = [
+          { batchName, total: this.total.length, inQueue:this.queue.length,inProccess:this.promises.length,resolved:this.resolved.length,rejected:this.rejected.length }
+        ];
+        printTable(log);
+        console.log('all images collected')
+        this.emit('promiseExecComplete')
+      }
+    }
+  }
+
+}
+
+function promiseConcurrency({ batchConcurrency, totalConcurrency }) {
+  const promiseEmitter = new PromiseEmitter(batchConcurrency, totalConcurrency);
+  promiseEmitter.setMaxListeners(50);
+  return promiseEmitter;
+}
+
+
+*/

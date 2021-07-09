@@ -47,6 +47,7 @@ class PromiseEmitter extends EventEmitter {
         printTable(log);
         if(this.queue.length===0 && this.proccess.length===0){
           console.log('all task complete')
+          this.emit('all_tasks_complete')
    
         }
         if(this.proccess.length < this.totalConcur){

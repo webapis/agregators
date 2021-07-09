@@ -42,7 +42,7 @@ function pageBuilder({taskSequelizerEventEmitter={}}) {
   }
 
   console.log('PAGE BUILD ENDED....');
-  taskSequelizerEventEmitter && taskSequelizerEventEmitter.emit('taskComplete', 'page_nav_items')
+  taskSequelizerEventEmitter && taskSequelizerEventEmitter.emit('taskComplete', 'page_builder')
 }
 
 function copyFiles({ source, destination }) {

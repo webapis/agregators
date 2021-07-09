@@ -40,11 +40,11 @@ async function batchPageCollector({ taskSequelizerEventEmitter, output, uploadFi
 
   let lastDataCollected=0
 
-  eventEmitter.on('no_more_task', function () {
+  // eventEmitter.on('no_more_task', function () {
     
-    console.log('ALL TASKS COMPLETE')
-    process.exit(0)
-  })
+  //   console.log('ALL TASKS COMPLETE')
+  //   //process.exit(0)
+  // })
   eventEmitter.on('promiseExecComplete', async () => {
     
     

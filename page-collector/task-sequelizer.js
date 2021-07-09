@@ -14,8 +14,6 @@ class TaskListender extends EventEmitter {
                 
                 console.log('task complete', taskName)
            
-            
-            
                 if ( completeTaskIndex + 1 < tasks.length) {
                  
                     const nextTask = activeTasks.find((o, i) => i === completeTaskIndex + 1)

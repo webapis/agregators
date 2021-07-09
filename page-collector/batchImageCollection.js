@@ -20,7 +20,7 @@ function download(url, dest) {
         eventEmitter.emit('promiseResolved', { id, batchName });
       } else {
         
-        const response = await fetch(url);
+        const response = await fetch(url,{timeout:50000});
         const buffer = await response.buffer();
         fs.writeFile(dest, buffer, () => {
           eventEmitter.emit('promiseResolved', { id, batchName });
