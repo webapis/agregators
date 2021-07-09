@@ -36,7 +36,7 @@ async function extractPageData({ page }) {
 
 
 async function saveData({ data, output }) {
-
+const limitedData =data.filter((f,i)=> i<5)
   for (let i of output) {
 
     let dataObject = [];
@@ -45,19 +45,16 @@ async function saveData({ data, output }) {
     if (fs.existsSync(i)) {
       const dataFromFile = fs.readFileSync(i, { encoding: 'utf-8' });
       dataObject = JSON.parse(dataFromFile);
-      dataObject.push(...data);
+      dataObject.push(...limitedData);
     } else {
-      dataObject.push(...data);
+      dataObject.push(...limitedData);
     }
     fs.writeFileSync(i, JSON.stringify(dataObject));
 
 
   }
 
-
-
-
-  console.log('data reached..')
+  
 }
 
 
@@ -77,7 +74,9 @@ async function pageController({ eventEmitter, batchName, browser, parentUrl, pag
       if (pageCount > 0) {
         debugger;
         for (let i = 2; i <= pageCount; i++) {
-          
+          if(i>1){
+            break;
+          }
           const nextPage = `${url}?lt=v2&page=${i}`
           const nextPagePromise = fetchPageContent({
             url: nextPage,
