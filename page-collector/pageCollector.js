@@ -42,6 +42,7 @@ function fetchPageContent({ url, browser, eventEmitter, pageController,parentUrl
         parentUrl:host,
         page,
         output,
+        id
       
       })
      

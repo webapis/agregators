@@ -18,18 +18,18 @@ async function extractPageData({ page }) {
      const salePrice = el.querySelector('.sale.d-inline-flex.align-items-baseline') && el.querySelector('.sale.d-inline-flex.align-items-baseline').textContent.trim()
      const discountInBasket = el.querySelector('.percent.mr-2') && el.querySelector('.percent.mr-2').innerHTML //sepette indirim
       const optsrc = 'https:' + imageSrc.substring(imageSrc.lastIndexOf('//')).replace('3019w', '').replace('3000w', '').trim();
-      data.push({ detailPageLink, productName, price: { salePrice, discountInBasket, marketPrice }, image: { optsrc } })
-     data.push({detailPageLink,productName,price: { marketPrice,discountInBasket,salePrice},image: { optsrc },dataIndex })
+     // data.push({ detailPageLink, productName, price: { salePrice, discountInBasket, marketPrice }, image: { optsrc } })
+     data.push({detailPageLink,productName,price: { marketPrice,discountInBasket,salePrice},image: { optsrc } })
     })
 
-    function removeDuplicates(data, key) {
+    // function removeDuplicates(data, key) {
   
-      return [
-        ...new Map(data.map(item => [key(item), item])).values()
-      ]
+    //   return [
+    //     ...new Map(data.map(item => [key(item), item])).values()
+    //   ]
     
-    };
-    return removeDuplicates(data,item=>item.dataIndex);
+    // };
+    return data
   })
 
 }
@@ -43,6 +43,7 @@ const limitedData =data.filter((f,i)=> i<5)
     makeDir.sync(path.dirname(i))
 
     if (fs.existsSync(i)) {
+   
       const dataFromFile = fs.readFileSync(i, { encoding: 'utf-8' });
       dataObject = JSON.parse(dataFromFile);
       dataObject.push(...limitedData);
@@ -71,12 +72,18 @@ async function pageController({ eventEmitter, batchName, browser, parentUrl, pag
 
       const totalPages = await page.$eval('.catalog__meta--product-count>span', el => parseInt(el.innerHTML))
       const pageCount = Math.ceil(totalPages / 72);
+      
+      if (process.env.NODE_ENV === 'test') {
+
+        eventEmitter.emit('totalPages', pageCount)
+       
+    }
       if (pageCount > 0) {
         debugger;
         for (let i = 2; i <= pageCount; i++) {
-          if(i>1){
-            break;
-          }
+          // if(i>1){
+          //   break;
+          // }
           const nextPage = `${url}?lt=v2&page=${i}`
           const nextPagePromise = fetchPageContent({
             url: nextPage,
@@ -129,7 +136,9 @@ const pages = [
 ]
 
 module.exports = {
-  pages
+  pages,
+  saveData,
+  pageController
 }
 
 

@@ -42,17 +42,17 @@ class PromiseEmitter extends EventEmitter {
       const { id } = promise;
 
       this.resolved.push(promise);
-      //const promiseToRemoveIndex = this.promises.findIndex(p => p.id === id);
-      this.promises.shift();
-    //  this.promises.splice(promiseToRemoveIndex, 1);
+      const promiseToRemoveIndex = this.promises.findIndex(p => p.id === id);
+      //this.promises.shift();
+      this.promises.splice(promiseToRemoveIndex, 1);
       this.promiseStateChanged();
     });
     this.on('promiseRejected', function (promise) {
       
       const { id } = promise;
       this.rejected.push(promise);
-    //  const promiseToRemoveIndex = this.promises.findIndex(p => p.id === id);
-      this.promises.shift()//splice(promiseToRemoveIndex, 1);
+    const promiseToRemoveIndex = this.promises.findIndex(p => p.id === id);
+      this.promises.splice(promiseToRemoveIndex, 1);
 
       this.promiseStateChanged();
     });
