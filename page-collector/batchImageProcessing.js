@@ -1,6 +1,6 @@
 const { workerService } = require('./workerService');
 const { walkSync } = require('./walkSync');
-const {cpuTaskController}=require('./cpuTaskController')
+const {cpuTaskController}=require('../utils/cpuTaskController')
 const fs = require('fs')
 const ws_domain = 'tr/moda';
 async function batchImageProcessing({

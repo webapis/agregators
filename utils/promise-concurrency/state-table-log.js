@@ -1,9 +1,10 @@
 const { printTable } = require('console-table-printer');
+const {fbDatabase}=require('../firebaseInit')
 const rows = []
 function stateTableLog({ self, promise }) {
-  debugger;
+  
   const { batchName } = promise
-  debugger;
+  
   const total = self.total.filter(t => t.batchName === batchName).length;
   const inQueue = self.queue.filter(t => t.batchName === batchName).length;
   const inProccess = self.promises.filter(t => t.batchName === batchName && t.retries === 0).length;
@@ -21,6 +22,16 @@ function stateTableLog({ self, promise }) {
   const log =
     { batchName, total, inQueue, inProccess, retries, resolved, rejected }
 
+  const dbRef =fbDatabase.ref(`projects/${process.env.projectName}/${self.taskName}/${batchName}`)
+
+  dbRef.set({total, inQueue, inProccess, retries, resolved, rejected },(error)=>{
+    if(error){
+      debugger;
+      console.log('fbDatabase error',error)
+    } else{
+      console.log('firebase updated')
+    }
+  })
 
   rows.push(log)
   printTable(rows)

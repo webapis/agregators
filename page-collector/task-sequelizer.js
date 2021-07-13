@@ -1,5 +1,5 @@
 const EventEmitter = require('events');
-const {fbDatabase}=require('./firebaseInit')
+const {fbDatabase}=require('../utils/firebaseInit')
 class TaskListender extends EventEmitter {
     constructor({ tasks }) {
         super()
@@ -11,19 +11,19 @@ class TaskListender extends EventEmitter {
             const isLastTask = activeTasks[activeTasks.length - 1].hasOwnProperty(taskName)
             
             if (process.env.ALL === 'TRUE' && activeTasks.length > 1 && isLastTask === false) {
-                fbDatabase.ref(`projects/${process.env.projectName}`).update({ [taskName]: true });
-                debugger;
-                console.log('task complete', taskName)
-                if (completeTaskIndex + 1 < tasks.length) {
-                    const nextTask = activeTasks.find((o, i) => i === completeTaskIndex + 1)
-                    const nextTaskName = Object.keys(nextTask)[0]
-                    
-                    this.emit('nextTask', nextTaskName)
-                    console.log('nextTask', nextTaskName)
-                } else {
-                    this.emit('no_more_task')
-                    process.exit(0)
-                }
+                fbDatabase.ref(`projects/${process.env.projectName}`).update({ [taskName]: true },()=>{
+                    console.log('task complete', taskName)
+                    if (completeTaskIndex + 1 < tasks.length) {
+                        const nextTask = activeTasks.find((o, i) => i === completeTaskIndex + 1)
+                        const nextTaskName = Object.keys(nextTask)[0]
+                        
+                        this.emit('nextTask', nextTaskName)
+                        console.log('nextTask', nextTaskName)
+                    } else {
+                        this.emit('no_more_task')
+                        process.exit(0)
+                    }
+                });
 
             } else {
                 console.log('single task complete:', taskName)

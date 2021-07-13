@@ -5,7 +5,7 @@ describe('testing state-table-log', function(){
     it.skip('test promise attached event', function(done){
         try {
             this.timeout(200000)
-            debugger;
+            
         
           const eventEmitter=  promiseConcurrency({batchConcurrency:2,rejectedRetry:3})
           eventEmitter.once('log_complete',()=>{
@@ -16,7 +16,7 @@ describe('testing state-table-log', function(){
                 assert.equal(eventEmitter.resolved.length,0,"resolved")
                 assert.equal(eventEmitter.rejected.length,0,"rejected")
                 done()
-            debugger;
+            
         })
         const defactoPromise =()=>{}
             defactoPromise.batchName='defacto'
@@ -24,7 +24,7 @@ describe('testing state-table-log', function(){
           eventEmitter.emit('promiseAttached',{promise:defactoPromise,unshift:false})
 
         } catch (error) {
-            debugger;
+            
             throw error
             //done()
         }
@@ -33,7 +33,7 @@ describe('testing state-table-log', function(){
     it('test promise resolved event', function(done){
         try {
             this.timeout(200000)
-            debugger;
+            
         
           const eventEmitter=  promiseConcurrency({batchConcurrency:2,rejectedRetry:3})
        
@@ -46,7 +46,7 @@ describe('testing state-table-log', function(){
                  assert.equal(eventEmitter.retries.length,0,"retries")
                  assert.equal(eventEmitter.resolved.length,1,"resolved")
                  assert.equal(eventEmitter.rejected.length,0,"rejected")
-                 debugger;
+                 
              done()
          
         })
@@ -74,7 +74,7 @@ describe('testing state-table-log', function(){
            // 
          
         } catch (error) {
-            debugger;
+            
             throw error
             //done()
         }
@@ -84,7 +84,7 @@ describe('testing state-table-log', function(){
     it('put rejected promise into queue', function(done){
         try {
             this.timeout(200000)
-            debugger;
+            
             const defactoPromise =()=>{
                 return ({batchName,id})=>{
                    
@@ -108,14 +108,14 @@ describe('testing state-table-log', function(){
        
        
           eventEmitter.once('log_state',()=>{
-                debugger;
+                
                  assert.equal(eventEmitter.total.length,2,"total")
                  assert.equal(eventEmitter.queue.length,1, "queue")
                  assert.equal(eventEmitter.promises.length,1,"inProcess")
-                debugger;
+                
                  assert.equal(eventEmitter.resolved.length,0,"resolved")
                  assert.equal(eventEmitter.rejected.length,0,"rejected")
-                 debugger;
+                 
              done()
          
         })
@@ -132,7 +132,7 @@ describe('testing state-table-log', function(){
             eventEmitter.emit('initState',{total:[defactoPromise,kotonPromise],promises:[defactoPromise,kotonPromise]})
          
         } catch (error) {
-            debugger;
+            
             throw error
             //done()
         }
@@ -141,7 +141,7 @@ describe('testing state-table-log', function(){
     it.only('put rejected promise into rejected after three attepts', function(done){
         try {
             this.timeout(200000)
-            debugger;
+            
             const defactoPromise =()=>{
                 return ({batchName,id})=>{
                    
@@ -165,14 +165,14 @@ describe('testing state-table-log', function(){
        
        
           eventEmitter.once('log_state',()=>{
-                debugger;
+                
                  assert.equal(eventEmitter.total.length,2,"total")
                  assert.equal(eventEmitter.queue.length,0, "queue")
                  assert.equal(eventEmitter.promises.length,1,"inProcess")
-                debugger;
+                
                  assert.equal(eventEmitter.resolved.length,0,"resolved")
                  assert.equal(eventEmitter.rejected.length,1,"rejected")
-                 debugger;
+                 
              done()
          
         })
@@ -182,7 +182,7 @@ describe('testing state-table-log', function(){
             assert.equal(eventEmitter.queue.length,0, "queue")
             assert.equal(eventEmitter.promises.length,2,"inProcess")
             assert.equal(eventEmitter.resolved.length,0,"resolved")
-            debugger;
+            
             assert.equal(eventEmitter.rejected.length,0,"rejected")
 
             eventEmitter.emit('promiseRejected',defactoPromise)
@@ -190,7 +190,7 @@ describe('testing state-table-log', function(){
             eventEmitter.emit('initState',{total:[defactoPromise,kotonPromise],promises:[defactoPromise,kotonPromise]})
          
         } catch (error) {
-            debugger;
+            
             throw error
             //done()
         }

@@ -16,7 +16,8 @@ async function batchPageCollector({ taskSequelizerEventEmitter }) {
 
   const files = []; //url files
   let eventEmitter = promiseConcurrency({
-    batchConcurrency:6, rejectedRetry:3
+    batchConcurrency:6, rejectedRetry:3,
+    taskName:'dataCollection'
   });
 
   //1.Fetch url declared files
@@ -28,7 +29,7 @@ async function batchPageCollector({ taskSequelizerEventEmitter }) {
 
 
   eventEmitter.on('promiseExecComplete', async () => {
-    debugger;
+    
     eventEmitter = null;
     await browser.close();
       taskSequelizerEventEmitter.emit('taskComplete', 'page_collection')

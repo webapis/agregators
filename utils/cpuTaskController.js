@@ -1,9 +1,9 @@
 
 
 const {  isMainThread, Worker } = require('worker_threads');
-
+const {fbDatabase}=require('./firebaseInit')
 const { printTable } = require('console-table-printer');
-const { uuidv4 } = require('../utils/uuidv4');
+const { uuidv4 } = require('./uuidv4');
 const EventEmitter = require('events');
 
 
@@ -36,14 +36,18 @@ class PromiseEmitter extends EventEmitter {
       })
 
       this.on('batch_complete',(batch)=>{
-        const {id}=batch;
+        const {id,nextSlice}=batch;
         this.proccess.shift()
-        
+        this.resolved.push(...nextSlice)
         const projectName =process.env.projectName
         const inQueue= this.queue.length>0? this.queue.length * this.batch:0
         const inProcess= this.proccess.length*this.batch
-        const log = [{ projectName, processType:this.processType,total:this.total,inQueue, inProcess}];
-        
+        const processType= this.processType
+        const total =this.total
+        const resolved =this.resolved.length
+        const log = [{ projectName, processType,total,inQueue,resolved, inProcess}];
+        _updateFirebase({processType,total,inQueue,inProcess,resolved})
+        debugger;
         printTable(log);
         if(this.queue.length===0 && this.proccess.length===0){
           console.log('all task complete')
@@ -63,25 +67,24 @@ class PromiseEmitter extends EventEmitter {
     }
     runTask() {
       if(this.queue.length>0){
-        const total =this.total
-       let inQueue =total
-       let inProcess=0
         const projectName =process.env.projectName
-        
         for(let i=0; i<= this.totalConcur;i++){
           if(this.queue.length>0 && this.proccess.length<=this.totalConcur){
           
           const {workerData,script,id,eventEmitter} =this.queue[0]
-          console.log('id',id)
+   
           workerService({workerData,script,id,eventEmitter})
           this.proccess.push(this.queue[i])
+          debugger;
          this.queue.shift()
-          
-           inQueue= this.queue.length>0? this.queue.length * this.batch:0
-           inProcess= this.proccess.length*this.batch
-          const log = [{ projectName,processType:this.processType, total,inQueue, inProcess}];
-          
-          printTable(log);
+         const inQueue= this.queue.length>0? this.queue.length * this.batch:0
+         const inProcess= this.proccess.length*this.batch
+         const processType= this.processType
+         const total =this.total
+         const resolved =this.resolved.length
+         const log = [{ projectName, processType,total,inQueue,resolved, inProcess}];
+         _updateFirebase({processType,total,inQueue,inProcess,resolved})
+        printTable(log);
           
         } else{
 
@@ -127,8 +130,8 @@ let worker = {};
                   })
                 }
               }).then(()=>{
-           
-                eventEmitter.emit('batch_complete',{id})
+               const {nextSlice}=workerData
+                eventEmitter.emit('batch_complete',{id,nextSlice})
                 
               }).catch(error=>{
                 console.log('worker rejected',error)
@@ -138,23 +141,18 @@ let worker = {};
   }
 
 
-module.exports = { cpuTaskController };
+  function _updateFirebase({processType,total,inQueue,inProcess,resolved}){
+    const dbRef =fbDatabase.ref(`projects/${process.env.projectName}/imageProcessing/${processType}`)
 
-/*
-
- function workerService({ workerData, script }) {
-
-    return new Promise((resolve, reject) => {
-      console.log('Message posted to child worker');
-      if (isMainThread) {
-        worker = new Worker(script, { workerData });
-        worker.on('message', resolve);
-        worker.on('error', reject);
-        worker.on('exit', code => {
-          console.log('worker exit',code)
-        });
+    dbRef.set({total, inQueue, resolved,inProcess},(error)=>{
+      if(error){
+        debugger;
+        console.log('fbDatabase error',error)
+      } else{
+        console.log('firebase updated')
       }
-    });
+    })
   }
 
-*/
+module.exports = { cpuTaskController };
+

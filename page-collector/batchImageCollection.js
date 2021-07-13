@@ -5,7 +5,7 @@ const makeDir = require('make-dir');
 const fetch = require('node-fetch');
 const { promiseConcurrency } = require('../utils/promise-concurrency');
 let eventEmitter = promiseConcurrency({
-  batchConcurrency:6, rejectedRetry:3
+  batchConcurrency:6, rejectedRetry:3, taskName:'imageCollection'
 });
 
 function download(url, dest) {

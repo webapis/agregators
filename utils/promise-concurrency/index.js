@@ -4,7 +4,7 @@ const { uuidv4 } = require('../uuidv4');
 const { stateTableLog } = require('./state-table-log')
 
 class PromiseEmitter extends EventEmitter {
-  constructor(batchConcur, rejectedRetry) {
+  constructor(batchConcur, rejectedRetry,taskName) {
     super();
     this.batchConcur = batchConcur;
     this.queue = [];
@@ -13,6 +13,7 @@ class PromiseEmitter extends EventEmitter {
     this.resolved = [];
     this.total = [];
     this.rejectedRetry = rejectedRetry
+    this.taskName=taskName
     this.retries = []
 
     this.on('initState', (state) => {
@@ -52,7 +53,7 @@ class PromiseEmitter extends EventEmitter {
       this.emit('log_state',{ self: this, promise })
 
       } catch (error) {
-        debugger;
+        
         throw error
       }
     });
@@ -63,13 +64,13 @@ class PromiseEmitter extends EventEmitter {
       this.resolved.push(promise);
       const promiseToRemoveIndex = this.promises.findIndex(p => p.id === id);
       this.promises.splice(promiseToRemoveIndex, 1);
-      debugger;
+      
       this.emit('log_state',{ self: this, promise })
     });
     this.on('promiseRejected', function (promise) {
-debugger;
+
       if (promise.retries === this.rejectedRetry) {
-        debugger;
+        
         this.rejected.push(promise);
       } else {
 
@@ -83,7 +84,7 @@ debugger;
       );
 
       this.promises.splice(promiseToRemoveIndex, 1);
-debugger;
+
 
    this.emit('log_state',{ self: this, promise })
 
@@ -93,7 +94,7 @@ debugger;
 
   }
    invokeNextPromise() {
-    debugger;
+    
     try {
 
 
@@ -116,27 +117,27 @@ debugger;
 
           nextpromise({ batchName, id });
       
-          debugger;
+          
         } else {
           continue;
         }
 
       }
       if (this.queue.length === 0 && this.promises.length === 0) {
-        debugger;
+        
         this.emit('promiseExecComplete')
       }
       
     } catch (error) {
-      debugger;
+      
     }
   }
 
 }
 
-function promiseConcurrency({ batchConcurrency, rejectedRetry = 3 }) {
-  debugger;
-  const promiseEmitter = new PromiseEmitter(batchConcurrency, rejectedRetry);
+function promiseConcurrency({ batchConcurrency, rejectedRetry = 3,taskName }) {
+  
+  const promiseEmitter = new PromiseEmitter(batchConcurrency, rejectedRetry,taskName);
   promiseEmitter.setMaxListeners(50);
 
   return promiseEmitter;

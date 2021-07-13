@@ -109,7 +109,7 @@ async function pageController({ eventEmitter, batchName, browser, parentUrl, pag
  
 
     await saveData({ data: products, output })
-    debugger;
+    
   }
   if (url.includes('page')) {
     
@@ -117,7 +117,7 @@ async function pageController({ eventEmitter, batchName, browser, parentUrl, pag
     const products = await extractPageData({ page })
 
     await saveData({ data: products, output })
-    debugger;
+ 
   }
 
 
