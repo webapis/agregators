@@ -64,11 +64,11 @@ async function pageController({ eventEmitter, batchName, browser, parentUrl, pag
   try {
     
  
-  debugger;
+
   const url = await page.url()
 
   if (!url.includes('page')) {
-    debugger;
+  
 
       const totalPages = await page.$eval('.catalog__meta--product-count>span', el => parseInt(el.innerHTML))
       const pageCount = Math.ceil(totalPages / 72);
@@ -79,7 +79,7 @@ async function pageController({ eventEmitter, batchName, browser, parentUrl, pag
        
     }
       if (pageCount > 0) {
-        debugger;
+      
         for (let i = 2; i <= pageCount; i++) {
           // if(i>1){
           //   break;
@@ -103,11 +103,11 @@ async function pageController({ eventEmitter, batchName, browser, parentUrl, pag
     
 
 
-    debugger;
+  ;
     await page.waitForSelector('.catalog-products')
     const products = await extractPageData({ page })
  
-    debugger;
+
     await saveData({ data: products, output })
     debugger;
   }
@@ -115,7 +115,7 @@ async function pageController({ eventEmitter, batchName, browser, parentUrl, pag
     
     await page.waitForSelector('.catalog-products')
     const products = await extractPageData({ page })
-    debugger;
+
     await saveData({ data: products, output })
     debugger;
   }

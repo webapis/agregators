@@ -1,20 +1,14 @@
 const fs = require('fs');
 
 const { walkSync } = require('./walkSync');
-const { firebaseInit } = require('./firebaseInit');
 
 const puppeteer = require('puppeteer');
-const { fileUploader } = require('./fileUploader')
-
-const { promiseConcurrency } = require('./promiseConcurrency');
+const { promiseConcurrency } = require('../utils/promise-concurrency');
 const { fetchPageContent } = require('./pageCollector')
-async function batchPageCollector({ taskSequelizerEventEmitter, output, uploadFile }) {
+async function batchPageCollector({ taskSequelizerEventEmitter }) {
   global.dataCollected = 0
-  const { database } = firebaseInit();
-  global.database=database
-  database.ref(`projects/${process.env.projectName}`).update({
-    dataCollection: 3
-  });
+ 
+ 
   const logPath = `${process.cwd()}/page-result/page-collection-result.json`;
   if (fs.existsSync(logPath)) {
     fs.unlinkSync(logPath);
@@ -22,8 +16,7 @@ async function batchPageCollector({ taskSequelizerEventEmitter, output, uploadFi
 
   const files = []; //url files
   let eventEmitter = promiseConcurrency({
-    batchConcurrency: 6,
-    totalConcurrency: 12
+    batchConcurrency:6, rejectedRetry:3
   });
 
   //1.Fetch url declared files
@@ -32,39 +25,14 @@ async function batchPageCollector({ taskSequelizerEventEmitter, output, uploadFi
     files.push(filepath);
   });
   const browser = await puppeteer.launch({ headless: false, timeout: 120000 });
-  eventEmitter.on('data_collected', async () => {
-    console.log('data_collected....')
-    
 
-  })
 
-  let lastDataCollected=0
-
-  // eventEmitter.on('no_more_task', function () {
-    
-  //   console.log('ALL TASKS COMPLETE')
-  //   //process.exit(0)
-  // })
   eventEmitter.on('promiseExecComplete', async () => {
-    
-    
+    debugger;
     eventEmitter = null;
-    console.log('Execution complete');
-    database
-      .ref(`projects/${process.env.projectName}`)
-      .update({ dataCollection: 4 });
     await browser.close();
-    
-    if (uploadFile) {
-      fileUploader({
-        database,
-        output, cb: () => {
-          taskSequelizerEventEmitter.emit('taskComplete', 'page_collection')
-        }
-      })
-    } else {
       taskSequelizerEventEmitter.emit('taskComplete', 'page_collection')
-    }
+    
 
   });
 

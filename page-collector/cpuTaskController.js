@@ -3,7 +3,7 @@
 const {  isMainThread, Worker } = require('worker_threads');
 
 const { printTable } = require('console-table-printer');
-const { uuidv4 } = require('./uuidv4');
+const { uuidv4 } = require('../utils/uuidv4');
 const EventEmitter = require('events');
 
 

@@ -24,7 +24,7 @@ async function batchImageProcessing({
     }
   });
   let i;
-debugger;
+
   for (i = 0; i <= queque.length; i += batch) {
     
     const nextSlice = queque.slice(i, i + batch);

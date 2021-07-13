@@ -5,6 +5,7 @@ const projects = {
     { page_data_export: false },
     { page_data_upload: false },
     { page_image_collection: true },
+    {page_image_upload:false},
     { page_image_crop: true },
     { page_image_blur: true },
     { page_image_embed: true },

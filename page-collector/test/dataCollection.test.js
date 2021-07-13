@@ -22,7 +22,7 @@ describe('dataCollection tests',function(){
 
 async function taskComplete({totalPages,totalRejected,totalResolved,done,browser}){
 if(totalResolved+totalRejected===totalPages){
-    debugger;
+    
     await browser.close()
     done()
 }
@@ -30,7 +30,7 @@ if(totalResolved+totalRejected===totalPages){
 
 
  function dataCollectionTest({url,pageController,output,batchName,eventEmitter,done}){
-    debugger;
+    
     let totalPages =0
     let totalResolved=0
     let totalRejected=0

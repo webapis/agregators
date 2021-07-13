@@ -3,10 +3,9 @@ const { walkSync } = require('./walkSync');
 const path = require('path');
 const makeDir = require('make-dir');
 const fetch = require('node-fetch');
-const { promiseConcurrency } = require('./promiseConcurrency');
+const { promiseConcurrency } = require('../utils/promise-concurrency');
 let eventEmitter = promiseConcurrency({
-  batchConcurrency: 10,
-  totalConcurrency: 20
+  batchConcurrency:6, rejectedRetry:3
 });
 
 function download(url, dest) {
@@ -27,7 +26,11 @@ function download(url, dest) {
         });
       }
     } catch (error) {
-      eventEmitter.emit('promiseRejected', { id, batchName, error });
+        const retry =download
+         retry.id=id
+         retry.batchName=batchName
+         retry.error= error
+      eventEmitter.emit('promiseRejected', retry);
     }
   };
 

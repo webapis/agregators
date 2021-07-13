@@ -34,10 +34,7 @@ async function fileUploader({ output, cb,database }) {
 //     await  projectsRef.update({
 //       uploadPath:uploadPath
 //     });
-
     //excell
-
-
    // cb()
   } catch (error) {
     console.log('file upload failed',error)

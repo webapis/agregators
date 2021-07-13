@@ -6,7 +6,7 @@ const { fetchPageContent } = require('../../page-collector/pageCollector');
 const {saveData}=require('./defacto')
 async function extractPageData({ page }) {
 
-debugger;
+
       return await page.$$eval('.product-item', els => {
         const data = []
           els.forEach(el => {
@@ -60,7 +60,7 @@ async function pageController({ eventEmitter, batchName, browser, parentUrl, pag
             return;
            
         }
-      debugger;
+   
         if (!url.includes('page')) {
             const totalPages = await page.$eval('.paging ul', el => parseInt(el.lastElementChild.previousElementSibling.innerText) - 1)
             const commonPageUrlPatter = await page.$eval('.paging ul', el => el.lastElementChild.previousElementSibling.querySelector('a').href)
@@ -73,7 +73,7 @@ async function pageController({ eventEmitter, batchName, browser, parentUrl, pag
             }
           
             if (totalPages > 0) {
-           debugger;
+      
                 for (let i = 2; i <= totalPages; i++) {
                     
                     const nextPage = `${nextPageUrl}${i}`
@@ -93,18 +93,17 @@ async function pageController({ eventEmitter, batchName, browser, parentUrl, pag
               
             }
 
-            debugger;
+         
                     await page.waitForSelector('.productGrid')
-                    debugger;
+              
                    const products = await extractPageData({ page })
-                   debugger;
+             
                    await saveData({ data: products, output })
                    debugger;
         }
 
         if (url.includes('page')) {
-            debugger;
-     
+      
             await page.waitForSelector('.productGrid')
             debugger;
            const products = await extractPageData({ page })

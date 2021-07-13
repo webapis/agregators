@@ -15,14 +15,17 @@ const { batchImageCollection } = require('./batchImageCollection');
 const { batchImageProcessing } = require('./batchImageProcessing');
 const { pageNavDataTreeCreation } = require('./pageNavTreeCreation')
 const { pageLeavesBy100 } = require('./pageLeavesBy100')
-
+const {pageUploadData}=require('./pageUploadData')
 function change() {
   const tasks = projects[process.env.projectName]
   const taskSequelizerEventEmitter = taskSequelizer({ tasks })
   taskSequelizerEventEmitter.on('nextTask', async function (nextTaskName) {
     switch (nextTaskName) {
       case 'page_collection':
-        removeDerectory('page-data') &&  await batchPageCollector({ taskSequelizerEventEmitter, uploadFile: false })
+       await batchPageCollector({ taskSequelizerEventEmitter})
+        break;
+      case 'page_data_upload':
+       pageUploadData({taskSequelizerEventEmitter,fbStorage:true})
         break;
       case 'page_image_collection':
          batchImageCollection({ taskSequelizerEventEmitter })
