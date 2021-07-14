@@ -16,6 +16,7 @@ const { batchImageProcessing } = require('./batchImageProcessing');
 const { pageNavDataTreeCreation } = require('./pageNavTreeCreation')
 const { pageLeavesBy100 } = require('./pageLeavesBy100')
 const {pageUploadData}=require('./pageUploadData')
+const {pagePrerender}=require('./pagePrerender')
 function change() {
   const tasks = projects[process.env.projectName]
   const taskSequelizerEventEmitter = taskSequelizer({ tasks })
@@ -127,6 +128,10 @@ function change() {
         removeDerectory('page-build') &&
           pageBuilder({ taskSequelizerEventEmitter });
         break;
+        case 'page_prerender':
+          removeDerectory('page-prerendered') &&
+            pagePrerender({ taskSequelizerEventEmitter });
+          break;
       default:
        //break;
     }

@@ -15,7 +15,8 @@ const projects = {
     { page_component_attacher: true },
     { page_script_attacher: true },
     { page_nav_items: true },
-    { page_builder: true }
+    { page_builder: true },
+    { page_prerender: true }
   
   ],
 //https://books.toscrape.com/

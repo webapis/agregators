@@ -53,7 +53,7 @@
     "pageScriptAttachment": "projectName=moda NEXT_TASK=page_script_attacher ALL=FALSE node page-collector/server.js",
     "pageNavItems": "projectName=moda NEXT_TASK=page_nav_items ALL=FALSE  node page-collector/server.js",
     "pageBuilder": "projectName=moda NEXT_TASK=page_builder ALL=FALSE node page-collector/server.js",
-    "pagePrerender": "projectName=moda NEXT_TASK=page_prerender ALL=FALSE  node page-prerender/server.js",
+    "pagePrerender": "projectName=moda NEXT_TASK=page_prerender ALL=FALSE  node page-collector/server.js",
     "taskSequelizer": "projectName=moda ALL=TRUE node page-collector/server.js",
     "metaCreator": "node page-meta-creator/server.js",
     "dev": "NODE_ENV=dev npm run pageBuilder & NODE_ENV=dev  npm run metaCreator & NODE_ENV=dev node page-serve/server.js",

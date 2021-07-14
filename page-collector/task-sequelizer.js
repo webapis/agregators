@@ -9,9 +9,9 @@ class TaskListender extends EventEmitter {
             const activeTasks = tasks.filter(t => Object.values(t)[0] === true)
             const completeTaskIndex = activeTasks.findIndex((element) => element.hasOwnProperty(taskName))
             const isLastTask = activeTasks[activeTasks.length - 1].hasOwnProperty(taskName)
-            
+              const taskRef =  fbDatabase.ref(`projects/${process.env.projectName}`)
             if (process.env.ALL === 'TRUE' && activeTasks.length > 1 && isLastTask === false) {
-                fbDatabase.ref(`projects/${process.env.projectName}`).update({ [taskName]: true },()=>{
+              taskRef.update({ [taskName]: true },()=>{
                     console.log('task complete', taskName)
                     if (completeTaskIndex + 1 < tasks.length) {
                         const nextTask = activeTasks.find((o, i) => i === completeTaskIndex + 1)
@@ -27,7 +27,9 @@ class TaskListender extends EventEmitter {
 
             } else {
                 console.log('single task complete:', taskName)
-                process.exit(0)
+                taskRef.update({ [taskName]: true },()=>{
+                    process.exit(0)
+                });
             }
         })
     }
