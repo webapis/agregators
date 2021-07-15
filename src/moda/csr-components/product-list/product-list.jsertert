@@ -46,8 +46,8 @@ customElements.define(
         import('../nav-component.js')
       ]).then(() => {
         const { state: { selected_pl_tab } } = window.pageStore;
-        this.render({ selected: selected_pl_tab });
-        window.prerender && window.prerender();
+       this.render({ selected: selected_pl_tab });
+   
 
         // const productContainer = document.getElementById('products');
 
@@ -65,6 +65,7 @@ customElements.define(
       });
     }
     render() {
+      debugger;
       this.innerHTML = `
         <pl-page-tabs></pl-page-tabs>
         <products-container></products-container>

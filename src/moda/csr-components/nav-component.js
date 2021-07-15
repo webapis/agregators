@@ -19,7 +19,7 @@ customElements.define(
           const selectedATag = document.querySelector(
             `a[href='${decodeURI(window.location.pathname)}']`
           );
-          selectedATag.setAttribute('aria-selected', 'true');
+          //selectedATag.setAttribute('aria-selected', 'true');
 
           const pathNames = paths.split('/');
 
@@ -69,3 +69,6 @@ customElements.define(
     }
   }
 );
+
+
+document.body.prepend(document.createElement('nav-component'))

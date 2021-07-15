@@ -6,20 +6,25 @@ customElements.define(
     }
 
     async connectedCallback() {
-      this.innerHTML = `<nav-component></nav-component>`;
-      const env = document.querySelector('head meta[name=env]').content;
       const fileName = document.location.href
         .substr(document.location.href.lastIndexOf('/') + 1)
         .replace('.html', '');
-      const prefolder = document.location.href;
-
-      if (env === 'dev') {
+      if(!document.getElementById('root')){
         const response = await fetch(`./${fileName}-0.json`);
         const data = await response.json();
-        window.fetched = true;
-        this.appendProducts(data);
+        debugger;
+        const root = document.createElement('div');
+        root.classList.add('container');
+        root.id = 'root';
+        const productsContainer = document.createElement('div');
+        productsContainer.id = 'products';
+        productsContainer.style.height = '300px';
+        productsContainer.style.position = 'relative';
+        productsContainer.classList.add('row')
+        this.appendProducts(data,productsContainer)
+        root.appendChild(productsContainer)
+        document.body.insertBefore(root,document.body.firstChild)
       }
-
       // const { state: { selected_pl_tab, items } } = window.pageStore;
       // if (selected_pl_tab === 'urunler-tab') {
       //   this.render({ value: items });
@@ -36,13 +41,13 @@ customElements.define(
       //   }
       // );
 
-      window.pageStore.subscribe(window.actionTypes.PRERENDER_DATA, () => {
-        const { state: { selected_pl_tab, items } } = window.pageStore;
+      // window.pageStore.subscribe(window.actionTypes.PRERENDER_DATA, () => {
+      //   const { state: { selected_pl_tab, items } } = window.pageStore;
 
-        if (selected_pl_tab === 'urunler-tab') {
-          this.render({ value: items });
-        }
-      });
+      //   if (selected_pl_tab === 'urunler-tab') {
+      //     this.render({ value: items });
+      //   }
+      // });
 
       // window.pageStore.subscribe(window.actionTypes.PATTERN_SELECTED, state => {
       //   const { items, selected_pl_tab, pattern } = state;
@@ -79,17 +84,15 @@ customElements.define(
             const response = await fetch(`./${fileName}-${pageNum}.json`);
             const data = await response.json();
             window.fetched = true;
-            this.appendProducts(data);
+            const product= document.getElementById('products')
+            this.appendProducts(data,product);
             pageNum++;
           }
         }
         //toggle nav tab
       };
 
-      window.dynamicRender = items => {
-        window.fetched = true;
-        this.appendProducts(items);
-      };
+     
     }
 
     render({ value }) {
@@ -157,7 +160,7 @@ customElements.define(
       // };
     } //render
 
-    appendProducts(items) {
+    appendProducts(items,products) {
       items.forEach((item, i) => {
         var node = document.createElement(`product-view`);
         node.classList.add('col-6');
@@ -165,7 +168,7 @@ customElements.define(
         node.classList.add('col-lg-2');
         node.setAttribute('id', guidGenerator());
         readObjProp({ node, obj: item });
-        const products = document.getElementById('products');
+        //const products = document.getElementById('products');
 
         products.appendChild(node);
       });
@@ -195,3 +198,6 @@ function guidGenerator() {
   };
   return '_' + S4() + S4() + S4() + S4() + S4() + S4();
 }
+
+
+document.body.prepend(document.createElement('products-container'))

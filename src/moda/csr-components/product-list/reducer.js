@@ -1,4 +1,4 @@
-export const initState = {
+ const initState = {
   selected: 'defacto_counter',
   selected_pl_tab: 'urunler-tab',
   items: null,
@@ -7,7 +7,7 @@ export const initState = {
   scrollTop: 0
 };
 
-export default (state, action) => {
+const reducer= (state, action) => {
   switch (action.type) {
     case actionTypes.SELECTED_MARKA_COUNT:
       return { ...state, selected: action.payload };
@@ -31,7 +31,7 @@ export default (state, action) => {
   }
 };
 
-export const actionTypes = {
+ const actionTypes = {
   SELECTED_MARKA_COUNT: 'SELECTED_MARKA_COUNT',
   PL_PAGE_TAB_SELECTED: 'PL_PAGE_TAB_SELECTED',
   PRODUCT_ITEMS_SET: 'PRODUCT_ITEMS_SET',
@@ -42,3 +42,10 @@ export const actionTypes = {
   PRERENDER_DATA: 'PRERENDER_DATA',
 //  IMG_TAGS_LOADED: 'IMG_TAGS_LOADED'
 };
+
+
+window.actionTypes=actionTypes
+window.initState=initState
+window.reducer=reducer
+
+debugger;

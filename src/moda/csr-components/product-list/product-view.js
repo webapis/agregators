@@ -7,10 +7,9 @@ customElements.define(
       super();
     }
     connectedCallback() {
-      if (window.prerender || window.fetched) {
-        this.render();
-      }
-
+  
+     this.render();
+    
       document.addEventListener('scroll', () => {
         const img = this.querySelector('img');
         if (img) {
@@ -30,6 +29,7 @@ customElements.define(
 
     render() {
       const { state: { pattern } } = window.pageStore;
+   
       const title = this.getAttribute('productName');
       const salePrice = this.getAttribute('salePrice');
       const src = this.getAttribute('src');
@@ -39,6 +39,7 @@ customElements.define(
       const discountText = this.getAttribute('discountText');
       const detailLink = this.getAttribute('detailLink');
       const id = this.getAttribute('id');
+  
       boldenPattern(title, pattern);
 
       // eslint-disable-next-line no-undef

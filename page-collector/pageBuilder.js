@@ -3,7 +3,6 @@ var watch = require('node-watch');
 const { walkSync } = require('./walkSync');
 const makeDir = require('make-dir');
 const path = require('path');
-const ws_domain = 'tr/moda';
 const { copyComponents } = require('./copyComponents');
 
 function pageBuilder({taskSequelizerEventEmitter={}}) {
@@ -31,7 +30,7 @@ function pageBuilder({taskSequelizerEventEmitter={}}) {
       console.log('%s changed.', name);
       copyComponents();
     });
-
+ 
     watch('page-navigation', { recursive: true }, function(evt, name) {
       console.log('%s changed.', name);
       copyFiles({
@@ -39,6 +38,7 @@ function pageBuilder({taskSequelizerEventEmitter={}}) {
         destination: 'page-build'
       });
     });
+
   }
 
   console.log('PAGE BUILD ENDED....');

@@ -28,8 +28,6 @@ async function pagePrerender({taskSequelizerEventEmitter}){
 
 
 async function ssr({ browser}) {
-    try {
-        
    
     debugger;
     let files =[]
@@ -43,7 +41,6 @@ async function ssr({ browser}) {
     htmlPages.map(async d => {
     
       const url =d.substring(d.indexOf('page-build')+11)
-  
       const outputDirPath = `${process.cwd()}/page-build/${url}`;
       const outputDirPath2= `${process.cwd()}/page-prerendered/${url}`;
       const outputDir = path.dirname(outputDirPath);
@@ -57,21 +54,15 @@ async function ssr({ browser}) {
         await page.goto(`http://localhost:8081/${url}`, {
           waitUntil: 'networkidle0'
         });
-     //   await page.waitForSelector(selector); // ensure #posts exists in the DOM.
+        await page.waitForSelector('#root'); // ensure #posts exists in the DOM.
         const html = await page.content(); // serialized HTML of page DOM.
-     
-        const removedPrerenderTag = html
-          .replace(/<prerender-component marka=".*" jsonurl=".*">/g, '')
-          .replace(/<\/prerender-component>/g, '')
-          .replace(/<script src=".*prerender-component.js"><\/script>/g, '');
-        debugger;
         fs.writeFileSync(
             `${outputDirPath}`,
-            removedPrerenderTag
+            html
           );
         fs.writeFileSync(
             `${outputDirPath2}`,
-            removedPrerenderTag
+            html
           );
           debugger;
       } catch (error) {
@@ -79,9 +70,7 @@ async function ssr({ browser}) {
       }
     })
   );
-} catch (error) {
-        debugger;
-}
+
 }
 
 module.exports = {
