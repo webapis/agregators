@@ -1,7 +1,7 @@
 require('dotenv').config()
 
 
- 
+
 const { projects } = require('./project.config');
 const { removeDerectory } = require('./removeDerectory');
 const { taskSequelizer } = require('./task-sequelizer')
@@ -15,6 +15,7 @@ const { pageNavDataTreeCreation } = require('./pageNavTreeCreation')
 const { pageLeavesBy100 } = require('./pageLeavesBy100')
 const {pageUploadData}=require('./pageUploadData')
 const {pagePrerender}=require('./pagePrerender')
+const {prerenderNavigation}=require('./prerenderNavigation')
 function change() {
   const tasks = projects[process.env.projectName]
   const taskSequelizerEventEmitter = taskSequelizer({ tasks })

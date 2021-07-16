@@ -14,12 +14,9 @@ async function pageGeneration({ taskSequelizerEventEmitter }) {
     let files = [];
     console.log('page genegation started....');
     walkSync(`${process.cwd()}/page-leave`, async function (filepath) {
-   
       files.push(filepath);
-    
     });
     const firstJson = files.filter(f => f.includes('-0.json'));
-
     let i = 0;
     for (i = 0; i < firstJson.length; i++) {
 
@@ -42,6 +39,7 @@ async function pageGeneration({ taskSequelizerEventEmitter }) {
       makeDir.sync(htmlOutput);
       const dom = new JSDOM(
         `<body>
+        <div id="root"></div>
        </body>`,
         { includeNodeLocations: true });
       const scripts = pageResources[process.env.projectName].script
@@ -91,12 +89,14 @@ function addScriptTag({ filePath, file, document }) {
 function addCssFromCdn({ href, document }) {
   var s = document.createElement('link');
   s.rel = 'stylesheet';
+  s.setAttribute("type", "text/css");
   s.href = href;
   document.head.appendChild(s);
 };
 function addCssLocal({ filePath, file, document}) {
   var s = document.createElement('link');
-  //s.rel = 'stylesheet';
+ // s.rel = 'stylesheet';
+  s.setAttribute("type", "text/css");
   s.href = `${generateFilePath({ filePath })}/${file}`;
   debugger;
   document.head.appendChild(s);

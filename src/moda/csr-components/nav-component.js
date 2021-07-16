@@ -5,6 +5,9 @@ customElements.define(
       super();
     }
     connectedCallback() {
+
+      if(!this.querySelector('.side-nav')){
+       
       fetch(`${window.location.origin}/nav.html`)
         .then(response => response.text())
         .then(html => {
@@ -66,9 +69,9 @@ customElements.define(
             });
           });
         });
+      }
     }
   }
 );
 
 
-document.body.prepend(document.createElement('nav-component'))

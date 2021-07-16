@@ -7,8 +7,11 @@ customElements.define(
       super();
     }
     connectedCallback() {
-  
-     this.render();
+    this.classList.add('col')
+
+      this.render();
+    
+   
     
       document.addEventListener('scroll', () => {
         const img = this.querySelector('img');
@@ -17,8 +20,6 @@ customElements.define(
             if (
               Math.round(document.body.scrollTop * 100 / this.offsetTop) >= 30
             ) {
-              // const id = this.getAttribute('id');
-         
              const srcset = this.getAttribute('datasrcset');
                img.srcset = srcset;
             }
@@ -39,13 +40,12 @@ customElements.define(
       const discountText = this.getAttribute('discountText');
       const detailLink = this.getAttribute('detailLink');
       const id = this.getAttribute('id');
-  
+  debugger;
       boldenPattern(title, pattern);
-
-      // eslint-disable-next-line no-undef
-      this.innerHTML = /*html*/ `
-        <div class="df-product-item">
-          <img  class="df-img" src=${src}   class="df-picture" style="width:150px;height:auto;"  sizes="(min-width: 600px) 288px">
+      //if(!document.getElementById(id)){
+        const innerHTML= `
+        <div class="df-product-item col" id =${id}>
+        <img  class="df-img" src=${src}   class="df-picture" style="width:150px;height:auto;"  sizes="(min-width: 600px) 288px">
           <a href="${detailLink}" class=" df-product-info-title-link">
           <div >${boldenPattern(title, pattern)}</div>
           </a>
@@ -62,9 +62,16 @@ customElements.define(
             </div>
           </div>
           </div>
-
         `;
+        document.getElementById('products').insertAdjacentHTML('beforeend',innerHTML)
+       
 
+
+        this.parentNode.removeChild(this)
+      //}
+      // eslint-disable-next-line no-undef
+  
+        
       if (
         this.offsetTop === 0 ||
         Math.round(document.body.scrollTop * 100 / this.offsetTop) === 0
@@ -94,4 +101,9 @@ function boldenPattern(word, pattern) {
   }
   return word;
 }
-//src="/components/product-list/image-placeholder.svg"
+
+
+
+/*
+  <img  class="df-img" src=${src}   class="df-picture" style="width:150px;height:auto;"  sizes="(min-width: 600px) 288px">
+*/

@@ -4,6 +4,7 @@ const path = require('path');
 const makeDir = require('make-dir');
 const { JSDOM } = require('jsdom');
 function pageNavigationItems({  taskSequelizerEventEmitter}) {
+
   let files = [];
 
   console.log('page nav item collection started....');
@@ -110,7 +111,8 @@ function pageNavigationItems({  taskSequelizerEventEmitter}) {
     return allLinks.indexOf(item) == pos;
   });
   allLinksWithoutDublicate.forEach(file => {
-    const parentId = file; //.replace(/\//g, '-');
+////
+    const parentId = file; 
     const parentElement = document.getElementById(parentId);
 
     let li = document.createElement('li');
@@ -123,16 +125,19 @@ function pageNavigationItems({  taskSequelizerEventEmitter}) {
     a.href = href;
     li.appendChild(a);
     parentElement.prepend(li);
+////
   });
 
-  // --------
+
   const content = `<div class="side-nav">${document.body.innerHTML}</div>`;
   const dirName = `${process.cwd()}/page-navigation`;
   makeDir.sync(dirName);
   fs.writeFileSync(`${dirName}/nav.html`, content);
   console.log('page nav item collection ended...');
   taskSequelizerEventEmitter.emit('taskComplete', 'page_nav_items')
+
 }
+
 
 function getPosition(string, subString, index) {
   return string.split(subString, index).join(subString).length;

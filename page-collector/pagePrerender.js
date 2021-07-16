@@ -54,7 +54,8 @@ async function ssr({ browser}) {
         await page.goto(`http://localhost:8081/${url}`, {
           waitUntil: 'networkidle0'
         });
-        await page.waitForSelector('#root'); // ensure #posts exists in the DOM.
+        await page.waitForFunction('document.getElementById("products")'); // ensure #posts exists in the DOM.
+        debugger;
         const html = await page.content(); // serialized HTML of page DOM.
         fs.writeFileSync(
             `${outputDirPath}`,
