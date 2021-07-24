@@ -113,7 +113,7 @@ async function defactoPageHandler({ page, userData }) {
 
       await page.waitForSelector('.catalog-products')
 
-      await enqueueLink({ selector: '.image-box > a', page })
+      await enqueueLink({ selector: '.image-box > a', page, userData })
       debugger;
 
 
@@ -135,7 +135,7 @@ async function defactoPageHandler({ page, userData }) {
     const productDetail = await page.$('.product')
     if (productDetail) {
       debugger;
-    //  const products = await extractPageData({ page })
+      //  const products = await extractPageData({ page })
       debugger;
     }
 

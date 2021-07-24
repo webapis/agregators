@@ -8,7 +8,6 @@ const { taskSequelizer } = require('./task-sequelizer')
 const { pageGeneration } = require('./pageGenerator');
 const { pageBuilder } = require('./pageBuilder');
 const { pageNavigationItems } = require('./pageNavigationItems');
-const { batchPageCollector } = require('./batchPageCollector');
 const {pageCrawler}=require('./pageCrawler')
 const { batchImageCollection } = require('./batchImageCollection');
 const { batchImageProcessing } = require('./batchImageProcessing');

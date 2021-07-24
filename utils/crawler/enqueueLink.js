@@ -11,6 +11,7 @@ async function enqueueLink({ selector, page, userData = {} }) {
         if (links) {
         
             const urls = await page.$$eval(selector, els => els.map(el => el.href))
+          //  const withoutDublicate = removeDublicateArrayValues()
             urls.forEach(u => {
                 global.enqueuedUrls.push({ url: u, userData })
                 const eventEmitter = global.pc_eventEmitter;

@@ -3,7 +3,7 @@ const { promiseConcurrency } = require('../promise-concurrency');
 const { pageController } = require('./pageController')
 const { URL } = require('url')
 
-async function puppeteerCrawler({ handlePageFunction, headless, preNavHook, postNavHook }) {
+async function puppeteerCrawler({ handlePageFunction, headless, preNavHook, postNavHook,complete }) {
     let eventEmitter = promiseConcurrency({
         batchConcurrency: 3, rejectedRetry: 3,
         taskName: 'dataCollection'
@@ -12,11 +12,19 @@ async function puppeteerCrawler({ handlePageFunction, headless, preNavHook, post
     const initialurls = global.enqueuedUrls
 
     const browser = await puppeteer.launch({ headless, timeout: 120000 });
+    eventEmitter.on('promiseExecComplete', async () => {
 
+        eventEmitter = null;
+        await browser.close();
+        complete()
+       
+    
+    
+      });
     eventEmitter.on('requestEnqueued', (request) => {
         const { url, userData } = request
         const hostName = new URL(url).hostname;
-        const batchName = hostName.replace('www.', '').replace('https://', '').replace('.com.tr', '')
+        const batchName = hostName.replace('www.', '').replace('https://', '').replace('.com.tr', '').replace('.com','')
      
         const nextPromise = pageController({ url, browser, eventEmitter, handlePageFunction, preNavHook, postNavHook, userData })
         nextPromise.batchName = batchName
@@ -27,7 +35,7 @@ async function puppeteerCrawler({ handlePageFunction, headless, preNavHook, post
         initialurls.forEach(obj => {
             const { url, userData } = obj
             const hostName = new URL(url).hostname;
-            const batchName = hostName.replace('www.', '').replace('https://', '').replace('.com.tr', '')
+            const batchName = hostName.replace('www.', '').replace('https://', '').replace('.com.tr', '').replace('.com','')
 
             const nextPromise = pageController({ url, browser, eventEmitter, handlePageFunction, preNavHook, postNavHook, userData })
             nextPromise.batchName = batchName
