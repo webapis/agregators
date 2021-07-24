@@ -138,7 +138,7 @@ describe('testing state-table-log', function(){
         }
  
     })
-    it.only('put rejected promise into rejected after three attepts', function(done){
+    it('put rejected promise into rejected after three attepts', function(done){
         try {
             this.timeout(200000)
             

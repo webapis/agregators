@@ -1,7 +1,5 @@
 require('dotenv').config()
-const makeDir = require('make-dir')
-const fs = require('fs')
-const path = require('path')
+const {recordError}=require('../../utils/recordError')
 const { fetchPageContent } = require('../../page-collector/pageCollector');
 const {saveData}=require('./defacto')
 async function extractPageData({ page }) {
@@ -46,21 +44,16 @@ async function extractPageData({ page }) {
 
 
 
-async function pageController({ eventEmitter, batchName, browser, parentUrl, page, output,id }) {
+async function pageController({ eventEmitter, batchName, browser, parentUrl, page, output,id,expectedUrl }) {
     try {
-        //document.querySelector('.paging ul').lastElementChild.previousElementSibling.innerText
-        //querySelector('.paging ul').lastElementChild.previousElementSibling.querySelector('a').href
-        //https://www.koton.com/tr/kadin/giyim/alt-giyim/jean-pantolon/c/M01-C02-N01-AK102-K100044?q=%3Arelevance&psize=192&page=2
-
+    
         const url = await page.url()
-
-        if (url === 'https://www.koton.com/maintenancePage_en.html?ref=') {
-            eventEmitter.emit('promiseRejected', { parentUrl,id,batchName })
-           
-            return;
-           
-        }
-   
+        // if (url !== expectedUrl) {
+        //     recordError({batchName,error:{error,url},functionName:'pageController',dirName:'page-collection-errors'})
+        //     eventEmitter.emit('promiseRejected', { parentUrl,id,batchName })
+        
+        //     return;
+        // }
         if (!url.includes('page')) {
             const totalPages = await page.$eval('.paging ul', el => parseInt(el.lastElementChild.previousElementSibling.innerText) - 1)
             const commonPageUrlPatter = await page.$eval('.paging ul', el => el.lastElementChild.previousElementSibling.querySelector('a').href)
@@ -69,7 +62,6 @@ async function pageController({ eventEmitter, batchName, browser, parentUrl, pag
             if (process.env.NODE_ENV === 'test') {
 
                 eventEmitter.emit('totalPages', totalPages)
-               
             }
           
             if (totalPages > 0) {
@@ -87,33 +79,31 @@ async function pageController({ eventEmitter, batchName, browser, parentUrl, pag
 
                     })
                     nextPagePromise.batchName = batchName;
-
                     eventEmitter.emit('promiseAttached', { promise: nextPagePromise, unshift: false });
                 }
-              
             }
 
-         
                     await page.waitForSelector('.productGrid')
               
                    const products = await extractPageData({ page })
              
                    await saveData({ data: products, output })
-                   debugger;
+               
         }
 
         if (url.includes('page')) {
       
             await page.waitForSelector('.productGrid')
-            debugger;
+    
            const products = await extractPageData({ page })
-           debugger;
+     
            await saveData({ data: products, output })
-           debugger;
+       
         }
 
 
     } catch (error) {
+        recordError({batchName,error:{error,url},functionName:'pageController',dirName:'page-collection-errors'})
         debugger;
     }
 

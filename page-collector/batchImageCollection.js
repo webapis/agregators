@@ -41,6 +41,7 @@ async function batchImageCollection({taskSequelizerEventEmitter}) {
   eventEmitter.on('promiseExecComplete', async () => {
 
     taskSequelizerEventEmitter.emit('taskComplete', 'page_image_collection')
+    
   })
 let files =[]
 

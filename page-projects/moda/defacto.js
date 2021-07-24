@@ -2,48 +2,67 @@ require('dotenv').config()
 const makeDir = require('make-dir')
 const fs = require('fs')
 const path = require('path')
-const { fetchPageContent } = require('../../page-collector/pageCollector');
-
+const { recordError } = require('../../utils/recordError')
+const { enqueueLink } = require('../../utils/crawler/enqueueLink')
+const { requestQueue } = require('../../utils/crawler/requestQueue')
 async function extractPageData({ page }) {
 
-  return await page.$$eval('[data-index]', els => {
-    const data = []
-    els.forEach(el => {
-     const dataDocuments = JSON.parse(el.getAttribute('data-documents'))
-      const detailPageLink = el.querySelector('[data-name]').href
-     const imageSrc = el.querySelector('[data-srcset]').getAttribute('data-srcset')
-     const dataIndex =el.getAttribute('data-index')
-     const productName = dataDocuments.ProductName
-      const marketPrice = el.querySelector('.product-card__price--new.d-inline-flex') && el.querySelector('.product-card__price--new.d-inline-flex').textContent.trim()
-     const salePrice = el.querySelector('.sale.d-inline-flex.align-items-baseline') && el.querySelector('.sale.d-inline-flex.align-items-baseline').textContent.trim()
-     const discountInBasket = el.querySelector('.percent.mr-2') && el.querySelector('.percent.mr-2').innerHTML //sepette indirim
-      const optsrc = 'https:' + imageSrc.substring(imageSrc.lastIndexOf('//')).replace('3019w', '').replace('3000w', '').trim();
-     // data.push({ detailPageLink, productName, price: { salePrice, discountInBasket, marketPrice }, image: { optsrc } })
-     data.push({detailPageLink,productName,price: { marketPrice,discountInBasket,salePrice},image: { optsrc } })
-    })
+  return await page.$eval('.product', el => {
+    let data = {}
+
+    // const dataDocuments = JSON.parse(el.getAttribute('data-documents'))
+    // const detailPageLink = el.querySelector('[data-name]').href
+    // //const imageSrc = el.querySelector('[data-srcset]').getAttribute('data-srcset')
+    const productName = el.querySelector('.product-card__name').textContent.trim()
+    // const priceNew = el.querySelector('.product-card__price--new') && el.querySelector('.product-card__price--new').textContent.trim()
+    // const priceOld = el.querySelector('.product-card__price--old') && el.querySelector('.product-card__price--old').textContent.trim()
+    // const priceBasket = el.querySelector('.product-card__price--basket') && el.querySelector('.product-card__price--basket').textContent.trim()
+    // //const optsrc = 'https:' + imageSrc.substring(imageSrc.lastIndexOf('//')).replace('3019w', '').replace('3000w', '').trim();
+    // let srcsets = []
+
+    // el.querySelectorAll('img[data-srcset]').forEach(e => {
+    //   srcsets.push(e.getAttribute('data-srcset'))
+    // })
+    // const placeHolder = document.querySelector('img[data-srcset]').getAttribute('src')
+    data = { detailPageLink: '', productName, productCode: '', prices: { priceNew: '', priceBasket: '', priceOld: '' }, images: { srcsets: '', placeHolder: '' }, stock: {}, color: {}, productDetail: {}, sizes: {}, payment: {}, delivery: {}, returnAndChange: {}, shareAndEarn: {}, reviews: {} }
+
 
     // function removeDuplicates(data, key) {
-  
+
     //   return [
     //     ...new Map(data.map(item => [key(item), item])).values()
     //   ]
-    
+
     // };
+
     return data
   })
 
 }
 
+async function extractDetailPageLink({ page }) {
+
+  return await page.$$eval('.image-box > a', els => {
+    let data = []
+    els.forEach(el => {
+      const detailPageLink = `https://defacto.com.tr` + el.getAttribute('href')
+      data.push(detailPageLink)
+    })
+
+    return data
+  })
+
+}
 
 async function saveData({ data, output }) {
-const limitedData =data.filter((f,i)=> i<5)
+  const limitedData = data.filter((f, i) => i < 5)
   for (let i of output) {
 
     let dataObject = [];
     makeDir.sync(path.dirname(i))
 
     if (fs.existsSync(i)) {
-   
+
       const dataFromFile = fs.readFileSync(i, { encoding: 'utf-8' });
       dataObject = JSON.parse(dataFromFile);
       dataObject.push(...limitedData);
@@ -55,90 +74,90 @@ const limitedData =data.filter((f,i)=> i<5)
 
   }
 
-  
+
 }
 
 
 
-async function pageController({ eventEmitter, batchName, browser, parentUrl, page, output }) {
+async function defactoPageHandler({ page, userData }) {
   try {
-    
- 
 
-  const url = await page.url()
 
-  if (!url.includes('page')) {
-  
+
+    const url = await page.url()
+
+
+    //initial list page
+    const catalogProducts = await page.$('.catalog-products')
+    if (!url.includes('page') && catalogProducts) {
 
       const totalPages = await page.$eval('.catalog__meta--product-count>span', el => parseInt(el.innerHTML))
       const pageCount = Math.ceil(totalPages / 72);
-      
+
       if (process.env.NODE_ENV === 'test') {
 
         eventEmitter.emit('totalPages', pageCount)
-       
-    }
+
+      }
       if (pageCount > 0) {
-      
+
         for (let i = 2; i <= pageCount; i++) {
           // if(i>1){
           //   break;
           // }
           const nextPage = `${url}?lt=v2&page=${i}`
-          const nextPagePromise = fetchPageContent({
-            url: nextPage,
-            browser,
-            eventEmitter,
-            pageController,
-            parentUrl,
-            output,
-    
-          })
-          nextPagePromise.batchName = batchName;
-          
-          eventEmitter.emit('promiseAttached', { promise: nextPagePromise, unshift: false });
+
+          requestQueue.push({ url: nextPage, userData })
         }
       }
- 
-    
+
+      await page.waitForSelector('.catalog-products')
+
+      await enqueueLink({ selector: '.image-box > a', page })
+      debugger;
 
 
-  ;
-    await page.waitForSelector('.catalog-products')
-    const products = await extractPageData({ page })
- 
 
-    await saveData({ data: products, output })
-    
-  }
-  if (url.includes('page')) {
-    
-    await page.waitForSelector('.catalog-products')
-    const products = await extractPageData({ page })
+    }
 
-    await saveData({ data: products, output })
- 
-  }
+    //next list page
+    if (url.includes('page')) {
+
+      await page.waitForSelector('.catalog-products')
+      //  const products = await extractPageData({ page })
+      debugger;
+      //  await saveData({ data: products, output })
+
+    }
 
 
-} catch (error) {
+    //productDetail
+    const productDetail = await page.$('.product')
+    if (productDetail) {
+      debugger;
+    //  const products = await extractPageData({ page })
+      debugger;
+    }
+
+  } catch (error) {
     debugger;
-}
+    recordError({ batchName: 'defacto', functionName: 'defactoPageHandler', dirName: 'page-collection-errors' })
+    debugger;
+  }
 
 }
 
 
 
-const pages = [
-   { startUrl: 'https://www.defacto.com.tr/kadin-jean-pantolon',output:['page-data/moda/kadın/giyim/alt-giyim/jean-pantolon/defacto.json'], pageController, batchName: 'defacto' },
-    { startUrl: 'https://www.defacto.com.tr/erkek-denim-pantolon',output:['page-data/moda/erkek/giyim/alt-giyim/jean-pantolon/defacto.json'], pageController, batchName: 'defacto' },
-//  { startUrl: 'https://www.defacto.com.tr/mini-elbise', output: ['page-data/moda/kadın/giyim/elbise/defacto.json'], pageController, batchName: 'defacto' },
-]
+// const pages = [
+//   { startUrl: 'https://www.defacto.com.tr/kadin-jean-pantolon', output: ['page-data/moda/kadın/giyim/alt-giyim/jean-pantolon/defacto.json'], pageController, batchName: 'defacto' },
+//   { startUrl: 'https://www.defacto.com.tr/erkek-denim-pantolon', output: ['page-data/moda/erkek/giyim/alt-giyim/jean-pantolon/defacto.json'], pageController, batchName: 'defacto' },
+//   //  { startUrl: 'https://www.defacto.com.tr/mini-elbise', output: ['page-data/moda/kadın/giyim/elbise/defacto.json'], pageController, batchName: 'defacto' },
+// ]
 
 module.exports = {
-  pages,
   saveData,
-  pageController
+  defactoPageHandler
 }
 
 

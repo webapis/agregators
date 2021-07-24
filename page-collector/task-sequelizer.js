@@ -32,6 +32,12 @@ class TaskListender extends EventEmitter {
                 });
             }
         })
+
+        this.on('taskError',(taskName)=>{
+
+            process.exit(1)
+        
+        })
     }
 }
 function taskSequelizer({ tasks }) {

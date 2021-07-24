@@ -55,8 +55,10 @@ async function ssr({ browser}) {
           waitUntil: 'networkidle0'
         });
         await page.waitForFunction('document.getElementById("products")'); // ensure #posts exists in the DOM.
-        debugger;
+        await page.evaluate(()=> document.querySelector('nav-component').innerHTML='')
+    
         const html = await page.content(); // serialized HTML of page DOM.
+        debugger;
         fs.writeFileSync(
             `${outputDirPath}`,
             html

@@ -42,6 +42,7 @@
   },
   "scripts": {
     "dataCollector": "NEXT_TASK=page_collection ALL=FALSE node page-collector/server.js",
+    "testDataCollector": "NEXT_TASK=test_data_collection ALL=FALSE node page-collector/server.js",
     "imageCollector": "projectName=moda NEXT_TASK=page_image_collection ALL=FALSE  node page-collector/server.js",
     "imageCropper": "projectName=moda NEXT_TASK=page_image_crop ALL=FALSE node  page-collector/server.js",
     "imageBlur": "projectName=moda NEXT_TASK=page_image_blur ALL=FALSE node  page-collector/server.js",

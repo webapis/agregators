@@ -99,5 +99,5 @@ function addCssLocal({ filePath, file, document}) {
   s.setAttribute("type", "text/css");
   s.href = `${generateFilePath({ filePath })}/${file}`;
   debugger;
-  document.head.appendChild(s);
+  document.body.prepend(s);
 };

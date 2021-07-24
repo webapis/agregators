@@ -1,30 +1,35 @@
 const {fetchPageContent}=require('../pageCollector')
 const puppeteer =require('puppeteer')
-const { promiseConcurrency } = require('../promiseConcurrency');
+const { promiseConcurrency } = require('../../utils/promise-concurrency');
 
 let eventEmitter = promiseConcurrency({
     batchConcurrency: 6,
     totalConcurrency: 12
   });
 describe('dataCollection tests',function(){
-    it.only('page dataCollection for koton product',  function(done){
+
+    it('page dataCollection for koton product',  function(done){
+        debugger;
         this.timeout(200000)
         const {pageController}=require('../../page-projects/moda/koton')
          dataCollectionTest({pageController,url:'https://www.koton.com/tr/kadin/giyim/alt-giyim/jean-pantolon/c/M01-C02-N01-AK102-K100044',eventEmitter,output:['page-data/moda/kadın/giyim/alt-giyim/jean-pantolon/konton.json'], batchName:'koton',done})   
     })
 
-    it('page dataCollection for defacto product',  function(done){
+    it.only('page dataCollection for defacto product',  function(done){
         this.timeout(200000)
         const {pageController}=require('../../page-projects/moda/defacto')
          dataCollectionTest({pageController,url:'https://www.defacto.com.tr/kadin-jean-pantolon',eventEmitter,output:['page-data/moda/kadın/giyim/alt-giyim/jean-pantolon/defacto.json'], batchName:'defacto',done})   
     })
 })
 
-async function taskComplete({totalPages,totalRejected,totalResolved,done,browser}){
+ function taskComplete({totalPages,totalRejected,totalResolved,done,browser}){
 if(totalResolved+totalRejected===totalPages){
     
-    await browser.close()
-    done()
+     browser.close().then(()=>{
+
+        done()
+     })
+  
 }
 }
 
