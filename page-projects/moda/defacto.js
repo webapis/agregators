@@ -14,17 +14,20 @@ async function extractPageData({ page }) {
     // const detailPageLink = el.querySelector('[data-name]').href
     // //const imageSrc = el.querySelector('[data-srcset]').getAttribute('data-srcset')
     const productName = el.querySelector('.product-card__name').textContent.trim()
-    // const priceNew = el.querySelector('.product-card__price--new') && el.querySelector('.product-card__price--new').textContent.trim()
-    // const priceOld = el.querySelector('.product-card__price--old') && el.querySelector('.product-card__price--old').textContent.trim()
-    // const priceBasket = el.querySelector('.product-card__price--basket') && el.querySelector('.product-card__price--basket').textContent.trim()
-    // //const optsrc = 'https:' + imageSrc.substring(imageSrc.lastIndexOf('//')).replace('3019w', '').replace('3000w', '').trim();
-    // let srcsets = []
+    const productCode = el.querySelector('.product-card__code').textContent.replace('Ürün Kodu:', '')
+    
 
-    // el.querySelectorAll('img[data-srcset]').forEach(e => {
+    const priceNew = el.querySelector('.product-card__price--new') && el.querySelector('.product-card__price--new').textContent.trim()
+    const priceOld = el.querySelector('.product-card__price--old') && el.querySelector('.product-card__price--old').textContent.trim()
+    const priceBasket = el.querySelector('.product-card__price--basket>.sale') && el.querySelector('.product-card__price--basket>.sale').textContent.trim()
+    let images = el.querySelectorAll('div.product-card__image-slider--container.swiper-container img') && Array.from(el.querySelectorAll('div.product-card__image-slider--container.swiper-container img')).map(el => el.getAttribute('data-src'))
+    const colors = el.querySelector('.product-variants__slider') && Array.from(el.querySelector('.product-variants__slider').querySelectorAll('.image-box a')).map(el => { return { link: el.href, color: el.getAttribute('data-title'), image: el.querySelector('img').src } })
+    const sizes =[]
+   // el.querySelectorAll('img[data-srcset]').forEach(e => {
     //   srcsets.push(e.getAttribute('data-srcset'))
     // })
     // const placeHolder = document.querySelector('img[data-srcset]').getAttribute('src')
-    data = { detailPageLink: '', productName, productCode: '', prices: { priceNew: '', priceBasket: '', priceOld: '' }, images: { srcsets: '', placeHolder: '' }, stock: {}, color: {}, productDetail: {}, sizes: {}, payment: {}, delivery: {}, returnAndChange: {}, shareAndEarn: {}, reviews: {} }
+    data = { detailPageLink: '', productName, productCode, prices: { priceNew, priceBasket, priceOld }, images, stock: {}, colors, productDetail: {}, sizes: {}, payment: {}, delivery: {}, returnAndChange: {}, shareAndEarn: {}, reviews: {} }
 
 
     // function removeDuplicates(data, key) {
@@ -89,53 +92,24 @@ async function defactoPageHandler({ page, userData }) {
 
     //initial list page
     const catalogProducts = await page.$('.catalog-products')
-    if (!url.includes('page') && catalogProducts) {
+    if (catalogProducts) {
 
-      const totalPages = await page.$eval('.catalog__meta--product-count>span', el => parseInt(el.innerHTML))
-      const pageCount = Math.ceil(totalPages / 72);
-
-      if (process.env.NODE_ENV === 'test') {
-
-        eventEmitter.emit('totalPages', pageCount)
-
-      }
-      if (pageCount > 0) {
-
-        for (let i = 2; i <= pageCount; i++) {
-          // if(i>1){
-          //   break;
-          // }
-          const nextPage = `${url}?lt=v2&page=${i}`
-
-          requestQueue.push({ url: nextPage, userData })
-        }
-      }
+      await autoScroll(page)
 
       await page.waitForSelector('.catalog-products')
+      await enqueueLink({ selector: '.catalog-products .image-box > a', page, userData })
 
-      await enqueueLink({ selector: '.image-box > a', page, userData })
-      debugger;
 
 
 
     }
 
-    //next list page
-    if (url.includes('page')) {
-
-      await page.waitForSelector('.catalog-products')
-      //  const products = await extractPageData({ page })
-      debugger;
-      //  await saveData({ data: products, output })
-
-    }
 
 
     //productDetail
     const productDetail = await page.$('.product')
     if (productDetail) {
-      debugger;
-      //  const products = await extractPageData({ page })
+      const product = await extractPageData({ page })
       debugger;
     }
 
@@ -148,12 +122,32 @@ async function defactoPageHandler({ page, userData }) {
 }
 
 
+async function autoScroll(page) {
+  await page.evaluate(async () => {
 
-// const pages = [
-//   { startUrl: 'https://www.defacto.com.tr/kadin-jean-pantolon', output: ['page-data/moda/kadın/giyim/alt-giyim/jean-pantolon/defacto.json'], pageController, batchName: 'defacto' },
-//   { startUrl: 'https://www.defacto.com.tr/erkek-denim-pantolon', output: ['page-data/moda/erkek/giyim/alt-giyim/jean-pantolon/defacto.json'], pageController, batchName: 'defacto' },
-//   //  { startUrl: 'https://www.defacto.com.tr/mini-elbise', output: ['page-data/moda/kadın/giyim/elbise/defacto.json'], pageController, batchName: 'defacto' },
-// ]
+    let last = 0
+    await new Promise((resolve, reject) => {
+
+      var scrollingElement = (document.scrollingElement || document.body);
+      const timer = setInterval(() => {
+        scrollingElement.scrollTop = scrollingElement.scrollHeight;
+
+        if (scrollingElement.scrollHeight === last) {
+          clearInterval(timer)
+          resolve()
+        } else {
+          last = scrollingElement.scrollHeight
+        }
+      }, 5000);
+
+
+
+    });
+  });
+}
+
+
+
 
 module.exports = {
   saveData,

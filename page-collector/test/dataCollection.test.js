@@ -1,65 +1,70 @@
-const {fetchPageContent}=require('../pageCollector')
-const puppeteer =require('puppeteer')
 const { promiseConcurrency } = require('../../utils/promise-concurrency');
-
+const puppeteer = require('puppeteer')
+const assert = require('assert')
 let eventEmitter = promiseConcurrency({
-    batchConcurrency: 6,
-    totalConcurrency: 12
-  });
-describe('dataCollection tests',function(){
+    batchConcurrency: 3, rejectedRetry: 3,
+    taskName: 'dataCollection'
+});
+global.pc_eventEmitter = eventEmitter
+describe('dataCollection tests', function () {
 
-    it('page dataCollection for koton product',  function(done){
+    it('page dataCollection for koton product', function (done) {
         debugger;
         this.timeout(200000)
-        const {pageController}=require('../../page-projects/moda/koton')
-         dataCollectionTest({pageController,url:'https://www.koton.com/tr/kadin/giyim/alt-giyim/jean-pantolon/c/M01-C02-N01-AK102-K100044',eventEmitter,output:['page-data/moda/kadın/giyim/alt-giyim/jean-pantolon/konton.json'], batchName:'koton',done})   
+        const { pageController } = require('../../page-projects/moda/koton')
+
     })
 
-    it.only('page dataCollection for defacto product',  function(done){
+    it('defactoPageHandler initial listPage', async function () {
         this.timeout(200000)
-        const {pageController}=require('../../page-projects/moda/defacto')
-         dataCollectionTest({pageController,url:'https://www.defacto.com.tr/kadin-jean-pantolon',eventEmitter,output:['page-data/moda/kadın/giyim/alt-giyim/jean-pantolon/defacto.json'], batchName:'defacto',done})   
+        debugger;
+        const { defactoPageHandler } = require('../../page-projects/moda/defacto')
+
+
+        debugger;
+        const browser = await puppeteer.launch({ headless: true, timeout: 200000 })
+        const page = await browser.newPage()
+        await page.goto('https://www.defacto.com.tr/kadin-jean', { timeout: 200000 })
+        debugger;
+        await page.waitForSelector('.catalog-products')
+        debugger;
+        const totalExtectedPages = await page.$eval('.catalog__meta--product-count>span', el => parseInt(el.innerHTML))
+
+        debugger;
+        await defactoPageHandler({ page, userData: { output: 'ttt' } })
+        const enqueudUrls = global.enqueuedUrls
+        const actual = enqueudUrls.length
+        debugger;
+        assert.strictEqual(totalExtectedPages, actual)
+        debugger;
+    })
+
+
+    it.only('defactoPageHandler detailPage', async function () {
+        this.timeout(200000)
+        debugger;
+        const { defactoPageHandler } = require('../../page-projects/moda/defacto')
+
+
+        debugger;
+        const browser = await puppeteer.launch({ headless: false, timeout: 200000 })
+        const page = await browser.newPage()
+        await page.goto('https://www.defacto.com.tr/slim-fit-blazer-ceket-1197669', { timeout: 200000 })
+   
+    //    await page.waitForSelector('.catalog-products')
+   
+      //  const totalExtectedPages = await page.$eval('.catalog__meta--product-count>span', el => parseInt(el.innerHTML))
+
+        debugger;
+        await defactoPageHandler({ page, userData: { output: 'ttt' } })
+        const enqueudUrls = global.enqueuedUrls
+        const actual = enqueudUrls.length
+        debugger;
+        assert.strictEqual(totalExtectedPages, actual)
+        debugger;
     })
 })
 
- function taskComplete({totalPages,totalRejected,totalResolved,done,browser}){
-if(totalResolved+totalRejected===totalPages){
-    
-     browser.close().then(()=>{
-
-        done()
-     })
-  
-}
-}
 
 
- function dataCollectionTest({url,pageController,output,batchName,eventEmitter,done}){
-    
-    let totalPages =0
-    let totalResolved=0
-    let totalRejected=0
-    eventEmitter.on('totalPages',(tp)=>{
-        totalPages =tp
-      
 
-    })
-    eventEmitter.on('promiseResolved',(tp)=>{
-
-       ++ totalResolved
-    
-        taskComplete({totalPages,totalRejected,totalResolved,done, browser:this.browser})
-       
-    })
-    eventEmitter.on('promiseRejected',(tp)=>{
-       ++ totalRejected
-     
-        taskComplete({totalPages,totalRejected,totalResolved,done,browser:this.browser})
-      
-    })
-
-     puppeteer.launch({headless:false}).then(browser=>{
-         this.browser=browser
-        fetchPageContent({url, browser,pageController, eventEmitter,parentUrl:'',output})({batchName,id:'123'})
-     })
-}
