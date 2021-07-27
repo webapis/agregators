@@ -1,109 +1,64 @@
 require('dotenv').config()
-const {recordError}=require('../../utils/recordError')
-const { fetchPageContent } = require('../../page-collector/pageCollector');
-const {saveData}=require('./defacto')
+const { autoScroll, saveData } = require('../../utils/crawler/utillty')
+
+const { recordError } = require('../../utils/recordError')
+const { enqueueLink } = require('../../utils/crawler/enqueueLink')
+const { requestQueue } = require('../../utils/crawler/requestQueue')
 async function extractPageData({ page }) {
+    const url = await page.url()
+    debugger;
+    return await page.$eval('.product-content-wrap', (el, _url) => {
+        let data = {}
 
-
-      return await page.$$eval('.product-item', els => {
-        const data = []
-          els.forEach(el => {
-          const detailPageLink =el.querySelector('figure > a') && el.querySelector('figure > a').href
-          const imageSrc =el.querySelector(".swiper-lazy") &&  el.querySelector(".swiper-lazy").getAttribute('data-src')       
-          const productName = el.getAttribute('data-name')
-          const marketPrice = el.querySelector(".firstPrice") ? el.querySelector(".firstPrice").innerText : el.querySelector(".insteadPrice") && el.querySelector(".insteadPrice").innerText 
-          const salePrice = el.querySelector(".insteadPrice") ? el.querySelector(".newPrice").innerText :null
-           const discountInBasket = el.querySelector(".insteadPrice") ?  el.querySelector(".product-badge").innerText:null
-          //   const optsrc = 'https:' + imageSrc.substring(imageSrc.lastIndexOf('//')).replace('3019w', '').replace('3000w', '').trim();
-          // data.push({detailPageLink,productName,price: { marketPrice,discountInBasket,salePrice},image: { optsrc },dataIndex })
-          data.push({detailPageLink,productName,price: { marketPrice,salePrice,discountInBasket},image: { optsrc: imageSrc} })
-        })
+        const productName = el.querySelector('.productDetailDescription h1').innerText
+        const productCode = el.querySelector('.productNumber').innerText
+        const priceNew = el.querySelector('.newPrice') && el.querySelector('.newPrice').innerText
+        const normalPrice = el.querySelector('.normalPrice') && el.querySelector('.normalPrice').innerText
+        const priceOld = el.querySelector('.insteadPrice') && el.querySelector('.insteadPrice').innerText.trim() //insteadPrice
+        const images = document.querySelector('.productDetailImageContainer').querySelectorAll('img') && Array.from(document.querySelector('.productDetailImageContainer').querySelectorAll('img')).map(m => m.src)
+        // const otherColors = el.querySelector('.product-variants__slider') && Array.from(el.querySelector('.product-variants__slider').querySelectorAll('.image-box a')).map(el => { return { link: el.href, color: el.getAttribute('data-title'), image: el.querySelector('img').src } })
+        // const sizes = el.querySelector('.product-size-selector__buttons') && Array.from(el.querySelector('.product-size-selector__buttons').querySelectorAll('button')).map(m => { if (m.classList.contains('product-no-stock')) { return { size: m.value, available: false } } return { size: m.value, available: true } })
+        // const color = document.querySelector('.sideMenu__box ul').querySelectorAll('li') && Array.from(document.querySelector('.sideMenu__box ul').querySelectorAll('li')).map(m => m.innerHTML).find(f => f.includes("Renk :"))
+        // const material = document.querySelector('.sideMenu__box ul').querySelectorAll('li') && Array.from(document.querySelector('.sideMenu__box ul').querySelectorAll('li')).map(m => m.innerHTML).find((f, i) => i === 2).trim()
+        // const modelDetail = document.querySelector('.sideMenu__box ul').querySelectorAll('li') && Array.from(document.querySelector('.sideMenu__box ul').querySelectorAll('li')).map(m => m.innerHTML).find((f, i) => i === 0).trim()
+        data = { detailPageLink: _url, productName, productCode, prices: { priceNew: priceOld ? priceNew : normalPrice, priceBasket: null, priceOld }, images, stock: {}, colors: '', productDetail: '', sizes: '', payment: {}, delivery: {}, returnAndChange: {}, shareAndEarn: {}, reviews: {} }
         return data
-      })
-
+    }, url)
 }
 
 
-// async function saveData({ data, output }) {
-//     const limitedData = data.filter((f, i) => i < 5)
-//     for (let i of output) {
-
-//         let dataObject = [];
-//         makeDir.sync(path.dirname(i))
-
-//         if (fs.existsSync(i)) {
-//             const dataFromFile = fs.readFileSync(i, { encoding: 'utf-8' });
-//             dataObject = JSON.parse(dataFromFile);
-//             dataObject.push(...limitedData);
-//         } else {
-//             dataObject.push(...limitedData);
-//         }
-//         fs.writeFileSync(i, JSON.stringify(dataObject));
-//     }
-// }
 
 
-
-async function pageController({ eventEmitter, batchName, browser, parentUrl, page, output,id,expectedUrl }) {
+async function kotonPageHandler({ page, userData }) {
     try {
-    
+        const { output } = userData
         const url = await page.url()
-        // if (url !== expectedUrl) {
-        //     recordError({batchName,error:{error,url},functionName:'pageController',dirName:'page-collection-errors'})
-        //     eventEmitter.emit('promiseRejected', { parentUrl,id,batchName })
-        
-        //     return;
-        // }
-        if (!url.includes('page')) {
+        const productList = await page.$('.product-list-container')
+        debugger;
+        if (!url.includes('page') && productList) {
+            debugger;
             const totalPages = await page.$eval('.paging ul', el => parseInt(el.lastElementChild.previousElementSibling.innerText) - 1)
             const commonPageUrlPatter = await page.$eval('.paging ul', el => el.lastElementChild.previousElementSibling.querySelector('a').href)
             const nextPageUrl = commonPageUrlPatter.substring(0, commonPageUrlPatter.lastIndexOf('=') + 1)
-
-            if (process.env.NODE_ENV === 'test') {
-
-                eventEmitter.emit('totalPages', totalPages)
+            for (let i = 2; i <= totalPages; i++) {
+                const nextPage = `${nextPageUrl}${i}`
+                requestQueue.push({ url: nextPage, userData })
             }
-          
-            if (totalPages > 0) {
-      
-                for (let i = 2; i <= totalPages; i++) {
-                    
-                    const nextPage = `${nextPageUrl}${i}`
-                    const nextPagePromise = fetchPageContent({
-                        url: nextPage,
-                        browser,
-                        eventEmitter,
-                        pageController,
-                        parentUrl,
-                        output,
-
-                    })
-                    nextPagePromise.batchName = batchName;
-                    eventEmitter.emit('promiseAttached', { promise: nextPagePromise, unshift: false });
-                }
-            }
-
-                    await page.waitForSelector('.productGrid')
-              
-                   const products = await extractPageData({ page })
-             
-                   await saveData({ data: products, output })
-               
+        }
+        if (productList) {
+            await enqueueLink({ selector: '.productGrid .product-item figure > a', page, userData })
+        }
+        const productDetailImageContainer = await page.$('.productDetailImageContainer')
+        debugger;
+        if (productDetailImageContainer) {
+            const product = await extractPageData({ page })
+            debugger;
         }
 
-        if (url.includes('page')) {
-      
-            await page.waitForSelector('.productGrid')
-    
-           const products = await extractPageData({ page })
-     
-           await saveData({ data: products, output })
-       
-        }
-
-
+        debugger;
     } catch (error) {
-        recordError({batchName,error:{error,url},functionName:'pageController',dirName:'page-collection-errors'})
+        debugger;
+        recordError({ batchName: 'koton', functionName: 'kotonPageHandler', dirName: 'page-collection-errors' })
         debugger;
     }
 
@@ -111,15 +66,13 @@ async function pageController({ eventEmitter, batchName, browser, parentUrl, pag
 
 
 
-const pages = [
-    { startUrl: 'https://www.koton.com/tr/kadin/giyim/alt-giyim/jean-pantolon/c/M01-C02-N01-AK102-K100044', output: ['page-data/moda/kadın/giyim/alt-giyim/jean-pantolon/koton.json'], pageController, batchName: 'koton' },
-    { startUrl: 'https://www.koton.com/tr/erkek/giyim/alt-giyim/jean-pantolon/c/M01-C01-N01-AK102-K100044', output: ['page-data/moda/erkek/giyim/alt-giyim/jean-pantolon/koton.json'], pageController, batchName: 'koton' },
-    //  { startUrl: 'https://www.defacto.com.tr/mini-elbise', output: ['page-data/moda/kadın/giyim/elbise/defacto.json'], pageController, batchName: 'defacto' },
-]
+
+
 
 module.exports = {
-    pages,
-    pageController
+
+    kotonPageHandler
 }
+
 
 

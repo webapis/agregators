@@ -8,24 +8,24 @@ const { taskSequelizer } = require('./task-sequelizer')
 const { pageGeneration } = require('./pageGenerator');
 const { pageBuilder } = require('./pageBuilder');
 const { pageNavigationItems } = require('./pageNavigationItems');
-const {pageCrawler}=require('./pageCrawler')
+const { pageCrawler } = require('./pageCrawler')
 const { batchImageCollection } = require('./batchImageCollection');
 const { batchImageProcessing } = require('./batchImageProcessing');
 const { pageNavDataTreeCreation } = require('./pageNavTreeCreation')
 const { pageLeavesBy100 } = require('./pageLeavesBy100')
 const { pageUploadData } = require('./pageUploadData')
 const { pagePrerender } = require('./pagePrerender')
-const {testDataCollection}=require('./testDataCollection')
+const { testDataCollection } = require('./testDataCollection')
 function change() {
   const tasks = projects[process.env.projectName]
   const taskSequelizerEventEmitter = taskSequelizer({ tasks })
   taskSequelizerEventEmitter.on('nextTask', async function (nextTaskName) {
     switch (nextTaskName) {
       case 'page_collection':
-        removeDerectory('page-collection-errors') && pageCrawler({ taskSequelizerEventEmitter })
+        removeDerectory('page-data') && removeDerectory('page-collection-errors') && pageCrawler({ taskSequelizerEventEmitter })
         break;
       case 'test_data_collection':
-        testDataCollection({taskSequelizerEventEmitter})
+        testDataCollection({ taskSequelizerEventEmitter })
         break;
       case 'page_data_upload':
         pageUploadData({ taskSequelizerEventEmitter, fbStorage: true })
