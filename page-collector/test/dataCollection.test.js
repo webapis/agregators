@@ -50,13 +50,13 @@ describe('dataCollection tests', function () {
         const browser = await puppeteer.launch({ headless: false, timeout: 200000 })
         const page = await browser.newPage()
         await page.goto('https://www.defacto.com.tr/slim-fit-blazer-ceket-1197669', { timeout: 200000 })
-   
-    //    await page.waitForSelector('.catalog-products')
-   
-      //  const totalExtectedPages = await page.$eval('.catalog__meta--product-count>span', el => parseInt(el.innerHTML))
+
+        //    await page.waitForSelector('.catalog-products')
+
+        //  const totalExtectedPages = await page.$eval('.catalog__meta--product-count>span', el => parseInt(el.innerHTML))
 
         debugger;
-        await defactoPageHandler({ page, userData: { output: 'ttt' } })
+        await defactoPageHandler({ page, userData: { output: `page-collector/test/data` } })
         const enqueudUrls = global.enqueuedUrls
         const actual = enqueudUrls.length
         debugger;

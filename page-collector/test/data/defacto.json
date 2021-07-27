@@ -1,0 +1,67 @@
+[
+    {
+        "detailPageLink": "",
+        "productName": "Slim Fit Blazer Ceket",
+        "productCode": " N6031AZBE137",
+        "prices": {
+            "priceNew": "199,99 TL",
+            "priceBasket": "159,99 TL",
+            "priceOld": "279,99 TL"
+        },
+        "images": [
+            "//dfcdn.defacto.com.tr/7/N6031AZ_20SM_BE137_01_02.jpg",
+            "//dfcdn.defacto.com.tr/7/N6031AZ_20SM_BE137_02_02.jpg",
+            "//dfcdn.defacto.com.tr/7/N6031AZ_20SM_BE137_03_02.jpg",
+            "//dfcdn.defacto.com.tr/7/N6031AZ_20SM_BE137_04_01.jpg"
+        ],
+        "stock": {},
+        "colors": null,
+        "productDetail": [
+            " Modelin Ölçüleri: Boy: 1,82 Göğüs: 98 Bel: 81 Basen: 96 ",
+            " Numune Bedeni: 50 ",
+            " Pamuk 65%,Poliester 35% Erkek Blazer Ceket ",
+            " Renksiz Slim Fit Blazer Ceket ",
+            "Renk : Mavi",
+            "Kalıp : Slim Fit"
+        ],
+        "sizes": [
+            {
+                "size": "44",
+                "available": false
+            },
+            {
+                "size": "46",
+                "available": true
+            },
+            {
+                "size": "48",
+                "available": true
+            },
+            {
+                "size": "50",
+                "available": true
+            },
+            {
+                "size": "52",
+                "available": false
+            },
+            {
+                "size": "54",
+                "available": true
+            },
+            {
+                "size": "56",
+                "available": true
+            },
+            {
+                "size": "58",
+                "available": false
+            }
+        ],
+        "payment": {},
+        "delivery": {},
+        "returnAndChange": {},
+        "shareAndEarn": {},
+        "reviews": {}
+    }
+]

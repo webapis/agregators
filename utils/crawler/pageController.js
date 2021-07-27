@@ -15,7 +15,7 @@ function pageController({ url, browser, eventEmitter, handlePageFunction, preNav
       const host = await page.url()
       const origin = new URL(host).origin;
       if (host !== url) {
-        debugger;
+      
         const nextPagePromise = pageController({
           url,
           browser,
@@ -26,9 +26,9 @@ function pageController({ url, browser, eventEmitter, handlePageFunction, preNav
         nextPagePromise.batchName = batchName;
         nextPagePromise.retries = retries
         nextPagePromise.id = id
-        debugger;
+       
         eventEmitter.emit('retryPromise', { promise: nextPagePromise, unshift: false });
-        debugger
+    
         await page.close()
       }
 
@@ -40,7 +40,7 @@ function pageController({ url, browser, eventEmitter, handlePageFunction, preNav
         batchName,
         id
       });
-      debugger;
+   
       await page.close()
     } catch (error) {
       console.log(error)
