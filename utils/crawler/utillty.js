@@ -27,7 +27,8 @@ async function autoScroll(page) {
         await new Promise((resolve, reject) => {
 
             var scrollingElement = (document.scrollingElement || document.body);
-            const timer = setInterval(() => {
+            const timer = setInterval(async () => {
+                   // window.focus()
                 scrollingElement.scrollTop = scrollingElement.scrollHeight;
 
                 if (scrollingElement.scrollHeight === last) {

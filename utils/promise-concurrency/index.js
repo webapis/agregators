@@ -4,7 +4,7 @@ const { uuidv4 } = require('../uuidv4');
 const { stateTableLog } = require('./state-table-log')
 
 class PromiseEmitter extends EventEmitter {
-  constructor(batchConcur, rejectedRetry,taskName) {
+  constructor(batchConcur, rejectedRetry, taskName) {
     super();
     this.batchConcur = batchConcur;
     this.queue = [];
@@ -13,9 +13,9 @@ class PromiseEmitter extends EventEmitter {
     this.resolved = [];
     this.total = [];
     this.rejectedRetry = rejectedRetry
-    this.taskName=taskName
+    this.taskName = taskName
     this.retries = []
-
+    this.sync = false
     this.on('initState', (state) => {
       const { queue, promises, resolved, rejected, retries, total } = state
       queue && this.queue.push(...queue)
@@ -27,17 +27,23 @@ class PromiseEmitter extends EventEmitter {
       this.emit('initStateSet')
     })
 
-    this.on('invokeNextPromise',()=>{
-      this.invokeNextPromise()
+    this.on('invokeNextPromise', () => {
+      if (this.sync === false) {
+        debugger;
+        this.invokeNextPromise()
+     
+      }
+
+
+
     })
-    this.on('log_state',({self,promise})=>{
-      
+    this.on('log_state', ({ self, promise }) => {
+
       stateTableLog({ self, promise })
-    
+
     })
     this.on('promiseAttached', function ({ promise, unshift }) {
       try {
-
         const promiseWithId = promise;
         promiseWithId.id = uuidv4();
         promiseWithId.retries = 0;
@@ -49,9 +55,9 @@ class PromiseEmitter extends EventEmitter {
         }
         this.total.push(promiseWithId);
 
-   
-   
-      this.emit('log_state',{ self: this, promise })
+
+
+        this.emit('log_state', { self: this, promise })
 
       } catch (error) {
         debugger;
@@ -63,25 +69,29 @@ class PromiseEmitter extends EventEmitter {
 
       const { id } = promise
       this.resolved.push(promise);
+      this.sync = false
+      debugger;
       const promiseToRemoveIndex = this.promises.findIndex(p => p.id === id);
       this.promises.splice(promiseToRemoveIndex, 1);
-      
-      this.emit('log_state',{ self: this, promise })
+
+      this.emit('log_state', { self: this, promise })
     });
 
-    this.on('retryPromise',function(ret){
-      const {promise}=ret
+    this.on('retryPromise', function (ret) {
+      const { promise } = ret
       debugger;
       if (promise.retries === this.rejectedRetry) {
         debugger;
         this.rejected.push(promise);
-        this.emit('log_state',{ self: this, promise })
+        this.sync = false
+        debugger;
+        this.emit('log_state', { self: this, promise })
 
       } else {
 
         debugger;
         const promiseToRetry = promise
-        promiseToRetry.retries= promise.retries > 0 ? ++promise.retries : 1
+        promiseToRetry.retries = promise.retries > 0 ? ++promise.retries : 1
         this.queue.push(promiseToRetry);
 
       }
@@ -92,75 +102,50 @@ class PromiseEmitter extends EventEmitter {
       this.promises.splice(promiseToRemoveIndex, 1);
 
 
-   this.emit('log_state',{ self: this, promise }) 
+      this.emit('log_state', { self: this, promise })
     })
-  //   this.on('promiseRejected', function (promise) {
-
-
-  //       debugger;
-  //       this.rejected.push(promise);
-  //     const promiseToRemoveIndex = this.promises.findIndex(
-  //       p => p.id === promise.id
-  //     );
-
-  //     this.promises.splice(promiseToRemoveIndex, 1);
-
-
-  //  this.emit('log_state',{ self: this, promise })
-
-      
-  //   });
 
 
   }
-   invokeNextPromise() {
-    
-    try {
+  invokeNextPromise() {
 
+    for (let i = 0; i < this.queue.length; i++) {
+      const { batchName } = this.queue[i]
 
-      for (let i = 0; i < this.queue.length; i++) {
-        const { batchName } = this.queue[i]
+      const batchCounter = this.promises.length === 0 ? 0 : this.promises.filter(f => f.batchName === batchName).length;
+      const freeBatchSpaces = this.batchConcur - batchCounter;
 
-        const batchCounter = this.promises.length === 0 ? 0 : this.promises.filter(f => f.batchName === batchName).length;
-        const freeBatchSpaces = this.batchConcur - batchCounter;
+      if (freeBatchSpaces > 0 && this.sync === false) {
+debugger;
+        const nextpromise = this.queue[i];
+        const { batchName, id, retries } = nextpromise;
+        this.sync = nextpromise.sync
+        debugger;
+        this.promises.push(nextpromise);
+        const queueToRemoveIndex = this.queue.findIndex(
+          p => p.id === nextpromise.id
+        );
+        this.queue.splice(queueToRemoveIndex, 1);
 
-        if (freeBatchSpaces > 0) {
+        nextpromise({ batchName, id, retries });
 
-          const nextpromise = this.queue[i];
-          const { batchName, id,retries } = nextpromise;
-
-          this.promises.push(nextpromise);
-          const queueToRemoveIndex = this.queue.findIndex(
-            p => p.id === nextpromise.id
-          );
-          this.queue.splice(queueToRemoveIndex, 1);
-
-          nextpromise({ batchName, id,retries });
-      
-          
-        } else {
-    
-          continue;
-        }
-
+      } else {
+        continue;
       }
-      if (this.queue.length === 0 && this.promises.length === 0) {
-        
-        this.emit('promiseExecComplete')
-      }
-      
-    } catch (error) {
-      
     }
+    if (this.queue.length === 0 && this.promises.length === 0) {
+      this.emit('promiseExecComplete')
+    }
+
   }
 
 }
 
-function promiseConcurrency({ batchConcurrency, rejectedRetry = 3,taskName }) {
-  
-  const promiseEmitter = new PromiseEmitter(batchConcurrency, rejectedRetry,taskName);
+function promiseConcurrency({ batchConcurrency, rejectedRetry = 3, taskName }) {
+
+  const promiseEmitter = new PromiseEmitter(batchConcurrency, rejectedRetry, taskName);
   promiseEmitter.setMaxListeners(50);
-    global.pc_eventEmitter = promiseEmitter
+  global.pc_eventEmitter = promiseEmitter
   return promiseEmitter;
 }
 

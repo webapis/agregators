@@ -1,7 +1,7 @@
 
 const { recordError } = require('../recordError')
 const { URL } = require('url');
-function pageController({ url, browser, eventEmitter, handlePageFunction, preNavHook, postNavHook, userData }) {
+function pageController({ url, browser, eventEmitter, handlePageFunction, preNavHook, postNavHook, userData}) {
 
   return async ({ batchName, id, retries }) => {
 
@@ -11,11 +11,13 @@ function pageController({ url, browser, eventEmitter, handlePageFunction, preNav
 
 
       await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 200000 });
+
+ 
       await postNavHook({ page })
       const host = await page.url()
       const origin = new URL(host).origin;
       if (host !== url) {
-      
+
         const nextPagePromise = pageController({
           url,
           browser,
@@ -26,9 +28,9 @@ function pageController({ url, browser, eventEmitter, handlePageFunction, preNav
         nextPagePromise.batchName = batchName;
         nextPagePromise.retries = retries
         nextPagePromise.id = id
-       
+
         eventEmitter.emit('retryPromise', { promise: nextPagePromise, unshift: false });
-    
+
         await page.close()
       }
 
@@ -40,7 +42,7 @@ function pageController({ url, browser, eventEmitter, handlePageFunction, preNav
         batchName,
         id
       });
-   
+
       await page.close()
     } catch (error) {
       console.log(error)
