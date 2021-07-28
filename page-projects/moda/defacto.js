@@ -14,7 +14,7 @@ async function extractPageData({ page }) {
     const priceOld = el.querySelector('.product-card__price--old') && el.querySelector('.product-card__price--old').textContent.trim()
     const priceBasket = el.querySelector('.product-card__price--basket>.sale') && el.querySelector('.product-card__price--basket>.sale').textContent.trim()
     let images = el.querySelectorAll('div.product-card__image-slider--container.swiper-container img') && Array.from(el.querySelectorAll('div.product-card__image-slider--container.swiper-container img')).map(el => el.getAttribute('data-src'))
-    const otherColors = el.querySelector('.product-variants__slider') && Array.from(document.querySelector('.product-variants__slider').querySelectorAll('.image-box a')).map(el => el.href)
+    const otherColors = el.querySelector('.product-variants__slider') && Array.from(el.querySelector('.product-variants__slider').querySelectorAll('.image-box a')).map(el => el.href)
     const sizes = el.querySelector('.product-size-selector__buttons') && Array.from(el.querySelector('.product-size-selector__buttons').querySelectorAll('button')).map(m => { if (m.classList.contains('product-no-stock')) { return { size: m.value, available: false } } return { size: m.value, available: true } })
     const color = document.querySelector('.sideMenu__box ul').querySelectorAll('li') && Array.from(document.querySelector('.sideMenu__box ul').querySelectorAll('li')).map(m => m.innerHTML).find(f => f.includes("Renk :"))
     const material = document.querySelector('.sideMenu__box ul').querySelectorAll('li') && Array.from(document.querySelector('.sideMenu__box ul').querySelectorAll('li')).map(m => m.innerHTML).find((f, i) => i === 2).trim()
@@ -23,8 +23,6 @@ async function extractPageData({ page }) {
     return data
   }, url)
 }
-
-
 
 
 async function defactoPageHandler({ page, userData }) {
@@ -46,12 +44,15 @@ async function defactoPageHandler({ page, userData }) {
       const product = await extractPageData({ page })
       debugger;
       const { otherColors } = product
+      debugger;
       if (otherColors && otherColors.length > 0) {
         let promises = []
         otherColors.forEach(url => {
           promises.push(fetchOtherColorPages({ url }))
         })
+        debugger;
         const fetchedOtherColors = await Promise.all(promises)
+        debugger;
         const productWithOtherColors = { ...product, otherColors: fetchedOtherColors }
         debugger;
         const urlsToRetry = findFailedUlrs({ fetchedUrls: fetchedOtherColors, sourceUrls: otherColors })
@@ -72,6 +73,7 @@ async function defactoPageHandler({ page, userData }) {
         debugger;
 
       } else {
+        debugger;
         saveData({ data: product, output, filename: "defacto.json" })
       }
       debugger;

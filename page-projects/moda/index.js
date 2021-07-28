@@ -2,7 +2,7 @@ const { URL } = require('url');
 const { defactoPageHandler } = require('./defacto')
 const {kotonPageHandler}=require('./koton')
 async function handlePageFunction({ page, userData }) {
-debugger;
+
     const url = await page.url()
     const hostname = new URL(url).hostname;
     if (hostname === 'www.defacto.com.tr') {

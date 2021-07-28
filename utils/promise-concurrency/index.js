@@ -27,10 +27,10 @@ class PromiseEmitter extends EventEmitter {
       this.emit('initStateSet')
     })
 
-    this.on('invokeNextPromise', () => {
+    this.on('invokeNextPromise', async() => {
       if (this.sync === false) {
-        debugger;
-        this.invokeNextPromise()
+        
+       await this.invokeNextPromise()
      
       }
 
@@ -70,7 +70,7 @@ class PromiseEmitter extends EventEmitter {
       const { id } = promise
       this.resolved.push(promise);
       this.sync = false
-      debugger;
+
       const promiseToRemoveIndex = this.promises.findIndex(p => p.id === id);
       this.promises.splice(promiseToRemoveIndex, 1);
 
@@ -107,7 +107,7 @@ class PromiseEmitter extends EventEmitter {
 
 
   }
-  invokeNextPromise() {
+ async invokeNextPromise() {
 
     for (let i = 0; i < this.queue.length; i++) {
       const { batchName } = this.queue[i]
@@ -116,18 +116,18 @@ class PromiseEmitter extends EventEmitter {
       const freeBatchSpaces = this.batchConcur - batchCounter;
 
       if (freeBatchSpaces > 0 && this.sync === false) {
-debugger;
+
         const nextpromise = this.queue[i];
         const { batchName, id, retries } = nextpromise;
         this.sync = nextpromise.sync
-        debugger;
+    
         this.promises.push(nextpromise);
         const queueToRemoveIndex = this.queue.findIndex(
           p => p.id === nextpromise.id
         );
         this.queue.splice(queueToRemoveIndex, 1);
 
-        nextpromise({ batchName, id, retries });
+       await nextpromise({ batchName, id, retries });
 
       } else {
         continue;
