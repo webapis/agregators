@@ -64,7 +64,7 @@ function taskStarted(taskName) {
     let dbRef =null;
     switch (taskName) {
         case 'page_collection':
-           fbDatabase.ref(`projects/${process.env.projectName}/${startedDateTime}/${fb_steps.CRAWLING_STARTED}`)
+            dbRef=  fbDatabase.ref(`projects/${process.env.projectName}/${startedDateTime}/${fb_steps.CRAWLING_STARTED}`)
             dbRef.set(startedDateTime, (error) => {
                 if (error) {
                     console.log(error)
