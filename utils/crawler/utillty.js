@@ -1,10 +1,10 @@
 const makeDir = require('make-dir')
 const fs = require('fs')
 const path = require('path')
-
+const { fb_steps } = require('../firebase/firebaseEventEmitter')
 async function saveData({ data, output, filename }) {
     const outputPath = `${process.cwd()}/page-data/${output}/${filename}`
-    debugger
+
     let dataObject = [];
     makeDir.sync(path.dirname(outputPath))
     if (fs.existsSync(outputPath)) {
@@ -16,7 +16,7 @@ async function saveData({ data, output, filename }) {
         dataObject.push(data);
     }
     fs.writeFileSync(outputPath, JSON.stringify(dataObject));
-
+  
 }
 
 
@@ -28,7 +28,7 @@ async function autoScroll(page) {
 
             var scrollingElement = (document.scrollingElement || document.body);
             const timer = setInterval(async () => {
-                   // window.focus()
+                // window.focus()
                 scrollingElement.scrollTop = scrollingElement.scrollHeight;
 
                 if (scrollingElement.scrollHeight === last) {

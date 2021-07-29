@@ -26,7 +26,7 @@ async function extractPageData({ page }) {
 
 
 async function defactoPageHandler({ page, userData }) {
-  try {
+
     const { output } = userData
 
     //initial list page
@@ -42,22 +42,22 @@ async function defactoPageHandler({ page, userData }) {
     if (productDetail) {
 
       const product = await extractPageData({ page })
-      debugger;
+      
       const { otherColors } = product
-      debugger;
+      
       if (otherColors && otherColors.length > 0) {
         let promises = []
         otherColors.forEach(url => {
           promises.push(fetchOtherColorPages({ url }))
         })
-        debugger;
+     
         const fetchedOtherColors = await Promise.all(promises)
-        debugger;
+        
         const productWithOtherColors = { ...product, otherColors: fetchedOtherColors }
-        debugger;
+        
         const urlsToRetry = findFailedUlrs({ fetchedUrls: fetchedOtherColors, sourceUrls: otherColors })
         if (urlsToRetry.length > 0) {
-          debugger;
+          
           let retryPromises = []
           urlsToRetry.forEach(url => {
             retryPromises.push(fetchOtherColorPages({ url }))
@@ -67,25 +67,21 @@ async function defactoPageHandler({ page, userData }) {
           const productWithRetriedOtherColors = { ...productWithOtherColors, otherColors: { ...productWithOtherColors.otherColors, retriedOtherColors } }
           saveData({ data: productWithRetriedOtherColors, output, filename: "defacto.json" })
         } else {
-          debugger;
+          
           saveData({ data: productWithOtherColors, output, filename: "defacto.json" })
         }
-        debugger;
+        
 
       } else {
-        debugger;
+        
         saveData({ data: product, output, filename: "defacto.json" })
       }
-      debugger;
+      
 
 
     }
 
-  } catch (error) {
-    debugger;
-    recordError({ batchName: 'defacto', functionName: 'defactoPageHandler', dirName: 'page-collection-errors' })
-    debugger;
-  }
+  
 
 }
 async function autoScroll(page) {
@@ -115,7 +111,7 @@ async function autoScroll(page) {
 function findFailedUlrs({ fetchedUrls, sourceUrls }) {
   const successFullFetchedUrls = fetchedUrls.filter(f => f !== null)
   const urlsToRetrie = sourceUrls.filter(s => successFullFetchedUrls.indexOf(s) !== -1)
-  debugger;
+  
   return urlsToRetrie
 }
 
@@ -142,10 +138,10 @@ async function fetchOtherColorPages({ url }) {
 
     const data = await extractPageData({ page })
     await page.close()
-    debugger;
+    
     return data
   } catch (error) {
-    debugger;
+    
     recordError({ batchName: 'defacto', functionName: 'fetchOtherColorPages', dirName: 'page-collection-errors' })
     await page.close()
 

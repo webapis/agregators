@@ -4,7 +4,7 @@ const makeDir = require('make-dir');
 const path = require('path');
 function copyComponents() {
   walkSync(`${process.cwd()}/src/${process.env.projectName}/csr-components`, async function(filepath) {
-    debugger;
+    
     console.log(`copy components started....`);
     if (!filepath.includes('.DS_Store')) {
       const newDestination = filepath.replace(

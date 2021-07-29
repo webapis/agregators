@@ -1,7 +1,7 @@
 
 
 const {  isMainThread, Worker } = require('worker_threads');
-const {fbDatabase}=require('./firebaseInit')
+//const {fbDatabase}=require('./firebaseInit')
 const { printTable } = require('console-table-printer');
 const { uuidv4 } = require('./uuidv4');
 const EventEmitter = require('events');
@@ -83,7 +83,7 @@ class PromiseEmitter extends EventEmitter {
          const total =this.total
          const resolved =this.resolved.length
          const log = [{ projectName, processType,total,inQueue,resolved, inProcess}];
-         _updateFirebase({processType,total,inQueue,inProcess,resolved})
+      //   _updateFirebase({processType,total,inQueue,inProcess,resolved})
         printTable(log);
           
         } else{
@@ -141,18 +141,18 @@ let worker = {};
   }
 
 
-  function _updateFirebase({processType,total,inQueue,inProcess,resolved}){
-    const dbRef =fbDatabase.ref(`projects/${process.env.projectName}/imageProcessing/${processType}`)
+  // function _updateFirebase({processType,total,inQueue,inProcess,resolved}){
+  //   const dbRef =fbDatabase.ref(`projects/${process.env.projectName}/imageProcessing/${processType}`)
 
-    dbRef.set({total, inQueue, resolved,inProcess},(error)=>{
-      if(error){
-        debugger;
-        console.log('fbDatabase error',error)
-      } else{
-        console.log('firebase updated')
-      }
-    })
-  }
+  //   dbRef.set({total, inQueue, resolved,inProcess},(error)=>{
+  //     if(error){
+  //       debugger;
+  //       console.log('fbDatabase error',error)
+  //     } else{
+  //       console.log('firebase updated')
+  //     }
+  //   })
+  // }
 
 module.exports = { cpuTaskController };
 

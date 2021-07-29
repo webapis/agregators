@@ -45,7 +45,7 @@ async function pageGeneration({ taskSequelizerEventEmitter }) {
       const scripts = pageResources[process.env.projectName].script
       const cssFromCdn = pageResources[process.env.projectName].cssFromCdn
       const localCss = pageResources[process.env.projectName].localCss
-      debugger;
+      
       
       scripts.forEach(s => {
         addScriptTag({ filePath: htmlOutput, file: s, document: dom.window.document })
@@ -59,7 +59,7 @@ async function pageGeneration({ taskSequelizerEventEmitter }) {
         addCssLocal({ filePath: htmlOutput, file: s, document: dom.window.document })
       })
 
-      debugger;
+      
       const content = dom.serialize();
       console.log('page generatred', `${htmlOutput}/${pageName}.html`)
       fs.writeFileSync(`${htmlOutput}/${pageName}.html`, content);
@@ -72,7 +72,7 @@ async function pageGeneration({ taskSequelizerEventEmitter }) {
 
 
   } catch (error) {
-    debugger;
+    
   }
 }
 
@@ -98,6 +98,6 @@ function addCssLocal({ filePath, file, document}) {
  // s.rel = 'stylesheet';
   s.setAttribute("type", "text/css");
   s.href = `${generateFilePath({ filePath })}/${file}`;
-  debugger;
+  
   document.body.prepend(s);
 };

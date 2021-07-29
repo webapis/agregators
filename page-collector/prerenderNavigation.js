@@ -10,7 +10,7 @@ const staticApp = express();
 
 
 async function prerenderNavigation({ taskSequelizerEventEmitter }) {
-    debugger;
+    
     staticApp.use(express.static('page-build'));
 
     staticApp.listen(8081, async () => {
@@ -29,23 +29,23 @@ async function prerenderNavigation({ taskSequelizerEventEmitter }) {
 
 async function ssr({ browser }) {
 
-    debugger;
+    
     const outputDirPath = `${process.cwd()}/page-build/components/nav-component.js`;
     const outputDirPath2 = `${process.cwd()}/page-prerendered/components/nav-component.js`;
     const outputDir = path.dirname(outputDirPath);
     const outputDir2 = path.dirname(outputDirPath2);
-    debugger;
+    
     await makeDir(outputDir);
     await makeDir(outputDir2);
     try {
-        debugger;
+        
         const page = await browser.newPage();
         await page.goto(`http://localhost:8081/moda.html`, {
             waitUntil: 'networkidle0'
         });
          await page.waitForSelector('.side-nav'); // ensure #posts exists in the DOM.
         const html = await  page.evaluate(() => document.querySelector('nav-component').outerHTML); // serialized HTML of page DOM.
-        debugger;
+        
         fs.writeFileSync(
             `${outputDirPath}`,
             html
@@ -54,9 +54,9 @@ async function ssr({ browser }) {
             `${outputDirPath2}`,
             html
         );
-        debugger;
+        
     } catch (error) {
-        debugger;
+        
     }
 
 

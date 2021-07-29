@@ -10,7 +10,7 @@ const staticApp = express();
 
 
 async function pagePrerender({taskSequelizerEventEmitter}){
-    debugger;
+    
     staticApp.use(express.static('page-build'));
 
     staticApp.listen(8081, async () => {
@@ -29,7 +29,7 @@ async function pagePrerender({taskSequelizerEventEmitter}){
 
 async function ssr({ browser}) {
    
-    debugger;
+    
     let files =[]
 
   walkSync(`${process.cwd()}/page-build/`, async filepath => {
@@ -45,11 +45,11 @@ async function ssr({ browser}) {
       const outputDirPath2= `${process.cwd()}/page-prerendered/${url}`;
       const outputDir = path.dirname(outputDirPath);
       const outputDir2 = path.dirname(outputDirPath2);
-      debugger;
+      
       await makeDir(outputDir);
       await makeDir(outputDir2);
       try {
-          debugger;
+          
         const page = await browser.newPage();
         await page.goto(`http://localhost:8081/${url}`, {
           waitUntil: 'networkidle0'
@@ -58,7 +58,7 @@ async function ssr({ browser}) {
         await page.evaluate(()=> document.querySelector('nav-component').innerHTML='')
     
         const html = await page.content(); // serialized HTML of page DOM.
-        debugger;
+        
         fs.writeFileSync(
             `${outputDirPath}`,
             html
@@ -67,9 +67,9 @@ async function ssr({ browser}) {
             `${outputDirPath2}`,
             html
           );
-          debugger;
+          
       } catch (error) {
-        debugger;
+        
       }
     })
   );

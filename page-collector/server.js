@@ -1,7 +1,7 @@
 require('dotenv').config()
 
 
-
+const { firebaseEvetEmitter } = require('../utils/firebase/firebaseEventEmitter')
 const { projects } = require('./project.config');
 const { removeDerectory } = require('./removeDerectory');
 const { taskSequelizer } = require('./task-sequelizer')
@@ -10,19 +10,26 @@ const { pageBuilder } = require('./pageBuilder');
 const { pageNavigationItems } = require('./pageNavigationItems');
 const { pageCrawler } = require('./pageCrawler')
 const { batchImageCollection } = require('./batchImageCollection');
+const { pageMergeFiles } = require('./page_merge_files')
 const { batchImageProcessing } = require('./batchImageProcessing');
 const { pageNavDataTreeCreation } = require('./pageNavTreeCreation')
 const { pageLeavesBy100 } = require('./pageLeavesBy100')
 const { pageUploadData } = require('./pageUploadData')
 const { pagePrerender } = require('./pagePrerender')
 const { testDataCollection } = require('./testDataCollection')
+
 function change() {
+
   const tasks = projects[process.env.projectName]
   const taskSequelizerEventEmitter = taskSequelizer({ tasks })
+  firebaseEvetEmitter({ taskSequelizerEventEmitter })
   taskSequelizerEventEmitter.on('nextTask', async function (nextTaskName) {
     switch (nextTaskName) {
       case 'page_collection':
         removeDerectory('page-data') && removeDerectory('page-collection-errors') && pageCrawler({ taskSequelizerEventEmitter })
+        break;
+      case 'page_merge_files':
+        removeDerectory('page-merged-files') && pageMergeFiles({ taskSequelizerEventEmitter })
         break;
       case 'test_data_collection':
         testDataCollection({ taskSequelizerEventEmitter })

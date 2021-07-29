@@ -1,10 +1,8 @@
 const { printTable } = require('console-table-printer');
-const { fbDatabase } = require('../firebaseInit')
+//const { fbDatabase } = require('../firebaseInit')
 const rows = []
 function stateTableLog({ self, promise }) {
-  try {
-
-
+  
     const { batchName } = promise
 
     const total = self.total.filter(t => t.batchName === batchName).length;
@@ -44,11 +42,7 @@ function stateTableLog({ self, promise }) {
     setTimeout(() => {
       self.emit('invokeNextPromise')
     }, 0)
-  } catch (error) {
-    console.log(error)
-    process.exit(1)
-    debugger;
-  }
+  
 }
 
 

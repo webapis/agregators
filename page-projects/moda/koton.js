@@ -6,7 +6,7 @@ const { enqueueLink } = require('../../utils/crawler/enqueueLink')
 const { requestQueue } = require('../../utils/crawler/requestQueue')
 async function extractPageData({ page }) {
     const url = await page.url()
-    debugger;
+
     return await page.$eval('.product-content-wrap', (el, _url) => {
         let data = {}
 
@@ -30,13 +30,13 @@ async function extractPageData({ page }) {
 
 
 async function kotonPageHandler({ page, userData }) {
-    try {
-        const { output } = userData
-        const url = await page.url()
-        const productList = await page.$('.product-list-container')
-        debugger;
-        if (!url.includes('page') && productList) {
-            debugger;
+    const { output } = userData
+    const url = await page.url()
+    const productList = await page.$('.product-list-container')
+
+    if (!url.includes('page') && productList) {
+        const hasPagination = await page.$('.paging ul')
+        if (hasPagination) {
             const totalPages = await page.$eval('.paging ul', el => parseInt(el.lastElementChild.previousElementSibling.innerText) - 1)
             const commonPageUrlPatter = await page.$eval('.paging ul', el => el.lastElementChild.previousElementSibling.querySelector('a').href)
             const nextPageUrl = commonPageUrlPatter.substring(0, commonPageUrlPatter.lastIndexOf('=') + 1)
@@ -44,38 +44,38 @@ async function kotonPageHandler({ page, userData }) {
                 const nextPage = `${nextPageUrl}${i}`
                 requestQueue.push({ url: nextPage, userData })
             }
-        }
-        if (productList) {
-            await enqueueLink({ selector: '.productGrid .product-item figure > a', page, userData })
-        }
-        const productDetailImageContainer = await page.$('.productDetailImageContainer')
-        debugger;
-        if (productDetailImageContainer) {
-            const product = await extractPageData({ page })
-            debugger;
-            const { otherColors } = product
-            if (otherColors && otherColors.length > 0) {
-                let promises = []
-                otherColors.forEach(url => {
-                    promises.push(fetchOtherColorPages({ url }))
-                })
 
-                const fetchedOtherColors = await Promise.all(promises)
-                const productWithOtherColors = { ...product, otherColors: fetchedOtherColors }
-                saveData({ data: productWithOtherColors, output, filename: 'koton.json' })
-                debugger;
-            } else {
-                saveData({ data: product, output: 'koton.json' })
-            }
-            debugger;
         }
 
-        debugger;
-    } catch (error) {
-        debugger;
-        recordError({ batchName: 'koton', functionName: 'kotonPageHandler', dirName: 'page-collection-errors' })
-        debugger;
     }
+    if (productList) {
+        await enqueueLink({ selector: '.productGrid .product-item figure > a', page, userData })
+    }
+    const productDetailImageContainer = await page.$('.productDetailImageContainer')
+
+    if (productDetailImageContainer) {
+        const product = await extractPageData({ page })
+
+        const { otherColors } = product
+        if (otherColors && otherColors.length > 0) {
+            let promises = []
+            otherColors.forEach(url => {
+                promises.push(fetchOtherColorPages({ url }))
+            })
+
+            const fetchedOtherColors = await Promise.all(promises)
+            const productWithOtherColors = { ...product, otherColors: fetchedOtherColors }
+            saveData({ data: productWithOtherColors, output, filename: 'koton.json' })
+
+        } else {
+            saveData({ data: product, output, filename: 'koton.json' })
+        }
+
+    }
+
+
+
+
 
 }
 
@@ -98,10 +98,10 @@ async function fetchOtherColorPages({ url }) {
         await page.goto(url)
         await page.waitForSelector('.productDetailImageContainer')
         const data = await extractPageData({ page })
-        debugger;
+
         return data
     } catch (error) {
-        debugger;
+
         recordError({ batchName: 'koton', functionName: 'fetchOtherColorPages', dirName: 'page-collection-errors' })
         await page.close()
     }

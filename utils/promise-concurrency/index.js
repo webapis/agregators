@@ -43,7 +43,7 @@ class PromiseEmitter extends EventEmitter {
 
     })
     this.on('promiseAttached', function ({ promise, unshift }) {
-      try {
+   
         const promiseWithId = promise;
         promiseWithId.id = uuidv4();
         promiseWithId.retries = 0;
@@ -59,10 +59,7 @@ class PromiseEmitter extends EventEmitter {
 
         this.emit('log_state', { self: this, promise })
 
-      } catch (error) {
-        debugger;
-        throw error
-      }
+      
     });
 
     this.on('promiseResolved', function (promise) {

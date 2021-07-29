@@ -1,7 +1,8 @@
 
 const { recordError } = require('../recordError')
+const { fb_steps } = require('../firebase/firebaseEventEmitter')
 const { URL } = require('url');
-function pageController({ url, browser, eventEmitter, handlePageFunction, preNavHook, postNavHook, userData}) {
+function pageController({ url, browser, eventEmitter, handlePageFunction, preNavHook, postNavHook, userData }) {
 
   return async ({ batchName, id, retries }) => {
 
@@ -12,7 +13,7 @@ function pageController({ url, browser, eventEmitter, handlePageFunction, preNav
 
       await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 200000 });
 
- 
+
       await postNavHook({ page })
       const host = await page.url()
       const origin = new URL(host).origin;
@@ -48,6 +49,7 @@ function pageController({ url, browser, eventEmitter, handlePageFunction, preNav
       console.log(error)
       debugger;
       recordError({ batchName, error: { error, url }, functionName: 'fetchPageContent', dirName: 'page-collection-errors' })
+      global.fb_eventEmitter.emit(fb_steps.DATA_COLLECTION_FAILED)
     }
   };
 }

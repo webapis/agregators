@@ -29,7 +29,7 @@ customElements.define(
 
       this.innerHTML = `
         <div class="container">
-       
+       <h3>Project detail:</h3>
           <div class="row border border-1 p-5 rounded mt-5">
 
         <div class="col-6">
@@ -40,9 +40,7 @@ customElements.define(
         <div class="col-4">
         <div class="row">
 
-        <div class="col-12 pb-2">
-        <input type="text" class="form-control" placeholder="Enter Company Name" id="company-name">
-        </div>
+    
 
         <div class="col-12">
         <button class="btn btn-primary" id='start-scrape' ${(dataCollection > 0 && dataCollection !== 4) && 'disabled'}>Start Scraping</button>
@@ -71,14 +69,7 @@ customElements.define(
 
         </div>
         `;
-     document.getElementById('company-name').addEventListener('input',(e)=>{
- const {value}=e.target
-     
-           window.pageStore.dispatch({
-             type: window.actionTypes.COMPANY_NAME_CHANGED,
-             payload: value
-           });
-     })
+
 
       document.getElementById('start-scrape').addEventListener('click', () => {
         
@@ -87,18 +78,10 @@ customElements.define(
         .database()
         .ref(`gitticket`)
       ticket.once('value', data => {
-        
         const tkt = data.val()
 
         dispatchAction({ticket:tkt})
       })
-        
-      
-          // window.pageStore.dispatch({
-          //   type: window.actionTypes.VIEW_CHANGED,
-          //   payload: 'signin-google'
-          // });
-        
        
       });
       const resultContainer = document.getElementById('scrape-result-container')

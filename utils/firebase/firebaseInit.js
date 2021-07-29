@@ -4,7 +4,7 @@ const admin = require('firebase-admin');
 //var publicServiceAccountInfo = require('../turkmenistan-market-74b0fe0d7246.json');
 if(process.env.LOCAL){
   
-  var service = require('../turkmenistan-market-74b0fe0d7246.json'); 
+  var service = require('../../turkmenistan-market-74b0fe0d7246.json'); 
   admin.initializeApp({
     credential:  admin.credential.cert(service), //admin.credential.applicationDefault(),
     storageBucket: 'gs://turkmenistan-market.appspot.com',
