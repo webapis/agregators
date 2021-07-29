@@ -6,24 +6,24 @@ customElements.define(
     }
 
     connectedCallback() {
-      const { state: { view, selectedProjectName,user } } = window.pageStore;
+      const { state: { view, selectedProjectName, user } } = window.pageStore;
 
       const dataCollectionRef = firebase
         .database()
         .ref(`projects/${selectedProjectName}`)
       dataCollectionRef.on('value', (snapshot) => {
-        const { dataCollection, totalDataCollected, end, start,xlsx,projectDescription } = snapshot.val()
-       
+        const { dataCollection, totalDataCollected, end, start, xlsx, projectDescription } = snapshot.val()
+
         const startDate = new Date(start)
         const endDate = end === '' ? '' : new Date(end)
         const duration = end === '' ? '' : window.diff(start, end)
-        this.render({ dataCollection, totalDataCollected, selectedProjectName, duration, startDate, endDate,xlsx,projectDescription,user });
+        this.render({ dataCollection, totalDataCollected, selectedProjectName, duration, startDate, endDate, xlsx, projectDescription, user });
 
       })
 
     }//connectedCallback
 
-    render({ dataCollection, totalDataCollected, selectedProjectName, duration, startDate, endDate, xlsx,projectDescription,user}) {
+    render({ dataCollection, totalDataCollected, selectedProjectName, duration, startDate, endDate, xlsx, projectDescription, user }) {
 
 
 
@@ -72,17 +72,17 @@ customElements.define(
 
 
       document.getElementById('start-scrape').addEventListener('click', () => {
-        
+
 
         const ticket = firebase
-        .database()
-        .ref(`gitticket`)
-      ticket.once('value', data => {
-        const tkt = data.val()
+          .database()
+          .ref(`gitticket`)
+        ticket.once('value', data => {
+          const tkt = data.val()
 
-        dispatchAction({ticket:tkt})
-      })
-       
+          dispatchAction({ ticket: tkt })
+        })
+
       });
       const resultContainer = document.getElementById('scrape-result-container')
       resultContainer.innerHTML = ``
@@ -90,9 +90,9 @@ customElements.define(
         .database()
         .ref(`collections/${selectedProjectName}`)
       collectionRef.orderByChild("end").on('child_added', (shapshot) => {
-        
+
         const { json, xlsx, start, end } = shapshot.val()
-        
+
 
         const scrapeResult = document.createElement('scraping-result')
         scrapeResult.setAttribute('upload-path-xlsx', xlsx)
@@ -101,24 +101,24 @@ customElements.define(
         scrapeResult.setAttribute('end', end)
 
         resultContainer.prepend(scrapeResult)
-        
+
       })
 
-      
-      
-    
+
+
+
     }//render
   }
 );
 
-function dispatchAction({ticket}) {
-  const { state: { user, view, selectedProjectName,companyName } } = window.pageStore;
+function dispatchAction({ ticket }) {
+  const { state: { user, view, selectedProjectName, companyName } } = window.pageStore;
   const dataCollectionRef = firebase
     .database()
     .ref(`projects/${selectedProjectName}`)
-  dataCollectionRef.update({ dataCollection: 1, totalDataCollected: 0, start: Date.now(), end: '',xlsx:'' }, (error) => {
+  dataCollectionRef.update({ dataCollection: 1, totalDataCollected: 0, start: Date.now(), end: '', xlsx: '' }, (error) => {
     if (error) {
-      
+
       errorHandler({ error })
     } else {
       debugger;
@@ -131,17 +131,17 @@ function dispatchAction({ticket}) {
               authorization: `token ${ticket}`,
               Accept: 'application/vnd.github.v3+json'
             },
-            data: { ref: 'action', inputs: { projectName: selectedProjectName,companyName:companyName } },
+            data: { ref: 'action', inputs: { projectName: selectedProjectName, companyName: companyName, parameters:"all params here" } },
             repo: 'agregators',
             owner: 'webapis',
             workflow_id: 'aggregate.yml'
           }
         )
           .then((result) => {
-            
+
             dataCollectionRef.update({ dataCollection: 2 }, (error) => {
               if (error) {
-                
+
                 errorHandler({ error })
               }
             })
