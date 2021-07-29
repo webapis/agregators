@@ -9,7 +9,7 @@ on:
       companyName:
         description: 'Company Name'
         required: true
-        default: 'sony',
+        default: 'sony'
       parameters:
        description: 'Parameters'
        required: true
