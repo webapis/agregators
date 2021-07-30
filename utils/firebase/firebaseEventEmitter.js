@@ -13,7 +13,8 @@ const fb_steps = {
     MERGING_FILES_STARTED: 'MERGING_FILES_STARTED',
     MERGING_FILES_COMPLETE: 'MERGING_FILES_COMPLETE',
     MERGING_FILES_FAILED: 'MERGING_FILES_FAILED',
-    RETRIE_PROMISE_FAILED: 'RETRIE_PROMISE_FAILED'
+    RETRIE_PROMISE_FAILED: 'RETRIE_PROMISE_FAILED',
+    PC_PROMISE_STATE_CHANGED: 'PC_PROMISE_STATE_CHANGED'//promiseConcurrency state change
 }
 const projectName = process.env.projectName
 
@@ -21,6 +22,19 @@ const projectName = process.env.projectName
 class FirebaseEmitter extends EventEmitter {
     constructor() {
         super()
+        this.on(fb_steps.PC_PROMISE_STATE_CHANGED, (state) => {
+            debugger;
+            const dbRef = fbDatabase.ref(`projects/${projectName}/${global.fb_run_id}/${fb_steps.PC_PROMISE_STATE_CHANGED}`)
+            dbRef.set(state, (error) => {
+                if (error) {
+                    console.log(error)
+                } else {
+                    debugger;
+                }
+            })
+
+
+        })
         this.on(fb_steps.DATA_COLLECTION_FAILED, () => {
             const dbRef = fbDatabase.ref(`projects/${projectName}/${global.fb_run_id}/DATA_COLLECTION_FAILED`)
             dbRef.once('value', (snapshot) => {

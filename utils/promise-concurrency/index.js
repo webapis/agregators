@@ -1,7 +1,7 @@
 
 const EventEmitter = require('events');
 const { uuidv4 } = require('../uuidv4');
-const { stateTableLog } = require('./state-table-log')
+const { stateTableLog, calculatePromiseState } = require('./state-table-log')
 const { fb_steps } = require('../../utils/firebase/firebaseEventEmitter')
 class PromiseEmitter extends EventEmitter {
   constructor(batchConcur, rejectedRetry, taskName) {
@@ -16,6 +16,11 @@ class PromiseEmitter extends EventEmitter {
     this.taskName = taskName
     this.retries = []
     this.sync = false
+
+    global.pc_state_changeMonitor = setInterval(() => {
+      debugger;
+      calculatePromiseState({ self: this, cb: null })
+    }, 5000)
     this.on('initState', (state) => {
       const { queue, promises, resolved, rejected, retries, total } = state
       queue && this.queue.push(...queue)
@@ -28,9 +33,9 @@ class PromiseEmitter extends EventEmitter {
     })
 
     this.on('invokeNextPromise', async () => {
-      
+
       if (this.sync === false) {
-        
+
         await this.invokeNextPromise()
 
       }
@@ -78,10 +83,10 @@ class PromiseEmitter extends EventEmitter {
 
     this.on('retryPromise', function (ret) {
       const { promise, unshift } = ret
-      
+
       this.sync = false
       if (promise.retries === this.rejectedRetry) {
-debugger;
+        debugger;
         this.rejected.push(promise);
 
 
@@ -112,23 +117,28 @@ debugger;
     })
 
 
-  }
+  }//constructor
   async invokeNextPromise() {
-    
+
 
     if (this.queue.length === 0 && this.promises.length === 0) {
-      debugger;
-      this.emit('promiseExecComplete')
+      clearInterval(global.pc_state_changeMonitor)
+      calculatePromiseState({
+        self: this, cb: () => {
+          this.emit('promiseExecComplete')
+        }
+      })
+
     } else if (this.queue.length > 0) {
-      debugger;
+
       for (let i = 0; i < this.queue.length; i++) {
         const { batchName } = this.queue[i]
-debugger;
+
         const batchCounter = this.promises.length === 0 ? 0 : this.promises.filter(f => f.batchName === batchName).length;
         const freeBatchSpaces = this.batchConcur - batchCounter;
-        
+
         if (freeBatchSpaces > 0 && this.sync === false) {
-          
+
           const nextpromise = this.queue[i];
           const { batchName, id, retries } = nextpromise;
           this.sync = nextpromise.sync
@@ -143,8 +153,8 @@ debugger;
           await nextpromise({ batchName, id, retries });
 
         } else {
-      
-          
+
+
           continue;
         }
       }
