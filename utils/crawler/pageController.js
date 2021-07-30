@@ -2,20 +2,25 @@
 const { recordError } = require('../recordError')
 const { fb_steps } = require('../firebase/firebaseEventEmitter')
 const { URL } = require('url');
-function pageController({ url, browser, eventEmitter, handlePageFunction, preNavHook, postNavHook, userData }) {
+function pageController({ url, browser, eventEmitter, handlePageFunction, preNavHook, postNavHook, userData,sync }) {
+
 
   return async ({ batchName, id, retries }) => {
 
     const page = await browser.newPage();
     try {
-      await preNavHook({ page })
+      //  await preNavHook({ page })
 
+      if (retries === undefined) {
+        throw 'retries is undefined'
+      }
+      //await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 200000 });
+      const timeout = retries === 0 ? 30000 : 30000 * retries
 
-      await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 200000 });
-
-
-      await postNavHook({ page })
+      await page.goto(url, {waitUntil:'networkidle0', timeout });
+      //await postNavHook({ page })
       const host = await page.url()
+      
       const origin = new URL(host).origin;
       if (host !== url) {
 
@@ -24,15 +29,18 @@ function pageController({ url, browser, eventEmitter, handlePageFunction, preNav
           browser,
           eventEmitter,
           handlePageFunction,
-          userData
+          userData,
+          sync
         })
         nextPagePromise.batchName = batchName;
         nextPagePromise.retries = retries
         nextPagePromise.id = id
-
-        eventEmitter.emit('retryPromise', { promise: nextPagePromise, unshift: false });
-
+        nextPagePromise.url = url
+        nextPagePromise.sync
         await page.close()
+        eventEmitter.emit('retryPromise', { promise: nextPagePromise, unshift: true });
+
+      
       }
 
       await handlePageFunction({
@@ -46,10 +54,38 @@ function pageController({ url, browser, eventEmitter, handlePageFunction, preNav
 
       await page.close()
     } catch (error) {
-      console.log(error)
-      debugger;
-      recordError({ batchName, error: { error, url }, functionName: 'fetchPageContent', dirName: 'page-collection-errors' })
-      global.fb_eventEmitter.emit(fb_steps.DATA_COLLECTION_FAILED)
+
+      const { name } = error
+      
+      if (name === 'TimeoutError') {
+        
+        const nextPagePromise = pageController({
+          url,
+          browser,
+          eventEmitter,
+          handlePageFunction,
+          userData,
+          sync
+        })
+        nextPagePromise.batchName = batchName;
+        nextPagePromise.retries = retries
+        nextPagePromise.id = id
+        nextPagePromise.url = url
+        nextPagePromise.sync
+        await page.close()
+        eventEmitter.emit('retryPromise', { promise: nextPagePromise, unshift: true });
+        debugger;
+   
+        debugger;
+      } else {
+        console.log('retries errrr', retries)
+        console.log("pageController ERROR.....:", error)
+        recordError({ batchName, error: { error, url }, functionName: 'pageController', dirName: 'page-collection-errors' })
+      }
+
+      
+      // recordError({ batchName, error: { error, url }, functionName: 'fetchPageContent', dirName: 'page-collection-errors' })
+      // global.fb_eventEmitter.emit(fb_steps.DATA_COLLECTION_FAILED)
     }
   };
 }

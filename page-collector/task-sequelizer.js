@@ -69,7 +69,7 @@ function taskStarted(taskName) {
                 if (error) {
                     console.log(error)
                 } else {
-                    debugger;
+                    
                 }
             })
             break;
@@ -79,7 +79,7 @@ function taskStarted(taskName) {
                 if (error) {
                     console.log(error)
                 } else {
-                    debugger;
+                    
                 }
             })
             break;
@@ -112,7 +112,7 @@ function taskComplete(taskName) {
                 if (error) {
                     console.log(error)
                 } else {
-                    debugger;
+                    
                 }
             })
             break;
@@ -123,7 +123,7 @@ function taskComplete(taskName) {
                 if (error) {
                     console.log(error)
                 } else {
-                    debugger;
+                    
                 }
             })
             break;
@@ -165,7 +165,7 @@ function taskFailed(taskName) {
                 if (error) {
                     console.log(error)
                 } else {
-                    debugger;
+                    
                 }
             })
             break;
@@ -193,7 +193,7 @@ module.exports = { taskSequelizer }
 
 /*
     taskSequelizerEventEmitter.on('taskComplete', (taskName) => {
-        debugger;
+        
         let fbStep = ''
         switch (taskName) {
             case 'page_collection':
@@ -207,7 +207,7 @@ module.exports = { taskSequelizer }
             if (error) {
                 console.log(error)
             } else {
-                debugger;
+                
             }
         })
     })
@@ -227,7 +227,7 @@ module.exports = { taskSequelizer }
             if (error) {
                 console.log(error)
             } else {
-                debugger;
+                
             }
         })
 
@@ -237,7 +237,7 @@ module.exports = { taskSequelizer }
 
     })
     taskSequelizerEventEmitter.on('no_more_task', () => {
-        debugger;
+        
         firebaseEmitter.emit(fb_steps.NO_MORE_TASK)
     })
 */

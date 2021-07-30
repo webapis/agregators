@@ -75,24 +75,52 @@ describe('dataCollection tests', function () {
     })
 
 
-    it.only('defactoPageHandler detailPage', async function () {
+    it('defactoPageHandler detailPage', async function () {
         this.timeout(200000)
-        
         const { defactoPageHandler } = require('../../page-projects/moda/defacto')
-
-
-        
         const browser = await puppeteer.launch({ headless: false, timeout: 200000 })
         global.browser = browser
         const page = await browser.newPage()
         await page.goto('https://www.defacto.com.tr/ceket-yaka-relax-fit-kisa-kollu-keten-gomlek-1964596', { timeout: 200000 })
-
         
         await defactoPageHandler({ page, userData: { output: `test/data` } })
         //  const enqueudUrls = global.enqueuedUrls
         //  const actual = enqueudUrls.length
-        
         //  assert.strictEqual(totalExtectedPages, actual)
+        
+    })
+
+
+
+    it('https://books.toscrape.com/ initial listPage', async function () {
+        this.timeout(200000)
+        
+        const { booksPageHandler } = require('../../page-projects/books')
+        
+        const browser = await puppeteer.launch({ headless: true, timeout: 200000 })
+        const page = await browser.newPage()
+        await page.goto('https://books.toscrape.com/catalogue/category/books_1/index.html', { timeout: 200000 })
+        await booksPageHandler({ page, userData: { output: 'ttt' } })
+        const enqueudUrls = global.enqueuedUrls
+        const actual = enqueudUrls.length
+            debugger;
+      //  assert.strictEqual(totalExtectedPages, actual)
+        
+    })
+
+    it.only('https://books.toscrape.com/ detailPage', async function () {
+        this.timeout(200000)
+        
+        const { booksPageHandler } = require('../../page-projects/books')
+        
+        const browser = await puppeteer.launch({ headless: true, timeout: 200000 })
+        const page = await browser.newPage()
+        await page.goto('https://books.toscrape.com/catalogue/in-her-wake_980/index.html', { timeout: 200000 })
+        await booksPageHandler({ page, userData: { output: 'test/data' } })
+        const enqueudUrls = global.enqueuedUrls
+        const actual = enqueudUrls.length
+            debugger;
+      //  assert.strictEqual(totalExtectedPages, actual)
         
     })
 })

@@ -26,7 +26,7 @@ function stateTableLog({ self, promise }) {
 
     // dbRef.set({ total, inQueue, inProccess, retries, resolved, rejected }, (error) => {
     //   if (error) {
-    //     debugger;
+    //     
     //     console.log('fbDatabase error', error)
     //   } else {
     //     console.log('firebase updated')
@@ -36,12 +36,12 @@ function stateTableLog({ self, promise }) {
     rows.push(log)
     printTable(rows)
     if (retries.length > 0) {
-      debugger;
+      
     }
 
-    setTimeout(() => {
-      self.emit('invokeNextPromise')
-    }, 0)
+    // setTimeout(() => {
+    //   self.emit('invokeNextPromise')
+    // }, 0)
   
 }
 

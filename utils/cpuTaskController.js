@@ -47,7 +47,7 @@ class PromiseEmitter extends EventEmitter {
         const resolved =this.resolved.length
         const log = [{ projectName, processType,total,inQueue,resolved, inProcess}];
         _updateFirebase({processType,total,inQueue,inProcess,resolved})
-        debugger;
+        
         printTable(log);
         if(this.queue.length===0 && this.proccess.length===0){
           console.log('all task complete')
@@ -75,7 +75,7 @@ class PromiseEmitter extends EventEmitter {
    
           workerService({workerData,script,id,eventEmitter})
           this.proccess.push(this.queue[i])
-          debugger;
+          
          this.queue.shift()
          const inQueue= this.queue.length>0? this.queue.length * this.batch:0
          const inProcess= this.proccess.length*this.batch
@@ -146,7 +146,7 @@ let worker = {};
 
   //   dbRef.set({total, inQueue, resolved,inProcess},(error)=>{
   //     if(error){
-  //       debugger;
+  //       
   //       console.log('fbDatabase error',error)
   //     } else{
   //       console.log('firebase updated')

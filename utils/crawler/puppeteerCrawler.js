@@ -16,7 +16,7 @@ async function puppeteerCrawler({ handlePageFunction, headless, preNavHook, post
         const browser = await puppeteer.launch({ headless, timeout: 120000 });
         global.browser = browser
         eventEmitter.on('promiseExecComplete', async () => {
-
+debugger;
             eventEmitter = null;
             await browser.close();
             complete()
@@ -26,7 +26,7 @@ async function puppeteerCrawler({ handlePageFunction, headless, preNavHook, post
             const hostName = new URL(url).hostname;
             const batchName = hostName.replace('www.', '').replace('https://', '').replace('.com.tr', '').replace('.com', '')
 
-            const nextPromise = pageController({ url, browser, eventEmitter, handlePageFunction, preNavHook, postNavHook, userData })
+            const nextPromise = pageController({ url, browser, eventEmitter, handlePageFunction, preNavHook, postNavHook, userData,sync:false })
             nextPromise.batchName = batchName
             nextPromise.sync = false
             eventEmitter.emit('promiseAttached', { promise: nextPromise, unshift: false });
@@ -37,7 +37,7 @@ async function puppeteerCrawler({ handlePageFunction, headless, preNavHook, post
                 const { url, userData } = obj
                 const hostName = new URL(url).hostname;
                 const batchName = hostName.replace('www.', '').replace('https://', '').replace('.com.tr', '').replace('.com', '')
-                const nextPromise = pageController({ url, browser, eventEmitter, handlePageFunction, preNavHook, postNavHook, userData })
+                const nextPromise = pageController({ url, browser, eventEmitter, handlePageFunction, preNavHook, postNavHook, userData,sync:true })
                 nextPromise.batchName = batchName
                 nextPromise.sync = true
                 eventEmitter.emit('promiseAttached', { promise: nextPromise, unshift: false });

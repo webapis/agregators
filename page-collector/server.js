@@ -11,6 +11,7 @@ const { pageNavigationItems } = require('./pageNavigationItems');
 const { pageCrawler } = require('./pageCrawler')
 const { batchImageCollection } = require('./batchImageCollection');
 const { pageMergeFiles } = require('./page_merge_files')
+const { pageExportExcel } = require('./page_export_excel')
 const { batchImageProcessing } = require('./batchImageProcessing');
 const { pageNavDataTreeCreation } = require('./pageNavTreeCreation')
 const { pageLeavesBy100 } = require('./pageLeavesBy100')
@@ -30,6 +31,9 @@ function change() {
         break;
       case 'page_merge_files':
         removeDerectory('page-merged-files') && pageMergeFiles({ taskSequelizerEventEmitter })
+        break;
+      case 'page_export_excel':
+        removeDerectory('page-data-excel') && pageExportExcel({ taskSequelizerEventEmitter })
         break;
       case 'test_data_collection':
         testDataCollection({ taskSequelizerEventEmitter })

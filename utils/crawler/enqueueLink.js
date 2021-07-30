@@ -22,7 +22,7 @@ async function enqueueLink({ selector, page, userData = {} }) {
     } catch (error) {
         console.log(error)
         process.exit(1)
-        debugger;
+        
     }
 }
 

@@ -13,7 +13,7 @@ function pageMergeFiles({ taskSequelizerEventEmitter }) {
             files.push(filepath)
         });
         makeDir.sync(path.dirname(output))
-        debugger;
+        
         for (let filepath of files) {
             const data = fs.readFileSync(filepath, { encoding: 'utf-8' });
             if (data) {

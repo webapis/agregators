@@ -6,6 +6,6 @@ const moda = [
   //  {dest:`moda/kadın/giyim/alt-giyim/etek`, source:["https://www.defacto.com.tr/kadin-etek"]},
   //  {dest:'moda/kadın/giyim/ust-giyim/tunik',source:['https://www.koton.com/tr/kadin/giyim/ust-giyim/tunik/c/M01-C02-N01-AK101-K100118']}
 ]
-
-module.exports = { moda }
+const books = [{ dest: 'books', source: ['https://books.toscrape.com/catalogue/category/books_111111/index.html'] }]
+module.exports = { moda, books }
 //kadin/giyim/dis-giyim
