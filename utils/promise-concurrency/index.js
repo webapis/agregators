@@ -143,7 +143,7 @@ debugger;
           await nextpromise({ batchName, id, retries });
 
         } else {
-          stateTableLog({ self: this, promise: nextpromise })
+      
           
           continue;
         }

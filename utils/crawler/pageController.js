@@ -47,12 +47,13 @@ function pageController({ url, browser, eventEmitter, handlePageFunction, preNav
         page,
         userData
       })
+      await page.close()
       eventEmitter.emit('promiseResolved', {
         batchName,
         id
       });
 
-      await page.close()
+ 
     } catch (error) {
 
       const { name } = error

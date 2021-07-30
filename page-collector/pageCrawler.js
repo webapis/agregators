@@ -30,16 +30,14 @@ async function pageCrawler({ taskSequelizerEventEmitter }) {
     try {
 
         const projectUrls = sitemaps[process.env.projectName]
-        
         projectUrls.forEach(u => {
             const { dest, source } = u
             source.forEach(s => {
                 requestQueue.push({ url: s, userData: { output: dest } })
             })
         })
-   
         await puppeteerCrawler({
-            handlePageFunction, headless: false, preNavHook, postNavHook, complete: () => {
+            handlePageFunction, headless: true, preNavHook, postNavHook, complete: () => {
                 taskSequelizerEventEmitter.emit('taskComplete', 'page_collection')
             }
         })
