@@ -75,9 +75,7 @@ function pageController({ url, browser, eventEmitter, handlePageFunction, preNav
         nextPagePromise.sync
         await page.close()
         eventEmitter.emit('retryPromise', { promise: nextPagePromise, unshift: true });
-        debugger;
-   
-        debugger;
+     
       } else {
         console.log('retries errrr', retries)
         console.log("pageController ERROR.....:", error)

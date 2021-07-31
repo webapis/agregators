@@ -3,6 +3,7 @@ const EventEmitter = require('events');
 const { uuidv4 } = require('../uuidv4');
 const { stateTableLog, calculatePromiseState } = require('./state-table-log')
 const { fb_steps } = require('../../utils/firebase/firebaseEventEmitter')
+const { fbDatabase } = require('../../utils/firebase/firebaseInit')
 class PromiseEmitter extends EventEmitter {
   constructor(batchConcur, rejectedRetry, taskName) {
     super();
@@ -17,10 +18,10 @@ class PromiseEmitter extends EventEmitter {
     this.retries = []
     this.sync = false
 
-    global.pc_state_changeMonitor = setInterval(() => {
-      debugger;
-      calculatePromiseState({ self: this, cb: null })
-    }, 5000)
+    this.promiseStateMonitor = setInterval(() => {
+
+      this.calculatePromiseState()
+    }, 10000)
     this.on('initState', (state) => {
       const { queue, promises, resolved, rejected, retries, total } = state
       queue && this.queue.push(...queue)
@@ -33,21 +34,14 @@ class PromiseEmitter extends EventEmitter {
     })
 
     this.on('invokeNextPromise', async () => {
-
       if (this.sync === false) {
-
         await this.invokeNextPromise()
-
       }
 
 
 
     })
-    this.on('log_state', ({ self, promise }) => {
 
-      // stateTableLog({ self, promise })
-
-    })
     this.on('promiseAttached', function ({ promise, unshift }) {
 
       const promiseWithId = promise;
@@ -63,8 +57,6 @@ class PromiseEmitter extends EventEmitter {
 
       stateTableLog({ self: this, promise })
 
-      // this.emit('log_state', { self: this, promise })
-
       this.emit('invokeNextPromise')
     });
 
@@ -73,12 +65,11 @@ class PromiseEmitter extends EventEmitter {
       const { id } = promise
       this.resolved.push(promise);
       this.sync = false
-
       const promiseToRemoveIndex = this.promises.findIndex(p => p.id === id);
       this.promises.splice(promiseToRemoveIndex, 1);
       stateTableLog({ self: this, promise })
       this.emit('invokeNextPromise')
-      // this.emit('log_state', { self: this, promise })
+
     });
 
     this.on('retryPromise', function (ret) {
@@ -89,9 +80,7 @@ class PromiseEmitter extends EventEmitter {
         debugger;
         this.rejected.push(promise);
 
-
         global.fb_eventEmitter.emit(fb_steps.RETRIE_PROMISE_FAILED)
-        //  this.emit('log_state', { self: this, promise })
 
       } else {
         const promiseToRetry = promise
@@ -102,7 +91,6 @@ class PromiseEmitter extends EventEmitter {
           this.queue.push(promiseToRetry);
         }
 
-
       }
       const promiseToRemoveIndex = this.promises.findIndex(
         p => p.id === promise.id
@@ -111,23 +99,62 @@ class PromiseEmitter extends EventEmitter {
       this.promises.splice(promiseToRemoveIndex, 1);
 
       stateTableLog({ self: this, promise })
-      // this.emit('log_state', { self: this, promise })
+
 
       this.emit('invokeNextPromise')
     })
 
-
   }//constructor
+
+  calculatePromiseState(cb) {
+
+    const batchNames = this.total.map((m) => m.batchName)
+    let promiseStates = []
+    batchNames.forEach(batchName => {
+      const total = this.total.filter(t => t.batchName === batchName).length;
+      const inQueue = this.queue.filter(t => t.batchName === batchName).length;
+      const inProccess = this.promises.filter(t => t.batchName === batchName && t.retries === 0).length;
+      const retries = this.promises.filter(t => t.batchName === batchName && t.retries > 0).length;
+      const resolved = this.resolved.filter(t => t.batchName === batchName).length;
+      const rejected = this.rejected.filter(t => t.batchName === batchName).length
+      promiseStates.push({ total, inQueue, inProccess, retries, resolved, rejected, batchName })
+    })
+    const promiseState = convertArrayToObject(promiseStates, 'batchName')
+    let taskName = ''
+    switch (this.taskName) {
+      case 'dataCollection':
+        taskName = 'RETRIEVING_PAGES';
+        break;
+      case 'imageCollection':
+        taskName = 'COLLECTING_IMAGES';
+        break;
+      default:
+        taskName = 'COLLECTING_RESOURCES';
+    }
+    const dbRef = fbDatabase.ref(`projects/${process.env.projectName}/${global.fb_run_id}/${taskName}`)
+    dbRef.update(promiseState, (error) => {
+      if (error) {
+        console.log(error)
+      } else {
+        if (cb) {
+          debugger;
+          cb()
+        }
+
+      }
+    })
+  }
   async invokeNextPromise() {
 
 
     if (this.queue.length === 0 && this.promises.length === 0) {
-      clearInterval(global.pc_state_changeMonitor)
-      calculatePromiseState({
-        self: this, cb: () => {
+      clearInterval(this.promiseStateMonitor)
+
+      this.calculatePromiseState(
+        () => {
           this.emit('promiseExecComplete')
         }
-      })
+      )
 
     } else if (this.queue.length > 0) {
 
@@ -161,9 +188,16 @@ class PromiseEmitter extends EventEmitter {
     }
 
   }
-
 }
-
+function convertArrayToObject(array, key) {
+  const initialValue = {};
+  return array.reduce((obj, item) => {
+    return {
+      ...obj,
+      [item[key]]: item,
+    };
+  }, initialValue);
+}
 function promiseConcurrency({ batchConcurrency, rejectedRetry = 3, taskName }) {
 
   const promiseEmitter = new PromiseEmitter(batchConcurrency, rejectedRetry, taskName);

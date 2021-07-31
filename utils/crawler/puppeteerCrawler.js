@@ -24,7 +24,7 @@ debugger;
         eventEmitter.on('requestEnqueued', (request) => {
             const { url, userData } = request
             const hostName = new URL(url).hostname;
-            const batchName = hostName.replace('www.', '').replace('https://', '').replace('.com.tr', '').replace('.com', '')
+            const batchName = hostName.replace('www.', '').replace('https://', '').replace('.com.tr', '').replace('.com', '').replace('.','')
 
             const nextPromise = pageController({ url, browser, eventEmitter, handlePageFunction, preNavHook, postNavHook, userData,sync:false })
             nextPromise.batchName = batchName
@@ -36,7 +36,7 @@ debugger;
             initialurls.forEach(obj => {
                 const { url, userData } = obj
                 const hostName = new URL(url).hostname;
-                const batchName = hostName.replace('www.', '').replace('https://', '').replace('.com.tr', '').replace('.com', '')
+                const batchName = hostName.replace('www.', '').replace('https://', '').replace('.com.tr', '').replace('.com', '').replace('.','')
                 const nextPromise = pageController({ url, browser, eventEmitter, handlePageFunction, preNavHook, postNavHook, userData,sync:true })
                 nextPromise.batchName = batchName
                 nextPromise.sync = true
