@@ -30,11 +30,12 @@ async function extractPageData({ page }) {
 
 
 async function kotonPageHandler({ page, userData }) {
-    const { output } = userData
-    const url = await page.url()
-    const productList = await page.$('.product-list-container')
-debugger;
-    if (!url.includes('page') && productList) {
+    const { output, pageType } = userData
+    debugger;
+    if (pageType === 'list') {
+        debugger;
+        await page.waitForSelector('.product-list-container',{ timeout: 60000 })
+        debugger;
         const hasPagination = await page.$('.paging ul')
         if (hasPagination) {
             const totalPages = await page.$eval('.paging ul', el => parseInt(el.lastElementChild.previousElementSibling.innerText) - 1)
@@ -42,18 +43,22 @@ debugger;
             const nextPageUrl = commonPageUrlPatter.substring(0, commonPageUrlPatter.lastIndexOf('=') + 1)
             for (let i = 2; i <= totalPages; i++) {
                 const nextPage = `${nextPageUrl}${i}`
-                requestQueue.push({ url: nextPage, userData })
+                requestQueue.push({ url: nextPage, userData: { ...userData, pageType: 'nextPage' } })
             }
 
         }
 
     }
-    if (productList) {
-        await enqueueLink({ selector: '.productGrid .product-item figure > a', page, userData })
+    if (pageType === 'list' || pageType === 'nextPage') {
+        debugger;
+        await enqueueLink({ selector: '.productGrid .product-item figure > a', page, userData: { ...userData, pageType: 'detail' } })
     }
-    const productDetailImageContainer = await page.$('.productDetailImageContainer')
 
-    if (productDetailImageContainer) {
+
+    if (pageType === 'detail') {
+        debugger;
+        await page.waitForSelector('.productDetailImageContainer', { timeout: 60000 })
+        debugger;
         const product = await extractPageData({ page })
 
         const { otherColors } = product
@@ -86,18 +91,18 @@ async function fetchOtherColorPages({ url }) {
         page.on('request', req => {
             const resourceType = req.resourceType();
             if (resourceType === 'image') {
-        
+
                 debugger;
                 req.respond({
-                  status: 200,
-                  contentType: 'image/jpeg',
-                  body: ''
+                    status: 200,
+                    contentType: 'image/jpeg',
+                    body: ''
                 });
                 debugger;
                 // req.abort();
-              } else {
+            } else {
                 req.continue();
-              }
+            }
         });
         await page.goto(url)
         await page.waitForSelector('.productDetailImageContainer')
@@ -105,7 +110,7 @@ async function fetchOtherColorPages({ url }) {
         await page.close()
         return data
     } catch (error) {
-debugger;
+        debugger;
         recordError({ batchName: 'koton', functionName: 'fetchOtherColorPages', dirName: 'page-collection-errors' })
         await page.close()
     }

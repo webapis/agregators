@@ -13,7 +13,7 @@ async function puppeteerCrawler({ handlePageFunction, headless, preNavHook, post
         global.pc_eventEmitter = eventEmitter
         const initialurls = global.enqueuedUrls
 
-        const browser = await puppeteer.launch({ headless, timeout: 120000 });
+        const browser = await puppeteer.launch({ headless });
         global.browser = browser
         eventEmitter.on('promiseExecComplete', async () => {
 

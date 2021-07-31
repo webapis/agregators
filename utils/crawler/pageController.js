@@ -16,13 +16,13 @@ function pageController({ url, browser, eventEmitter, handlePageFunction, preNav
         const resourceType = req.resourceType();
        if (resourceType === 'image') {
         
-          debugger;
+       
           req.respond({
             status: 200,
             contentType: 'image/jpeg',
             body: ''
           });
-          debugger;
+        
           // req.abort();
         } else {
           req.continue();
@@ -34,12 +34,13 @@ function pageController({ url, browser, eventEmitter, handlePageFunction, preNav
 
       const timeout = retries === 0 ? 30000 : 30000 * retries
 
-      debugger;
+      
       // waitUntil: 'networkidle0'
-      await page.goto(url, { waitUntil: 'networkidle0', timeout });
+      //await page.goto(url, { waitUntil: 'networkidle0', timeout });
+      await page.goto(url);
       postNavHook && await postNavHook({ page })
       const host = await page.url()
-      debugger;
+
       //const origin = new URL(host).origin;
       //       if (host !== url) {
       // debugger;
@@ -66,9 +67,9 @@ function pageController({ url, browser, eventEmitter, handlePageFunction, preNav
         page,
         userData
       })
-      debugger;
+
       await page.close()
-      debugger;
+   
       eventEmitter.emit('promiseResolved', {
         batchName,
         id
@@ -78,7 +79,7 @@ function pageController({ url, browser, eventEmitter, handlePageFunction, preNav
     } catch (error) {
 
       const { name } = error
-
+debugger;
       if (name === 'TimeoutError') {
 
         const nextPagePromise = pageController({

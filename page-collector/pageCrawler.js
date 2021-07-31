@@ -16,10 +16,10 @@ async function preNavHook({ page }) {
             resourceType === 'script'
         ) {
             req.continue();
-        } else if( resourceType === 'image') {
+        } else if (resourceType === 'image') {
             debugger;
             req.abort();
-        } else{
+        } else {
             req.continue();
         }
     });
@@ -35,7 +35,7 @@ async function pageCrawler({ taskSequelizerEventEmitter }) {
         projectUrls.forEach(u => {
             const { dest, source } = u
             source.forEach(s => {
-                requestQueue.push({ url: s, userData: { output: dest } })
+                requestQueue.push({ url: s, userData: { output: dest, pageType: 'list' } })
             })
         })
         await puppeteerCrawler({
