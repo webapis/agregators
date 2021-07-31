@@ -20,7 +20,7 @@ const { pagePrerender } = require('./pagePrerender')
 const { testDataCollection } = require('./testDataCollection')
 
 function change() {
-
+debugger;
   const tasks = projects[process.env.projectName]
   const taskSequelizerEventEmitter = taskSequelizer({ tasks })
   firebaseEvetEmitter({ taskSequelizerEventEmitter })

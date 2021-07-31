@@ -8,7 +8,7 @@ function pageMergeFiles({ taskSequelizerEventEmitter }) {
 
         let files = []
         let mergedData = []
-        const output = `${process.cwd()}/page-merged-filed/${process.env.projectName}/${process.env.projectName}.json`
+        const output = `${process.cwd()}/page-merged-files/${process.env.projectName}/${process.env.projectName}.json`
         walkSync(`${process.cwd()}/page-data/${process.env.projectName}`, async filepath => {
             files.push(filepath)
         });

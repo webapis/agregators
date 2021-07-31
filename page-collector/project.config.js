@@ -3,7 +3,7 @@ const projects = {
     { page_collection: true },
     // { page_data_collection: true },
     { page_merge_files: true },
-    { page_export_excel: false },
+    { page_export_excel: true },
     { page_data_upload: false },
     { page_image_collection: false },
     { page_image_upload: false },
