@@ -39,7 +39,7 @@ async function pageCrawler({ taskSequelizerEventEmitter }) {
             })
         })
         await puppeteerCrawler({
-            handlePageFunction, headless: false, preNavHook, postNavHook, complete: () => {
+            handlePageFunction, headless: true, preNavHook, postNavHook, complete: () => {
                 taskSequelizerEventEmitter.emit('taskComplete', 'page_collection')
             }
         })
