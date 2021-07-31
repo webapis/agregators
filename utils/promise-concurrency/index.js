@@ -77,11 +77,21 @@ class PromiseEmitter extends EventEmitter {
 
       this.sync = false
       if (promise.retries === this.rejectedRetry) {
-
+        let taskName = ''
+        switch (this.taskName) {
+          case 'dataCollection':
+            taskName = 'RETRIEVING_PAGES_FAILED';
+            break;
+          case 'imageCollection':
+            taskName = 'COLLECTING_IMAGES_FAILED';
+            break;
+          default:
+            taskName = 'COLLECTING_RESOURCES_FAILED';
+        }
         debugger;
         this.rejected.push(promise);
 
-        global.fb_eventEmitter.emit(fb_steps.RETRIE_PROMISE_FAILED,promise.batchName)
+        global.fb_eventEmitter.emit(fb_steps.RETRIE_PROMISE_FAILED, { batchName: promise.batchName, taskName })
 
       } else {
         const promiseToRetry = promise

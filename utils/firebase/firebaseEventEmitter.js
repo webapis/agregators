@@ -14,6 +14,7 @@ const fb_steps = {
     MERGING_FILES_COMPLETE: 'MERGING_FILES_COMPLETE',
     MERGING_FILES_FAILED: 'MERGING_FILES_FAILED',
     RETRIE_PROMISE_FAILED: 'RETRIE_PROMISE_FAILED',
+   
     PC_PROMISE_STATE_CHANGED: 'PC_PROMISE_STATE_CHANGED'//promiseConcurrency state change
 }
 const projectName = process.env.projectName
@@ -51,8 +52,8 @@ class FirebaseEmitter extends EventEmitter {
             })
         })
 
-        this.on(fb_steps.RETRIE_PROMISE_FAILED, (batchName) => {
-            const dbRef = fbDatabase.ref(`projects/${projectName}/${global.fb_run_id}/${fb_steps.RETRIE_PROMISE_FAILED}/${batchName}`)
+        this.on(fb_steps.RETRIE_PROMISE_FAILED, ({batchName,taskName}) => {
+            const dbRef = fbDatabase.ref(`projects/${projectName}/${global.fb_run_id}/${taskName}/${batchName}`)
             dbRef.once('value', (snapshot) => {
                 let data = snapshot.val() === null ? 0 : snapshot.val()
 
