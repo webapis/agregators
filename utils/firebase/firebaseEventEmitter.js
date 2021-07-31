@@ -1,6 +1,7 @@
 const EventEmitter = require('events');
 const { fbDatabase } = require('./firebaseInit')
 const { walkSync } = require('../../page-collector/walkSync');
+const path = require('path')
 const fs = require('fs')
 const fb_steps = {
     CRAWLING_STARTED: 'CRAWLING_STARTED',
@@ -14,7 +15,7 @@ const fb_steps = {
     MERGING_FILES_COMPLETE: 'MERGING_FILES_COMPLETE',
     MERGING_FILES_FAILED: 'MERGING_FILES_FAILED',
     RETRIE_PROMISE_FAILED: 'RETRIE_PROMISE_FAILED',
-   
+
     PC_PROMISE_STATE_CHANGED: 'PC_PROMISE_STATE_CHANGED'//promiseConcurrency state change
 }
 const projectName = process.env.projectName
@@ -52,7 +53,7 @@ class FirebaseEmitter extends EventEmitter {
             })
         })
 
-        this.on(fb_steps.RETRIE_PROMISE_FAILED, ({batchName,taskName}) => {
+        this.on(fb_steps.RETRIE_PROMISE_FAILED, ({ batchName, taskName }) => {
             const dbRef = fbDatabase.ref(`projects/${projectName}/${global.fb_run_id}/${taskName}/${batchName}`)
             dbRef.once('value', (snapshot) => {
                 let data = snapshot.val() === null ? 0 : snapshot.val()
@@ -85,22 +86,24 @@ function firebaseEvetEmitter() {
 function countData(cb) {
 
     if (fs.existsSync(`${process.cwd()}/page-data/${process.env.projectName}`)) {
-
-
         let files = []
-        let counter = 0
+        let counter = {}
+
         walkSync(`${process.cwd()}/page-data/${process.env.projectName}`, async filepath => {
             files.push(filepath)
         });
         if (files.length > 0) {
             for (let filepath of files) {
                 const data = fs.readFileSync(filepath, { encoding: 'utf-8' });
+                const batchName = path.basename(filepath, '.json')
+
                 if (data) {
                     const dataObject = JSON.parse(data)
-                    counter = counter + dataObject.length
+                    counter = { ...counter, [batchName]: counter[batchName] > 0 ? counter[batchName] + dataObject.length : dataObject.length }
+                
                 }
             }
-            if (counter > 0) {
+            if (counter) {
                 const dbRef = fbDatabase.ref(`projects/${projectName}/${global.fb_run_id}/DATA_COLLECTED`)
                 dbRef.set(counter, (error) => {
                     if (error) {
@@ -127,6 +130,15 @@ function countData(cb) {
         }
     }
 }
+// function convertArrayToObject(array, key) {
+//     const initialValue = {};
+//     return array.reduce((obj, item) => {
+//         return {
+//             ...obj,
+//             [item[key]]: item,
+//         };
+//     }, initialValue);
+// }
 
 module.exports = {
     fb_steps,

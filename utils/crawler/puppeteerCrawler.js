@@ -7,7 +7,7 @@ const { URL } = require('url')
 async function puppeteerCrawler({ handlePageFunction, headless, preNavHook, postNavHook, complete }) {
  
         let eventEmitter = promiseConcurrency({
-            batchConcurrency: 30, rejectedRetry: 3,
+            batchConcurrency: 20, rejectedRetry: 3,
             taskName: 'dataCollection'
         });
         global.pc_eventEmitter = eventEmitter
@@ -16,7 +16,7 @@ async function puppeteerCrawler({ handlePageFunction, headless, preNavHook, post
         const browser = await puppeteer.launch({ headless, timeout: 120000 });
         global.browser = browser
         eventEmitter.on('promiseExecComplete', async () => {
-debugger;
+
             eventEmitter = null;
             await browser.close();
             complete()

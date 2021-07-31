@@ -1,7 +1,7 @@
 
 const EventEmitter = require('events');
 const { uuidv4 } = require('../uuidv4');
-const { stateTableLog, calculatePromiseState } = require('./state-table-log')
+const { stateTableLog } = require('./state-table-log')
 const { fb_steps } = require('../../utils/firebase/firebaseEventEmitter')
 const { fbDatabase } = require('../../utils/firebase/firebaseInit')
 class PromiseEmitter extends EventEmitter {
@@ -148,7 +148,7 @@ class PromiseEmitter extends EventEmitter {
         console.log(error)
       } else {
         if (cb) {
-          debugger;
+   
           cb()
         }
 
