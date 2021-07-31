@@ -122,14 +122,18 @@ async function fetchOtherColorPages({ url }) {
     await page.setRequestInterception(true);
     page.on('request', req => {
       const resourceType = req.resourceType();
-      if (
-        resourceType === 'document' ||
-        resourceType === 'stylesheet' ||
-        resourceType === 'script'
-      ) {
-        req.continue();
+      if (resourceType === 'image') {
+        
+        debugger;
+        req.respond({
+          status: 200,
+          contentType: 'image/jpeg',
+          body: ''
+        });
+        debugger;
+        // req.abort();
       } else {
-        req.abort();
+        req.continue();
       }
     });
     await page.goto(url)

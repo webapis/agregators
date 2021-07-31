@@ -7,19 +7,22 @@ const { requestQueue } = require('../utils/crawler/requestQueue')
 const sitemaps = require('./project.sitemap')
 
 async function preNavHook({ page }) {
-    // await page.setRequestInterception(true);
-    // page.on('request', req => {
-    //     const resourceType = req.resourceType();
-    //     if (
-    //         resourceType === 'document' ||
-    //         resourceType === 'stylesheet' ||
-    //         resourceType === 'script'
-    //     ) {
-    //         req.continue();
-    //     } else {
-    //         req.abort();
-    //     }
-    // });
+    await page.setRequestInterception(true);
+    page.on('request', req => {
+        const resourceType = req.resourceType();
+        if (
+            resourceType === 'document' ||
+            resourceType === 'stylesheet' ||
+            resourceType === 'script'
+        ) {
+            req.continue();
+        } else if( resourceType === 'image') {
+            debugger;
+            req.abort();
+        } else{
+            req.continue();
+        }
+    });
 }
 
 async function postNavHook({ page, origin }) {
@@ -36,7 +39,7 @@ async function pageCrawler({ taskSequelizerEventEmitter }) {
             })
         })
         await puppeteerCrawler({
-            handlePageFunction, headless: true, preNavHook, postNavHook, complete: () => {
+            handlePageFunction, headless: false, preNavHook, postNavHook, complete: () => {
                 taskSequelizerEventEmitter.emit('taskComplete', 'page_collection')
             }
         })

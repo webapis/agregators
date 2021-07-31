@@ -33,7 +33,7 @@ async function kotonPageHandler({ page, userData }) {
     const { output } = userData
     const url = await page.url()
     const productList = await page.$('.product-list-container')
-
+debugger;
     if (!url.includes('page') && productList) {
         const hasPagination = await page.$('.paging ul')
         if (hasPagination) {
@@ -85,23 +85,27 @@ async function fetchOtherColorPages({ url }) {
         await page.setRequestInterception(true);
         page.on('request', req => {
             const resourceType = req.resourceType();
-            if (
-                resourceType === 'document' ||
-                resourceType === 'stylesheet' ||
-                resourceType === 'script'
-            ) {
+            if (resourceType === 'image') {
+        
+                debugger;
+                req.respond({
+                  status: 200,
+                  contentType: 'image/jpeg',
+                  body: ''
+                });
+                debugger;
+                // req.abort();
+              } else {
                 req.continue();
-            } else {
-                req.abort();
-            }
+              }
         });
         await page.goto(url)
         await page.waitForSelector('.productDetailImageContainer')
         const data = await extractPageData({ page })
-
+        await page.close()
         return data
     } catch (error) {
-
+debugger;
         recordError({ batchName: 'koton', functionName: 'fetchOtherColorPages', dirName: 'page-collection-errors' })
         await page.close()
     }
