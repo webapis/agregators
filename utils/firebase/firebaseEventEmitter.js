@@ -51,8 +51,8 @@ class FirebaseEmitter extends EventEmitter {
             })
         })
 
-        this.on(fb_steps.RETRIE_PROMISE_FAILED, () => {
-            const dbRef = fbDatabase.ref(`projects/${projectName}/${global.fb_run_id}/${fb_steps.RETRIE_PROMISE_FAILED}`)
+        this.on(fb_steps.RETRIE_PROMISE_FAILED, (batchName) => {
+            const dbRef = fbDatabase.ref(`projects/${projectName}/${global.fb_run_id}/${fb_steps.RETRIE_PROMISE_FAILED}/${batchName}`)
             dbRef.once('value', (snapshot) => {
                 let data = snapshot.val() === null ? 0 : snapshot.val()
 

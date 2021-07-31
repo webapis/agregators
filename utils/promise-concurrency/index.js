@@ -77,10 +77,11 @@ class PromiseEmitter extends EventEmitter {
 
       this.sync = false
       if (promise.retries === this.rejectedRetry) {
+
         debugger;
         this.rejected.push(promise);
 
-        global.fb_eventEmitter.emit(fb_steps.RETRIE_PROMISE_FAILED)
+        global.fb_eventEmitter.emit(fb_steps.RETRIE_PROMISE_FAILED,promise.batchName)
 
       } else {
         const promiseToRetry = promise
