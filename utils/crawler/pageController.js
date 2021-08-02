@@ -39,8 +39,8 @@ function pageController({ url, browser, eventEmitter, handlePageFunction, preNav
 
       const timeout = retries === 0 ? 30000 : retries * 30000
 
-      await page.goto(url, { waitUntil: 'networkidle0', timeout });
-     
+      //await page.goto(url, { waitUntil: 'networkidle2', timeout });
+      await page.goto(url);
       postNavHook && await postNavHook({ page })
 
 
