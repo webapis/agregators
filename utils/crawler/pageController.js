@@ -8,21 +8,27 @@ function pageController({ url, browser, eventEmitter, handlePageFunction, preNav
   return async ({ batchName, id, retries }) => {
 
     const page = await browser.newPage();
+
+    // await page.setViewport({
+    //     width: 2554,
+    //     height: 2302,
+    //     deviceScaleFactor: 1,
+    // });
     try {
-    
+
       await page.setRequestInterception(true);
       page.on('request', req => {
         const resourceType = req.resourceType();
-       if (resourceType === 'image') {
-        
-       
+        if (resourceType === 'image') {
+
+
           req.respond({
             status: 200,
             contentType: 'image/jpeg',
             body: ''
           });
-        
-      
+
+
         } else {
           req.continue();
         }
@@ -31,13 +37,14 @@ function pageController({ url, browser, eventEmitter, handlePageFunction, preNav
         throw 'retries is undefined'
       }
 
+      const timeout = retries === 0 ? 30000 : retries * 30000
 
-
-      await page.goto(url);
+      await page.goto(url, { waitUntil: 'networkidle0', timeout });
+     
       postNavHook && await postNavHook({ page })
-  
 
-    
+
+
 
       await handlePageFunction({
         page,
@@ -45,7 +52,7 @@ function pageController({ url, browser, eventEmitter, handlePageFunction, preNav
       })
 
       await page.close()
-   
+
       eventEmitter.emit('promiseResolved', {
         batchName,
         id
@@ -55,7 +62,7 @@ function pageController({ url, browser, eventEmitter, handlePageFunction, preNav
     } catch (error) {
 
       const { name } = error
-debugger;
+      debugger;
       if (name === 'TimeoutError') {
 
         const nextPagePromise = pageController({
@@ -76,7 +83,6 @@ debugger;
 
       } else {
         debugger;
-  
         console.log("pageController ERROR.....:", error)
         recordError({ batchName, error: { error, url }, functionName: 'pageController', dirName: 'page-collection-errors' })
       }

@@ -17,7 +17,7 @@ async function preNavHook({ page }) {
         ) {
             req.continue();
         } else if (resourceType === 'image') {
-            debugger;
+           
             req.abort();
         } else {
             req.continue();
@@ -38,14 +38,16 @@ async function pageCrawler({ taskSequelizerEventEmitter }) {
                 requestQueue.push({ url: s, userData: { output: dest, pageType: 'list' } })
             })
         })
+
+  
         await puppeteerCrawler({
-            handlePageFunction, headless: true, preNavHook, postNavHook, complete: () => {
+            handlePageFunction, headless: process.env.HEADLESS === 'false' ? false : true, preNavHook, postNavHook, complete: () => {
                 taskSequelizerEventEmitter.emit('taskComplete', 'page_collection')
             }
         })
     } catch (error) {
-        console.log(error)
-        taskSequelizerEventEmitter.emit('taskFailed', error)
+        console.log('page_collection_error', error)
+        taskSequelizerEventEmitter.emit('taskFailed', 'page_collection')
     }
 
 }

@@ -39,7 +39,7 @@ jobs:
         run: 'npm install'
       - name: aggregation step
         id: collection
-        run: projectName=${{github.event.inputs.projectName}} parameters="${{github.event.inputs.parameters}}" NEXT_TASK=page_collection ALL=TRUE PRIVATE_KEY_ID="$PRIVATE_KEY_ID" PRIVATE_KEY="$PRIVATE_KEY" node page-collector/server.js
+        run: projectName=${{github.event.inputs.projectName}} parameters="${{github.event.inputs.parameters}}" HEADLESS=true NEXT_TASK=page_collection ALL=TRUE PRIVATE_KEY_ID="$PRIVATE_KEY_ID" PRIVATE_KEY="$PRIVATE_KEY" node page-collector/server.js
         env:
           PRIVATE_KEY_ID: ${{ secrets.PKIDG }}
           PRIVATE_KEY: ${{ secrets.PKG }}

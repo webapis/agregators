@@ -4,6 +4,7 @@ const projects = {
     // { page_data_collection: true },
     { page_merge_files: true },
     { page_export_excel: true },
+    { page_upload_excel: false },
     { page_data_upload: false },
     { page_image_collection: false },
     { page_image_upload: false },
@@ -23,6 +24,9 @@ const projects = {
   //https://books.toscrape.com/
   books: [
     { page_collection: true },
+    { page_merge_files: true },
+    { page_export_excel: true },
+    { page_upload_excel: false },
     //{ page_data_upload: true },
     //{ page_data_collection: true },
     { page_image_collection: false },

@@ -90,7 +90,7 @@ class PromiseEmitter extends EventEmitter {
         }
         debugger;
         this.rejected.push(promise);
-
+debugger;
         global.fb_eventEmitter.emit(fb_steps.RETRIE_PROMISE_FAILED, { batchName: promise.batchName, taskName })
 
       } else {

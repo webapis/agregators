@@ -12,6 +12,7 @@ const { pageCrawler } = require('./pageCrawler')
 const { batchImageCollection } = require('./batchImageCollection');
 const { pageMergeFiles } = require('./page_merge_files')
 const { pageExportExcel } = require('./page_export_excel')
+const { pageUploadExcel } = require('./page_upload_excel')
 const { batchImageProcessing } = require('./batchImageProcessing');
 const { pageNavDataTreeCreation } = require('./pageNavTreeCreation')
 const { pageLeavesBy100 } = require('./pageLeavesBy100')
@@ -20,7 +21,7 @@ const { pagePrerender } = require('./pagePrerender')
 const { testDataCollection } = require('./testDataCollection')
 
 function change() {
-debugger;
+
   const tasks = projects[process.env.projectName]
   const taskSequelizerEventEmitter = taskSequelizer({ tasks })
   firebaseEvetEmitter({ taskSequelizerEventEmitter })
@@ -34,6 +35,9 @@ debugger;
         break;
       case 'page_export_excel':
         removeDerectory('page-data-excel') && pageExportExcel({ taskSequelizerEventEmitter })
+        break;
+      case 'page_upload_excel':
+        pageUploadExcel({ taskSequelizerEventEmitter })
         break;
       case 'test_data_collection':
         testDataCollection({ taskSequelizerEventEmitter })

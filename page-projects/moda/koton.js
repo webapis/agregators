@@ -30,6 +30,7 @@ async function extractPageData({ page }) {
 
 
 async function kotonPageHandler({ page, userData }) {
+  debugger;
     const { output, pageType } = userData
     debugger;
     if (pageType === 'list') {

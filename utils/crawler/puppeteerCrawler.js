@@ -13,7 +13,12 @@ async function puppeteerCrawler({ handlePageFunction, headless, preNavHook, post
         global.pc_eventEmitter = eventEmitter
         const initialurls = global.enqueuedUrls
 
-        const browser = await puppeteer.launch({ headless });
+        const browser = await puppeteer.launch({ headless,isMobile:false, args: [
+            `--window-size=${ 2554 },${ 2302 }`
+        ], defaultViewport: {
+            width:2554,
+            height:2302
+        } });
         global.browser = browser
         eventEmitter.on('promiseExecComplete', async () => {
 

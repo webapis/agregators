@@ -27,61 +27,71 @@ async function extractPageData({ page }) {
 
 async function defactoPageHandler({ page, userData }) {
 
-    const { output } = userData
+  const { output, pageType } = userData
 
-    //initial list page
-    const catalogProducts = await page.$('.catalog-products')
+  //initial list page
 
-    if (catalogProducts) {
-      await autoScroll(page)
-      await page.waitForSelector('.catalog-products')
-      await enqueueLink({ selector: '.catalog-products .image-box > a', page, userData })
-    }
-    //productDetail
-    const productDetail = await page.$('.product')
-    if (productDetail) {
+  if (pageType === 'list') {
 
-      const product = await extractPageData({ page })
-      
-      const { otherColors } = product
-      
-      if (otherColors && otherColors.length > 0) {
-        let promises = []
-        otherColors.forEach(url => {
-          promises.push(fetchOtherColorPages({ url }))
+    await page.waitForSelector('.catalog-products')
+    await autoScroll(page)
+
+    await enqueueLink({ selector: '.catalog-products .image-box > a', page, userData: { ...userData, pageType: 'pageDetail' } })
+  }
+  //productDetail
+  if (pageType === 'pageDetail') {
+    debugger;
+
+    await page.waitForSelector('.product')
+    await page.waitForSelector('.product-card__image-slider--container.swiper-container')
+
+    debugger;
+    await page.evaluate(async () => {
+      var scrollingElement = (document.scrollingElement || document.body);
+      scrollingElement.scrollTop = scrollingElement.scrollHeight;
+
+    });
+    const product = await extractPageData({ page })
+    debugger;
+    const { otherColors } = product
+
+    if (otherColors && otherColors.length > 0) {
+      let promises = []
+      otherColors.forEach(url => {
+        promises.push(fetchOtherColorPages({ url }))
+      })
+
+      const fetchedOtherColors = await Promise.all(promises)
+
+      const productWithOtherColors = { ...product, otherColors: fetchedOtherColors }
+
+      const urlsToRetry = findFailedUlrs({ fetchedUrls: fetchedOtherColors, sourceUrls: otherColors })
+      if (urlsToRetry.length > 0) {
+
+        let retryPromises = []
+        urlsToRetry.forEach(url => {
+          retryPromises.push(fetchOtherColorPages({ url }))
         })
-     
-        const fetchedOtherColors = await Promise.all(promises)
-        
-        const productWithOtherColors = { ...product, otherColors: fetchedOtherColors }
-        
-        const urlsToRetry = findFailedUlrs({ fetchedUrls: fetchedOtherColors, sourceUrls: otherColors })
-        if (urlsToRetry.length > 0) {
-          
-          let retryPromises = []
-          urlsToRetry.forEach(url => {
-            retryPromises.push(fetchOtherColorPages({ url }))
-          })
 
-          const retriedOtherColors = await Promise.all(retryPromises)
-          const productWithRetriedOtherColors = { ...productWithOtherColors, otherColors: { ...productWithOtherColors.otherColors, retriedOtherColors } }
-          saveData({ data: productWithRetriedOtherColors, output, filename: "defacto.json" })
-        } else {
-          
-          saveData({ data: productWithOtherColors, output, filename: "defacto.json" })
-        }
-        
-
+        const retriedOtherColors = await Promise.all(retryPromises)
+        const productWithRetriedOtherColors = { ...productWithOtherColors, otherColors: { ...productWithOtherColors.otherColors, retriedOtherColors } }
+        saveData({ data: productWithRetriedOtherColors, output, filename: "defacto.json" })
       } else {
-        
-        saveData({ data: product, output, filename: "defacto.json" })
+
+        saveData({ data: productWithOtherColors, output, filename: "defacto.json" })
       }
-      
 
 
+    } else {
+
+      saveData({ data: product, output, filename: "defacto.json" })
     }
 
-  
+
+
+  }
+
+
 
 }
 async function autoScroll(page) {
@@ -92,7 +102,7 @@ async function autoScroll(page) {
 
       var scrollingElement = (document.scrollingElement || document.body);
       const timer = setInterval(async () => {
-        window.focus()
+
         scrollingElement.scrollTop = scrollingElement.scrollHeight;
 
         if (document.querySelectorAll('.catalog-products .image-box > a').length === total) {
@@ -111,7 +121,7 @@ async function autoScroll(page) {
 function findFailedUlrs({ fetchedUrls, sourceUrls }) {
   const successFullFetchedUrls = fetchedUrls.filter(f => f !== null)
   const urlsToRetrie = sourceUrls.filter(s => successFullFetchedUrls.indexOf(s) !== -1)
-  
+
   return urlsToRetrie
 }
 
@@ -123,7 +133,7 @@ async function fetchOtherColorPages({ url }) {
     page.on('request', req => {
       const resourceType = req.resourceType();
       if (resourceType === 'image') {
-        
+
         debugger;
         req.respond({
           status: 200,
@@ -142,10 +152,10 @@ async function fetchOtherColorPages({ url }) {
 
     const data = await extractPageData({ page })
     await page.close()
-    
+
     return data
   } catch (error) {
-    
+
     recordError({ batchName: 'defacto', functionName: 'fetchOtherColorPages', dirName: 'page-collection-errors' })
     await page.close()
 
