@@ -9,11 +9,7 @@ function pageController({ url, browser, eventEmitter, handlePageFunction, preNav
 
     const page = await browser.newPage();
 
-    // await page.setViewport({
-    //     width: 2554,
-    //     height: 2302,
-    //     deviceScaleFactor: 1,
-    // });
+
     try {
 
       await page.setRequestInterception(true);
@@ -36,15 +32,9 @@ function pageController({ url, browser, eventEmitter, handlePageFunction, preNav
       if (retries === undefined) {
         throw 'retries is undefined'
       }
-
       const timeout = retries === 0 ? 30000 : retries * 30000
-
-      //await page.goto(url, { waitUntil: 'networkidle2', timeout });
-      await page.goto(url);
+      process.env.LOCAL ==='TRUE'? await page.goto(url, { waitUntil: 'networkidle2', timeout }):   await page.goto(url);
       postNavHook && await postNavHook({ page })
-
-
-
 
       await handlePageFunction({
         page,

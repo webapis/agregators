@@ -149,7 +149,7 @@ async function fetchOtherColorPages({ url }) {
     await page.goto(url)
 
     await page.waitForSelector('.product')
-
+    await page.waitForSelector('.product-card__image-slider--container.swiper-container')
     const data = await extractPageData({ page })
     await page.close()
 
