@@ -69,7 +69,9 @@
     "pageDataCategorizer:test": "mocha page-data-categorizer/test",
     "pageMetaCreator:test": "mocha page-meta-creator/test",
     "pageImageOptimizer:test": "mocha page-image-optimizer/test",
-    "pagePrerender:test": "mocha page-prerender/test"
+    "pagePrerender:test": "mocha page-prerender/test",
+    "snipe":"node snipe.js",
+    "start": "node index.js"
   },
   "nodemonConfig": {
     "ignore": [
