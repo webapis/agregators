@@ -44,6 +44,7 @@
     "dataCollector": "NEXT_TASK=page_collection ALL=FALSE node page-collector/server.js",
     "mergeFiles": "NEXT_TASK=page_merge_files ALL=FALSE node page-collector/server.js",
     "exportExcel": "NEXT_TASK=page_export_excel ALL=FALSE node page-collector/server.js",
+    "uploadExcel": "NEXT_TASK=page_upload_excel ALL=FALSE node page-collector/server.js",
     "testDataCollector": "NEXT_TASK=test_data_collection ALL=FALSE node page-collector/server.js",
     "imageCollector": "projectName=moda NEXT_TASK=page_image_collection ALL=FALSE  node page-collector/server.js",
     "imageCropper": "projectName=moda NEXT_TASK=page_image_crop ALL=FALSE node  page-collector/server.js",
