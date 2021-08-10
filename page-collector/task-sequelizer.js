@@ -9,14 +9,14 @@ class TaskListender extends EventEmitter {
     constructor({ tasks }) {
         super()
 
-        this.on('taskComplete', (taskName) => {
-            taskComplete(taskName)
+        this.on('taskComplete', (taskName, payload) => {
+            taskComplete(taskName, payload)
             const activeTasks = tasks.filter(t => Object.values(t)[0] === true)
             const completeTaskIndex = activeTasks.findIndex((element) => element.hasOwnProperty(taskName))
             const isLastTask = activeTasks[activeTasks.length - 1].hasOwnProperty(taskName)
-     
+
             if (process.env.ALL === 'TRUE' && activeTasks.length > 1 && isLastTask === false) {
-             
+
                 console.log('task complete', taskName)
                 if (completeTaskIndex + 1 < tasks.length) {
                     const nextTask = activeTasks.find((o, i) => i === completeTaskIndex + 1)
@@ -26,7 +26,7 @@ class TaskListender extends EventEmitter {
                 } else {
                     this.emit('no_more_task')
                 }
-           
+
             } else {
                 console.log('single task complete:', taskName)
                 this.emit('no_more_task')
@@ -56,89 +56,111 @@ function taskSequelizer({ tasks }) {
 }
 
 function taskStarted(taskName) {
-    let dbRef =null;
+    let dbRef = null;
 
 
     switch (taskName) {
         case 'page_collection':
-            dbRef=  fbDatabase.ref(`projects/${process.env.projectName}/${startedDateTime}/${fb_steps.CRAWLING_STARTED}`)
+            dbRef = fbDatabase.ref(`projects/${process.env.projectName}/${startedDateTime}/${fb_steps.CRAWLING_STARTED}`)
             dbRef.set(Date.now(), (error) => {
                 if (error) {
                     console.log(error)
                 } else {
-                    
+
                 }
             })
             break;
         case 'page_merge_files':
-             dbRef = fbDatabase.ref(`projects/${process.env.projectName}/${startedDateTime}/${fb_steps.MERGING_FILES_STARTED}`)
+            dbRef = fbDatabase.ref(`projects/${process.env.projectName}/${startedDateTime}/${fb_steps.MERGING_FILES_STARTED}`)
             dbRef.set(Date.now(), (error) => {
                 if (error) {
                     console.log(error)
                 } else {
-                    
+
                 }
             })
             break;
-            case 'page_export_excel':
-                dbRef = fbDatabase.ref(`projects/${process.env.projectName}/${startedDateTime}/${fb_steps.PAGE_EXPORT_EXCEL_STARTED}`)
-               dbRef.set(Date.now(), (error) => {
-                   if (error) {
-                       console.log(error)
-                   } else {
-                       
-                   }
-               })
-               break;
+        case 'page_export_excel':
+            dbRef = fbDatabase.ref(`projects/${process.env.projectName}/${startedDateTime}/${fb_steps.PAGE_EXPORT_EXCEL_STARTED}`)
+            dbRef.set(Date.now(), (error) => {
+                if (error) {
+                    console.log(error)
+                } else {
+
+                }
+            })
+            break;
+        case 'page_upload_excel':
+            dbRef = fbDatabase.ref(`projects/${process.env.projectName}/${startedDateTime}/${fb_steps.PAGE_UPLOAD_EXCEL}`)
+            dbRef.set({ start: Date.now() }, (error) => {
+                if (error) {
+                    console.log(error)
+                } else {
+
+                }
+            })
+            break;
         default:
 
     }
 }
 
-function taskComplete(taskName) {
-    let dbRef =null;
+function taskComplete(taskName, payload) {
+    let dbRef = null;
     switch (taskName) {
         case 'page_collection':
-             dbRef = fbDatabase.ref(`projects/${process.env.projectName}/${startedDateTime}/${fb_steps.CRAWLING_COMPLETE}`)
+            dbRef = fbDatabase.ref(`projects/${process.env.projectName}/${startedDateTime}/${fb_steps.CRAWLING_COMPLETE}`)
             dbRef.set(Date.now(), (error) => {
                 if (error) {
                     console.log(error)
                 } else {
-                    
+
                 }
             })
             break;
 
         case 'page_merge_files':
-             dbRef = fbDatabase.ref(`projects/${process.env.projectName}/${startedDateTime}/${fb_steps.MERGING_FILES_COMPLETE}`)
+            dbRef = fbDatabase.ref(`projects/${process.env.projectName}/${startedDateTime}/${fb_steps.MERGING_FILES_COMPLETE}`)
             dbRef.set(Date.now(), (error) => {
                 if (error) {
                     console.log(error)
                 } else {
-                    
+
                 }
             })
             break;
-            case 'page_export_excel':
-                dbRef = fbDatabase.ref(`projects/${process.env.projectName}/${startedDateTime}/${fb_steps.PAGE_EXPORT_EXCEL_COMPLETE}`)
-               dbRef.set(Date.now(), (error) => {
-                   if (error) {
-                       console.log(error)
-                   } else {
-                       
-                   }
-               })
-               break;
+        case 'page_export_excel':
+            dbRef = fbDatabase.ref(`projects/${process.env.projectName}/${startedDateTime}/${fb_steps.PAGE_EXPORT_EXCEL_COMPLETE}`)
+            dbRef.set(Date.now(), (error) => {
+                if (error) {
+                    console.log(error)
+                } else {
+
+                }
+            })
+            break;
+
+        case 'page_upload_excel':
+            const { webViewLink, webContentLink } = payload
+            dbRef = fbDatabase.ref(`projects/${process.env.projectName}/${startedDateTime}/${fb_steps.PAGE_UPLOAD_EXCEL}`)
+            dbRef.update({ end: Date.now(), webViewLink, webContentLink }, (error) => {
+                if (error) {
+                    console.log(error)
+                } else {
+
+                }
+            })
+            break;
         default:
-   
+
     }
 }
 
 function taskFailed(taskName) {
-    let dbRef =null;
+    let dbRef = null;
     switch (taskName) {
         case 'page_collection':
-             dbRef = fbDatabase.ref(`projects/${process.env.projectName}/${startedDateTime}/${fb_steps.CRAWLING_FAILED}`)
+            dbRef = fbDatabase.ref(`projects/${process.env.projectName}/${startedDateTime}/${fb_steps.CRAWLING_FAILED}`)
             dbRef.set(Date.now(), (error) => {
                 if (error) {
                     console.log(error)
@@ -148,37 +170,48 @@ function taskFailed(taskName) {
             })
             break;
         case 'page_merge_files':
-             dbRef = fbDatabase.ref(`projects/${process.env.projectName}/${startedDateTime}/${fb_steps.MERGING_FILES_FAILED}`)
+            dbRef = fbDatabase.ref(`projects/${process.env.projectName}/${startedDateTime}/${fb_steps.MERGING_FILES_FAILED}`)
             dbRef.set(Date.now(), (error) => {
                 if (error) {
                     console.log(error)
                 } else {
-                    
+
                 }
             })
             break;
-            case 'page_merge_files':
-                dbRef = fbDatabase.ref(`projects/${process.env.projectName}/${startedDateTime}/${fb_steps.MERGING_FILES_FAILED}`)
-               dbRef.set(Date.now(), (error) => {
-                   if (error) {
-                       console.log(error)
-                   } else {
-                       
-                   }
-               })
-               break;
-               case 'page_export_excel':
-                dbRef = fbDatabase.ref(`projects/${process.env.projectName}/${startedDateTime}/${fb_steps.PAGE_EXPORT_EXCEL_FAILED}`)
-               dbRef.set(Date.now(), (error) => {
-                   if (error) {
-                       console.log(error)
-                   } else {
-                       
-                   }
-               })
-               break;
+        case 'page_merge_files':
+            dbRef = fbDatabase.ref(`projects/${process.env.projectName}/${startedDateTime}/${fb_steps.MERGING_FILES_FAILED}`)
+            dbRef.set(Date.now(), (error) => {
+                if (error) {
+                    console.log(error)
+                } else {
+
+                }
+            })
+            break;
+        case 'page_export_excel':
+            dbRef = fbDatabase.ref(`projects/${process.env.projectName}/${startedDateTime}/${fb_steps.PAGE_EXPORT_EXCEL_FAILED}`)
+            dbRef.set(Date.now(), (error) => {
+                if (error) {
+                    console.log(error)
+                } else {
+
+                }
+            })
+            break;
+        case 'page_upload_excel':
+            // const { webViewLink, webContentLink } = payload
+            dbRef = fbDatabase.ref(`projects/${process.env.projectName}/${startedDateTime}/${fb_steps.PAGE_UPLOAD_EXCEL}`)
+            dbRef.update({ end: Date.now(), error: true }, (error) => {
+                if (error) {
+                    console.log(error)
+                } else {
+
+                }
+            })
+            break;
         default:
-    
+
     }
 }
 

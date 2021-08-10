@@ -1,5 +1,4 @@
 const { fbDatabase } = require('../utils/firebase/firebaseInit')
-const { Blob } = require('buffer')
 const { walkSync } = require('./walkSync');
 const { refreshAccessToken } = require('../index')
 const fs = require('fs')
@@ -22,7 +21,7 @@ async function pageUploadExcel({ taskSequelizerEventEmitter }) {
         if (!filepath.includes('.DS_Store')) {
             files.push(filepath);
         }
-        debugger;
+
         const userRef = fbDatabase.ref('users').orderByChild('email').equalTo(email).limitToLast(1)
         userRef.once('value', async (snapshot) => {
             let access_token = ''
@@ -33,92 +32,112 @@ async function pageUploadExcel({ taskSequelizerEventEmitter }) {
                 refresh_token = childsnap.val().refresh_token
                 userkey = childsnap.key
             })
-            debugger;
 
             try {
-                const response = await uploadFile({ access_token, files })
-                debugger;
+                await uploadFile({ access_token, files, refresh_token, email, userkey, taskSequelizerEventEmitter })
 
-                const contentType = response.headers.get('content-type')
-
-
-                debugger;
-                const status = response.status
-                debugger;
-                if (status === 401) {
-                    debugger;
-                    const { access_token } = await refreshAccessToken({
-                        refresh_token, email, userkey, cb: async () => {
-                            debugger;
-                            const response = await uploadFile({ access_token, files })
-                            debugger;
-                            if (response.ok) {
-                                debugger;
-                                taskSequelizerEventEmitter.emit('taskComplete', 'page_upload_excel')
-                            } else {
-                                taskSequelizerEventEmitter.emit('taskFailed', 'page_upload_excel')
-                            }
-                            debugger;
-                        }
-                    })
-                    //const response = await uploadFile({ access_token })
-                    debugger;
-                } else if (status === 400) {
-                    debugger;
-                    const contentType = response.headers.get('content-type')
-                    debugger;
-                    const error = await response.text()
-                    debugger;
-                }
-                debugger;
             } catch (error) {
                 console.log('error', error)
-                debugger;
+
             }
-            debugger;
+
         })
     });
-
-
-
 }
 
-async function uploadFile({ access_token, files }) {
+async function uploadFile({ access_token, files, refresh_token, email, userkey, taskSequelizerEventEmitter }) {
 
     //HEALP FROM: https://stackoverflow.com/questions/44021538/how-to-send-a-file-in-request-node-fetch-or-node
-    try {
-
+    const response = await postFileUpload({ access_token, files })
+    const status = response.status
+    if (status === 200) {
         debugger;
-
-        const stats = fs.statSync(files[0]);
-
-        const fileData = fs.readFileSync(files[0])
-
-        const fileSizeInBytes = stats.size;
-        const fileName = path.basename(files[0])
-        const metadata = { name: fileName, mymeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }
-        const body = buildMultipartRelatedBody({ fileData, metadata })
-        const bodySize = fileData.byteLength
+        //create permission
+        const data = await response.json()
+        const { id } = data;
+        await createPermission({ fileId: id, access_token })
+        const publicLinkReponse = await getPublicLink({ fileId: id, access_token })
+        const {
+            webViewLink, webContentLink } = await publicLinkReponse.json()
+        taskSequelizerEventEmitter.emit('taskComplete', 'page_upload_excel', { webViewLink, webContentLink })
         debugger;
-        const apiendpoint = 'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart'
-        return await fetch(apiendpoint, {
-            method: 'post',
-            headers: { 'Content-Type': 'multipart/related; boundary=boudaryWord', 'Authorization': `Bearer ${access_token}` },
-            body
+        //get public link
+
+    } else if (status === 401) {
+        const { access_token } = await refreshAccessToken({
+            refresh_token, email, userkey, cb: async () => {
+
+                const response = await postFileUpload({ access_token, files })
+
+                const status = response.status
+
+                if (status === 200) {
+                    debugger;
+                    //create permission
+                    const data = await response.json()
+                    debugger;
+                    const { id } = data;
+                    await createPermission({ fileId: id, access_token })
+                    const publicLinkReponse = await getPublicLink({ fileId: id, access_token })
+                    const {
+                        webViewLink, webContentLink } = await publicLinkReponse.json()
+                    taskSequelizerEventEmitter.emit('taskComplete', 'page_upload_excel', { webViewLink, webContentLink })
+                    debugger;
+
+                } else {
+                    console.log('Error:Unhandled status code')
+                    taskSequelizerEventEmitter.emit('taskFailed', 'page_upload_excel')
+                    throw 'Unhandled status code'
+                }
+
+            }
         })
-
-    } catch (error) {
-        debugger;
+    } else {
+        console.log('Error:Unhandled status code')
+        taskSequelizerEventEmitter.emit('taskFailed', 'page_upload_excel')
+        throw 'Unhandled status code'
     }
+
+
 }
 
-function buildMultipartRelatedBody({ metadata, fileData}) {
-    debugger;
-    const { mymeType } = metadata
-    debugger;
-    
+async function postFileUpload({ access_token, files }) {
+    const fileData = fs.readFileSync(files[0])
+    const fileName = path.basename(files[0])
+    const metadata = { name: fileName, mymeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }
 
-    const fileSizeInBytes = fileData.length//stats.size;
+
+    const apiendpoint = 'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart'
+    return await fetch(apiendpoint, {
+        method: 'post',
+        headers: { 'Content-Type': 'multipart/related; boundary=boudaryWord', 'Authorization': `Bearer ${access_token}` },
+        body: buildMultipartRelatedBody({ fileData, metadata })
+    })
+}
+async function createPermission({ fileId, access_token }) {
+    const apiendpoint = `https://www.googleapis.com/drive/v3/files/${fileId}`
+
+    return fetch(apiendpoint, {
+        method: 'post',
+        headers: { 'Content-Type': 'application/json;', 'Authorization': `Bearer ${access_token}` },
+        body: JSON.stringify({
+            "role": "reader",
+            "type": "anyone"
+        })
+    })
+}
+
+async function getPublicLink({ fileId, access_token }) {
+    const apiendpoint = `https://www.googleapis.com/drive/v3/files/${fileId}?fields=webViewLink%2CwebContentLink`
+    return fetch(apiendpoint, {
+        method: 'get',
+        headers: { 'Content-Type': 'application/json;', 'Authorization': `Bearer ${access_token}` }
+    })
+}
+
+function buildMultipartRelatedBody({ metadata, fileData }) {
+
+    const { mymeType } = metadata
     const boundary = 'boudaryWord'
     const delimiter = "\r\n--" + boundary + "\r\n"
     const close_delim = "\r\n--" + boundary + "--"
@@ -129,9 +148,6 @@ function buildMultipartRelatedBody({ metadata, fileData}) {
         'Content-Type:' + mymeType + '\r\n\r\n' +
         fileData + '\r\n' +
         close_delim
-
-    console.log('body', body)
-    debugger;
     return Buffer.concat([Buffer.from(delimiter +
         'Content-Type:application/json; charset=UTF-8\r\n\r\n' +
         JSON.stringify(metadata) +
@@ -139,75 +155,10 @@ function buildMultipartRelatedBody({ metadata, fileData}) {
         'Content-Type:' + mymeType + '\r\n\r\n', 'utf-8'), Buffer.from(fileData, 'utf-8'), Buffer.from(JSON.stringify(metadata) +
             delimiter, 'utf-8')])
 
-
-
 }
 module.exports = { pageUploadExcel }
 
 
 
-/*
-function buildMultipartRelatedBody() {
-
-    const fileName = 'mychat123'
-    const fileData = 'this is a sample data'
-    const contentType = 'text/plain'
-    const metadata = {
-        name: fileName, mymeType: contentType
-    }
-
-    const boundary = 'boudaryWord'
-    const delimiter = "\r\n--" + boundary+"\r\n"
-    const close_delim = "\r\n--" + boundary + "--"
-    const body = delimiter+
-        'Content-Type:application/json; charset=UTF-8\r\n\r\n'+
-        JSON.stringify(metadata)+
-        delimiter+
-        'Content-Type:'+contentType+'\r\n\r\n'+
-        fileData+'\r\n'+
-        close_delim
-
-    console.log('body', body)
-    debugger;
-    return body
 
 
-
-}
-*/
-
-
-/*
-
-
-function buildMultipartRelatedBody({ metadata, fileData }) {
-    debugger;
-    const { mymeType } = metadata
-    debugger;
-    // const fileName = 'mychat123'
-    // const fileData = 'this is a sample data'
-    // const contentType = 'text/plain'
-    // const metadata = {
-    //     name: fileName, mymeType: contentType
-    // }
-
-    const fileSizeInBytes = fileData.length//stats.size;
-    const boundary = 'boudaryWord'
-    const delimiter = "\r\n--" + boundary+"\r\n"
-    const close_delim = "\r\n--" + boundary+"--"
-    const body = delimiter+
-        'Content-Type:application/json; charset=UTF-8\r\n\r\n'+
-        JSON.stringify(metadata)+
-        delimiter +
-        'Content-Type:'+mymeType+'\r\n\r\n' +
-        fileData + '\r\n' +
-        close_delim
-
-    console.log('body', body)
-    debugger;
-    return body
-
-
-
-}
-*/

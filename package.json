@@ -15,7 +15,6 @@
     "firebase-admin": "9.9.0",
     "form-data": "^4.0.0",
     "fs-extra": "9.1.0",
-    "googleapis": "^84.0.0",
     "gpg": "^0.6.0",
     "jsdom": "16.5.1",
     "make-dir": "3.1.0",

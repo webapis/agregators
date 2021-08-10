@@ -123,7 +123,7 @@ async function exchangeCodeForAccessToken({ client_id, client_secret, code, redi
 }
 
 async function refreshAccessToken({ refresh_token, email,userkey, cb }) {
-    debugger;
+
     const grant_type = 'refresh_token';
     var oauth2Endpoint = 'https://oauth2.googleapis.com/token';
     var fulloauth2Endpoint = `${oauth2Endpoint}?client_id=${client_id}&client_secret=${client_secret}&grant_type=${grant_type}&refresh_token=${refresh_token}`
@@ -135,11 +135,11 @@ async function refreshAccessToken({ refresh_token, email,userkey, cb }) {
         if (error) {
             console.log('error', error)
         } else {
-            debugger;
+            
             cb()
         }
     })
-    debugger;
+
     return data
 
 }

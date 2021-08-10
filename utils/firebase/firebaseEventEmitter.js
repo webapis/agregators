@@ -15,10 +15,10 @@ const fb_steps = {
     MERGING_FILES_COMPLETE: 'MERGING_FILES_COMPLETE',
     MERGING_FILES_FAILED: 'MERGING_FILES_FAILED',
     RETRIE_PROMISE_FAILED: 'RETRIE_PROMISE_FAILED',
-    PAGE_EXPORT_EXCEL_STARTED:'PAGE_EXPORT_EXCEL_STARTED',
-    PAGE_EXPORT_EXCEL_COMPLETE:'PAGE_EXPORT_EXCEL_COMPLETE',
-    PAGE_EXPORT_EXCEL_FAILED:'RETRIE_PROMISE_FAILED',
-
+    PAGE_EXPORT_EXCEL_STARTED: 'PAGE_EXPORT_EXCEL_STARTED',
+    PAGE_EXPORT_EXCEL_COMPLETE: 'PAGE_EXPORT_EXCEL_COMPLETE',
+    PAGE_EXPORT_EXCEL_FAILED: 'RETRIE_PROMISE_FAILED',
+    PAGE_UPLOAD_EXCEL: 'PAGE_UPLOAD_EXCEL',
     PC_PROMISE_STATE_CHANGED: 'PC_PROMISE_STATE_CHANGED'//promiseConcurrency state change
 }
 const projectName = process.env.projectName
@@ -103,7 +103,7 @@ function countData(cb) {
                 if (data) {
                     const dataObject = JSON.parse(data)
                     counter = { ...counter, [batchName]: counter[batchName] > 0 ? counter[batchName] + dataObject.length : dataObject.length }
-                
+
                 }
             }
             if (counter) {
