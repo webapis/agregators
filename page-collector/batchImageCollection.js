@@ -48,40 +48,37 @@ let files =[]
   walkSync(`${process.cwd()}/page-data/${process.env.projectName}`, async filepath => {
       files.push(filepath)
   });
-
+debugger;
   for (let filepath of files){
     
     const batchName = path.basename(filepath, '.json');
 
     const data = fs.readFileSync(filepath, { encoding: 'utf-8' });
      const output =`${process.cwd()}/page-image/${process.env.projectName}`
-    //   path.dirname(
-    //     `${process.cwd()}/page-image/${filepath.substring(
-    //       filepath.indexOf(process.env.projectName)
-    //     )}`
-    //   ) + '/img/original';
+   
 
     await makeDir(output);
     const dataObject = JSON.parse(data);
     for (let d of dataObject) {
- 
-      const { image: { optsrc } } = d;
-    
-      if (optsrc) {
-        const filename = path.basename(optsrc);
+ debugger;
+      const { images } = d;
+      debugger;
+      images.forEach(image=>{
+        const filename = path.basename(image);
         const fileEndPath = `${output}/${filename}`;
-        const promise = download(optsrc, fileEndPath, {
+        const promise = download(image, fileEndPath, {
           batchName
         });
 
         promise.batchName = batchName;
         eventEmitter.emit('promiseAttached', {promise,unshift:false});
-      }
+      })
+      
     }
 
   }
   
-//  taskSequelizerEventEmitter.emit('taskComplete', 'page_image_collection')
+
 }
 
 module.exports = {

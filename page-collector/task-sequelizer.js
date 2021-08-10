@@ -30,7 +30,6 @@ class TaskListender extends EventEmitter {
             } else {
                 console.log('single task complete:', taskName)
                 this.emit('no_more_task')
-
             }
         })
 
@@ -52,13 +51,10 @@ function taskSequelizer({ tasks }) {
     const promiseEmitter = new TaskListender({ tasks });
     promiseEmitter.setMaxListeners(50);
     return promiseEmitter;
-
 }
 
 function taskStarted(taskName) {
     let dbRef = null;
-
-
     switch (taskName) {
         case 'page_collection':
             dbRef = fbDatabase.ref(`projects/${process.env.projectName}/${startedDateTime}/${fb_steps.CRAWLING_STARTED}`)
@@ -100,11 +96,21 @@ function taskStarted(taskName) {
                 }
             })
             break;
+        case 'page_image_collection':
+            dbRef = fbDatabase.ref(`projects/${process.env.projectName}/${startedDateTime}/COLLECTING_IMAGES/${process.env.projectName}`)
+            dbRef.update({ start: Date.now() }, (error) => {
+                if (error) {
+                    console.log(error)
+                } else {
+
+                }
+            })
+            break;
         default:
 
     }
 }
-
+//page_image_collection
 function taskComplete(taskName, payload) {
     let dbRef = null;
     switch (taskName) {
@@ -114,7 +120,6 @@ function taskComplete(taskName, payload) {
                 if (error) {
                     console.log(error)
                 } else {
-
                 }
             })
             break;
@@ -135,7 +140,6 @@ function taskComplete(taskName, payload) {
                 if (error) {
                     console.log(error)
                 } else {
-
                 }
             })
             break;
@@ -144,6 +148,15 @@ function taskComplete(taskName, payload) {
             const { webViewLink, webContentLink } = payload
             dbRef = fbDatabase.ref(`projects/${process.env.projectName}/${startedDateTime}/${fb_steps.PAGE_UPLOAD_EXCEL}`)
             dbRef.update({ end: Date.now(), webViewLink, webContentLink }, (error) => {
+                if (error) {
+                    console.log(error)
+                } else {
+                }
+            })
+            break;
+        case 'page_image_collection':
+            dbRef = fbDatabase.ref(`projects/${process.env.projectName}/${startedDateTime}/COLLECTING_IMAGES/${process.env.projectName}`)
+            dbRef.update({ end: Date.now() }, (error) => {
                 if (error) {
                     console.log(error)
                 } else {
@@ -200,9 +213,20 @@ function taskFailed(taskName) {
             })
             break;
         case 'page_upload_excel':
-            // const { webViewLink, webContentLink } = payload
+
             dbRef = fbDatabase.ref(`projects/${process.env.projectName}/${startedDateTime}/${fb_steps.PAGE_UPLOAD_EXCEL}`)
             dbRef.update({ end: Date.now(), error: true }, (error) => {
+                if (error) {
+                    console.log(error)
+                } else {
+
+                }
+            })
+            break;
+
+        case 'page_image_collection':
+            dbRef = fbDatabase.ref(`projects/${process.env.projectName}/${startedDateTime}/COLLECTING_IMAGES/${process.env.projectName}`)
+            dbRef.update({ failed: true }, (error) => {
                 if (error) {
                     console.log(error)
                 } else {

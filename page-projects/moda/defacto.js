@@ -19,7 +19,7 @@ async function extractPageData({ page }) {
     const color = document.querySelector('.sideMenu__box ul').querySelectorAll('li') && Array.from(document.querySelector('.sideMenu__box ul').querySelectorAll('li')).map(m => m.innerHTML).find(f => f.includes("Renk :"))
     const material = document.querySelector('.sideMenu__box ul').querySelectorAll('li') && Array.from(document.querySelector('.sideMenu__box ul').querySelectorAll('li')).map(m => m.innerHTML).find((f, i) => i === 2).trim()
     const modelDetail = document.querySelector('.sideMenu__box ul').querySelectorAll('li') && Array.from(document.querySelector('.sideMenu__box ul').querySelectorAll('li')).map(m => m.innerHTML).find((f, i) => i === 0).trim()
-    data = { detailPageLink: _url, productName, productCode, prices: { priceNew, priceBasket, priceOld }, images, stock: {}, otherColors, productDetail: { color: color.substring(color.indexOf(':') + 1).trim(), material, modelDetail: modelDetail.substring(modelDetail.indexOf(':') + 1).trim() }, sizes }
+    data = { detailPageLink: _url, productName, productCode, prices: { priceNew, priceBasket, priceOld }, images, stock: {}, otherColors, productDetail: { color:color&& color.substring(color.indexOf(':') + 1).trim(), material, modelDetail:modelDetail&& modelDetail.substring(modelDetail.indexOf(':') + 1).trim() }, sizes }
     return data
   }, url)
 }
