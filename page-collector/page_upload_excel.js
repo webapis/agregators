@@ -14,7 +14,6 @@ async function pageUploadExcel({ taskSequelizerEventEmitter }) {
 
     let files = [];
 
-
     walkSync(`${process.cwd()}/page-data-excel/${projectName}`, async function (
         filepath
     ) {
@@ -34,7 +33,27 @@ async function pageUploadExcel({ taskSequelizerEventEmitter }) {
             })
 
             try {
-                await uploadFile({ access_token, files, refresh_token, email, userkey, taskSequelizerEventEmitter })
+                debugger;
+                const folderExts = await folderExist({ folderName: projectName, access_token, refresh_token, email, userkey })
+                if (folderExts) {
+                    debugger;
+                    await uploadFile({ access_token, files, taskSequelizerEventEmitter, parentFolder: folderExts })
+                    debugger;
+                } else {
+                    debugger;
+                    const folderResult = await createFolder({ folderName: projectName, access_token })
+                    debugger;
+                    if (folderResult.status === 200) {
+                        const data = await folderResult.json()
+                        await uploadFile({ access_token, files, taskSequelizerEventEmitter, parentFolder: data.id })
+                        debugger;
+                    } else {
+                        throw 'unhandled http response Status'
+                    }
+                    debugger;
+                }
+                debugger;
+
 
             } catch (error) {
                 console.log('error', error)
@@ -45,10 +64,10 @@ async function pageUploadExcel({ taskSequelizerEventEmitter }) {
     });
 }
 
-async function uploadFile({ access_token, files, refresh_token, email, userkey, taskSequelizerEventEmitter }) {
+async function uploadFile({ access_token, files, taskSequelizerEventEmitter, parentFolder }) {
 
     //HEALP FROM: https://stackoverflow.com/questions/44021538/how-to-send-a-file-in-request-node-fetch-or-node
-    const response = await postFileUpload({ access_token, files })
+    const response = await postFileUpload({ access_token, files, parentFolder })
     const status = response.status
     if (status === 200) {
         debugger;
@@ -63,36 +82,10 @@ async function uploadFile({ access_token, files, refresh_token, email, userkey, 
         debugger;
         //get public link
 
-    } else if (status === 401) {
-        const { access_token } = await refreshAccessToken({
-            refresh_token, email, userkey, cb: async () => {
+    }
 
-                const response = await postFileUpload({ access_token, files })
 
-                const status = response.status
-
-                if (status === 200) {
-                    debugger;
-                    //create permission
-                    const data = await response.json()
-                    debugger;
-                    const { id } = data;
-                    await createPermission({ fileId: id, access_token })
-                    const publicLinkReponse = await getPublicLink({ fileId: id, access_token })
-                    const {
-                        webViewLink, webContentLink } = await publicLinkReponse.json()
-                    taskSequelizerEventEmitter.emit('taskComplete', 'page_upload_excel', { webViewLink, webContentLink })
-                    debugger;
-
-                } else {
-                    console.log('Error:Unhandled status code')
-                    taskSequelizerEventEmitter.emit('taskFailed', 'page_upload_excel')
-                    throw 'Unhandled status code'
-                }
-
-            }
-        })
-    } else {
+    else {
         console.log('Error:Unhandled status code')
         taskSequelizerEventEmitter.emit('taskFailed', 'page_upload_excel')
         throw 'Unhandled status code'
@@ -101,10 +94,10 @@ async function uploadFile({ access_token, files, refresh_token, email, userkey, 
 
 }
 
-async function postFileUpload({ access_token, files }) {
+async function postFileUpload({ access_token, files, parentFolder }) {
     const fileData = fs.readFileSync(files[0])
     const fileName = path.basename(files[0])
-    const metadata = { name: fileName, mymeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }
+    const metadata = { name: fileName, mymeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', parents: [parentFolder] }
 
 
     const apiendpoint = 'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart'
@@ -155,6 +148,79 @@ function buildMultipartRelatedBody({ metadata, fileData }) {
         'Content-Type:' + mymeType + '\r\n\r\n', 'utf-8'), Buffer.from(fileData, 'utf-8'), Buffer.from(JSON.stringify(metadata) +
             delimiter, 'utf-8')])
 
+}
+
+
+async function createFolder({ folderName, access_token }) {
+
+
+    const apiendpoint = `https://www.googleapis.com/drive/v3/files`
+
+
+    return fetch(apiendpoint, {
+        method: 'post',
+        headers: { 'Content-Type': 'application/json;', 'Authorization': `Bearer ${access_token}` },
+        body: JSON.stringify({
+            mimeType: "application/vnd.google-apps.folder",
+            name: folderName
+        })
+    })
+
+
+
+
+
+
+}
+
+
+async function folderExist({ folderName, access_token, refresh_token, email, userkey }) {
+    const apiendpoint = `https://www.googleapis.com/drive/v3/files?q=name%20%3D'${folderName}'%20and%20mimeType%20%3D%20'application%2Fvnd.google-apps.folder'`
+
+    const response = await fetch(apiendpoint, {
+        method: 'get',
+        headers: { 'Content-Type': 'application/json;', 'Authorization': `Bearer ${access_token}` }
+    })
+
+    const status = response.status
+    if (status === 200) {
+        debugger;
+        const data = await response.json()
+        if (data.files.length > 0) {
+            const folder = data.files[0]['id']
+            debugger;
+            return folder
+        } else {
+            return false
+        }
+
+    } else if (status === 401) {
+        const { access_token } = await refreshAccessToken({
+            refresh_token, email, userkey, cb: async () => {
+
+                const response = await fetch(apiendpoint, {
+                    method: 'get',
+                    headers: { 'Content-Type': 'application/json;', 'Authorization': `Bearer ${access_token}` }
+                })
+                const status = response.status
+                if (status === 200) {
+                    debugger;
+                    const data = await response.json()
+                    if (data.files.length > 0) {
+                        const folder = data.files[0]['id']
+                        return folder
+                    } else {
+                        return false
+                    }
+                } else {
+                    console.log('Error:Unhandled status code')
+                    taskSequelizerEventEmitter.emit('taskFailed', 'page_upload_excel')
+                    throw 'Unhandled status code'
+                }
+
+            }
+        })
+    }
 }
 module.exports = { pageUploadExcel }
 
