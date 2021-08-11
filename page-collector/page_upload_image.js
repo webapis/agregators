@@ -1,7 +1,7 @@
 const { fbDatabase } = require('../utils/firebase/firebaseInit')
 const { walkSync } = require('./walkSync');
 
-const { uploadImageFile, folderExist, createFolder } = require('../utils/google-drive')
+const { uploadImageFile, folderExist, createFolder, deleteFolder } = require('../utils/google-drive')
 
 async function pageUploadImage({ taskSequelizerEventEmitter }) {
     const email = process.env.email;
@@ -31,31 +31,23 @@ async function pageUploadImage({ taskSequelizerEventEmitter }) {
         })
         try {
             debugger;
-            const folderExts = await folderExist({ folderName: projectName, access_token, refresh_token, email, userkey })
-            if (folderExts) {
-                debugger;
-                await uploadImageFile({ access_token, files, taskSequelizerEventEmitter, parentFolder: folderExts })
+            const token = await folderExist({ folderName: projectName, access_token, refresh_token, email, userkey })
+            const folderResult = await createFolder({ folderName: projectName, access_token: token.access_token })
+            debugger;
+            if (folderResult.status === 200) {
+                const data = await folderResult.json()
+                await uploadImageFile({ access_token: token.access_token, files, taskSequelizerEventEmitter, parentFolder: data.id })
                 debugger;
             } else {
                 debugger;
-                const folderResult = await createFolder({ folderName: projectName, access_token })
-                debugger;
-                if (folderResult.status === 200) {
-                    const data = await folderResult.json()
-                    await uploadImageFile({ access_token, files, taskSequelizerEventEmitter, parentFolder: data.id })
-                    debugger;
-                } else {
-                    debugger;
-                    throw 'unhandled http response Status'
-                }
-                debugger;
+                throw 'unhandled http response Status'
             }
             debugger;
 
-
+            debugger;
         } catch (error) {
+            debugger;
             console.log('error', error)
-
         }
 
     })

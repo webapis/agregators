@@ -31,25 +31,20 @@ async function pageUploadExcel({ taskSequelizerEventEmitter }) {
 
             try {
                 debugger;
-                const folderExts = await folderExist({ folderName: projectName, access_token, refresh_token, email, userkey })
-                if (folderExts) {
-                    debugger;
-                    await uploadExcelFile({ access_token, filePath: files[0], taskSequelizerEventEmitter, parentFolder: folderExts })
+                const token = await folderExist({ folderName: projectName, access_token, refresh_token, email, userkey })
+                debugger;
+                const folderResult = await createFolder({ folderName: projectName, access_token: token.access_token })
+                debugger;
+                if (folderResult.status === 200) {
+                    const data = await folderResult.json()
+                    await uploadExcelFile({ access_token: token.access_token, filePath: files[0], taskSequelizerEventEmitter, parentFolder: data.id })
                     debugger;
                 } else {
-                    debugger;
-                    const folderResult = await createFolder({ folderName: projectName, access_token })
-                    debugger;
-                    if (folderResult.status === 200) {
-                        const data = await folderResult.json()
-                        await uploadExcelFile({ access_token, filePath: files[0], taskSequelizerEventEmitter, parentFolder: data.id })
-                        debugger;
-                    } else {
-                        throw 'unhandled http response Status'
-                    }
-                    debugger;
+                    throw 'unhandled http response Status'
                 }
                 debugger;
+
+
 
 
             } catch (error) {

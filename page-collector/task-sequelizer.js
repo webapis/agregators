@@ -97,7 +97,17 @@ function taskStarted(taskName) {
             })
             break;
         case 'page_image_collection':
-            dbRef = fbDatabase.ref(`projects/${process.env.projectName}/${startedDateTime}/COLLECTING_IMAGES/${process.env.projectName}`)
+            dbRef = fbDatabase.ref(`projects/${process.env.projectName}/${startedDateTime}/COLLECTING_IMAGES`)
+            dbRef.update({ start: Date.now() }, (error) => {
+                if (error) {
+                    console.log(error)
+                } else {
+
+                }
+            })
+            break;
+        case 'page_upload_image':
+            dbRef = fbDatabase.ref(`projects/${process.env.projectName}/${startedDateTime}/UPLOADING_IMAGES`)
             dbRef.update({ start: Date.now() }, (error) => {
                 if (error) {
                     console.log(error)
@@ -110,7 +120,8 @@ function taskStarted(taskName) {
 
     }
 }
-//page_image_collection
+
+//page_upload_image
 function taskComplete(taskName, payload) {
     let dbRef = null;
     switch (taskName) {
@@ -155,8 +166,19 @@ function taskComplete(taskName, payload) {
             })
             break;
         case 'page_image_collection':
-            dbRef = fbDatabase.ref(`projects/${process.env.projectName}/${startedDateTime}/COLLECTING_IMAGES/${process.env.projectName}`)
+            dbRef = fbDatabase.ref(`projects/${process.env.projectName}/${startedDateTime}/COLLECTING_IMAGES`)
             dbRef.update({ end: Date.now() }, (error) => {
+                if (error) {
+                    console.log(error)
+                } else {
+
+                }
+            })
+            break;
+        case 'page_upload_image':
+
+            dbRef = fbDatabase.ref(`projects/${process.env.projectName}/${startedDateTime}/UPLOADING_IMAGES`)
+            dbRef.update({ end: Date.now(), webViewLink: payload.webViewLink }, (error) => {
                 if (error) {
                     console.log(error)
                 } else {
@@ -223,9 +245,18 @@ function taskFailed(taskName) {
                 }
             })
             break;
-
         case 'page_image_collection':
-            dbRef = fbDatabase.ref(`projects/${process.env.projectName}/${startedDateTime}/COLLECTING_IMAGES/${process.env.projectName}`)
+            dbRef = fbDatabase.ref(`projects/${process.env.projectName}/${startedDateTime}/COLLECTING_IMAGES`)
+            dbRef.update({ failed: true }, (error) => {
+                if (error) {
+                    console.log(error)
+                } else {
+
+                }
+            })
+            break;
+        case 'page_upload_image':
+            dbRef = fbDatabase.ref(`projects/${process.env.projectName}/${startedDateTime}/UPLOADING_IMAGES`)
             dbRef.update({ failed: true }, (error) => {
                 if (error) {
                     console.log(error)

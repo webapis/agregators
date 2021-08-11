@@ -12,6 +12,7 @@ async function uploadExcelFile({ access_token, filePath, taskSequelizerEventEmit
     //HEALP FROM: https://stackoverflow.com/questions/44021538/how-to-send-a-file-in-request-node-fetch-or-node
     const response = await multipartUpload({ access_token, filePath, parentFolder, metadata })
     const status = response.status
+
     if (status === 200) {
         debugger;
         //create permission
@@ -61,6 +62,7 @@ async function uploadImageFile({ access_token, files, taskSequelizerEventEmitter
         // get public link
         const {
             webViewLink } = await publicLinkReponse.json()
+        debugger;
         taskSequelizerEventEmitter.emit('taskComplete', 'page_upload_image', { webViewLink })
         debugger;
 
@@ -156,44 +158,28 @@ async function folderExist({ folderName, access_token, refresh_token, email, use
     const status = response.status
     if (status === 200) {
         debugger;
-        const data = await response.json()
-        if (data.files.length > 0) {
-            const folder = data.files[0]['id']
-            debugger;
-            return folder
-        } else {
-            return false
-        }
+        return { access_token }
 
     } else if (status === 401) {
-        const { access_token } = await refreshAccessToken({
-            refresh_token, email, userkey, cb: async () => {
+        return await refreshAccessToken({
+            refresh_token, email, userkey, cb: () => { }
 
-                const response = await fetch(apiendpoint, {
-                    method: 'get',
-                    headers: { 'Content-Type': 'application/json;', 'Authorization': `Bearer ${access_token}` }
-                })
-                const status = response.status
-                if (status === 200) {
-                    debugger;
-                    const data = await response.json()
-                    if (data.files.length > 0) {
-                        const folder = data.files[0]['id']
-                        return folder
-                    } else {
-                        return false
-                    }
-                } else {
-                    console.log('Error:Unhandled status code')
-                    taskSequelizerEventEmitter.emit('taskFailed', 'page_upload_excel')
-                    throw 'Unhandled status code'
-                }
-
-            }
         })
     }
 }
-module.exports = { folderExist, createFolder, uploadExcelFile, uploadImageFile }
+
+async function deleteFolder({ fileId, access_token }) {
+    debugger;
+    const apiendpoint = `https://www.googleapis.com/drive/v3/files/${fileId}`
+
+    return await fetch(apiendpoint, {
+        method: 'delete',
+        headers: { 'Content-Type': 'application/json;', 'Authorization': `Bearer ${access_token}` }
+    })
+
+
+}
+module.exports = { folderExist, createFolder, uploadExcelFile, uploadImageFile, deleteFolder }
 
 
 

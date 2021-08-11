@@ -159,10 +159,12 @@ debugger;
 
 
     if (this.queue.length === 0 && this.promises.length === 0) {
+      debugger;
       clearInterval(this.promiseStateMonitor)
 
       this.calculatePromiseState(
         () => {
+          debugger
           this.emit('promiseExecComplete')
         }
       )
