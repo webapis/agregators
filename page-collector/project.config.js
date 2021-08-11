@@ -7,7 +7,7 @@ const projects = {
     { page_upload_excel: true },
 
     { page_image_collection: true },
-    { page_image_upload: true },
+    { page_upload_image: true },
     { page_image_crop: false },
     { page_image_blur: false },
     { page_image_embed: false },
@@ -29,7 +29,7 @@ const projects = {
     { page_upload_excel: true },
 
     { page_image_collection: true },
-    { page_image_upload: true },
+    { page_upload_image: true },
     //  { page_data_upload: true },
     { page_image_crop: false },
     { page_image_blur: false },

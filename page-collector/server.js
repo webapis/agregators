@@ -16,9 +16,9 @@ const { pageUploadExcel } = require('./page_upload_excel')
 const { batchImageProcessing } = require('./batchImageProcessing');
 const { pageNavDataTreeCreation } = require('./pageNavTreeCreation')
 const { pageLeavesBy100 } = require('./pageLeavesBy100')
-const { pageUploadData } = require('./pageUploadData')
+const { pageUploadImage } = require('./page_upload_image')
 const { pagePrerender } = require('./pagePrerender')
-const { testDataCollection } = require('./testDataCollection')
+
 
 function change() {
 
@@ -26,6 +26,7 @@ function change() {
   const taskSequelizerEventEmitter = taskSequelizer({ tasks })
   firebaseEvetEmitter({ taskSequelizerEventEmitter })
   taskSequelizerEventEmitter.on('nextTask', async function (nextTaskName) {
+    debugger;
     switch (nextTaskName) {
       case 'page_collection':
         removeDerectory('page-data') && removeDerectory('page-collection-errors') && pageCrawler({ taskSequelizerEventEmitter })
@@ -39,14 +40,12 @@ function change() {
       case 'page_upload_excel':
         pageUploadExcel({ taskSequelizerEventEmitter })
         break;
-      case 'test_data_collection':
-        testDataCollection({ taskSequelizerEventEmitter })
-        break;
-      case 'page_data_upload':
-        pageUploadData({ taskSequelizerEventEmitter, fbStorage: true })
-        break;
       case 'page_image_collection':
         batchImageCollection({ taskSequelizerEventEmitter })
+        break;
+      case 'page_upload_image':
+        debugger;
+        pageUploadImage({ taskSequelizerEventEmitter })
         break;
       case 'test_image_collection':
         break;
