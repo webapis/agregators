@@ -1,11 +1,9 @@
 const projects = {
   moda: [
     { page_collection: true },
-    // { page_data_collection: true },
     { page_merge_files: true },
     { page_export_excel: true },
     { page_upload_excel: true },
-
     { page_image_collection: true },
     { page_upload_image: true },
     { page_image_crop: false },
@@ -14,8 +12,6 @@ const projects = {
     { page_nav_data_tree_creation: false },
     { page_leaves_creation: false },
     { page_generation: false },
-    // { page_component_attacher: true },
-    //{ page_script_attacher: true },
     { page_nav_items: false },
     { page_builder: false },
     { page_prerender: false }
@@ -27,10 +23,8 @@ const projects = {
     { page_merge_files: true },
     { page_export_excel: true },
     { page_upload_excel: true },
-
     { page_image_collection: true },
     { page_upload_image: true },
-    //  { page_data_upload: true },
     { page_image_crop: false },
     { page_image_blur: false },
     { page_image_embed: false },
