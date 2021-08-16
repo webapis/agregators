@@ -4,16 +4,25 @@ customElements.define('top-navigation', class extends HTMLElement {
   }
   connectedCallback() {
 
-    const {contentView}= window.pageStore.state
-    this.render({contentView})
+    const { contentView, auth } = window.pageStore.state
+    this.render({ contentView, auth })
 
     window.pageStore.subscribe(window.actionTypes.CONTENT_VIEW_CHANGED, state => {
-      const { contentView } = state
-      this.render({contentView})
+      const { contentView, auth } = state
+      this.render({ contentView, auth })
+    })
+    window.pageStore.subscribe(window.actionTypes.AUTH_SUCCESS, state => {
+      const { contentView, auth } = state
+      this.render({ contentView, auth })
+    })
+
+    window.pageStore.subscribe(window.actionTypes.LOGOUT, state => {
+      const { contentView, auth } = state
+      this.render({ contentView, auth })
     })
   }
 
-  render({ contentView }) {
+  render({ contentView, auth }) {
 
     this.innerHTML = `<nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
@@ -24,19 +33,21 @@ customElements.define('top-navigation', class extends HTMLElement {
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
               <li class="nav-item">
-                <a class="nav-link ${contentView==='home'&& 'active'}" aria-current="page" href="#" id="home">Home</a>
+                <a class="nav-link ${contentView === 'home' && 'active'}" aria-current="page" href="#" id="home">Home</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link ${contentView==='projects'&& 'active'}" href="#" id="projects">Projects</a>
+                <a class="nav-link ${contentView === 'projects' && 'active'}" href="#" id="projects">Projects</a>
               </li>
            
               <li class="nav-item">
-                <a class="nav-link ${contentView==='project-editor'&& 'active'}" href="#" tabindex="-1" aria-disabled="true" id="project-editor">Add Project</a>
+                <a class="nav-link ${contentView === 'project-editor' && 'active'}" href="#" tabindex="-1" aria-disabled="true" id="project-editor">Add Project</a>
               </li>
             </ul>
           
-            <form class="d-flex">             
-              <button class="btn btn-outline-success" type="submit">Login</button>
+            <form class="d-flex">  
+            ${auth !== null ? `<span class="m-2">${auth.user.email}</span>` : ''}           
+              ${auth === null ? '<a class="btn btn-outline-success" href="#" id="login">Login</a>' : ''}
+              ${auth !== null ? '<button class="btn btn-outline-success" id="logout-btn">Logout</button>' : ''}
             </form>
           </div>
         </div>
@@ -51,8 +62,25 @@ customElements.define('top-navigation', class extends HTMLElement {
           type: window.actionTypes.CONTENT_VIEW_CHANGED,
           payload: { view: id }
         });
+
+
       })
     })
+    document.getElementById('logout-btn') && document.getElementById('logout-btn').addEventListener('click', e => {
+      e.preventDefault()
+
+      debugger
+      window.pageStore.dispatch({
+        type: window.actionTypes.LOGOUT,
+        payload: null
+      });
+
+      window.pageStore.dispatch({
+        type: window.actionTypes.CONTENT_VIEW_CHANGED,
+        payload: { view: 'home' }
+      });
+    })
+
 
   }
 })

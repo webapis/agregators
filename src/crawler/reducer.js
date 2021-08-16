@@ -2,22 +2,40 @@ const stateFromLS = JSON.parse(localStorage.getItem('page-store'));
 export const initState = stateFromLS
   ? stateFromLS
   : {
-    user: null,
+    auth: null,
     projectName: '',
-    projectDescription: '',
+    description: '',
     projectNames: [],
     contentView: 'projects',
     selectedDashboard: '',
     projects: [{ projectName: 'projectOne' }, { projectName: 'projectTwo' }, { projectName: 'projectTrhee' }],
     selectedProjectName: '',
     companyName: '',
-    error: null
+    dashboardTab: 'main-tab',
+    navAfterAuth: 'home',
+    error: null,
+    loading: false
   };
 
 export default (state, action) => {
   switch (action.type) {
     case actionTypes.CONTENT_VIEW_CHANGED:
       return { ...state, contentView: action.payload.view, ...action.payload }
+    case actionTypes.DASHBOARD_TAB_CHANGED:
+      return { ...state, dashboardTab: action.payload }
+    case actionTypes.AUTH_SUCCESS:
+      return { ...state, auth: action.payload.auth, contentView: action.payload.navAfterAuth }
+    case actionTypes.LOGOUT:
+      return { ...state, auth: null }
+    case actionTypes.INPUT_CHANGED:
+      return { ...state, [action.payload.name]: action.payload.value }
+    case actionTypes.LOADING:
+      return { ...state, loading: true }
+    case actionTypes.LOADING_COMPLETE:
+      return { ...state, loading: false }
+    case actionTypes.PROJECT_SAVED:
+      return { ...state, loading: false, contentView: 'projects' }
+
     // case actionTypes.COMPANY_NAME_CHANGED:
     //   return { ...state, companyName: action.payload };
     // case actionTypes.SIGNED_IN:
@@ -71,5 +89,12 @@ export const actionTypes = {
   PROJECT_NAME_SELECTED: 'PROJECT_NAME_SELECTED',
   ERROR_DISMISSED: "ERROR_DISMISSED",
   ERROR: "ERROR",
-  COMPANY_NAME_CHANGED: 'COMPANY_NAME_CHANGED'
+  COMPANY_NAME_CHANGED: 'COMPANY_NAME_CHANGED',
+  DASHBOARD_TAB_CHANGED: 'DASHBOARD_TAB_CHANGED',
+  AUTH_SUCCESS: 'AUTH_SUCCESS',
+  LOGOUT: 'LOGOUT',
+  INPUT_CHANGED: 'INPUT_CHANGED',
+  LOADING: 'LOADING',
+  LOADING_COMPLETE: 'LOADING_COMPLETE',
+  PROJECT_SAVED: 'PROJECT_SAVED'
 };
