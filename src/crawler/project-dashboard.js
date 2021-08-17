@@ -5,24 +5,24 @@ customElements.define('project-dashboard', class extends HTMLElement {
 
     connectedCallback() {
 
-        window.addEventListener('load',()=>{
-        
+        window.addEventListener('load', () => {
+
             firebase.auth().onAuthStateChanged((user) => {
                 if (user) {
-                  // User is signed in, see docs for a list of available properties
-                  // https://firebase.google.com/docs/reference/js/firebase.User
-                  var uid = user.uid;
-                  const { selectedDashboard } = window.pageStore.state
-                  this.render({ selectedDashboard })
-                  // ...
+                    // User is signed in, see docs for a list of available properties
+                    // https://firebase.google.com/docs/reference/js/firebase.User
+                    var uid = user.uid;
+                    const { selectedDashboard } = window.pageStore.state
+                    this.render({ selectedDashboard })
+                    // ...
                 } else {
-                  // User is signed out
-                  // ...
+                    // User is signed out
+                    // ...
                 }
-              });
-         
+            });
+
         })
-     
+
     }
 
     render({ selectedDashboard }) {
@@ -57,17 +57,17 @@ customElements.define('dashboard-tabs', class extends HTMLElement {
         super()
     }
     connectedCallback() {
-     
-            const { dashboardTab } = window.pageStore.state
+
+        const { dashboardTab } = window.pageStore.state
+        this.render({ selectedTab: dashboardTab })
+
+        window.pageStore.subscribe(window.actionTypes.DASHBOARD_TAB_CHANGED, state => {
+            const { dashboardTab } = state
             this.render({ selectedTab: dashboardTab })
-    
-            window.pageStore.subscribe(window.actionTypes.DASHBOARD_TAB_CHANGED, state => {
-                const { dashboardTab } = state
-                this.render({ selectedTab: dashboardTab })
-            })
-      
- 
-    
+        })
+
+
+
     }
 
     render({ selectedTab }) {
@@ -113,27 +113,56 @@ customElements.define('dashboard-content', class extends HTMLElement {
         super()
     }
     connectedCallback() {
-      
-            const { dashboardTab } = window.pageStore.state
-            this.render({ selectedTab: dashboardTab })
-    
-            window.pageStore.subscribe(window.actionTypes.DASHBOARD_TAB_CHANGED, state => {
-                const { dashboardTab } = state
-                this.render({ selectedTab: dashboardTab })
-            })
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+                // User is signed in, see docs for a list of available properties
+                // https://firebase.google.com/docs/reference/js/firebase.User
+                var uid = user.uid;
+                firebase.auth().onAuthStateChanged((user) => {
+                    if (user) {
+                        const { dashboardTab, selectedDashboard } = window.pageStore.state
+                        var uid = user.uid;
+                        // ...
 
-       
-    
+                        firebase.database().ref(`myprojects/${uid}/${selectedDashboard}/conf`).on('value', snap => {
+                            const conf = snap.val()
+                            debugger;
+
+                            this.render({ selectedTab: dashboardTab, selectedDashboard, conf })
+
+                            window.pageStore.subscribe(window.actionTypes.DASHBOARD_TAB_CHANGED, state => {
+                                const { dashboardTab, selectedDashboard } = state
+                                this.render({ selectedTab: dashboardTab, selectedDashboard, conf })
+                            })
+                        })
+                    } else {
+
+                    }
+                });
+
+                // ...
+            } else {
+                // User is signed out
+                // ...
+            }
+        });
+
+
+
+
 
     }
 
-    render({ selectedTab }) {
+    render({ selectedTab, selectedDashboard, conf }) {
+        const { email, exporting, database, schedule } = conf
+
+        debugger;
         this.innerHTML = `<div>
         ${selectedTab === 'main-tab' ? `<main-tab></main-tab>` : ''}
-        ${selectedTab === 'email-tab' ? `<email-tab></email-tab>` : ''}
-        ${selectedTab === 'export-tab' ? `<export-tab></export-tab>` : ''}
-        ${selectedTab === 'database-tab' ? `<database-tab></database-tab>` : ''}
-        ${selectedTab === 'schedule-tab' ? `<schedule-tab></schedule-tab>` : ''}
+        ${selectedTab === 'email-tab' ? `<email-tab projectName=${selectedDashboard} email=${email}></email-tab>` : ''}
+        ${selectedTab === 'export-tab' ? `<export-tab projectName=${selectedDashboard} exporting=${exporting}></export-tab>` : ''}
+        ${selectedTab === 'database-tab' ? `<database-tab projectName=${selectedDashboard} database=${database}></database-tab>` : ''}
+        ${selectedTab === 'schedule-tab' ? `<schedule-tab projectName=${selectedDashboard} schedule=${schedule}></schedule-tab>` : ''}
         ${selectedTab === 'query-tab' ? `<query-tab></query-tab>` : ''}
         
         </div>`
@@ -148,10 +177,10 @@ customElements.define('main-tab', class extends HTMLElement {
     }
 
     connectedCallback() {
-      
-            this.render()
-        
-       
+
+        this.render()
+
+
     }
 
     render() {
@@ -170,15 +199,15 @@ customElements.define('scrape-logs', class extends HTMLElement {
     }
 
     connectedCallback() {
-      
-            this.innerHTML = `<div class="row">
+
+        this.innerHTML = `<div class="row">
             <div class="col">
             <log-accordion id="first" date="today"></log-accordion>
             <log-accordion id="two" date="yesterday"></log-accordion>
             </div>
             </div>`
-        
-      
+
+
     }
 })
 
@@ -189,10 +218,10 @@ customElements.define('log-accordion', class extends HTMLElement {
     }
 
     connectedCallback() {
-    
-            this.render()
-        
-       
+
+        this.render()
+
+
     }
 
     render() {
@@ -226,8 +255,8 @@ customElements.define('accordion-item', class extends HTMLElement {
     }
 
     connectedCallback() {
-    
-            this.innerHTML = `
+
+        this.innerHTML = `
         
             <ol class="list-group list-group-numbered">
       <li class="list-group-item d-flex justify-content-between align-items-start">
@@ -296,8 +325,8 @@ customElements.define('accordion-item', class extends HTMLElement {
     </ol>
             
             `
-        
- 
+
+
     }
 })
 
@@ -324,22 +353,23 @@ customElements.define('email-tab', class extends HTMLElement {
     }
 
     connectedCallback() {
-    
-            this.render()
-        
-      
+        this.render()
     }
 
     render() {
+
+        const projectName = this.getAttribute('projectName')
+        const accountType = this.getAttribute('email')
+        debugger;
         this.innerHTML = `<div>
         
         <div class="row d-flex justify-content-center">
         <div class="col d-flex justify-content-center py-5">
         <div>
         <p>Select account type for Google Emailing:</p>
-          <input type="radio" id="html" name="fav_language" value="HTML">
+          <input type="radio" id="html" name="fav_language" value="trial" ${accountType === 'trial' && 'checked'}>
           <label for="html">Trial account: <i>(no action is required)</i></label><br>
-          <input type="radio" id="javascript" name="fav_language" value="JavaScript">
+          <input type="radio" id="javascript" name="fav_language" value="professional" ${accountType === 'professional' && "checked"} >
           <label for="javascript">Professional account: <i>(google authentication is required)</i></label>
         </div>
         </div>
@@ -391,21 +421,25 @@ customElements.define('export-tab', class extends HTMLElement {
     }
 
     connectedCallback() {
-        
-            this.render()
-        
+
+        this.render()
+
     }
 
     render() {
+
+        const projectName = this.getAttribute('projectName')
+        const accountType = this.getAttribute('exporting')
+        debugger;
         this.innerHTML = `<div>
         
         <div class="row d-flex justify-content-center">
         <div class="col d-flex justify-content-center py-5">
         <div>
         <p>Select account type for Google Sheet:</p>
-          <input type="radio" id="html" name="fav_language" value="HTML">
+          <input type="radio" id="html" name="fav_language" value="trial" ${accountType === 'trial' && 'checked'}>
           <label for="html">Trial account: <i>(no action is required)</i></label><br>
-          <input type="radio" id="javascript" name="fav_language" value="JavaScript">
+          <input type="radio" id="javascript" name="fav_language" value="professional" ${accountType === 'professional' && 'checked'}>
           <label for="javascript">Professional account: <i>(google authentication is required)</i></label>
         </div>
         </div>
@@ -421,20 +455,23 @@ customElements.define('database-tab', class extends HTMLElement {
     }
 
     connectedCallback() {
-   
-            this.render()
-        
+
+        this.render()
+
     }
 
     render() {
+
+        const projectName = this.getAttribute('projectName')
+        const accountType = this.getAttribute('database')
         this.innerHTML = `<div>
         <div class="row d-flex justify-content-center">
         <div class="col d-flex justify-content-center py-5">
         <div>
         <p>Select account type for Google Firestore database:</p>
-          <input type="radio" id="html" name="fav_language" value="HTML">
+          <input type="radio" id="html" name="fav_language" value="trial" ${accountType === 'trial' && 'checked'}>
           <label for="html">Trial account: <i>(no action is required)</i></label><br>
-          <input type="radio" id="javascript" name="fav_language" value="JavaScript">
+          <input type="radio" id="javascript" name="fav_language" value="professional" ${accountType === 'professional' && 'checked'}>
           <label for="javascript">Professional account: <i>(google authentication is required)</i></label>
         </div>
         </div>
@@ -449,9 +486,9 @@ customElements.define('schedule-tab', class extends HTMLElement {
     }
 
     connectedCallback() {
-     
-            this.render()
-        
+
+        this.render()
+
     }
 
     render() {
@@ -466,9 +503,9 @@ customElements.define('query-tab', class extends HTMLElement {
     }
 
     connectedCallback() {
-      
-            this.render()
-        
+
+        this.render()
+
     }
 
     render() {

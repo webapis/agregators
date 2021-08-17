@@ -92,9 +92,6 @@ e.preventDefault()
       window.location.replace("/project-editor.html");
     })
 
-
-
-
     document.getElementById('myprojects-btn').addEventListener('click', async (e) => {
       e.preventDefault()
       firebase.auth().onAuthStateChanged((user) => {

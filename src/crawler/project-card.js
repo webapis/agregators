@@ -4,7 +4,7 @@ customElements.define('project-card', class extends HTMLElement {
     }
 
     connectedCallback() {
-        const auth= window.pageStore.state.auth
+        const auth = window.pageStore.state.auth
         debugger;
         const projectName = this.getAttribute('project-name')
         const description = this.getAttribute('description')
@@ -35,7 +35,7 @@ customElements.define('project-card', class extends HTMLElement {
 
             } else {
 
-                const { uid,email } = firebase.auth().currentUser;
+                const { uid, email } = firebase.auth().currentUser;
                 const userProjectsRef = firebase.database().ref(`myprojects/${uid}/${projectName}`)
 
                 userProjectsRef.on('value', snap => {
@@ -46,8 +46,8 @@ customElements.define('project-card', class extends HTMLElement {
                         projectTemplatesRef.on('value', snap => {
                             const value = snap.val()
                             const description = value['description']
-
-                            userProjectsRef.set({ description,user:email }, (error) => {
+                            const conf = { email: 'trial', exporting: 'trial', database: 'trial', schedule: 'trial' }
+                            userProjectsRef.set({ description, user: email,conf }, (error) => {
                                 if (error) {
                                     window.pageStore.dispatch({
                                         type: window.actionTypes.ERROR,
