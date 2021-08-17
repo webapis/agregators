@@ -4,9 +4,25 @@ customElements.define('project-dashboard', class extends HTMLElement {
     }
 
     connectedCallback() {
-        const { selectedDashboard } = window.pageStore.state
-        debugger;
-        this.render({ selectedDashboard })
+
+        window.addEventListener('load',()=>{
+        
+            firebase.auth().onAuthStateChanged((user) => {
+                if (user) {
+                  // User is signed in, see docs for a list of available properties
+                  // https://firebase.google.com/docs/reference/js/firebase.User
+                  var uid = user.uid;
+                  const { selectedDashboard } = window.pageStore.state
+                  this.render({ selectedDashboard })
+                  // ...
+                } else {
+                  // User is signed out
+                  // ...
+                }
+              });
+         
+        })
+     
     }
 
     render({ selectedDashboard }) {
@@ -41,13 +57,16 @@ customElements.define('dashboard-tabs', class extends HTMLElement {
         super()
     }
     connectedCallback() {
-        const { dashboardTab } = window.pageStore.state
-        this.render({ selectedTab: dashboardTab })
-
-        window.pageStore.subscribe(window.actionTypes.DASHBOARD_TAB_CHANGED, state => {
-            const { dashboardTab } = state
+     
+            const { dashboardTab } = window.pageStore.state
             this.render({ selectedTab: dashboardTab })
-        })
+    
+            window.pageStore.subscribe(window.actionTypes.DASHBOARD_TAB_CHANGED, state => {
+                const { dashboardTab } = state
+                this.render({ selectedTab: dashboardTab })
+            })
+      
+ 
     
     }
 
@@ -94,14 +113,17 @@ customElements.define('dashboard-content', class extends HTMLElement {
         super()
     }
     connectedCallback() {
-
-        const { dashboardTab } = window.pageStore.state
-        this.render({ selectedTab: dashboardTab })
-
-        window.pageStore.subscribe(window.actionTypes.DASHBOARD_TAB_CHANGED, state => {
-            const { dashboardTab } = state
+      
+            const { dashboardTab } = window.pageStore.state
             this.render({ selectedTab: dashboardTab })
-        })
+    
+            window.pageStore.subscribe(window.actionTypes.DASHBOARD_TAB_CHANGED, state => {
+                const { dashboardTab } = state
+                this.render({ selectedTab: dashboardTab })
+            })
+
+       
+    
 
     }
 
@@ -126,7 +148,10 @@ customElements.define('main-tab', class extends HTMLElement {
     }
 
     connectedCallback() {
-        this.render()
+      
+            this.render()
+        
+       
     }
 
     render() {
@@ -145,12 +170,15 @@ customElements.define('scrape-logs', class extends HTMLElement {
     }
 
     connectedCallback() {
-        this.innerHTML = `<div class="row">
-        <div class="col">
-        <log-accordion id="first" date="today"></log-accordion>
-        <log-accordion id="two" date="yesterday"></log-accordion>
-        </div>
-        </div>`
+      
+            this.innerHTML = `<div class="row">
+            <div class="col">
+            <log-accordion id="first" date="today"></log-accordion>
+            <log-accordion id="two" date="yesterday"></log-accordion>
+            </div>
+            </div>`
+        
+      
     }
 })
 
@@ -161,7 +189,10 @@ customElements.define('log-accordion', class extends HTMLElement {
     }
 
     connectedCallback() {
-        this.render()
+    
+            this.render()
+        
+       
     }
 
     render() {
@@ -195,75 +226,78 @@ customElements.define('accordion-item', class extends HTMLElement {
     }
 
     connectedCallback() {
-        this.innerHTML = `
+    
+            this.innerHTML = `
         
-        <ol class="list-group list-group-numbered">
-  <li class="list-group-item d-flex justify-content-between align-items-start">
+            <ol class="list-group list-group-numbered">
+      <li class="list-group-item d-flex justify-content-between align-items-start">
+        <div class="ms-2 me-auto">
+          <div class="fw-bold">Start</div>
+          When scraping started
+        </div>
+        <span class="badge bg-primary rounded-pill">14</span>
+      </li>
+      <li class="list-group-item d-flex justify-content-between align-items-start">
+        <div class="ms-2 me-auto">
+          <div class="fw-bold">End</div>
+          When scraping ended
+        </div>
+        <span class="badge bg-primary rounded-pill">14</span>
+      </li>
+      <li class="list-group-item d-flex justify-content-between align-items-start">
+        <div class="ms-2 me-auto">
+          <div class="fw-bold">Time span</div>
+          Total time 
+        </div>
+        <span class="badge bg-primary rounded-pill">14</span>
+      </li>
+    
+      <li class="list-group-item d-flex justify-content-between align-items-start">
+      <div class="ms-2 me-auto">
+        <div class="fw-bold">Excel Link</div>
+       Link to the Google Sheet file
+      </div>
+      <span class="badge bg-primary rounded-pill">14</span>
+    </li>
+    
+    <li class="list-group-item d-flex justify-content-between align-items-start">
     <div class="ms-2 me-auto">
-      <div class="fw-bold">Start</div>
-      When scraping started
+      <div class="fw-bold"> Link to Image Folder</div>
+     Link to collected images uploaded to Google Drive
     </div>
     <span class="badge bg-primary rounded-pill">14</span>
-  </li>
-  <li class="list-group-item d-flex justify-content-between align-items-start">
+    </li>
+    
+    <li class="list-group-item d-flex justify-content-between align-items-start">
     <div class="ms-2 me-auto">
-      <div class="fw-bold">End</div>
-      When scraping ended
+      <div class="fw-bold"> Link JSON</div>
+     Link to JSON data store to Google Firestore database
     </div>
     <span class="badge bg-primary rounded-pill">14</span>
-  </li>
-  <li class="list-group-item d-flex justify-content-between align-items-start">
+    </li>
+    
+    <li class="list-group-item d-flex justify-content-between align-items-start">
     <div class="ms-2 me-auto">
-      <div class="fw-bold">Time span</div>
-      Total time 
+      <div class="fw-bold"> Email Alerts</div>
+     List of emails notified about the result
     </div>
     <span class="badge bg-primary rounded-pill">14</span>
-  </li>
-
-  <li class="list-group-item d-flex justify-content-between align-items-start">
-  <div class="ms-2 me-auto">
-    <div class="fw-bold">Excel Link</div>
-   Link to the Google Sheet file
-  </div>
-  <span class="badge bg-primary rounded-pill">14</span>
-</li>
-
-<li class="list-group-item d-flex justify-content-between align-items-start">
-<div class="ms-2 me-auto">
-  <div class="fw-bold"> Link to Image Folder</div>
- Link to collected images uploaded to Google Drive
-</div>
-<span class="badge bg-primary rounded-pill">14</span>
-</li>
-
-<li class="list-group-item d-flex justify-content-between align-items-start">
-<div class="ms-2 me-auto">
-  <div class="fw-bold"> Link JSON</div>
- Link to JSON data store to Google Firestore database
-</div>
-<span class="badge bg-primary rounded-pill">14</span>
-</li>
-
-<li class="list-group-item d-flex justify-content-between align-items-start">
-<div class="ms-2 me-auto">
-  <div class="fw-bold"> Email Alerts</div>
- List of emails notified about the result
-</div>
-<span class="badge bg-primary rounded-pill">14</span>
-</li>
-
-
-<li class="list-group-item d-flex justify-content-between align-items-start">
-<div class="ms-2 me-auto">
-  <div class="fw-bold"> Started Type</div>
- Whether web scraping started manually or by schedule 
-</div>
-<span class="badge bg-primary rounded-pill">Manual</span>
-</li>
-
-</ol>
+    </li>
+    
+    
+    <li class="list-group-item d-flex justify-content-between align-items-start">
+    <div class="ms-2 me-auto">
+      <div class="fw-bold"> Started Type</div>
+     Whether web scraping started manually or by schedule 
+    </div>
+    <span class="badge bg-primary rounded-pill">Manual</span>
+    </li>
+    
+    </ol>
+            
+            `
         
-        `
+ 
     }
 })
 
@@ -290,7 +324,10 @@ customElements.define('email-tab', class extends HTMLElement {
     }
 
     connectedCallback() {
-        this.render()
+    
+            this.render()
+        
+      
     }
 
     render() {
@@ -354,7 +391,9 @@ customElements.define('export-tab', class extends HTMLElement {
     }
 
     connectedCallback() {
-        this.render()
+        
+            this.render()
+        
     }
 
     render() {
@@ -382,7 +421,9 @@ customElements.define('database-tab', class extends HTMLElement {
     }
 
     connectedCallback() {
-        this.render()
+   
+            this.render()
+        
     }
 
     render() {
@@ -408,7 +449,9 @@ customElements.define('schedule-tab', class extends HTMLElement {
     }
 
     connectedCallback() {
-        this.render()
+     
+            this.render()
+        
     }
 
     render() {
@@ -423,7 +466,9 @@ customElements.define('query-tab', class extends HTMLElement {
     }
 
     connectedCallback() {
-        this.render()
+      
+            this.render()
+        
     }
 
     render() {

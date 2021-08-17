@@ -15,7 +15,7 @@ customElements.define('login-page', class extends HTMLElement {
         </div>`
 
         document.getElementById('google-sign-in-btn').addEventListener('click', () => {
-            window.googleAuth({ navAfterAuth: 'home' })
+            window.googleAuth({ navAfterAuth: '/' })
         })
     }
 })

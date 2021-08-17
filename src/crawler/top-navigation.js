@@ -3,23 +3,26 @@ customElements.define('top-navigation', class extends HTMLElement {
     super()
   }
   connectedCallback() {
+    window.addEventListener('load', () => {
 
-    const { contentView, auth } = window.pageStore.state
-    this.render({ contentView, auth })
+      const { contentView, auth } = window.pageStore.state
+      this.render({ contentView, auth })
 
-    window.pageStore.subscribe(window.actionTypes.CONTENT_VIEW_CHANGED, state => {
-      const { contentView, auth } = state
-      this.render({ contentView, auth })
-    })
-    window.pageStore.subscribe(window.actionTypes.AUTH_SUCCESS, state => {
-      const { contentView, auth } = state
-      this.render({ contentView, auth })
+      window.pageStore.subscribe(window.actionTypes.CONTENT_VIEW_CHANGED, state => {
+        const { contentView, auth } = state
+        this.render({ contentView, auth })
+      })
+      window.pageStore.subscribe(window.actionTypes.AUTH_SUCCESS, state => {
+        const { contentView, auth } = state
+        this.render({ contentView, auth })
+      })
+
+      window.pageStore.subscribe(window.actionTypes.LOGOUT, state => {
+        const { contentView, auth } = state
+        this.render({ contentView, auth })
+      })
     })
 
-    window.pageStore.subscribe(window.actionTypes.LOGOUT, state => {
-      const { contentView, auth } = state
-      this.render({ contentView, auth })
-    })
   }
 
   render({ contentView, auth }) {
@@ -33,20 +36,22 @@ customElements.define('top-navigation', class extends HTMLElement {
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
               <li class="nav-item">
-                <a class="nav-link ${contentView === 'home' && 'active'}" aria-current="page" href="#" id="home">Home</a>
+                <a class="nav-link ${contentView === 'home' && 'active'}" aria-current="page" href="/" id="home">Home</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link ${contentView === 'projects' && 'active'}" href="#" id="projects">Projects</a>
+                <a class="nav-link ${contentView === 'projects' && 'active'}" href="/project-list.html" id="projects">Project Templates</a>
               </li>
-           
               <li class="nav-item">
-                <a class="nav-link ${contentView === 'project-editor' && 'active'}" href="#" tabindex="-1" aria-disabled="true" id="project-editor">Add Project</a>
+              <a class="nav-link ${contentView === 'projects' && 'active'}" href="/my-projects.html" id="myprojects">My Projects</a>
+            </li>
+              <li class="nav-item">
+                <a class="nav-link ${contentView === 'project-editor' && 'active'}" href="/project-editor.html" tabindex="-1" aria-disabled="true" id="project-editor">Add Project Template</a>
               </li>
             </ul>
           
             <form class="d-flex">  
             ${auth !== null ? `<span class="m-2">${auth.user.email}</span>` : ''}           
-              ${auth === null ? '<a class="btn btn-outline-success" href="#" id="login">Login</a>' : ''}
+              ${auth === null ? '<a class="btn btn-outline-success" href="/login.html" id="login">Login</a>' : ''}
               ${auth !== null ? '<button class="btn btn-outline-success" id="logout-btn">Logout</button>' : ''}
             </form>
           </div>
@@ -55,7 +60,7 @@ customElements.define('top-navigation', class extends HTMLElement {
 
     this.querySelectorAll('a').forEach(element => {
       element.addEventListener('click', e => {
-        e.preventDefault()
+
         const { id } = e.target
         debugger
         window.pageStore.dispatch({
@@ -63,24 +68,21 @@ customElements.define('top-navigation', class extends HTMLElement {
           payload: { view: id }
         });
 
-
       })
     })
+
     document.getElementById('logout-btn') && document.getElementById('logout-btn').addEventListener('click', e => {
       e.preventDefault()
-
       debugger
       window.pageStore.dispatch({
         type: window.actionTypes.LOGOUT,
         payload: null
       });
-
       window.pageStore.dispatch({
         type: window.actionTypes.CONTENT_VIEW_CHANGED,
         payload: { view: 'home' }
       });
+      window.location.replace("/");
     })
-
-
   }
 })

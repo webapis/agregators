@@ -4,8 +4,11 @@ customElements.define('project-editor', class extends HTMLElement {
   }
 
   connectedCallback() {
-    const { loading } = window.pageStore.state
-    this.render({ loading })
+    window.addEventListener('load', () => {
+      const { loading } = window.pageStore.state
+      this.render({ loading })
+    })
+
   }
 
 
@@ -60,6 +63,7 @@ customElements.define('project-editor', class extends HTMLElement {
           window.pageStore.dispatch({ type: window.actionTypes.ERROR, error })
         }
         window.pageStore.dispatch({ type: window.actionTypes.PROJECT_SAVED })
+        window.location.replace("/project-list.html");
       });
   }
 

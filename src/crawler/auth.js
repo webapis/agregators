@@ -19,6 +19,7 @@ async function googleAuth({ navAfterAuth }) {
                 type: window.actionTypes.AUTH_SUCCESS,
                 payload: { auth: { user, token }, navAfterAuth }
             });
+            window.location.replace(navAfterAuth);
             debugger;
 
             return result
