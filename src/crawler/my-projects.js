@@ -15,7 +15,7 @@ customElements.define('my-projects', class extends HTMLElement {
 
         firebase.auth().onAuthStateChanged((user) => {
             if (user) {
-                debugger;
+                
                 // User is signed in, see docs for a list of available properties
                 // https://firebase.google.com/docs/reference/js/firebase.User
                 var uid = user.uid;
@@ -30,10 +30,11 @@ customElements.define('my-projects', class extends HTMLElement {
                         element.setAttribute('description', projectDescription)
                         element.classList.add('col-3')
                         document.getElementById('project-list-container').appendChild(element)
+                        document.getElementById('loaing').style='display:none'
                     })
                 // ...
             } else {
-                debugger;
+                
                 // User is signed out
                 // ...
             }
@@ -41,10 +42,11 @@ customElements.define('my-projects', class extends HTMLElement {
         this.innerHTML = `<div class="container">
         <div id="project-list-container" class="row">  
         <legend>My Projects:</legend>
+        <div id="loaing">Loading....</div>
         </div>
         </div>`
-        const auth = firebase.auth()
-        debugger;
+        
+        
 
     }
 

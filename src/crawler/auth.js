@@ -14,13 +14,39 @@ async function googleAuth({ navAfterAuth }) {
             // The signed-in user info.
             var user = result.user;
             debugger;
-            // firebase.database().ref('users')
-            window.pageStore.dispatch({
-                type: window.actionTypes.AUTH_SUCCESS,
-                payload: { auth: { user, token }, navAfterAuth }
-            });
-            window.location.replace(navAfterAuth);
-            debugger;
+            if (isNewUser) {
+                debugger;
+                firebase.database().ref(`users/${user.uid}`).set({ email: user.email, role: 'standard' }, (error) => {
+                    if (error) {
+                        window.pageStore.dispatch({
+                            type: window.actionTypes.ERROR,
+                            payload: error
+                        });
+                    } else {
+                        debugger;
+                       
+                        window.pageStore.dispatch({
+                            type: window.actionTypes.AUTH_SUCCESS,
+                            payload: { auth: { user, token, role: 'standard' }, navAfterAuth }
+                        });
+                        window.location.replace(navAfterAuth);
+                    }
+                })
+            } else {
+
+                firebase.database().ref(`users/${user.uid}`).on('value', snap => {
+                    const role = snap.val()['role']
+                    window.pageStore.dispatch({
+                        type: window.actionTypes.AUTH_SUCCESS,
+                        payload: { auth: { user, token, role }, navAfterAuth }
+                    });
+                    window.location.replace(navAfterAuth);
+                })
+              
+
+            }
+
+
 
             return result
             // ...

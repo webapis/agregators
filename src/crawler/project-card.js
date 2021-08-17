@@ -4,9 +4,11 @@ customElements.define('project-card', class extends HTMLElement {
     }
 
     connectedCallback() {
+        const auth= window.pageStore.state.auth
+        debugger;
         const projectName = this.getAttribute('project-name')
         const description = this.getAttribute('description')
-        this.innerHTML = `<div class="card">
+        this.innerHTML = `<div class="card mt-3">
         <div class="card-body">
         <div class="row">
         <div class="col">
@@ -16,43 +18,43 @@ customElements.define('project-card', class extends HTMLElement {
         </div>
        
         <p class="card-text">${description}</p>
-        <a href="#" class="card-link" id=${projectName}>Go to dashboard</a>
-        <a href="#" class="card-link" id=${projectName}>Edit project</a>
+        <a href="#" class="card-link" id="${projectName}-dashboard-link" >Go to dashboard</a>
+        ${auth && auth.role === 'admin' ? '<a href="#" class="card-link" id="${projectName}-project-editor-link">Edit project</a>' : ''}
         </div>
         <div class="card-footer text-muted">
         <eye-icon></eye-icon><span class="badge text-secondary">10</span>
       </div>
         </div>`
-        document.getElementById(projectName).addEventListener('click', async (e) => {
+        document.getElementById(`${projectName}-dashboard-link`).addEventListener('click', async (e) => {
             e.preventDefault()
-            debugger;
+
             const { auth } = window.pageStore.state
 
             if (!auth) {
                 const result = await window.googleAuth({ navAfterAuth: '/project-dashboard.html' })
-                debugger;
+
             } else {
-                debugger;
-                const { uid } = firebase.auth().currentUser;
+
+                const { uid,email } = firebase.auth().currentUser;
                 const userProjectsRef = firebase.database().ref(`myprojects/${uid}/${projectName}`)
-                debugger;
+
                 userProjectsRef.on('value', snap => {
                     const value = snap.val()
                     if (!value) {
-                        debugger;
+
                         const projectTemplatesRef = firebase.database().ref(`projects/${projectName}`)
                         projectTemplatesRef.on('value', snap => {
                             const value = snap.val()
                             const description = value['description']
-                            debugger;
-                            userProjectsRef.set({ description }, (error) => {
+
+                            userProjectsRef.set({ description,user:email }, (error) => {
                                 if (error) {
                                     window.pageStore.dispatch({
                                         type: window.actionTypes.ERROR,
                                         payload: { error }
                                     });
                                 } else {
-                                    debugger;
+
                                     window.pageStore.dispatch({
                                         type: window.actionTypes.CONTENT_VIEW_CHANGED,
                                         payload: { contentView: 'project-dashboard', selectedDashboard: projectName }
@@ -60,17 +62,17 @@ customElements.define('project-card', class extends HTMLElement {
                                     window.location.replace('/project-dashboard.html')
                                 }
                             })
-                            debugger;
+
                         })
                     } else {
 
-                        debugger;
+
                         window.pageStore.dispatch({
                             type: window.actionTypes.CONTENT_VIEW_CHANGED,
                             payload: { contentView: 'project-dashboard', selectedDashboard: projectName }
                         });
                         window.location.replace('/project-dashboard.html')
-                        debugger;
+
                     }
                 })
 
@@ -84,7 +86,19 @@ customElements.define('project-card', class extends HTMLElement {
 
 
         })
+        document.getElementById(`${projectName}-project-editor-link`).addEventListener('click', (e) => {
+            e.preventDefault()
+
+            window.pageStore.dispatch({
+                type: window.actionTypes.PROJECT_EDITOR_SELECTED,
+                payload: { projectName, description }
+            });
+            window.location.replace('/project-editor.html')
+        })
+
     }
+
+
 })
 
 

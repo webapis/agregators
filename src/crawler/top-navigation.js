@@ -5,28 +5,31 @@ customElements.define('top-navigation', class extends HTMLElement {
   connectedCallback() {
     window.addEventListener('load', () => {
 
-      const { contentView, auth } = window.pageStore.state
-      this.render({ contentView, auth })
+      const { currentPage, auth } = window.pageStore.state
+      this.render({ currentPage, auth })
 
       window.pageStore.subscribe(window.actionTypes.CONTENT_VIEW_CHANGED, state => {
-        const { contentView, auth } = state
-        this.render({ contentView, auth })
+        const { currentPage, auth } = state
+        this.render({ currentPage, auth })
       })
       window.pageStore.subscribe(window.actionTypes.AUTH_SUCCESS, state => {
-        const { contentView, auth } = state
-        this.render({ contentView, auth })
+        const { currentPage, auth } = state
+        this.render({ currentPage, auth })
       })
 
       window.pageStore.subscribe(window.actionTypes.LOGOUT, state => {
-        const { contentView, auth } = state
-        this.render({ contentView, auth })
+        const { currentPage, auth } = state
+        this.render({ currentPage, auth })
       })
+
+
+
     })
 
   }
 
-  render({ contentView, auth }) {
-
+  render({ currentPage, auth }) {
+debugger;
     this.innerHTML = `<nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
           <a class="navbar-brand" href="#">Web Scraper</a>
@@ -36,16 +39,16 @@ customElements.define('top-navigation', class extends HTMLElement {
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
               <li class="nav-item">
-                <a class="nav-link ${contentView === 'home' && 'active'}" aria-current="page" href="/" id="home">Home</a>
+                <a class="nav-link ${currentPage === 'home' && 'active'}" aria-current="page" href="/" id="home-page-link">Home</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link ${contentView === 'projects' && 'active'}" href="/project-list.html" id="projects">Project Templates</a>
+                <a class="nav-link ${currentPage === 'project-list' && 'active'}" href="#" id="project-list-link">Project Templates</a>
               </li>
               <li class="nav-item">
-              <a class="nav-link ${contentView === 'projects' && 'active'}" href="/my-projects.html" id="myprojects">My Projects</a>
+              <button class="btn nav-link ${currentPage === 'myprojects' && 'active'}" id="myprojects-btn">My Projects</button>
             </li>
               <li class="nav-item">
-                <a class="nav-link ${contentView === 'project-editor' && 'active'}" href="/project-editor.html" tabindex="-1" aria-disabled="true" id="project-editor">Add Project Template</a>
+                <a class="nav-link ${currentPage === 'project-editor' && 'active'}" href="#" tabindex="-1" aria-disabled="true" id="add-project-template-link">Add Project Template</a>
               </li>
             </ul>
           
@@ -57,32 +60,80 @@ customElements.define('top-navigation', class extends HTMLElement {
           </div>
         </div>
       </nav>`
-
-    this.querySelectorAll('a').forEach(element => {
-      element.addEventListener('click', e => {
-
-        const { id } = e.target
-        debugger
-        window.pageStore.dispatch({
-          type: window.actionTypes.CONTENT_VIEW_CHANGED,
-          payload: { view: id }
-        });
-
-      })
+    document.getElementById('home-page-link').addEventListener('click', (e) => {
+e.preventDefault()
+      debugger
+      window.pageStore.dispatch({
+        type: window.actionTypes.PAGE_NAVIGATED,
+        payload: 'home'
+      });
+      window.location.replace("/");
     })
-
-    document.getElementById('logout-btn') && document.getElementById('logout-btn').addEventListener('click', e => {
+    document.getElementById('project-list-link').addEventListener('click', (e) => {
       e.preventDefault()
       debugger
       window.pageStore.dispatch({
-        type: window.actionTypes.LOGOUT,
-        payload: null
+        type: window.actionTypes.PAGE_NAVIGATED,
+        payload: 'project-list'
+      });
+      window.location.replace("/project-list.html");
+    })
+
+    document.getElementById('add-project-template-link').addEventListener('click', (e) => {
+      e.preventDefault()
+      window.pageStore.dispatch({
+        type: window.actionTypes.PAGE_NAVIGATED,
+        payload: 'project-editor'
       });
       window.pageStore.dispatch({
-        type: window.actionTypes.CONTENT_VIEW_CHANGED,
-        payload: { view: 'home' }
+        type: window.actionTypes.ADD_PROJECT_TEMPLATE,
+
       });
-      window.location.replace("/");
+      window.location.replace("/project-editor.html");
+    })
+
+
+
+
+    document.getElementById('myprojects-btn').addEventListener('click', async (e) => {
+      e.preventDefault()
+      firebase.auth().onAuthStateChanged((user) => {
+        if (user) {
+          window.pageStore.dispatch({
+            type: window.actionTypes.PAGE_NAVIGATED,
+            payload: 'myprojects'
+          });
+          window.location.replace("/my-projects.html");
+
+          // ...
+        } else {
+          window.googleAuth({ navAfterAuth: '/my-projects.html' })
+          // User is signed out
+          // ...
+        }
+      })
+
+
+
+
+      // 
+    })
+    document.getElementById('logout-btn') && document.getElementById('logout-btn').addEventListener('click', e => {
+      e.preventDefault()
+
+
+      firebase.auth().signOut().then(() => {
+        debugger
+        window.pageStore.dispatch({
+          type: window.actionTypes.LOGOUT,
+          payload: null
+        });
+
+        window.location.replace("/");
+      }).catch((error) => {
+        // An error happened.
+      });
+
     })
   }
 })

@@ -6,7 +6,7 @@ export const initState = stateFromLS
     projectName: '',
     description: '',
     projectNames: [],
-    contentView: 'projects',
+    currentPage: 'home',
     selectedDashboard: '',
     projects: [{ projectName: 'projectOne' }, { projectName: 'projectTwo' }, { projectName: 'projectTrhee' }],
     selectedProjectName: '',
@@ -35,6 +35,12 @@ export default (state, action) => {
       return { ...state, loading: false }
     case actionTypes.PROJECT_SAVED:
       return { ...state, loading: false, contentView: 'projects' }
+    case actionTypes.PROJECT_EDITOR_SELECTED:
+      return { ...state, projectName: action.payload.projectName, description: action.payload.description }
+    case actionTypes.ADD_PROJECT_TEMPLATE:
+      return { ...state, projectName: '', description: '' }
+    case actionTypes.PAGE_NAVIGATED:
+      return {...state,currentPage:action.payload}
 
     // case actionTypes.COMPANY_NAME_CHANGED:
     //   return { ...state, companyName: action.payload };
@@ -67,7 +73,7 @@ export default (state, action) => {
     //     error: null
     //   };
     // case actionTypes.ERROR:
-    //   debugger;
+    //   
     //   return {
     //     ...state,
     //     error: action.payload
@@ -96,5 +102,8 @@ export const actionTypes = {
   INPUT_CHANGED: 'INPUT_CHANGED',
   LOADING: 'LOADING',
   LOADING_COMPLETE: 'LOADING_COMPLETE',
-  PROJECT_SAVED: 'PROJECT_SAVED'
+  PROJECT_SAVED: 'PROJECT_SAVED',
+  PROJECT_EDITOR_SELECTED: 'PROJECT_EDITOR_SELECTED',
+  ADD_PROJECT_TEMPLATE: 'ADD_PROJECT_TEMPLATE',
+  PAGE_NAVIGATED:'PAGE_NAVIGATED'
 };

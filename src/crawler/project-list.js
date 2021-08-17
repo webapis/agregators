@@ -1,10 +1,11 @@
 customElements.define('project-list', class extends HTMLElement {
     constructor() {
         super()
+        this.innerHTML='<div>Loading...</div>'
     }
 
     connectedCallback() {
-
+       
         window.addEventListener('load', () => {
             this.render()
         })
@@ -15,6 +16,7 @@ customElements.define('project-list', class extends HTMLElement {
         this.innerHTML = `<div class="container">
         <div id="project-list-container" class="row">  
         <legend>Project Templates:</legend>
+        <div id="loaing">Loading....</div>
         </div>
         </div>`
         firebase
@@ -27,6 +29,7 @@ customElements.define('project-list', class extends HTMLElement {
                 element.setAttribute('description', projectDescription)
                 element.classList.add('col-3')
                 document.getElementById('project-list-container').appendChild(element)
+                document.getElementById('loaing').style='display:none'
             })
     }
 })
