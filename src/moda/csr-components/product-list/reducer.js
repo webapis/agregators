@@ -48,4 +48,3 @@ window.actionTypes=actionTypes
 window.initState=initState
 window.reducer=reducer
 
-debugger;

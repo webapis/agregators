@@ -29,7 +29,7 @@ customElements.define('top-navigation', class extends HTMLElement {
   }
 
   render({ currentPage, auth }) {
-debugger;
+
     this.innerHTML = `<nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
           <a class="navbar-brand" href="#">Web Scraper</a>
@@ -62,7 +62,7 @@ debugger;
       </nav>`
     document.getElementById('home-page-link').addEventListener('click', (e) => {
 e.preventDefault()
-      debugger
+      
       window.pageStore.dispatch({
         type: window.actionTypes.PAGE_NAVIGATED,
         payload: 'home'
@@ -71,7 +71,7 @@ e.preventDefault()
     })
     document.getElementById('project-list-link').addEventListener('click', (e) => {
       e.preventDefault()
-      debugger
+      
       window.pageStore.dispatch({
         type: window.actionTypes.PAGE_NAVIGATED,
         payload: 'project-list'
@@ -120,7 +120,7 @@ e.preventDefault()
 
 
       firebase.auth().signOut().then(() => {
-        debugger
+        
         window.pageStore.dispatch({
           type: window.actionTypes.LOGOUT,
           payload: null

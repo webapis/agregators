@@ -7,7 +7,7 @@ customElements.define(
     connectedCallback() {
 
       if(!this.querySelector('.side-nav')){
-       debugger;
+       
       fetch(`${window.location.origin}/nav.html`)
         .then(response => response.text())
         .then(html => {

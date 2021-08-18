@@ -11,7 +11,7 @@ customElements.define(
       .replace('.html', '');
 
       if(!document.getElementById('products')){
-        debugger;
+        
         document.getElementById('root').insertAdjacentHTML('beforeend',   `<div class="container">
       
           <div class="row" id="products"></div>
@@ -52,7 +52,7 @@ customElements.define(
    
         var node = document.createElement(`product-view`);
         node.setAttribute('id', guidGenerator());
-        debugger;
+        
         readObjProp({ node, obj: item });
   
         document.getElementById('products').appendChild(node);

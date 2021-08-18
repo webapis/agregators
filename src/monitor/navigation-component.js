@@ -12,7 +12,7 @@ customElements.define(
 
       window.pageStore.subscribe(window.actionTypes.SIGNED_IN, state => {
         const { user: { user: { uid, email } } } = state;
-        debugger;
+        
         const userRef = firebase
           .database()
           .ref(`users/${uid}`)
@@ -21,7 +21,7 @@ customElements.define(
           if (!user) {
             userRef.set({ email })
           }
-          debugger;
+          
         })
 
         const userRoleRef = firebase
@@ -29,7 +29,7 @@ customElements.define(
           .ref(`users/${uid}/role`)
         userRoleRef.on('value', (snapshot) => {
           const role = snapshot.val()
-          debugger;
+          
           if (role === 'admin') {
             this.render({ user, role: 'admin' });
           } else {

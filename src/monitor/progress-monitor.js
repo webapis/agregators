@@ -115,7 +115,7 @@ customElements.define('monitor-log', class extends HTMLElement {
 </div>
         `
         if(xlsx && document.getElementById('download-last-scrape')){
-            debugger;
+            
             document.getElementById('download-last-scrape').addEventListener('click', () => {
                 window.downloadFile({ downloadpath: xlsx })
             })
@@ -131,7 +131,7 @@ customElements.define('monitor-log', class extends HTMLElement {
         endRef.on('value', (snapshort) => {
             const datetimestamp = snapshort.val()
             if (datetimestamp === '') {
-                debugger;
+                
                 liveDurationInterval = liveDurationInterval === null && setInterval(() => {
                     const spantime = window.diff(startDate, Date.now())
                     document.getElementById("duration-counter").innerHTML = ''

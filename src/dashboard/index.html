@@ -9,10 +9,10 @@
     var YOUR_CLIENT_ID = '117708549296-uij0mup1c3biok6ifaupa2951vtvf418.apps.googleusercontent.com';
     var YOUR_REDIRECT_URI = 'http://localhost:3000/oauth2callback';
     var fragmentString = location.href
-debugger;
+
     // Parse query string to see if page request is coming from OAuth 2.0 server.
     var params = {};
-    debugger;
+    
     var regex = /([^&=]+)=([^&]*)/g, m;
     document.addEventListener('DOMContentLoaded', (event) => {
       if (document.readyState === 'interactive') {
@@ -20,25 +20,25 @@ debugger;
 
           params[decodeURIComponent(m[1])] = decodeURIComponent(m[2]);
 
-          debugger;
+          
         }
         if (Object.keys(params).length > 0) {
           const email = document.getElementById('email')
           const token = document.getElementById('token')
-          debugger;
+          
           params['email'] = email.value
           params['access_token'] = token.value
-          debugger;
+          
           localStorage.setItem('oauth2-test-params', JSON.stringify(params));
-          debugger;
+          
           if (params['access_token']) {
-            debugger;
+            
             callGoogleAPI({ client_id: YOUR_CLIENT_ID, redirect_uri: YOUR_REDIRECT_URI, scope: 'https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/drive', state: 'try_sample_request' });
 
           }
         }
       }
-      debugger;
+      
       console.log('DOM полностью загружен и разобран', document.readyState);
     });
 
@@ -46,7 +46,7 @@ debugger;
     // If there's an access token, try an API request.
     // Otherwise, start OAuth 2.0 flow.
     function callGoogleAPI(requestParams) {
-      debugger;
+      
       var params = JSON.parse(localStorage.getItem('oauth2-test-params'));
       if (params && params['access_token']) {
         var xhr = new XMLHttpRequest();
@@ -56,7 +56,7 @@ debugger;
         xhr.onreadystatechange = function (e) {
           if (xhr.readyState === 4 && xhr.status === 200) {
             console.log(xhr.response);
-            debugger;
+            
           } else if (xhr.readyState === 4 && xhr.status === 401) {
             // Token invalid, so prompt for user permission.
             authorizationRequest(requestParams)
@@ -73,7 +73,7 @@ debugger;
       try {
 
 
-        debugger;
+        
         // Google's OAuth 2.0 endpoint for requesting an access token
         var oauth2Endpoint = 'https://accounts.google.com/o/oauth2/v2/auth';
 
@@ -95,7 +95,7 @@ debugger;
 
         };
 
-        debugger;
+        
 
         // Add form parameters as hidden input values.
         for (var p in params) {
@@ -107,11 +107,11 @@ debugger;
         }
         // Add form to page and submit it to open the OAuth 2.0 endpoint.
         document.body.appendChild(form);
-        debugger;
+        
         form.submit();
 
       } catch (error) {
-        debugger;
+        
       }
     }
 

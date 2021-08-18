@@ -45,7 +45,7 @@ export default (state, action) => {
         error: null
       };
       case actionTypes.ERROR:
-        debugger;
+        
         return {
           ...state,
           error: action.payload

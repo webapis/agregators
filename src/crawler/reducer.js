@@ -13,6 +13,10 @@ export const initState = stateFromLS
     companyName: '',
     dashboardTab: 'main-tab',
     navAfterAuth: 'home',
+    emailService: '',
+    databaseService: '',
+    exportService: '',
+    scheduleService: '',
     error: null,
     loading: false
   };
@@ -40,7 +44,11 @@ export default (state, action) => {
     case actionTypes.ADD_PROJECT_TEMPLATE:
       return { ...state, projectName: '', description: '' }
     case actionTypes.PAGE_NAVIGATED:
-      return {...state,currentPage:action.payload}
+      return { ...state, currentPage: action.payload }
+    case actionTypes.ACCOUNT_TYPE_CHANGED:
+      return { ...state,  [action.payload.serviceName]: action.payload.accountType }
+    case actionTypes.SET_ALL_ACCOUNT_TYPES:
+      return { ...state, ...action.payload }
 
     // case actionTypes.COMPANY_NAME_CHANGED:
     //   return { ...state, companyName: action.payload };
@@ -105,5 +113,7 @@ export const actionTypes = {
   PROJECT_SAVED: 'PROJECT_SAVED',
   PROJECT_EDITOR_SELECTED: 'PROJECT_EDITOR_SELECTED',
   ADD_PROJECT_TEMPLATE: 'ADD_PROJECT_TEMPLATE',
-  PAGE_NAVIGATED:'PAGE_NAVIGATED'
+  PAGE_NAVIGATED: 'PAGE_NAVIGATED',
+  ACCOUNT_TYPE_CHANGED: 'ACCOUNT_TYPE_CHANGED',
+  SET_ALL_ACCOUNT_TYPES: 'SET_ALL_ACCOUNT_TYPES'
 };

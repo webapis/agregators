@@ -121,7 +121,7 @@ function dispatchAction({ ticket }) {
 
       errorHandler({ error })
     } else {
-      debugger;
+      
       import('https://cdn.skypack.dev/@octokit/request').then(module => {
         const { request } = module;
         request(
@@ -147,7 +147,7 @@ function dispatchAction({ ticket }) {
             })
           })
           .catch(error => {
-            debugger;
+            
             errorHandler({ error })
           });
       });

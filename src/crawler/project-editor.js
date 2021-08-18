@@ -13,7 +13,7 @@ customElements.define('project-editor', class extends HTMLElement {
 
 
   render({ loading, projectName, description }) {
-    debugger
+    
     this.innerHTML = `<div class="container">
     <fieldset>
     <legend>Add Project:</legend>
@@ -46,7 +46,7 @@ customElements.define('project-editor', class extends HTMLElement {
 
   handleInputChange(e) {
     const { name, value } = e.target
-    debugger
+    
     window.pageStore.dispatch({
       type: window.actionTypes.INPUT_CHANGED,
       payload: { name, value }

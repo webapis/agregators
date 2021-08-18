@@ -41,7 +41,7 @@ customElements.define(
       const detailLink = this.getAttribute('detailLink');
       const datasrcset=this.getAttribute('datasrcset')
       const id = this.getAttribute('id');
-  debugger;
+  
       boldenPattern(title, pattern);
       //if(!document.getElementById(id)){
         const innerHTML= `
@@ -74,7 +74,7 @@ customElements.define(
         const img = document.getElementById(id).querySelector('img');
 
         const srcset = document.getElementById(id).getAttribute('datasrcset');
-        debugger;
+        
                img.srcset = srcset;
       }
 //V0890AZ_21SM_NM28_01_01.jpg
@@ -90,7 +90,7 @@ customElements.define(
       //   const img = this.querySelector('img');
 
       //   const srcset = this.getAttribute('datasrcset');
-      //   debugger;
+      //   
       //          img.srcset = srcset;
       // }
     }

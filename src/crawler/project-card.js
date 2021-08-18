@@ -5,7 +5,7 @@ customElements.define('project-card', class extends HTMLElement {
 
     connectedCallback() {
         const auth = window.pageStore.state.auth
-        debugger;
+        
         const projectName = this.getAttribute('project-name')
         const description = this.getAttribute('description')
         this.innerHTML = `<div class="card mt-3">
@@ -39,26 +39,30 @@ customElements.define('project-card', class extends HTMLElement {
                 const userProjectsRef = firebase.database().ref(`myprojects/${uid}/${projectName}`)
 
                 userProjectsRef.on('value', snap => {
-                    const value = snap.val()
+                    const value = snap.val()['conf']
                     if (!value) {
 
                         const projectTemplatesRef = firebase.database().ref(`projects/${projectName}`)
                         projectTemplatesRef.on('value', snap => {
                             const value = snap.val()
                             const description = value['description']
-                            const conf = { email: 'trial', exporting: 'trial', database: 'trial', schedule: 'trial' }
-                            userProjectsRef.set({ description, user: email,conf }, (error) => {
+                            const conf = { emailService: 'trial', exportService: 'trial', databaseService: 'trial', scheduleService: 'trial' }
+                            userProjectsRef.set({ description, user: email, conf }, (error) => {
                                 if (error) {
                                     window.pageStore.dispatch({
                                         type: window.actionTypes.ERROR,
                                         payload: { error }
                                     });
                                 } else {
-
+                                    window.pageStore.dispatch({
+                                        type: window.actionTypes.SET_ALL_ACCOUNT_TYPES,
+                                        payload: conf
+                                    });
                                     window.pageStore.dispatch({
                                         type: window.actionTypes.CONTENT_VIEW_CHANGED,
                                         payload: { contentView: 'project-dashboard', selectedDashboard: projectName }
                                     });
+
                                     window.location.replace('/project-dashboard.html')
                                 }
                             })
@@ -66,7 +70,13 @@ customElements.define('project-card', class extends HTMLElement {
                         })
                     } else {
 
-
+                       
+                        const conf = { emailService: value['emailService'], exportService: value['exportService'], databaseService: value['databaseService'], scheduleService: value['scheduleService'] }
+                        debugger;
+                        window.pageStore.dispatch({
+                            type: window.actionTypes.SET_ALL_ACCOUNT_TYPES,
+                            payload: conf
+                        });
                         window.pageStore.dispatch({
                             type: window.actionTypes.CONTENT_VIEW_CHANGED,
                             payload: { contentView: 'project-dashboard', selectedDashboard: projectName }
@@ -86,7 +96,7 @@ customElements.define('project-card', class extends HTMLElement {
 
 
         })
-        document.getElementById(`${projectName}-project-editor-link`).addEventListener('click', (e) => {
+        document.getElementById(`${projectName}-project-editor-link`) && document.getElementById(`${projectName}-project-editor-link`).addEventListener('click', (e) => {
             e.preventDefault()
 
             window.pageStore.dispatch({

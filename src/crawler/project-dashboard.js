@@ -97,7 +97,7 @@ customElements.define('dashboard-tabs', class extends HTMLElement {
             element.addEventListener('click', e => {
                 e.preventDefault()
                 const { id } = e.target
-                debugger
+                
                 window.pageStore.dispatch({
                     type: window.actionTypes.DASHBOARD_TAB_CHANGED,
                     payload: id
@@ -113,56 +113,25 @@ customElements.define('dashboard-content', class extends HTMLElement {
         super()
     }
     connectedCallback() {
-        firebase.auth().onAuthStateChanged((user) => {
-            if (user) {
-                // User is signed in, see docs for a list of available properties
-                // https://firebase.google.com/docs/reference/js/firebase.User
-                var uid = user.uid;
-                firebase.auth().onAuthStateChanged((user) => {
-                    if (user) {
-                        const { dashboardTab, selectedDashboard } = window.pageStore.state
-                        var uid = user.uid;
-                        // ...
+        const { dashboardTab } = window.pageStore.state
+                
+      this.render({ selectedTab: dashboardTab })
 
-                        firebase.database().ref(`myprojects/${uid}/${selectedDashboard}/conf`).on('value', snap => {
-                            const conf = snap.val()
-                            debugger;
-
-                            this.render({ selectedTab: dashboardTab, selectedDashboard, conf })
-
-                            window.pageStore.subscribe(window.actionTypes.DASHBOARD_TAB_CHANGED, state => {
-                                const { dashboardTab, selectedDashboard } = state
-                                this.render({ selectedTab: dashboardTab, selectedDashboard, conf })
-                            })
-                        })
-                    } else {
-
-                    }
-                });
-
-                // ...
-            } else {
-                // User is signed out
-                // ...
-            }
-        });
-
-
-
-
+         window.pageStore.subscribe(window.actionTypes.DASHBOARD_TAB_CHANGED, state => {
+         const { dashboardTab } = state
+       this.render({ selectedTab: dashboardTab })
+         })
 
     }
 
-    render({ selectedTab, selectedDashboard, conf }) {
-        const { email, exporting, database, schedule } = conf
-
-        debugger;
+    render({ selectedTab  }) {
+        
         this.innerHTML = `<div>
         ${selectedTab === 'main-tab' ? `<main-tab></main-tab>` : ''}
-        ${selectedTab === 'email-tab' ? `<email-tab projectName=${selectedDashboard} email=${email}></email-tab>` : ''}
-        ${selectedTab === 'export-tab' ? `<export-tab projectName=${selectedDashboard} exporting=${exporting}></export-tab>` : ''}
-        ${selectedTab === 'database-tab' ? `<database-tab projectName=${selectedDashboard} database=${database}></database-tab>` : ''}
-        ${selectedTab === 'schedule-tab' ? `<schedule-tab projectName=${selectedDashboard} schedule=${schedule}></schedule-tab>` : ''}
+        ${selectedTab === 'email-tab' ? `<email-tab  ></email-tab>` : ''}
+        ${selectedTab === 'export-tab' ? `<export-tab  ></export-tab>` : ''}
+        ${selectedTab === 'database-tab' ? `<database-tab  ></database-tab>` : ''}
+        ${selectedTab === 'schedule-tab' ? `<schedule-tab ></schedule-tab>` : ''}
         ${selectedTab === 'query-tab' ? `<query-tab></query-tab>` : ''}
         
         </div>`
@@ -358,27 +327,93 @@ customElements.define('email-tab', class extends HTMLElement {
 
     render() {
 
-        const projectName = this.getAttribute('projectName')
-        const accountType = this.getAttribute('email')
-        debugger;
-        this.innerHTML = `<div>
+        const label ='Email Service:'
         
+        this.innerHTML = `<div>
+    
+     <trial-professional-check label="${label}"  trial-input-id="email-trial-input" professional-input-id="email-professional-input" service-name="emailService"></trial-professional-check>
+        <email-list></email-list>
+        </div>`
+    }
+})
+
+
+const  handleCheck=({serviceName})=>{
+
+    return (e)=>{
+        debugger;
+     
+        debugger;
+        const { value } = e.target
+        firebase.auth().onAuthStateChanged((user) => {
+            debugger;
+            if (user) {
+                const { selectedDashboard } = window.pageStore.state
+                debugger;
+                var uid = user.uid;
+                const myProjectsRef = firebase.database().ref(`myprojects/${uid}/${selectedDashboard}/conf`)
+    
+                myProjectsRef.update({ [serviceName]: value }, (error) => {
+                    debugger;
+                    if (error) {
+                        console.log('error', error)
+                    } else {
+                        debugger;
+                        window.pageStore.dispatch({
+                            type: window.actionTypes.ACCOUNT_TYPE_CHANGED,
+                            payload: { accountType: value, serviceName }
+                        });
+                    }
+                })
+    
+            }
+        });
+    }
+ 
+
+}
+customElements.define('trial-professional-check', class extends HTMLElement {
+    constructor() {
+        super()
+       
+    }
+    connectedCallback() {
+        const serviceName = this.getAttribute('service-name')
+      
+        const accountType =window.pageStore.state[serviceName]
+        debugger;
+        this.render({accountType,serviceName})
+        window.pageStore.subscribe( window.actionTypes.ACCOUNT_TYPE_CHANGED, state=>{
+            const accountType =state[serviceName]
+            debugger;
+            this.render({accountType,serviceName})
+        })
+    }
+
+    render({accountType,serviceName}) {
+        const trialInputId = this.getAttribute('trial-input-id')
+        const professionalInputId = this.getAttribute('professional-input-id')
+        const label = this.getAttribute('label')
+        
+        this.innerHTML = `<div>
         <div class="row d-flex justify-content-center">
         <div class="col d-flex justify-content-center py-5">
         <div>
-        <p>Select account type for Google Emailing:</p>
-          <input type="radio" id="html" name="fav_language" value="trial" ${accountType === 'trial' && 'checked'}>
+        <p>${label}</p>
+          <input type="radio" id=${trialInputId} name="fav_language" value="trial" ${accountType === 'trial' && 'checked'}>
           <label for="html">Trial account: <i>(no action is required)</i></label><br>
-          <input type="radio" id="javascript" name="fav_language" value="professional" ${accountType === 'professional' && "checked"} >
+          <input type="radio" id=${professionalInputId} name="fav_language" value="professional" ${accountType === 'professional' && "checked"} >
           <label for="javascript">Professional account: <i>(google authentication is required)</i></label>
         </div>
         </div>
         </div>
-
-        <email-list></email-list>
-
         </div>`
+
+        document.getElementById(trialInputId) && document.getElementById(trialInputId).addEventListener('click', handleCheck({serviceName}))
+        document.getElementById(professionalInputId)&&  document.getElementById(professionalInputId).addEventListener('click', handleCheck({serviceName}))
     }
+
+
 })
 
 customElements.define('email-list', class extends HTMLElement {
@@ -428,22 +463,11 @@ customElements.define('export-tab', class extends HTMLElement {
 
     render() {
 
-        const projectName = this.getAttribute('projectName')
-        const accountType = this.getAttribute('exporting')
-        debugger;
+     const label="Export to Sheet Service:"
+        
         this.innerHTML = `<div>
         
-        <div class="row d-flex justify-content-center">
-        <div class="col d-flex justify-content-center py-5">
-        <div>
-        <p>Select account type for Google Sheet:</p>
-          <input type="radio" id="html" name="fav_language" value="trial" ${accountType === 'trial' && 'checked'}>
-          <label for="html">Trial account: <i>(no action is required)</i></label><br>
-          <input type="radio" id="javascript" name="fav_language" value="professional" ${accountType === 'professional' && 'checked'}>
-          <label for="javascript">Professional account: <i>(google authentication is required)</i></label>
-        </div>
-        </div>
-        </div>
+        <trial-professional-check label="${label}" trial-input-id="export-trial-input" professional-input-id="export-professional-input" service-name="exportService"></trial-professional-check>
         </div>`
     }
 })
@@ -462,20 +486,9 @@ customElements.define('database-tab', class extends HTMLElement {
 
     render() {
 
-        const projectName = this.getAttribute('projectName')
-        const accountType = this.getAttribute('database')
+       const label="Google Firestore database service:"
         this.innerHTML = `<div>
-        <div class="row d-flex justify-content-center">
-        <div class="col d-flex justify-content-center py-5">
-        <div>
-        <p>Select account type for Google Firestore database:</p>
-          <input type="radio" id="html" name="fav_language" value="trial" ${accountType === 'trial' && 'checked'}>
-          <label for="html">Trial account: <i>(no action is required)</i></label><br>
-          <input type="radio" id="javascript" name="fav_language" value="professional" ${accountType === 'professional' && 'checked'}>
-          <label for="javascript">Professional account: <i>(google authentication is required)</i></label>
-        </div>
-        </div>
-        </div>
+        <trial-professional-check label="${label}"  trial-input-id="database-trial-input" professional-input-id="database-professional-input" service-name="databaseService"></trial-professional-check>
         </div>`
     }
 })
@@ -492,7 +505,11 @@ customElements.define('schedule-tab', class extends HTMLElement {
     }
 
     render() {
-        this.innerHTML = `<div>schedule-tab</div>`
+
+        const label ="Github schedule (cron job) service:"
+        this.innerHTML = `<div>
+        <trial-professional-check label="${label}" trial-input-id="schedule-trial-input" professional-input-id="schedule-professional-input" service-name="scheduleService"></trial-professional-check>
+        </div>`
     }
 })
 

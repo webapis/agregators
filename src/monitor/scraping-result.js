@@ -106,7 +106,7 @@ function downloadFile ({downloadpath}){
     
     storageRef.child(downloadpath).getDownloadURL()
   .then((url) => {
-      debugger
+      
       console.log('url',url)
     // `url` is the download URL for 'images/stars.jpg'
 

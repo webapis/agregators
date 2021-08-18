@@ -22,7 +22,7 @@ customElements.define('error-component', class extends HTMLElement {
     }
 
     render({ error }) {
-        debugger;
+        
         this.innerHTML = `<div class="alert alert-danger alert-dismissible fade show" role="alert">
         <strong>Attention</strong> ${error.error.code}
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" id="dismiss-btn"></button>

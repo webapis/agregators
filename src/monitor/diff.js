@@ -38,7 +38,7 @@ function signin() {
         
         // The signed-in user info.
         var user = result.user;
-        debugger;
+        
         const ticket = firebase
           .database()
           .ref(`gitticket`)

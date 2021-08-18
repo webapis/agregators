@@ -13,9 +13,9 @@ async function googleAuth({ navAfterAuth }) {
             var token = credential.accessToken;
             // The signed-in user info.
             var user = result.user;
-            debugger;
+            
             if (isNewUser) {
-                debugger;
+                
                 firebase.database().ref(`users/${user.uid}`).set({ email: user.email, role: 'standard' }, (error) => {
                     if (error) {
                         window.pageStore.dispatch({
@@ -23,7 +23,7 @@ async function googleAuth({ navAfterAuth }) {
                             payload: error
                         });
                     } else {
-                        debugger;
+                        
                        
                         window.pageStore.dispatch({
                             type: window.actionTypes.AUTH_SUCCESS,
