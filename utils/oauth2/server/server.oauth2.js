@@ -5,11 +5,11 @@ const { JSDOM } = jsdom;
 const { fbDatabase } = require('../../firebase/firebaseInit')
 const { default: fetch } = require('node-fetch');
 const dirPath = `${process.cwd()}/src/dashboard/`;
-const filepath = dirPath + 'index.html'
+//const filepath = dirPath + 'index.html'
 const client_id = '117708549296-uij0mup1c3biok6ifaupa2951vtvf418.apps.googleusercontent.com'
 const client_secret = process.env.client_secret
 
-async function exchangeCodeForAccessToken({ client_id, client_secret, code, redirect_uri, res }) {
+async function exchangeCodeForAccessToken({ client_id, client_secret, code, redirect_uri, res,filepath }) {
     try {
         const grant_type = 'authorization_code';
         var oauth2Endpoint = 'https://oauth2.googleapis.com/token';
@@ -33,8 +33,9 @@ async function exchangeCodeForAccessToken({ client_id, client_secret, code, redi
             const { email } = await getUserEmail({ token: access_token })
             debugger;
 
-            const usersRef = fbDatabase.ref(`users`)
-            usersRef.push({ access_token, refresh_token, email }, async (error) => {
+            const usersRef = fbDatabase.ref(`users`).orderByChild('email').equalTo(email)
+            debugger;
+            usersRef.update({ access_token, refresh_token, email }, async (error) => {
                 if (error) {
                     console.log('error', error)
                     res.setHeader('Content-Type', 'text/plain');

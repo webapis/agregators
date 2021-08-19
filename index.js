@@ -21,7 +21,13 @@ const server = http.createServer((req, res) => {
             const { code } = getUrlParams(url)
             exchangeCodeForAccessToken({ client_id, client_secret, code, redirect_uri, res })
             break;
+            case /.*\/project-dashboard.html\?state=.*/.test(url):
+                const { code } = getUrlParams(url)
+                const redirectpath =dirPath+'project-dashboard.html'
+                exchangeCodeForAccessToken({ client_id, client_secret, code, redirect_uri:'http://localhost:3000/project-dashboard.html', res,filepath:redirectpath })
+                break;
         default:
+   
             serveStatic( req, res)
     }
 })

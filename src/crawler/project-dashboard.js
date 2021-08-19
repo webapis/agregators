@@ -1,6 +1,37 @@
 customElements.define('project-dashboard', class extends HTMLElement {
     constructor() {
         super()
+
+
+        var fragmentString = location.href
+
+        // Parse query string to see if page request is coming from OAuth 2.0 server.
+        var params = {};
+
+        var regex = /([^&=]+)=([^&]*)/g, m;
+        document.addEventListener('DOMContentLoaded', (event) => {
+            if (document.readyState === 'interactive') {
+                while (m = regex.exec(fragmentString)) {
+                    params[decodeURIComponent(m[1])] = decodeURIComponent(m[2]);
+                }
+                if (Object.keys(params).length > 0) {
+                    debugger;
+                    const email = document.getElementById('email')
+                    const token = document.getElementById('token')
+
+                    params['email'] = email.value
+                    params['access_token'] = token.value
+
+                    localStorage.setItem('oauth2-test-params', JSON.stringify(params));
+
+                    if (params['access_token']) {
+                        //  callGoogleAPI({ client_id: YOUR_CLIENT_ID, redirect_uri: YOUR_REDIRECT_URI, scope: 'https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/drive', state: 'try_sample_request' });
+                    }
+                }
+            }
+
+            console.log('DOM полностью загружен и разобран', document.readyState);
+        });
     }
 
     async connectedCallback() {
@@ -325,7 +356,7 @@ customElements.define('email-tab', class extends HTMLElement {
 
 
 
-const updateAccountType = ({serviceName,accountType}) => {
+const updateAccountType = ({ serviceName, accountType }) => {
 
     const user = firebase.auth().currentUser
 
@@ -333,7 +364,7 @@ const updateAccountType = ({serviceName,accountType}) => {
 
     var uid = user.uid;
     const myProjectsRef = firebase.database().ref(`myprojects/${uid}/${selectedDashboard}/conf`)
-    myProjectsRef.update({ [serviceName]:accountType }, (error) => {
+    myProjectsRef.update({ [serviceName]: accountType }, (error) => {
 
         if (error) {
             console.log('error', error)
@@ -348,21 +379,35 @@ const updateAccountType = ({serviceName,accountType}) => {
 }
 
 const handleCheck = ({ serviceName }) => {
-
     return (e) => {
+        let scopes = ''
+        switch (serviceName) {
+            case 'emailService':
+                scopes = 'https://www.googleapis.com/auth/gmail.send'
+                break;
+            case 'exportService':
+                scopes = 'https://www.googleapis.com/auth/drive.file'
+                break;
+            case 'databaseService':
+                scopes = 'https://www.googleapis.com/auth/cloud-platform'
+                break;
+            case 'scheduleService':
+                scopes = ''
+                break;
+            default:
+                ''
+        }
         const { value } = e.target
-        debugger;
-
         if (value === 'professional') {
+            var CLIENT_ID = '117708549296-uij0mup1c3biok6ifaupa2951vtvf418.apps.googleusercontent.com';
+            var REDIRECT_URI = 'http://localhost:3000/project-dashboard.html';
+            window.googleAuthorizationRequest({ client_id: CLIENT_ID, redirect_uri: REDIRECT_URI, scope: scopes, state: `${serviceName}_grant_requests`, include_granted_scopes: true, response_type: 'code' })
             debugger;
-            updateAccountType({serviceName,accountType:value})
+          //  updateAccountType({ serviceName, accountType: value })
         } else {
 
-            updateAccountType({serviceName,accountType:value})
+            updateAccountType({ serviceName, accountType: value })
         }
-
-
-
 
     }
 
