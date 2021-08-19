@@ -3,8 +3,12 @@ customElements.define('login-page', class extends HTMLElement {
         super()
     }
 
-    connectedCallback() {
-        this.innerHTML = `<div class ="container">
+    async connectedCallback() {
+        const resources= await import('./resources.js')
+        await resources.default()
+        this.innerHTML = `
+        <top-navigation></top-navigation>
+        <div class ="container">
         <div class ="row">
         <div class="col d-flex justify-content-center pt-5 m-2">
         <button class="btn btn-primary" id="google-sign-in-btn"> 
@@ -12,7 +16,9 @@ customElements.define('login-page', class extends HTMLElement {
          Sign in with Google
         </button>        
         </div>
-        </div>`
+        </div>
+        <app-footer></app-footer>
+        `
 
         document.getElementById('google-sign-in-btn').addEventListener('click', () => {
             window.googleAuth({ navAfterAuth: '/' })

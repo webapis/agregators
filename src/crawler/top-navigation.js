@@ -3,8 +3,10 @@ customElements.define('top-navigation', class extends HTMLElement {
     super()
   }
   connectedCallback() {
-    window.addEventListener('load', () => {
+ 
 
+
+    
       const { currentPage, auth } = window.pageStore.state
       this.render({ currentPage, auth })
 
@@ -21,10 +23,11 @@ customElements.define('top-navigation', class extends HTMLElement {
         const { currentPage, auth } = state
         this.render({ currentPage, auth })
       })
-
-
-
-    })
+    
+    
+      
+    
+ 
 
   }
 

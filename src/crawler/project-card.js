@@ -5,7 +5,7 @@ customElements.define('project-card', class extends HTMLElement {
 
     connectedCallback() {
         const auth = window.pageStore.state.auth
-        
+
         const projectName = this.getAttribute('project-name')
         const description = this.getAttribute('description')
         this.innerHTML = `<div class="card mt-3">
@@ -39,8 +39,10 @@ customElements.define('project-card', class extends HTMLElement {
                 const userProjectsRef = firebase.database().ref(`myprojects/${uid}/${projectName}`)
 
                 userProjectsRef.on('value', snap => {
-                    const value = snap.val()['conf']
-                    if (!value) {
+                    
+                    const value = snap.val()
+                    
+                    if (value === null) {
 
                         const projectTemplatesRef = firebase.database().ref(`projects/${projectName}`)
                         projectTemplatesRef.on('value', snap => {
@@ -70,9 +72,9 @@ customElements.define('project-card', class extends HTMLElement {
                         })
                     } else {
 
-                       
+
                         const conf = { emailService: value['emailService'], exportService: value['exportService'], databaseService: value['databaseService'], scheduleService: value['scheduleService'] }
-                        debugger;
+
                         window.pageStore.dispatch({
                             type: window.actionTypes.SET_ALL_ACCOUNT_TYPES,
                             payload: conf

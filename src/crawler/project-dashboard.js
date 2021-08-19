@@ -3,52 +3,42 @@ customElements.define('project-dashboard', class extends HTMLElement {
         super()
     }
 
-    connectedCallback() {
+    async connectedCallback() {
 
-        window.addEventListener('load', () => {
+        const resources = await import('./resources.js')
+        await resources.default()
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+                var uid = user.uid;
+                const { selectedDashboard } = window.pageStore.state
+                const selectedMyProjectRef = firebase.database().ref(`myprojects/${uid}/${selectedDashboard}`)
+                selectedMyProjectRef.on('value', snap => {
+                    const conf = snap.val()['conf']
+                    window.pageStore.dispatch({
+                        type: window.actionTypes.SET_ALL_ACCOUNT_TYPES,
+                        payload: conf
+                    });
 
-            firebase.auth().onAuthStateChanged((user) => {
-                if (user) {
-                    // User is signed in, see docs for a list of available properties
-                    // https://firebase.google.com/docs/reference/js/firebase.User
-                    var uid = user.uid;
-                    const { selectedDashboard } = window.pageStore.state
                     this.render({ selectedDashboard })
-                    // ...
-                } else {
-                    // User is signed out
-                    // ...
-                }
-            });
-
-        })
-
+                })
+            }
+        });
     }
 
     render({ selectedDashboard }) {
-        this.innerHTML = `<div class="container">
+        this.innerHTML = `
+        <top-navigation></top-navigation>
+        <div class="container">
         <fieldset>
         <legend>${selectedDashboard}</legend>
-
         </fieldset>
         <dashboard-tabs></dashboard-tabs>
-
         <dashboard-content></dashboard-content>
-        
-        </div>`
+        </div>
+        <app-footer></app-footer>
+        `
     }
 })
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -57,24 +47,22 @@ customElements.define('dashboard-tabs', class extends HTMLElement {
         super()
     }
     connectedCallback() {
-
         const { dashboardTab } = window.pageStore.state
         this.render({ selectedTab: dashboardTab })
-
         window.pageStore.subscribe(window.actionTypes.DASHBOARD_TAB_CHANGED, state => {
             const { dashboardTab } = state
+
             this.render({ selectedTab: dashboardTab })
         })
-
-
-
     }
 
     render({ selectedTab }) {
-        this.innerHTML = `<div>
+
+        this.innerHTML = `
+<div>
         <ul class="nav nav-tabs">
         <li class="nav-item">
-            <a class="nav-link ${selectedTab === 'main-tab' && 'active'}" aria-current="page" href="#" id="main-tab">Main</a>
+            <a class="nav-link ${selectedTab === 'main-tab' && 'active'}"  href="#" id="main-tab">Main</a>
         </li>
         <li class="nav-item">
             <a class="nav-link ${selectedTab === 'email-tab' && 'active'}" href="#" id="email-tab">Email</a>
@@ -91,19 +79,24 @@ customElements.define('dashboard-tabs', class extends HTMLElement {
         <li class="nav-item">
             <a class="nav-link ${selectedTab === 'query-tab' && 'active'}" href="#" id="query-tab">Query</a>
         </li>
-</ul>
+    </ul>
 </div>`
-        this.querySelectorAll('a').forEach(element => {
-            element.addEventListener('click', e => {
-                e.preventDefault()
-                const { id } = e.target
-                
-                window.pageStore.dispatch({
-                    type: window.actionTypes.DASHBOARD_TAB_CHANGED,
-                    payload: id
-                });
-            })
-        })
+        document.getElementById('main-tab').addEventListener('click', this.handleTabSelection)
+        document.getElementById('email-tab').addEventListener('click', this.handleTabSelection)
+        document.getElementById('export-tab').addEventListener('click', this.handleTabSelection)
+        document.getElementById('database-tab').addEventListener('click', this.handleTabSelection)
+        document.getElementById('schedule-tab').addEventListener('click', this.handleTabSelection)
+        document.getElementById('query-tab').addEventListener('click', this.handleTabSelection)
+    }
+
+    handleTabSelection(e) {
+        e.preventDefault()
+        const { id } = e.target
+
+        window.pageStore.dispatch({
+            type: window.actionTypes.DASHBOARD_TAB_CHANGED,
+            payload: id
+        });
     }
 })
 
@@ -114,24 +107,25 @@ customElements.define('dashboard-content', class extends HTMLElement {
     }
     connectedCallback() {
         const { dashboardTab } = window.pageStore.state
-                
-      this.render({ selectedTab: dashboardTab })
 
-         window.pageStore.subscribe(window.actionTypes.DASHBOARD_TAB_CHANGED, state => {
-         const { dashboardTab } = state
-       this.render({ selectedTab: dashboardTab })
-         })
+        this.render({ selectedTab: dashboardTab })
+
+        window.pageStore.subscribe(window.actionTypes.DASHBOARD_TAB_CHANGED, state => {
+            const { dashboardTab } = state
+
+            this.render({ selectedTab: dashboardTab })
+        })
 
     }
 
-    render({ selectedTab  }) {
-        
+    render({ selectedTab }) {
+
         this.innerHTML = `<div>
         ${selectedTab === 'main-tab' ? `<main-tab></main-tab>` : ''}
-        ${selectedTab === 'email-tab' ? `<email-tab  ></email-tab>` : ''}
-        ${selectedTab === 'export-tab' ? `<export-tab  ></export-tab>` : ''}
-        ${selectedTab === 'database-tab' ? `<database-tab  ></database-tab>` : ''}
-        ${selectedTab === 'schedule-tab' ? `<schedule-tab ></schedule-tab>` : ''}
+        ${selectedTab === 'email-tab' ? `<email-tab></email-tab>` : ''}
+        ${selectedTab === 'export-tab' ? `<export-tab></export-tab>` : ''}
+        ${selectedTab === 'database-tab' ? `<database-tab></database-tab>` : ''}
+        ${selectedTab === 'schedule-tab' ? `<schedule-tab></schedule-tab>` : ''}
         ${selectedTab === 'query-tab' ? `<query-tab></query-tab>` : ''}
         
         </div>`
@@ -222,11 +216,8 @@ customElements.define('accordion-item', class extends HTMLElement {
     constructor() {
         super()
     }
-
     connectedCallback() {
-
         this.innerHTML = `
-        
             <ol class="list-group list-group-numbered">
       <li class="list-group-item d-flex justify-content-between align-items-start">
         <div class="ms-2 me-auto">
@@ -249,7 +240,6 @@ customElements.define('accordion-item', class extends HTMLElement {
         </div>
         <span class="badge bg-primary rounded-pill">14</span>
       </li>
-    
       <li class="list-group-item d-flex justify-content-between align-items-start">
       <div class="ms-2 me-auto">
         <div class="fw-bold">Excel Link</div>
@@ -257,7 +247,6 @@ customElements.define('accordion-item', class extends HTMLElement {
       </div>
       <span class="badge bg-primary rounded-pill">14</span>
     </li>
-    
     <li class="list-group-item d-flex justify-content-between align-items-start">
     <div class="ms-2 me-auto">
       <div class="fw-bold"> Link to Image Folder</div>
@@ -290,12 +279,7 @@ customElements.define('accordion-item', class extends HTMLElement {
     </div>
     <span class="badge bg-primary rounded-pill">Manual</span>
     </li>
-    
-    </ol>
-            
-            `
-
-
+    </ol>`
     }
 })
 
@@ -304,7 +288,8 @@ customElements.define('scrape-controls', class extends HTMLElement {
         super()
     }
 
-    connectedCallback() {
+    async connectedCallback() {
+
         this.innerHTML = `<div class="row">
         <div class ="col py-5  my-1">
         <button class="btn btn-secondary">Start Scraping</button>
@@ -327,8 +312,8 @@ customElements.define('email-tab', class extends HTMLElement {
 
     render() {
 
-        const label ='Email Service:'
-        
+        const label = 'Email Service:'
+
         this.innerHTML = `<div>
     
      <trial-professional-check label="${label}"  trial-input-id="email-trial-input" professional-input-id="email-professional-input" service-name="emailService"></trial-professional-check>
@@ -338,63 +323,77 @@ customElements.define('email-tab', class extends HTMLElement {
 })
 
 
-const  handleCheck=({serviceName})=>{
 
-    return (e)=>{
-        debugger;
-     
-        debugger;
+
+const updateAccountType = ({serviceName,accountType}) => {
+
+    const user = firebase.auth().currentUser
+
+    const { selectedDashboard } = window.pageStore.state
+
+    var uid = user.uid;
+    const myProjectsRef = firebase.database().ref(`myprojects/${uid}/${selectedDashboard}/conf`)
+    myProjectsRef.update({ [serviceName]:accountType }, (error) => {
+
+        if (error) {
+            console.log('error', error)
+        } else {
+
+            window.pageStore.dispatch({
+                type: window.actionTypes.ACCOUNT_TYPE_CHANGED,
+                payload: { accountType, serviceName }
+            });
+        }
+    })
+}
+
+const handleCheck = ({ serviceName }) => {
+
+    return (e) => {
         const { value } = e.target
-        firebase.auth().onAuthStateChanged((user) => {
+        debugger;
+
+        if (value === 'professional') {
             debugger;
-            if (user) {
-                const { selectedDashboard } = window.pageStore.state
-                debugger;
-                var uid = user.uid;
-                const myProjectsRef = firebase.database().ref(`myprojects/${uid}/${selectedDashboard}/conf`)
-    
-                myProjectsRef.update({ [serviceName]: value }, (error) => {
-                    debugger;
-                    if (error) {
-                        console.log('error', error)
-                    } else {
-                        debugger;
-                        window.pageStore.dispatch({
-                            type: window.actionTypes.ACCOUNT_TYPE_CHANGED,
-                            payload: { accountType: value, serviceName }
-                        });
-                    }
-                })
-    
-            }
-        });
+            updateAccountType({serviceName,accountType:value})
+        } else {
+
+            updateAccountType({serviceName,accountType:value})
+        }
+
+
+
+
     }
- 
+
 
 }
+
+
+
 customElements.define('trial-professional-check', class extends HTMLElement {
     constructor() {
         super()
-       
+
     }
     connectedCallback() {
         const serviceName = this.getAttribute('service-name')
-      
-        const accountType =window.pageStore.state[serviceName]
-        debugger;
-        this.render({accountType,serviceName})
-        window.pageStore.subscribe( window.actionTypes.ACCOUNT_TYPE_CHANGED, state=>{
-            const accountType =state[serviceName]
-            debugger;
-            this.render({accountType,serviceName})
+
+        const accountType = window.pageStore.state[serviceName]
+
+        this.render({ accountType, serviceName })
+        window.pageStore.subscribe(window.actionTypes.ACCOUNT_TYPE_CHANGED, state => {
+            const accountType = state[serviceName]
+
+            this.render({ accountType, serviceName })
         })
     }
 
-    render({accountType,serviceName}) {
+    render({ accountType, serviceName }) {
         const trialInputId = this.getAttribute('trial-input-id')
         const professionalInputId = this.getAttribute('professional-input-id')
         const label = this.getAttribute('label')
-        
+
         this.innerHTML = `<div>
         <div class="row d-flex justify-content-center">
         <div class="col d-flex justify-content-center py-5">
@@ -409,8 +408,8 @@ customElements.define('trial-professional-check', class extends HTMLElement {
         </div>
         </div>`
 
-        document.getElementById(trialInputId) && document.getElementById(trialInputId).addEventListener('click', handleCheck({serviceName}))
-        document.getElementById(professionalInputId)&&  document.getElementById(professionalInputId).addEventListener('click', handleCheck({serviceName}))
+        document.getElementById(trialInputId) && document.getElementById(trialInputId).addEventListener('click', handleCheck({ serviceName }))
+        document.getElementById(professionalInputId) && document.getElementById(professionalInputId).addEventListener('click', handleCheck({ serviceName }))
     }
 
 
@@ -422,31 +421,151 @@ customElements.define('email-list', class extends HTMLElement {
     }
 
     connectedCallback() {
-        this.innerHTML = `<div>Email List:
-        
-        <table class="table">
-  <thead>
-    <tr>
-      <th scope="col">#</th>
-      <th scope="col">Email</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th scope="row">1</th>
-      <td>Mark</td>
-    </tr>
-    <tr>
-      <th scope="row">2</th>
-      <td>Jacob</td>
-    </tr>
-    <tr>
-      <th scope="row">3</th>
-      <td colspan="2">Larry the Bird</td>
-    </tr>
-  </tbody>
-</table>
-        </div>`
+        const { selectedDashboard } = window.pageStore.state
+
+        const user = firebase.auth().currentUser
+
+        const emaillistRef = firebase.database().ref(`myprojects/${user.uid}/${selectedDashboard}/emaillist`)
+        emaillistRef.on('value', snap => {
+            if (snap.val()) {
+                const emaillist = Object.entries(snap.val())
+
+
+                window.pageStore.dispatch({
+                    type: window.actionTypes.SET_EMAIL_LIST,
+                    payload: emaillist
+                });
+                this.render()
+            } else {
+                this.render()
+            }
+
+        })
+
+        window.pageStore.subscribe(window.actionTypes.EDIT_EMAIL, state => {
+            this.render()
+        })
+
+    }
+    render() {
+        const { emaillist, emailToEdit } = window.pageStore.state
+        const { key, email } = emailToEdit
+
+        this.innerHTML = `<div class="container">Email List:
+        <div class="row">
+        <div class="col-1">
+         <p></p>
+        </div>
+   
+        <div class="col-3">
+        <p ></p>
+        </div>
+        <div class="col">
+        <p ></p>
+        </div>
+        </div>
+<div class="row mb-1">
+        <div class="col-1">
+        <p>#</p>
+       </div>
+
+       <div class="col-3">
+       <input class="form-control" type="email" id="email-input" placeholder='Enter email' value="${email}"/>
+       </div>
+
+       <div class="col">
+       <button class="btn btn-primary" id="add-emaillist-btn"> Add</button>  <button class="btn btn-warning" id="update-email-list"> Update</button>
+       </div>
+
+       </div>
+        <div id="emaillist-table-body"></div>
+    </div>`
+        if (emaillist.length > 0) {
+            emaillist.forEach((obj, i) => {
+                const key = obj[0]
+                const email = obj[1]['email']
+                document.getElementById('emaillist-table-body').insertAdjacentHTML('beforeend', `<email-table-row email="${email}" id="${key}" order=${i}></email-table-row>`)
+
+            })
+        }
+
+
+
+        document.getElementById('add-emaillist-btn') && document.getElementById('add-emaillist-btn').addEventListener('click', () => {
+
+            const user = firebase.auth().currentUser
+            const email = document.getElementById('email-input').value
+            const { selectedDashboard } = window.pageStore.state
+            const emailListRef = firebase.database().ref(`myprojects/${user.uid}/${selectedDashboard}/emaillist`)
+            emailListRef.push({ email }, (error) => {
+                if (error) {
+                    console.log('error', error)
+                }
+            })
+        })
+
+        document.getElementById('update-email-list').addEventListener('click', (e) => {
+            const user = firebase.auth().currentUser
+            const email = document.getElementById('email-input').value
+            const { selectedDashboard } = window.pageStore.state
+            const emailListRef = firebase.database().ref(`myprojects/${user.uid}/${selectedDashboard}/emaillist/${key}`)
+            emailListRef.update({ email }, (error) => {
+                if (error) {
+                    console.log('error', error)
+                } else {
+
+                    window.pageStore.dispatch({
+                        type: window.actionTypes.EDIT_EMAIL,
+                        payload: { email: '', key: '' }
+                    });
+                }
+            })
+        })
+    }
+
+})
+
+customElements.define('email-table-row', class extends HTMLElement {
+    constructor() {
+        super()
+        this.render()
+    }
+
+    render() {
+        const email = this.getAttribute('email')
+        const id = this.getAttribute('id')
+        const order = this.getAttribute('order')
+        this.innerHTML = `
+        <div class="row">
+        <div class ="col-1"><p>${order}</p></div>
+        <div class ="col-3"><p>${email}</p></div>
+        <div class ="col">
+        <input class="btn btn-secondary" type="button" class="btn btn-secondary" value="Edit" id="${id}-edit-btn"/>
+        <input class="btn btn-secondary" type="button" class="btn btn-secondary" value="Delete" id ="${id}-delete-btn" />
+        </div>
+   
+        </div>
+    
+        `
+
+        document.getElementById(`${id}-edit-btn`).addEventListener('click', () => {
+
+            window.pageStore.dispatch({
+                type: window.actionTypes.EDIT_EMAIL,
+                payload: { email, key: id }
+            });
+
+        })
+        document.getElementById(`${id}-delete-btn`).addEventListener('click', () => {
+            const user = firebase.auth().currentUser
+            const { selectedDashboard } = window.pageStore.state
+            const emaillistRef = firebase.database().ref(`myprojects/${user.uid}/${selectedDashboard}/emaillist/${id}`)
+            emaillistRef.remove((error) => {
+
+
+            })
+
+        })
     }
 })
 
@@ -463,8 +582,8 @@ customElements.define('export-tab', class extends HTMLElement {
 
     render() {
 
-     const label="Export to Sheet Service:"
-        
+        const label = "Export to Sheet Service:"
+
         this.innerHTML = `<div>
         
         <trial-professional-check label="${label}" trial-input-id="export-trial-input" professional-input-id="export-professional-input" service-name="exportService"></trial-professional-check>
@@ -486,7 +605,7 @@ customElements.define('database-tab', class extends HTMLElement {
 
     render() {
 
-       const label="Google Firestore database service:"
+        const label = "Google Firestore database service:"
         this.innerHTML = `<div>
         <trial-professional-check label="${label}"  trial-input-id="database-trial-input" professional-input-id="database-professional-input" service-name="databaseService"></trial-professional-check>
         </div>`
@@ -506,7 +625,7 @@ customElements.define('schedule-tab', class extends HTMLElement {
 
     render() {
 
-        const label ="Github schedule (cron job) service:"
+        const label = "Github schedule (cron job) service:"
         this.innerHTML = `<div>
         <trial-professional-check label="${label}" trial-input-id="schedule-trial-input" professional-input-id="schedule-professional-input" service-name="scheduleService"></trial-professional-check>
         </div>`

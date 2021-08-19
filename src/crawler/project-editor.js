@@ -3,18 +3,22 @@ customElements.define('project-editor', class extends HTMLElement {
     super()
   }
 
-  connectedCallback() {
-    window.addEventListener('load', () => {
+  async connectedCallback() {
+    const resources= await import('./resources.js')
+    await resources.default()
+  
       const { loading, projectName, description } = window.pageStore.state
       this.render({ loading, projectName, description })
-    })
+    
 
   }
 
 
   render({ loading, projectName, description }) {
     
-    this.innerHTML = `<div class="container">
+    this.innerHTML = `
+    <top-navigation></top-navigation>
+    <div class="container">
     <fieldset>
     <legend>Add Project:</legend>
     <div class="mb-3 row">
@@ -36,7 +40,9 @@ customElements.define('project-editor', class extends HTMLElement {
   </div>
 </div>
   </fieldset>
-    </div>`
+    </div>
+    <app-footer></app-footer>
+    `
 
     document.getElementById('projectName').addEventListener('input', this.handleInputChange)
     document.getElementById('description').addEventListener('input', this.handleInputChange)

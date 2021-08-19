@@ -17,8 +17,10 @@ export const initState = stateFromLS
     databaseService: '',
     exportService: '',
     scheduleService: '',
+    emailToEdit: { key: '', email: '' },
     error: null,
-    loading: false
+    loading: false,
+    emaillist: []
   };
 
 export default (state, action) => {
@@ -26,6 +28,7 @@ export default (state, action) => {
     case actionTypes.CONTENT_VIEW_CHANGED:
       return { ...state, contentView: action.payload.view, ...action.payload }
     case actionTypes.DASHBOARD_TAB_CHANGED:
+
       return { ...state, dashboardTab: action.payload }
     case actionTypes.AUTH_SUCCESS:
       return { ...state, auth: action.payload.auth, contentView: action.payload.navAfterAuth }
@@ -46,46 +49,14 @@ export default (state, action) => {
     case actionTypes.PAGE_NAVIGATED:
       return { ...state, currentPage: action.payload }
     case actionTypes.ACCOUNT_TYPE_CHANGED:
-      return { ...state,  [action.payload.serviceName]: action.payload.accountType }
+      return { ...state, [action.payload.serviceName]: action.payload.accountType }
     case actionTypes.SET_ALL_ACCOUNT_TYPES:
       return { ...state, ...action.payload }
+    case actionTypes.EDIT_EMAIL:
+      return { ...state, emailToEdit: { key: action.payload.key, email: action.payload.email } }
+    case actionTypes.SET_EMAIL_LIST:
+      return { ...state, emaillist: action.payload }
 
-    // case actionTypes.COMPANY_NAME_CHANGED:
-    //   return { ...state, companyName: action.payload };
-    // case actionTypes.SIGNED_IN:
-    //   return { ...state, user: action.payload };
-    // case actionTypes.SIGNED_OUT:
-    //   return { ...state, user: null };
-    // case actionTypes.PROJECT_NAME_CHANGED:
-    //   return { ...state, projectName: action.payload };
-    // case actionTypes.PROJECT_START_REQUIRED:
-    //   return { ...state, [action.payload]: true };
-    // case actionTypes.PROJECT_DESCRIPTION_CHANGED:
-    //   return { ...state, projectDescription: action.payload };
-    // case actionTypes.PROJECT_START_NOT_REQUIRED:
-    //   return { ...state, [action.payload]: false };
-    // case actionTypes.VIEW_CHANGED:
-    //   return {
-    //     ...state,
-    //     view: action.payload
-    //   };
-    // case actionTypes.PROJECT_NAME_SELECTED:
-    //   return {
-    //     ...state,
-    //     view: 'project-detail',
-    //     selectedProjectName: action.payload
-    //   };
-    // case actionTypes.ERROR_DISMISSED:
-    //   return {
-    //     ...state,
-    //     error: null
-    //   };
-    // case actionTypes.ERROR:
-    //   
-    //   return {
-    //     ...state,
-    //     error: action.payload
-    //   };
     default:
       return state;
   }
@@ -115,5 +86,8 @@ export const actionTypes = {
   ADD_PROJECT_TEMPLATE: 'ADD_PROJECT_TEMPLATE',
   PAGE_NAVIGATED: 'PAGE_NAVIGATED',
   ACCOUNT_TYPE_CHANGED: 'ACCOUNT_TYPE_CHANGED',
-  SET_ALL_ACCOUNT_TYPES: 'SET_ALL_ACCOUNT_TYPES'
+  SET_ALL_ACCOUNT_TYPES: 'SET_ALL_ACCOUNT_TYPES',
+  EDIT_EMAIL: 'EDIT_EMAIL',
+  SET_EMAIL_LIST: 'SET_EMAIL_LIST'
+
 };

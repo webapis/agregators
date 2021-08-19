@@ -3,12 +3,12 @@ customElements.define('my-projects', class extends HTMLElement {
         super()
     }
 
-    connectedCallback() {
-
-        window.addEventListener('load', () => {
+    async connectedCallback() {
+        const resources= await import('./resources.js')
+        await resources.default()
+    
             this.render()
-        })
-
+    
 
     }
     render() {
@@ -39,12 +39,16 @@ customElements.define('my-projects', class extends HTMLElement {
                 // ...
             }
         });
-        this.innerHTML = `<div class="container">
+        this.innerHTML = `
+        <top-navigation></top-navigation>
+        <div class="container">
         <div id="project-list-container" class="row">  
         <legend>My Projects:</legend>
         <div id="loaing">Loading....</div>
         </div>
-        </div>`
+        </div>
+        <app-footer></app-footer>
+        `
         
         
 
