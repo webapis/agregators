@@ -9,7 +9,7 @@ const dirPath = `${process.cwd()}/src/dashboard/`;
 const client_id = '117708549296-uij0mup1c3biok6ifaupa2951vtvf418.apps.googleusercontent.com'
 const client_secret = process.env.client_secret
 
-async function exchangeCodeForAccessToken({ client_id, client_secret, code, redirect_uri, res,filepath }) {
+async function exchangeCodeForAccessToken({ client_id, client_secret, code, redirect_uri, res, filepath }) {
     try {
         const grant_type = 'authorization_code';
         var oauth2Endpoint = 'https://oauth2.googleapis.com/token';
@@ -29,42 +29,59 @@ async function exchangeCodeForAccessToken({ client_id, client_secret, code, redi
             res.end()
         } else {
             debugger;
-            const { access_token, refresh_token } = await response.json()
+            const authData = await response.json()
+            debugger;
+            const { access_token, refresh_token, scope } = authData
+            const hasEmailScope = scope.includes('https://www.googleapis.com/auth/gmail.send')
+            const hasExportScope = scope.includes('https://www.googleapis.com/auth/drive.file')
+
             const { email } = await getUserEmail({ token: access_token })
             debugger;
 
-            const usersRef = fbDatabase.ref(`users`).orderByChild('email').equalTo(email)
-            debugger;
-            usersRef.update({ access_token, refresh_token, email }, async (error) => {
-                if (error) {
-                    console.log('error', error)
-                    res.setHeader('Content-Type', 'text/plain');
-                    res.end('database Error');
-                } else {
-                    const dom = await JSDOM.fromFile(filepath)
-                    debugger;
-                    const document = dom.window.document;
-                    debugger
-                    var input = document.createElement('input');
-                    input.setAttribute('type', 'hidden');
-                    input.setAttribute('id', 'email');
-                    input.setAttribute('value', email);
-                    document.body.appendChild(input);
-                    var input = document.createElement('input');
-                    input.setAttribute('type', 'hidden');
-                    input.setAttribute('id', 'token');
-                    input.setAttribute('value', access_token);
-                    document.body.prepend(input);
-                    const content = dom.serialize()
-                    debugger;
-                    res.setHeader('Content-Type', 'text/html');
+            const uidRef = fbDatabase.ref(`users`).orderByChild('email').equalTo(email)
+            uidRef.once('child_added', snap => {
+                
+                const key = snap.key
+                debugger;
+                //const serviceConf = snap.val()['serviceConf']
+                debugger;
+                const userRef = fbDatabase.ref(`users/${key}`)
 
-                    res.setHeader('Content-Length', Buffer.byteLength(content));
-                    res.write(content)
-                    res.end()
-                }
+                //serviceConf: { ...serviceConf, emailService: hasEmailScope ? 'professional' : 'trial', exportService: hasExportScope ? 'professional' : 'trial' }
+                userRef.update({ access_token, refresh_token, scope  }, async (error) => {
+                    if (error) {
+                        console.log('error', error)
+                        res.setHeader('Content-Type', 'text/plain');
+                        res.end('database Error');
+                    } else {
+
+                        const dom = await JSDOM.fromFile(filepath)
+
+                        const document = dom.window.document;
+
+                        var input = document.createElement('input');
+                        input.setAttribute('type', 'hidden');
+                        input.setAttribute('id', 'email');
+                        input.setAttribute('value', email);
+                        document.body.appendChild(input);
+                        var input = document.createElement('input');
+                        input.setAttribute('type', 'hidden');
+                        input.setAttribute('id', 'token');
+                        input.setAttribute('value', access_token);
+                        document.body.prepend(input);
+                        const content = dom.serialize()
+
+                        res.setHeader('Content-Type', 'text/html');
+
+                        res.setHeader('Content-Length', Buffer.byteLength(content));
+                        res.write(content)
+                        res.end()
+                    }
+                })
+
+
             })
-            debugger;
+
         }
 
 
@@ -103,10 +120,12 @@ async function getUserEmail({ token }) {
         const oauthendpoint = 'https://www.googleapis.com/userinfo/v2/me'
         const response = await fetch(oauthendpoint, { headers: { 'Authorization': `Bearer ${token}`, method: 'get' } })
         debugger;
-
-        return await response.json()
+        const data = await response.json()
+        debugger;
+        return data
 
     } catch (error) {
+        debugger;
         console.log('error', error)
     }
 

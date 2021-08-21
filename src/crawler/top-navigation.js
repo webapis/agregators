@@ -53,10 +53,27 @@ customElements.define('top-navigation', class extends HTMLElement {
               <li class="nav-item">
                 <a class="nav-link ${currentPage === 'project-editor' && 'active'}" href="#" tabindex="-1" aria-disabled="true" id="add-project-template-link">Add Project Template</a>
               </li>
+
+         
             </ul>
           
-            <form class="d-flex">  
-            ${auth !== null ? `<span class="m-2">${auth.user.email}</span>` : ''}           
+            <form class="d-flex">
+            ${auth !== null ? ` <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            ${auth.user.displayName}
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
+              <li><a class="dropdown-item" href="#">  ${auth.user.email}</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="/user-settings.html">Settings</a></li>
+          
+             
+            </ul>
+          </li>
+            </ul>` : ''}    
+           
+                   
               ${auth === null ? '<a class="btn btn-outline-success" href="/login.html" id="login">Login</a>' : ''}
               ${auth !== null ? '<button class="btn btn-outline-success" id="logout-btn">Logout</button>' : ''}
             </form>

@@ -14,8 +14,7 @@ async function googleAuth({ navAfterAuth }) {
             // The signed-in user info.
             var user = result.user;
             
-            if (isNewUser) {
-                
+            if (isNewUser) {    
                 firebase.database().ref(`users/${user.uid}`).set({ email: user.email, role: 'standard' }, (error) => {
                     if (error) {
                         window.pageStore.dispatch({

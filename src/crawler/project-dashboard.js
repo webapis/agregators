@@ -1,8 +1,6 @@
 customElements.define('project-dashboard', class extends HTMLElement {
     constructor() {
         super()
-
-
         var fragmentString = location.href
 
         // Parse query string to see if page request is coming from OAuth 2.0 server.
@@ -15,16 +13,31 @@ customElements.define('project-dashboard', class extends HTMLElement {
                     params[decodeURIComponent(m[1])] = decodeURIComponent(m[2]);
                 }
                 if (Object.keys(params).length > 0) {
-                    debugger;
+                    
                     const email = document.getElementById('email')
                     const token = document.getElementById('token')
+                    let serviceName = ''
+                    switch (true) {
+                        case fragmentString.includes('emailservice'):
+                            serviceName = 'emailService'
+                            break;
+                        case fragmentString.includes('exportservice'):
+                            serviceName = 'exportService'
+                            break;
+                        default:
 
+                    }
                     params['email'] = email.value
                     params['access_token'] = token.value
 
+                    
                     localStorage.setItem('oauth2-test-params', JSON.stringify(params));
 
+
+
                     if (params['access_token']) {
+                        
+
                         //  callGoogleAPI({ client_id: YOUR_CLIENT_ID, redirect_uri: YOUR_REDIRECT_URI, scope: 'https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/drive', state: 'try_sample_request' });
                     }
                 }
@@ -347,7 +360,7 @@ customElements.define('email-tab', class extends HTMLElement {
 
         this.innerHTML = `<div>
     
-     <trial-professional-check label="${label}"  trial-input-id="email-trial-input" professional-input-id="email-professional-input" service-name="emailService"></trial-professional-check>
+
         <email-list></email-list>
         </div>`
     }
@@ -401,9 +414,9 @@ const handleCheck = ({ serviceName }) => {
         if (value === 'professional') {
             var CLIENT_ID = '117708549296-uij0mup1c3biok6ifaupa2951vtvf418.apps.googleusercontent.com';
             var REDIRECT_URI = 'http://localhost:3000/project-dashboard.html';
-            window.googleAuthorizationRequest({ client_id: CLIENT_ID, redirect_uri: REDIRECT_URI, scope: scopes, state: `${serviceName}_grant_requests`, include_granted_scopes: true, response_type: 'code' })
-            debugger;
-          //  updateAccountType({ serviceName, accountType: value })
+            window.googleAuthorizationRequest({ client_id: CLIENT_ID, redirect_uri: REDIRECT_URI, scope: scopes, state: `${serviceName}`.toLowerCase(), include_granted_scopes: true, response_type: 'code' })
+            
+            //  updateAccountType({ serviceName, accountType: value })
         } else {
 
             updateAccountType({ serviceName, accountType: value })
@@ -631,7 +644,7 @@ customElements.define('export-tab', class extends HTMLElement {
 
         this.innerHTML = `<div>
         
-        <trial-professional-check label="${label}" trial-input-id="export-trial-input" professional-input-id="export-professional-input" service-name="exportService"></trial-professional-check>
+
         </div>`
     }
 })
@@ -652,7 +665,7 @@ customElements.define('database-tab', class extends HTMLElement {
 
         const label = "Google Firestore database service:"
         this.innerHTML = `<div>
-        <trial-professional-check label="${label}"  trial-input-id="database-trial-input" professional-input-id="database-professional-input" service-name="databaseService"></trial-professional-check>
+
         </div>`
     }
 })
@@ -672,7 +685,7 @@ customElements.define('schedule-tab', class extends HTMLElement {
 
         const label = "Github schedule (cron job) service:"
         this.innerHTML = `<div>
-        <trial-professional-check label="${label}" trial-input-id="schedule-trial-input" professional-input-id="schedule-professional-input" service-name="scheduleService"></trial-professional-check>
+    
         </div>`
     }
 })

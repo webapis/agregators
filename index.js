@@ -21,14 +21,13 @@ const server = http.createServer((req, res) => {
             const { code } = getUrlParams(url)
             exchangeCodeForAccessToken({ client_id, client_secret, code, redirect_uri, res })
             break;
-            case /.*\/project-dashboard.html\?state=.*/.test(url):
-                const { code } = getUrlParams(url)
-                const redirectpath =dirPath+'project-dashboard.html'
-                exchangeCodeForAccessToken({ client_id, client_secret, code, redirect_uri:'http://localhost:3000/project-dashboard.html', res,filepath:redirectpath })
-                break;
+        case /.*\/user-settings.html\?state=.*/.test(url):
+            const redirectpath = dirPath + 'user-settings.html'
+            exchangeCodeForAccessToken({ client_id, client_secret, code: getUrlParams(url).code, redirect_uri: `http://localhost:${port}/user-settings.html`, res, filepath: redirectpath })
+            break;
         default:
-   
-            serveStatic( req, res)
+
+            serveStatic(req, res)
     }
 })
 
@@ -39,7 +38,7 @@ server.listen(port, () => {
 
 
 function getUrlParams(url) {
-    debugger;
+ 
     // Parse query string to see if page request is coming from OAuth 2.0 server.
     var params = {};
     var regex = /([^&=]+)=([^&]*)/g, m;
