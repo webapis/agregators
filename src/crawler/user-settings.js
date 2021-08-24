@@ -291,17 +291,17 @@ customElements.define('user-settings-tabs', class extends HTMLElement {
         this.innerHTML = `<div>
         <nav>
   <div class="nav nav-tabs" id="nav-tab" role="tablist">
-    <button class="nav-link active" id="nav-google-apis-tab" data-bs-toggle="tab" data-bs-target="#nav-google-apis" type="button" role="tab" aria-controls="nav-google-apis" aria-selected="true">Google API's</button>
-    <button class="nav-link" id="nav-dropbox-apis-tab" data-bs-toggle="tab" data-bs-target="#nav-dropbox-apis" type="button" role="tab" aria-controls="nav-dropbox-apis" aria-selected="false">Dropbox API's</button>
-    <button class="nav-link" id="nav-github-apis-tab" data-bs-toggle="tab" data-bs-target="#nav-github-apis" type="button" role="tab" aria-controls="nav-github-apis" aria-selected="false">Github API's</button>
-    <button class="nav-link" id="nav-proxy-apis-tab" data-bs-toggle="tab" data-bs-target="#nav-proxy-apis" type="button" role="tab" aria-controls="nav-proxy-apis" aria-selected="false">Proxy API's</button>
+    <button class="nav-link" id="nav-google-apis-tab" data-bs-toggle="tab" data-bs-target="#nav-google-apis" type="button" role="tab" aria-controls="nav-google-apis" aria-selected="true">Google API's</button>
+    <button class="nav-link d-none" id="nav-dropbox-apis-tab" data-bs-toggle="tab" data-bs-target="#nav-dropbox-apis" type="button" role="tab" aria-controls="nav-dropbox-apis" aria-selected="false">Dropbox API's</button>
+    <button class="nav-link active" id="nav-github-apis-tab" data-bs-toggle="tab" data-bs-target="#nav-github-apis" type="button" role="tab" aria-controls="nav-github-apis" aria-selected="false">Github API's</button>
+    <button class="nav-link d-none" id="nav-proxy-apis-tab" data-bs-toggle="tab" data-bs-target="#nav-proxy-apis" type="button" role="tab" aria-controls="nav-proxy-apis" aria-selected="false">Proxy API's</button>
   
   </div>
 </nav>
 <div class="tab-content" id="nav-tabContent">
-  <div class="tab-pane fade show active" id="nav-google-apis" role="tabpanel" aria-labelledby="nav-google-apis-tab"><google-services></google-services></div>
+  <div class="tab-pane fade " id="nav-google-apis" role="tabpanel" aria-labelledby="nav-google-apis-tab"><google-services></google-services></div>
   <div class="tab-pane fade" id="nav-dropbox-apis" role="tabpanel" aria-labelledby="nav-dropbox-apis-tab">Dropbox API's</div>
-  <div class="tab-pane fade" id="nav-github-apis" role="tabpanel" aria-labelledby="nav-github-apis-tab">Github API's</div>
+  <div class="tab-pane fade show active" id="nav-github-apis" role="tabpanel" aria-labelledby="nav-github-apis-tab"><github-services></github-services></div>
   <div class="tab-pane fade" id="nav-proxy-apis" role="tabpanel" aria-labelledby="nav-proxy-apis-tab">Proxy API's</div>
  
 </div>
@@ -320,7 +320,7 @@ customElements.define('main-tab', class extends HTMLElement {
         <div class="d-flex align-items-start">
   <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
     <button class="nav-link active" id="v-pills-user-tab" data-bs-toggle="pill" data-bs-target="#v-pills-user" type="button" role="tab" aria-controls="v-pills-user" aria-selected="true">User Seeting:</button>
-    <button class="nav-link" id="v-pills-developer-tab" data-bs-toggle="pill" data-bs-target="#v-pills-developer" type="button" role="tab" aria-controls="v-pills-developer" aria-selected="false">Developer Settings:</button>
+    <button class="nav-link d-none" id="v-pills-developer-tab" data-bs-toggle="pill" data-bs-target="#v-pills-developer" type="button" role="tab" aria-controls="v-pills-developer" aria-selected="false">Developer Settings:</button>
   </div>
   <div class="tab-content" id="v-pills-tabContent">
     <div class="tab-pane fade show active" id="v-pills-user" role="tabpanel" aria-labelledby="v-pills-user-tab"><user-settings-tabs></user-settings-tabs></div>
@@ -343,16 +343,16 @@ customElements.define('google-services', class extends HTMLElement {
         })
         const { auth: { user } } = window.pageStore.state
         firebase.database().ref(`users/${user.uid}/scope`).on('value', snap => {
-            window.pageStore.dispatch({type:window.actionTypes.LOADING_COMPLETE})
+            window.pageStore.dispatch({ type: window.actionTypes.LOADING_COMPLETE })
             this.render()
         })
     }
 
     render() {
-        const { loading,googleServiceScopes } = window.pageStore.state
-        const hasEmailScope= googleServiceScopes.includes('https://www.googleapis.com/auth/gmail.send')
-        const hasDriveScope =googleServiceScopes.includes('https://www.googleapis.com/auth/drive.file')
-        debugger;
+        const { loading, googleServiceScopes } = window.pageStore.state
+        const hasEmailScope = googleServiceScopes.includes('https://www.googleapis.com/auth/gmail.send')
+        const hasDriveScope = googleServiceScopes.includes('https://www.googleapis.com/auth/drive.file')
+
         this.innerHTML = `
     <div>
         <h5 class="mt-3 mb-5 fw-normal text-muted">Enable or Disable Google Services: </h5>
@@ -404,5 +404,55 @@ customElements.define('google-services', class extends HTMLElement {
             window.pageStore.dispatch({ type: window.actionTypes.GOOGLE_SERVICE_SCOPE_REMOVED, payload: value })
         }
 
+    }
+})
+
+
+customElements.define('github-services', class extends HTMLElement {
+    constructor() {
+        super()
+    }
+
+    connectedCallback() {
+         const {auth:{user}}= window.pageStore.state
+        const ghServiceRef = firebase.database().ref(`users/${user.uid}/ghtoken`)
+        ghServiceRef.on("value", snap=>{
+            const hastoken = snap.exists()
+            this.render({hastoken})
+        })
+       
+    }
+
+    render({hastoken}) {
+
+        const { loading } = window.pageStore.state
+       
+
+        this.innerHTML = `   <div>
+        <h5 class="mt-3 mb-5 fw-normal text-muted">Enable or Disable Github Services: </h5>
+      
+     
+    <div class="mt-5">
+    <button class="btn btn-primary" type="button" ${(loading || hastoken)  && 'disabled'} id="update-github-api">
+    ${loading ? '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>' : ''}
+    
+    ${loading ? 'Enabling Github...' : hastoken? 'Github is Enabled': 'Enable Github service'}
+  </button>
+
+    <div>
+        </div>`
+
+        document.getElementById('update-github-api').addEventListener('click', async (e) => {
+            try {
+                e.preventDefault()
+                const { auth: { user } } = window.pageStore.state
+                window.location.replace(`/github-verification.html?uid=${user.uid}`)
+
+                debugger;
+            } catch (error) {
+                debugger;
+            }
+
+        })
     }
 })

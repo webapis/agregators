@@ -22,7 +22,8 @@ export const initState = stateFromLS
     loading: false,
     settingsServiceTab: 'email-tab',
     emaillist: [],
-    googleServiceScopes: 'https://www.googleapis.com/auth/userinfo.email'
+    googleServiceScopes: 'https://www.googleapis.com/auth/userinfo.email',
+    githubServiceScopes:''
   };
 
 export default (state, action) => {

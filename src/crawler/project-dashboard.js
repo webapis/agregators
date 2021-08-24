@@ -367,68 +367,6 @@ customElements.define('email-tab', class extends HTMLElement {
 })
 
 
-
-
-const updateAccountType = ({ serviceName, accountType }) => {
-
-    const user = firebase.auth().currentUser
-
-    const { selectedDashboard } = window.pageStore.state
-
-    var uid = user.uid;
-    const myProjectsRef = firebase.database().ref(`myprojects/${uid}/${selectedDashboard}/conf`)
-    myProjectsRef.update({ [serviceName]: accountType }, (error) => {
-
-        if (error) {
-            console.log('error', error)
-        } else {
-
-            window.pageStore.dispatch({
-                type: window.actionTypes.ACCOUNT_TYPE_CHANGED,
-                payload: { accountType, serviceName }
-            });
-        }
-    })
-}
-
-const handleCheck = ({ serviceName }) => {
-    return (e) => {
-        let scopes = ''
-        switch (serviceName) {
-            case 'emailService':
-                scopes = 'https://www.googleapis.com/auth/gmail.send'
-                break;
-            case 'exportService':
-                scopes = 'https://www.googleapis.com/auth/drive.file'
-                break;
-            case 'databaseService':
-                scopes = 'https://www.googleapis.com/auth/cloud-platform'
-                break;
-            case 'scheduleService':
-                scopes = ''
-                break;
-            default:
-                ''
-        }
-        const { value } = e.target
-        if (value === 'professional') {
-            var CLIENT_ID = '117708549296-uij0mup1c3biok6ifaupa2951vtvf418.apps.googleusercontent.com';
-            var REDIRECT_URI = 'http://localhost:3000/project-dashboard.html';
-            window.googleAuthorizationRequest({ client_id: CLIENT_ID, redirect_uri: REDIRECT_URI, scope: scopes, state: `${serviceName}`.toLowerCase(), include_granted_scopes: true, response_type: 'code' })
-            
-            //  updateAccountType({ serviceName, accountType: value })
-        } else {
-
-            updateAccountType({ serviceName, accountType: value })
-        }
-
-    }
-
-
-}
-
-
-
 customElements.define('trial-professional-check', class extends HTMLElement {
     constructor() {
         super()
