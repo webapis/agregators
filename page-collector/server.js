@@ -1,6 +1,6 @@
 require('dotenv').config()
 
-
+console.log('parameters...', process.env.parameters)
 const { firebaseEvetEmitter } = require('../utils/firebase/firebaseEventEmitter')
 const { projects } = require('./project.config');
 const { removeDerectory } = require('./removeDerectory');

@@ -1,50 +1,7 @@
 customElements.define('project-dashboard', class extends HTMLElement {
     constructor() {
         super()
-        var fragmentString = location.href
 
-        // Parse query string to see if page request is coming from OAuth 2.0 server.
-        var params = {};
-
-        var regex = /([^&=]+)=([^&]*)/g, m;
-        document.addEventListener('DOMContentLoaded', (event) => {
-            if (document.readyState === 'interactive') {
-                while (m = regex.exec(fragmentString)) {
-                    params[decodeURIComponent(m[1])] = decodeURIComponent(m[2]);
-                }
-                if (Object.keys(params).length > 0) {
-                    
-                    const email = document.getElementById('email')
-                    const token = document.getElementById('token')
-                    let serviceName = ''
-                    switch (true) {
-                        case fragmentString.includes('emailservice'):
-                            serviceName = 'emailService'
-                            break;
-                        case fragmentString.includes('exportservice'):
-                            serviceName = 'exportService'
-                            break;
-                        default:
-
-                    }
-                    params['email'] = email.value
-                    params['access_token'] = token.value
-
-                    
-                    localStorage.setItem('oauth2-test-params', JSON.stringify(params));
-
-
-
-                    if (params['access_token']) {
-                        
-
-                        //  callGoogleAPI({ client_id: YOUR_CLIENT_ID, redirect_uri: YOUR_REDIRECT_URI, scope: 'https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/drive', state: 'try_sample_request' });
-                    }
-                }
-            }
-
-            console.log('DOM полностью загружен и разобран', document.readyState);
-        });
     }
 
     async connectedCallback() {
@@ -336,10 +293,39 @@ customElements.define('scrape-controls', class extends HTMLElement {
 
         this.innerHTML = `<div class="row">
         <div class ="col py-5  my-1">
-        <button class="btn btn-secondary">Start Scraping</button>
+        <button class="btn btn-secondary" id="start-scraping-btn">Start Scraping</button>
+        <button class="btn btn-danger" id="cancel-scraping-btn">Cancel Scraping</button>
         </div>
         
         </div>`
+        document.getElementById('start-scraping-btn').addEventListener('click', () => {
+            const { auth: { user }, selectedDashboard } = window.pageStore.state
+            debugger;
+            const ghTokenRef = firebase.database().ref(`users/${user.uid}`)
+            ghTokenRef.once('value', snap => {
+                const ghToken = snap.val()['ghtoken']
+                const ghuser = snap.val()['ghuser']
+                debugger;
+                if (ghToken) {
+                    debugger;
+
+                    triggerAction({ ticket: ghToken, selectedProjectName: selectedDashboard, companyName: '', owner: ghuser })
+                } else {
+                    const trialTokenRef = firebase.database().ref('gitticket')
+                    debugger;
+                    trialTokenRef.once('value', snap => {
+                        const trialTicket = snap.val()
+                        triggerAction(trialTicket)
+                    })
+                }
+
+            })
+            debugger;
+        })
+
+        document.getElementById('cancel-scraping-btn').addEventListener('click', () => {
+            debugger;
+        })
     }
 })
 
@@ -644,3 +630,62 @@ customElements.define('query-tab', class extends HTMLElement {
         this.innerHTML = `<div>query-tab</div>`
     }
 })
+
+
+
+
+function triggerAction({ ticket, selectedProjectName, companyName, owner }) {
+    import('https://cdn.skypack.dev/@octokit/request').then(module => {
+        const { request } = module;
+        request(
+            'POST /repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches',
+            {
+                headers: {
+                    authorization: `token ${ticket}`,
+                    Accept: 'application/vnd.github.v3+json'
+                },
+                data: { ref: 'action', inputs: { projectName: selectedProjectName, companyName, parameters: "all params here" } },
+                repo: 'agregators',
+                owner,
+                workflow_id: 'aggregate.yml'
+            }
+        )
+            .then((result) => {
+
+                debugger;
+                //     dataCollectionRef.update({ dataCollection: 2 }, (error) => {
+                //       if (error) {
+
+                //         errorHandler({ error })
+                //       }
+                //     })
+                // //   })
+                //   .catch(error => {
+
+                //     errorHandler({ error })
+                //   });
+            }).then(data => {
+                debugger;
+            }).catch(error => {
+                debugger;
+            })
+
+    })
+
+    fetch(`https://api.github.com/repos/${owner}/agregators/actions/workflows/aggregate.yml/dispatches`, {
+        method: 'post',
+        headers: {
+            authorization: `token ${ticket}`,
+            Accept: 'application/vnd.github.v3+json'
+        },
+        body: JSON.stringify({ ref: 'action', inputs: { projectName: selectedProjectName, companyName, parameters: "all params here" } })
+    }).then(result => {
+        debugger;
+        
+    }).then(data => {
+        debugger;
+    }).catch(error => {
+        debugger;
+    })
+}
+

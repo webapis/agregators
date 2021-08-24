@@ -417,8 +417,11 @@ customElements.define('github-services', class extends HTMLElement {
          const {auth:{user}}= window.pageStore.state
         const ghServiceRef = firebase.database().ref(`users/${user.uid}/ghtoken`)
         ghServiceRef.on("value", snap=>{
-            const hastoken = snap.exists()
-            this.render({hastoken})
+            const hastoken = snap.val()
+           
+                this.render({hastoken})
+           
+            
         })
        
     }
