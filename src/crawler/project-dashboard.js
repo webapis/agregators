@@ -300,15 +300,15 @@ customElements.define('scrape-controls', class extends HTMLElement {
         </div>
         
         </div>`
-        document.getElementById('start-scraping-btn').addEventListener('click', async() => {
-            const { auth: { user }, selectedDashboard } = window.pageStore.state
+        document.getElementById('start-scraping-btn').addEventListener('click', async () => {
+            const { auth: { user,fb_custom_tkn }, selectedDashboard } = window.pageStore.state
             debugger;
             const hostname = window.location.hostname
             debugger;
             if (hostname === 'localhost') {
 
-                const response = await fetch('http://localhost:3001/local_workflow', {method:'post',mode:'cors',body: JSON.stringify({ ref: 'action', inputs: { projectName: selectedDashboard, parameters: "all params here" } }),headers:{'Content-Type':'application/json','Accept':'text/plain'} })
-                
+                const response = await fetch('http://localhost:3001/local_workflow', { method: 'post', mode: 'cors', body: JSON.stringify({ ref: 'action', inputs: { projectName: selectedDashboard, parameters: {startedDateTime: Date.now(),fb_custom_tkn }} }), headers: { 'Content-Type': 'application/json', 'Accept': 'text/plain' } })
+
                 debugger;
             } else {
                 const ghTokenRef = firebase.database().ref(`users/${user.uid}`)
@@ -647,42 +647,42 @@ customElements.define('query-tab', class extends HTMLElement {
 
 
 function triggerAction({ ticket, selectedProjectName, companyName, owner }) {
-    import('https://cdn.skypack.dev/@octokit/request').then(module => {
-        const { request } = module;
-        request(
-            'POST /repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches',
-            {
-                headers: {
-                    authorization: `token ${ticket}`,
-                    Accept: 'application/vnd.github.v3+json'
-                },
-                data: { ref: 'action', inputs: { projectName: selectedProjectName, companyName, parameters: "all params here" } },
-                repo: 'agregators',
-                owner,
-                workflow_id: 'aggregate.yml'
-            }
-        )
-            .then((result) => {
+    // import('https://cdn.skypack.dev/@octokit/request').then(module => {
+    //     const { request } = module;
+    //     request(
+    //         'POST /repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches',
+    //         {
+    //             headers: {
+    //                 authorization: `token ${ticket}`,
+    //                 Accept: 'application/vnd.github.v3+json'
+    //             },
+    //             data: { ref: 'action', inputs: { projectName: selectedProjectName, companyName, parameters: "all params here" } },
+    //             repo: 'agregators',
+    //             owner,
+    //             workflow_id: 'aggregate.yml'
+    //         }
+    //     )
+    //         .then((result) => {
 
-                debugger;
-                //     dataCollectionRef.update({ dataCollection: 2 }, (error) => {
-                //       if (error) {
+    //             debugger;
+    //             //     dataCollectionRef.update({ dataCollection: 2 }, (error) => {
+    //             //       if (error) {
 
-                //         errorHandler({ error })
-                //       }
-                //     })
-                // //   })
-                //   .catch(error => {
+    //             //         errorHandler({ error })
+    //             //       }
+    //             //     })
+    //             // //   })
+    //             //   .catch(error => {
 
-                //     errorHandler({ error })
-                //   });
-            }).then(data => {
-                debugger;
-            }).catch(error => {
-                debugger;
-            })
+    //             //     errorHandler({ error })
+    //             //   });
+    //         }).then(data => {
+    //             debugger;
+    //         }).catch(error => {
+    //             debugger;
+    //         })
 
-    })
+    // })
 
     fetch(`https://api.github.com/repos/${owner}/agregators/actions/workflows/aggregate.yml/dispatches`, {
         method: 'post',
@@ -690,7 +690,7 @@ function triggerAction({ ticket, selectedProjectName, companyName, owner }) {
             authorization: `token ${ticket}`,
             Accept: 'application/vnd.github.v3+json'
         },
-        body: JSON.stringify({ ref: 'action', inputs: { projectName: selectedProjectName, companyName, parameters: "all params here" } })
+        body: JSON.stringify({ ref: 'action', inputs: { projectName: selectedProjectName, companyName, parameters: { startedDateTime: Date.now() } } })
     }).then(result => {
         debugger;
 

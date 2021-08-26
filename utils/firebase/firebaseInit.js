@@ -4,9 +4,9 @@ require('dotenv').config()
 
 
 let fbDatabase = null;
-
-if (process.env.SERVER === 'GITHUB_ACTION') {
-  debugger;
+let firebaseApp = null;
+if (process.env.SERVER === 'GITHUB_ACTION' | process.env.SERVER === 'LOCAL_SERVER') {
+debugger;
   var firebaseConfig = {
     apiKey: "AIzaSyDb8Z27Ut0WJ-RH7Exi454Bpit9lbARJeA",
     authDomain: "turkmenistan-market.firebaseapp.com",
@@ -19,17 +19,17 @@ if (process.env.SERVER === 'GITHUB_ACTION') {
   const firebase = require('firebase/app').default;
   require('firebase/auth');
   require('firebase/database');
-
-  const app = firebase.initializeApp(firebaseConfig);
-
-  fbDatabase = app.database()
-} else {
   debugger;
+  firebaseApp = firebase.initializeApp(firebaseConfig);
+
+  fbDatabase = firebaseApp.database()
+} else {
+
   const { admin } = require('./firebase-admin')
   fbDatabase = admin.database()
 }
 
-module.exports = { fbDatabase };
+module.exports = { fbDatabase, firebaseApp };
 
 
 

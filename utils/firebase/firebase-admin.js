@@ -25,7 +25,7 @@ function createFirebaseCustomToken(uid, res) {
         .auth()
         .createCustomToken(uid)
         .then((customToken) => {
-            // Send token back to cl
+         
             admin.database().ref(`users/${uid}`).update({ fb_custom_tkn: customToken }, (error) => {
                 if (error) {
                     debugger;
@@ -36,7 +36,7 @@ function createFirebaseCustomToken(uid, res) {
                     debugger;
                     res.setHeader('Content-Type', 'application/json');
                     res.statusCode = 200
-                    res.end(JSON.stringify({ data: '' }));
+                    res.end(JSON.stringify({ fb_custom_tkn: customToken }));
                 }
             })
         })
@@ -50,3 +50,6 @@ function createFirebaseCustomToken(uid, res) {
 
 
 module.exports = { createFirebaseCustomToken, admin }
+
+//REFRESH CUSTOM TOKEN
+//https://firebase.google.com/docs/reference/rest/auth/#section-verify-custom-token

@@ -3,8 +3,8 @@ const { fb_steps } = require('../utils/firebase/firebaseEventEmitter');
 const { fbDatabase } = require('../utils/firebase/firebaseInit')
 const { countData } = require('../utils/firebase/firebaseEventEmitter')
 
-const startedDateTime = Date.now()
-global.fb_run_id = startedDateTime
+const startedDateTime = global.fb_run_id
+const rootFirebaseRef = `runs/${global.fb_uid}/${process.env.projectName}/${startedDateTime}`
 class TaskListender extends EventEmitter {
     constructor({ tasks }) {
         super()
@@ -57,7 +57,7 @@ function taskStarted(taskName) {
     let dbRef = null;
     switch (taskName) {
         case 'page_collection':
-            dbRef = fbDatabase.ref(`projects/${process.env.projectName}/${startedDateTime}/${fb_steps.CRAWLING_STARTED}`)
+            dbRef = fbDatabase.ref(`${rootFirebaseRef}/${fb_steps.CRAWLING_STARTED}`)
             dbRef.set(Date.now(), (error) => {
                 if (error) {
                     console.log(error)
@@ -67,7 +67,7 @@ function taskStarted(taskName) {
             })
             break;
         case 'page_merge_files':
-            dbRef = fbDatabase.ref(`projects/${process.env.projectName}/${startedDateTime}/${fb_steps.MERGING_FILES_STARTED}`)
+            dbRef = fbDatabase.ref(`${rootFirebaseRef}/${fb_steps.MERGING_FILES_STARTED}`)
             dbRef.set(Date.now(), (error) => {
                 if (error) {
                     console.log(error)
@@ -77,7 +77,7 @@ function taskStarted(taskName) {
             })
             break;
         case 'page_export_excel':
-            dbRef = fbDatabase.ref(`projects/${process.env.projectName}/${startedDateTime}/${fb_steps.PAGE_EXPORT_EXCEL_STARTED}`)
+            dbRef = fbDatabase.ref(`${rootFirebaseRef}/${fb_steps.PAGE_EXPORT_EXCEL_STARTED}`)
             dbRef.set(Date.now(), (error) => {
                 if (error) {
                     console.log(error)
@@ -87,7 +87,7 @@ function taskStarted(taskName) {
             })
             break;
         case 'page_upload_excel':
-            dbRef = fbDatabase.ref(`projects/${process.env.projectName}/${startedDateTime}/${fb_steps.PAGE_UPLOAD_EXCEL}`)
+            dbRef = fbDatabase.ref(`${rootFirebaseRef}/${fb_steps.PAGE_UPLOAD_EXCEL}`)
             dbRef.set({ start: Date.now() }, (error) => {
                 if (error) {
                     console.log(error)
@@ -97,7 +97,7 @@ function taskStarted(taskName) {
             })
             break;
         case 'page_image_collection':
-            dbRef = fbDatabase.ref(`projects/${process.env.projectName}/${startedDateTime}/COLLECTING_IMAGES`)
+            dbRef = fbDatabase.ref(`${rootFirebaseRef}/COLLECTING_IMAGES`)
             dbRef.update({ start: Date.now() }, (error) => {
                 if (error) {
                     console.log(error)
@@ -107,7 +107,7 @@ function taskStarted(taskName) {
             })
             break;
         case 'page_upload_image':
-            dbRef = fbDatabase.ref(`projects/${process.env.projectName}/${startedDateTime}/UPLOADING_IMAGES`)
+            dbRef = fbDatabase.ref(`${rootFirebaseRef}/UPLOADING_IMAGES`)
             dbRef.update({ start: Date.now() }, (error) => {
                 if (error) {
                     console.log(error)
@@ -126,7 +126,7 @@ function taskComplete(taskName, payload) {
     let dbRef = null;
     switch (taskName) {
         case 'page_collection':
-            dbRef = fbDatabase.ref(`projects/${process.env.projectName}/${startedDateTime}/${fb_steps.CRAWLING_COMPLETE}`)
+            dbRef = fbDatabase.ref(`${rootFirebaseRef}/${fb_steps.CRAWLING_COMPLETE}`)
             dbRef.set(Date.now(), (error) => {
                 if (error) {
                     console.log(error)
@@ -136,7 +136,7 @@ function taskComplete(taskName, payload) {
             break;
 
         case 'page_merge_files':
-            dbRef = fbDatabase.ref(`projects/${process.env.projectName}/${startedDateTime}/${fb_steps.MERGING_FILES_COMPLETE}`)
+            dbRef = fbDatabase.ref(`${rootFirebaseRef}/${fb_steps.MERGING_FILES_COMPLETE}`)
             dbRef.set(Date.now(), (error) => {
                 if (error) {
                     console.log(error)
@@ -146,7 +146,7 @@ function taskComplete(taskName, payload) {
             })
             break;
         case 'page_export_excel':
-            dbRef = fbDatabase.ref(`projects/${process.env.projectName}/${startedDateTime}/${fb_steps.PAGE_EXPORT_EXCEL_COMPLETE}`)
+            dbRef = fbDatabase.ref(`${rootFirebaseRef}/${fb_steps.PAGE_EXPORT_EXCEL_COMPLETE}`)
             dbRef.set(Date.now(), (error) => {
                 if (error) {
                     console.log(error)
@@ -157,7 +157,7 @@ function taskComplete(taskName, payload) {
 
         case 'page_upload_excel':
             const { webViewLink, webContentLink } = payload
-            dbRef = fbDatabase.ref(`projects/${process.env.projectName}/${startedDateTime}/${fb_steps.PAGE_UPLOAD_EXCEL}`)
+            dbRef = fbDatabase.ref(`${rootFirebaseRef}/${fb_steps.PAGE_UPLOAD_EXCEL}`)
             dbRef.update({ end: Date.now(), webViewLink, webContentLink }, (error) => {
                 if (error) {
                     console.log(error)
@@ -166,7 +166,7 @@ function taskComplete(taskName, payload) {
             })
             break;
         case 'page_image_collection':
-            dbRef = fbDatabase.ref(`projects/${process.env.projectName}/${startedDateTime}/COLLECTING_IMAGES`)
+            dbRef = fbDatabase.ref(`${rootFirebaseRef}/COLLECTING_IMAGES`)
             dbRef.update({ end: Date.now() }, (error) => {
                 if (error) {
                     console.log(error)
@@ -177,7 +177,7 @@ function taskComplete(taskName, payload) {
             break;
         case 'page_upload_image':
 
-            dbRef = fbDatabase.ref(`projects/${process.env.projectName}/${startedDateTime}/UPLOADING_IMAGES`)
+            dbRef = fbDatabase.ref(`${rootFirebaseRef}/UPLOADING_IMAGES`)
             dbRef.update({ end: Date.now(), webViewLink: payload.webViewLink }, (error) => {
                 if (error) {
                     console.log(error)
@@ -195,7 +195,7 @@ function taskFailed(taskName) {
     let dbRef = null;
     switch (taskName) {
         case 'page_collection':
-            dbRef = fbDatabase.ref(`projects/${process.env.projectName}/${startedDateTime}/${fb_steps.CRAWLING_FAILED}`)
+            dbRef = fbDatabase.ref(`${rootFirebaseRef}/${fb_steps.CRAWLING_FAILED}`)
             dbRef.set(Date.now(), (error) => {
                 if (error) {
                     console.log(error)
@@ -205,7 +205,7 @@ function taskFailed(taskName) {
             })
             break;
         case 'page_merge_files':
-            dbRef = fbDatabase.ref(`projects/${process.env.projectName}/${startedDateTime}/${fb_steps.MERGING_FILES_FAILED}`)
+            dbRef = fbDatabase.ref(`${rootFirebaseRef}/${fb_steps.MERGING_FILES_FAILED}`)
             dbRef.set(Date.now(), (error) => {
                 if (error) {
                     console.log(error)
@@ -215,7 +215,7 @@ function taskFailed(taskName) {
             })
             break;
         case 'page_merge_files':
-            dbRef = fbDatabase.ref(`projects/${process.env.projectName}/${startedDateTime}/${fb_steps.MERGING_FILES_FAILED}`)
+            dbRef = fbDatabase.ref(`${rootFirebaseRef}/${fb_steps.MERGING_FILES_FAILED}`)
             dbRef.set(Date.now(), (error) => {
                 if (error) {
                     console.log(error)
@@ -225,7 +225,7 @@ function taskFailed(taskName) {
             })
             break;
         case 'page_export_excel':
-            dbRef = fbDatabase.ref(`projects/${process.env.projectName}/${startedDateTime}/${fb_steps.PAGE_EXPORT_EXCEL_FAILED}`)
+            dbRef = fbDatabase.ref(`${rootFirebaseRef}/${fb_steps.PAGE_EXPORT_EXCEL_FAILED}`)
             dbRef.set(Date.now(), (error) => {
                 if (error) {
                     console.log(error)
@@ -236,7 +236,7 @@ function taskFailed(taskName) {
             break;
         case 'page_upload_excel':
 
-            dbRef = fbDatabase.ref(`projects/${process.env.projectName}/${startedDateTime}/${fb_steps.PAGE_UPLOAD_EXCEL}`)
+            dbRef = fbDatabase.ref(`${rootFirebaseRef}/${fb_steps.PAGE_UPLOAD_EXCEL}`)
             dbRef.update({ end: Date.now(), error: true }, (error) => {
                 if (error) {
                     console.log(error)
@@ -246,7 +246,7 @@ function taskFailed(taskName) {
             })
             break;
         case 'page_image_collection':
-            dbRef = fbDatabase.ref(`projects/${process.env.projectName}/${startedDateTime}/COLLECTING_IMAGES`)
+            dbRef = fbDatabase.ref(`${rootFirebaseRef}/COLLECTING_IMAGES`)
             dbRef.update({ failed: true }, (error) => {
                 if (error) {
                     console.log(error)
@@ -256,7 +256,7 @@ function taskFailed(taskName) {
             })
             break;
         case 'page_upload_image':
-            dbRef = fbDatabase.ref(`projects/${process.env.projectName}/${startedDateTime}/UPLOADING_IMAGES`)
+            dbRef = fbDatabase.ref(`${rootFirebaseRef}/UPLOADING_IMAGES`)
             dbRef.update({ failed: true }, (error) => {
                 if (error) {
                     console.log(error)

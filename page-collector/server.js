@@ -22,6 +22,8 @@ function change() {
   const { pageLeavesBy100 } = require('./pageLeavesBy100')
   const { pageUploadImage } = require('./page_upload_image')
   const { pagePrerender } = require('./pagePrerender')
+  const { fbDatabase, firebaseApp } = require('../utils/firebase/firebaseInit')
+
   const tasks = projects[process.env.projectName]
   const taskSequelizerEventEmitter = taskSequelizer({ tasks })
   firebaseEvetEmitter({ taskSequelizerEventEmitter })
@@ -123,7 +125,7 @@ function change() {
 
 
 if (process.env.SERVER === 'LOCAL_SERVER') {
-  debugger;
+
   const http = require('http');
   const server = http.createServer((req, res) => {
     res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
@@ -137,20 +139,38 @@ if (process.env.SERVER === 'LOCAL_SERVER') {
         res.end();
         break;
       case "POST":
-     
-        debugger; req.on("data", (chunk) => {
+
+        req.on("data", (chunk) => {
           data.push(chunk);
         });
-        req.on("end", () => {
-          debugger;
+        req.on("end", async () => {
+
           if (data.length > 0) {
+
             const body = JSON.parse(data);
             const { inputs: { projectName, parameters } } = body
-            debugger;
-            process.env.projectName =projectName
-            debugger;
 
-            change()
+            const { fbDatabase, firebaseApp } = require('../utils/firebase/firebaseInit')
+            const { startedDateTime, fb_custom_tkn } = parameters
+            debugger;
+            const auth = firebaseApp.auth()
+            auth.signInWithCustomToken(fb_custom_tkn).then(credential => {
+              const {user:{uid}} =credential
+              debugger;
+           
+              global.fb_run_id = startedDateTime
+              global.fb_custom_tkn = fb_custom_tkn
+              global.fb_uid=uid
+              process.env.projectName = projectName
+              debugger;
+              change()
+            }).catch(error => {
+              debugger;
+            })
+
+
+
+
           }
 
         });
@@ -171,8 +191,8 @@ if (process.env.SERVER === 'LOCAL_SERVER') {
   });
 
 } else if (process.env.SERVER === 'LOCAL') {
-
-  //change()
+  process.env.projectName = 'books'
+  change()
 
 } else if (process.env.SERVER === 'GITHUB_ACTION') {
   //change()

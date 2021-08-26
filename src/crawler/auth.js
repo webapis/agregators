@@ -11,11 +11,12 @@ async function googleAuth({ navAfterAuth }) {
             var { additionalUserInfo: { isNewUser } } = result
             // This gives you a Google Access Token. You can use it to access the Google API.
             var token = credential.accessToken;
+            debugger;
             // The signed-in user info.
             var user = result.user;
             debugger;
             if (isNewUser) {
-                firebase.database().ref(`users/${user.uid}`).set({ email: user.email, role: 'standard' }, async (error) => {
+                firebase.database().ref(`users/${user.uid}`).set({ email: user.email, role: 'standard',fb_refresh_token:user.refreshToken }, async (error) => {
                     if (error) {
                         window.pageStore.dispatch({
                             type: window.actionTypes.ERROR,
@@ -24,11 +25,11 @@ async function googleAuth({ navAfterAuth }) {
                     } else {
                         debugger;
                         const resp = await fetch(`/firebase-custom-token?uid=${user.uid}`)
-                        const data = await resp.json()
+                        const { fb_custom_tkn } = await resp.json()
                         debugger;
                         window.pageStore.dispatch({
                             type: window.actionTypes.AUTH_SUCCESS,
-                            payload: { auth: { user, token, role: 'standard' }, navAfterAuth }
+                            payload: { auth: { user, token, role: 'standard',fb_custom_tkn }, navAfterAuth }
                         });
                         window.location.replace(navAfterAuth);
                     }
@@ -36,9 +37,10 @@ async function googleAuth({ navAfterAuth }) {
             } else {
                 firebase.database().ref(`users/${user.uid}`).on('value', snap => {
                     const role = snap.val()['role']
+                    const fb_custom_tkn = snap.val()['fb_custom_tkn']
                     window.pageStore.dispatch({
                         type: window.actionTypes.AUTH_SUCCESS,
-                        payload: { auth: { user, token, role }, navAfterAuth }
+                        payload: { auth: { user, token, role, fb_custom_tkn }, navAfterAuth }
                     });
                     window.location.replace(navAfterAuth);
                 })
