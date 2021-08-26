@@ -25,10 +25,7 @@ async function uploadExcelFile({ access_token, filePath, taskSequelizerEventEmit
         taskSequelizerEventEmitter.emit('taskComplete', 'page_upload_excel', { webViewLink, webContentLink })
         debugger;
         //get public link
-
     }
-
-
     else {
         console.log('Error:Unhandled status code')
         taskSequelizerEventEmitter.emit('taskFailed', 'page_upload_excel')

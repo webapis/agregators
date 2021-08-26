@@ -126,5 +126,5 @@ function deviceAuthRequestPoll({ interval, device_code }) {
 
 module.exports = { fetchDeviceAndUserVerificationCode, fetchGithubAuthCode, fetchGithubAccessToken }
 
-//91c666c1cc595de45f17d0d4cc157c2fd9a76f83
+
 

@@ -1,27 +1,27 @@
-require('dotenv').config()
 
-console.log('parameters...', process.env.parameters)
-const { firebaseEvetEmitter } = require('../utils/firebase/firebaseEventEmitter')
-const { projects } = require('./project.config');
-const { removeDerectory } = require('./removeDerectory');
-const { taskSequelizer } = require('./task-sequelizer')
-const { pageGeneration } = require('./pageGenerator');
-const { pageBuilder } = require('./pageBuilder');
-const { pageNavigationItems } = require('./pageNavigationItems');
-const { pageCrawler } = require('./pageCrawler')
-const { batchImageCollection } = require('./batchImageCollection');
-const { pageMergeFiles } = require('./page_merge_files')
-const { pageExportExcel } = require('./page_export_excel')
-const { pageUploadExcel } = require('./page_upload_excel')
-const { batchImageProcessing } = require('./batchImageProcessing');
-const { pageNavDataTreeCreation } = require('./pageNavTreeCreation')
-const { pageLeavesBy100 } = require('./pageLeavesBy100')
-const { pageUploadImage } = require('./page_upload_image')
-const { pagePrerender } = require('./pagePrerender')
 
 
 function change() {
+  require('dotenv').config()
 
+  console.log('parameters...', process.env.parameters)
+  const { firebaseEvetEmitter } = require('../utils/firebase/firebaseEventEmitter')
+  const { projects } = require('./project.config');
+  const { removeDerectory } = require('./removeDerectory');
+  const { taskSequelizer } = require('./task-sequelizer')
+  const { pageGeneration } = require('./pageGenerator');
+  const { pageBuilder } = require('./pageBuilder');
+  const { pageNavigationItems } = require('./pageNavigationItems');
+  const { pageCrawler } = require('./pageCrawler')
+  const { batchImageCollection } = require('./batchImageCollection');
+  const { pageMergeFiles } = require('./page_merge_files')
+  const { pageExportExcel } = require('./page_export_excel')
+  const { pageUploadExcel } = require('./page_upload_excel')
+  const { batchImageProcessing } = require('./batchImageProcessing');
+  const { pageNavDataTreeCreation } = require('./pageNavTreeCreation')
+  const { pageLeavesBy100 } = require('./pageLeavesBy100')
+  const { pageUploadImage } = require('./page_upload_image')
+  const { pagePrerender } = require('./pagePrerender')
   const tasks = projects[process.env.projectName]
   const taskSequelizerEventEmitter = taskSequelizer({ tasks })
   firebaseEvetEmitter({ taskSequelizerEventEmitter })
@@ -120,6 +120,60 @@ function change() {
   taskSequelizerEventEmitter.emit('nextTask', process.env.NEXT_TASK)
 }
 
-change()
 
 
+if (process.env.SERVER === 'LOCAL_SERVER') {
+  debugger;
+  const http = require('http');
+  const server = http.createServer((req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type')
+    let data = [];
+
+    switch (req.method) {
+      case "OPTIONS":
+        res.statusCode = 200
+        res.end();
+        break;
+      case "POST":
+     
+        debugger; req.on("data", (chunk) => {
+          data.push(chunk);
+        });
+        req.on("end", () => {
+          debugger;
+          if (data.length > 0) {
+            const body = JSON.parse(data);
+            const { inputs: { projectName, parameters } } = body
+            debugger;
+            process.env.projectName =projectName
+            debugger;
+
+            change()
+          }
+
+        });
+
+        res.statusCode = 200
+        res.setHeader('Content-Type', 'text/plain');
+        res.end('local workflow triggered')
+        break;
+      default:
+        res.setHeader('Content-Type', 'text/plain');
+        res.end('Unhandled method')
+    }
+
+
+  })
+  server.listen(3001, () => {
+    console.log(`LOCAL workflow server running on port ${3001}`);
+  });
+
+} else if (process.env.SERVER === 'LOCAL') {
+
+  //change()
+
+} else if (process.env.SERVER === 'GITHUB_ACTION') {
+  //change()
+}

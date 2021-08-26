@@ -23,6 +23,8 @@ customElements.define('project-dashboard', class extends HTMLElement {
                     this.render({ selectedDashboard })
                 })
             }
+
+
         });
     }
 
@@ -298,29 +300,39 @@ customElements.define('scrape-controls', class extends HTMLElement {
         </div>
         
         </div>`
-        document.getElementById('start-scraping-btn').addEventListener('click', () => {
+        document.getElementById('start-scraping-btn').addEventListener('click', async() => {
             const { auth: { user }, selectedDashboard } = window.pageStore.state
             debugger;
-            const ghTokenRef = firebase.database().ref(`users/${user.uid}`)
-            ghTokenRef.once('value', snap => {
-                const ghToken = snap.val()['ghtoken']
-                const ghuser = snap.val()['ghuser']
-                debugger;
-                if (ghToken) {
-                    debugger;
-
-                    triggerAction({ ticket: ghToken, selectedProjectName: selectedDashboard, companyName: '', owner: ghuser })
-                } else {
-                    const trialTokenRef = firebase.database().ref('gitticket')
-                    debugger;
-                    trialTokenRef.once('value', snap => {
-                        const trialTicket = snap.val()
-                        triggerAction(trialTicket)
-                    })
-                }
-
-            })
+            const hostname = window.location.hostname
             debugger;
+            if (hostname === 'localhost') {
+
+                const response = await fetch('http://localhost:3001/local_workflow', {method:'post',mode:'cors',body: JSON.stringify({ ref: 'action', inputs: { projectName: selectedDashboard, parameters: "all params here" } }),headers:{'Content-Type':'application/json','Accept':'text/plain'} })
+                
+                debugger;
+            } else {
+                const ghTokenRef = firebase.database().ref(`users/${user.uid}`)
+                ghTokenRef.once('value', snap => {
+                    const ghToken = snap.val()['ghtoken']
+                    const ghuser = snap.val()['ghuser']
+                    debugger;
+                    if (ghToken) {
+                        debugger;
+
+                        triggerAction({ ticket: ghToken, selectedProjectName: selectedDashboard, companyName: '', owner: ghuser })
+                    } else {
+                        const trialTokenRef = firebase.database().ref('gitticket')
+                        debugger;
+                        trialTokenRef.once('value', snap => {
+                            const trialTicket = snap.val()
+                            triggerAction(trialTicket)
+                        })
+                    }
+
+                })
+                debugger;
+            }
+
         })
 
         document.getElementById('cancel-scraping-btn').addEventListener('click', () => {
@@ -681,7 +693,7 @@ function triggerAction({ ticket, selectedProjectName, companyName, owner }) {
         body: JSON.stringify({ ref: 'action', inputs: { projectName: selectedProjectName, companyName, parameters: "all params here" } })
     }).then(result => {
         debugger;
-        
+
     }).then(data => {
         debugger;
     }).catch(error => {
