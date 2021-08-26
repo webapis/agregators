@@ -77,9 +77,11 @@ function firebase() {
 //     console.log('firebase updated')
 // })
 
+
 // firebase().setIdToken(idtoken).setProjectUri('https://turkmenistan-market.firebaseio.com').ref('rest/users').push({ fulname: 'monakod', name:"hellonamed" }, () => {
 //     console.log('firebase updated')
 // })
+
 
 
 
