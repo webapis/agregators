@@ -1,89 +1,72 @@
-
+process.env.SERVER = 'LOCAL_SERVER'
+require('dotenv').config()
 const fetch = require('node-fetch')
-var FormData = require('form-data');
-const {URL} =require('url')
+//const { firebaseApp, fbDatabase } = require('./utils/firebase/firebaseInit')
+const { fbRest } = require('./utils/firebase/firebase-rest')
+debugger;
+function refreshCustomToken() {
 
+    fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithCustomToken?key=${process.env.api_key}`, { method: 'post', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token: process.env.custom_token, returnSecureToken: true }) }).then(result => {
 
-function firebase() {
-    this.url = ''
-    this.idToken = '',
-        this.projectUri = ''
-    debugger;
-    return {
-        setIdToken: function (idToken) {
-            this.idToken = idToken
-            debugger;
-            return this
-        },
-        setProjectUri: function (projectUri) {
-            this.projectUri = projectUri
-            debugger;
-            return this
-        },
-        ref: function (url) {
-            this.url = url
-            return this
-        },
-        set: function (data, cb) {
-            debugger;
-            debugger;
-            fetch(`${this.projectUri}/${this.url}/.json?auth=${this.idToken}`, { method: 'put', body: JSON.stringify(data) }).then(response => response.json()).then(data => {
-                debugger;
-                cb && cb()
-            }).catch(error => {
-                debugger;
-                cb && cb(error)
-                return this
-            })
+        debugger;
+        return result.json()
+    }).then(data => {
+        debugger;
+    })
 
-        },
-        update: function (data, cb) {
-            fetch(`${this.projectUri}/${this.url}/.json?auth=${this.idToken}`, { method: 'patch', body: JSON.stringify(data) }).then(response => response.json()).then(data => {
-                debugger;
-                cb && cb()
-            }).catch(error => {
-                debugger;
-                cb && cb(error)
-                return this
-            })
-        },
-        push: function (data, cb) {
-            const urlss= new URL(`${this.projectUri}/${this.url}/.json`)
-          
-            urlss.searchParams.append('auth',this.idToken)
-            const href =urlss.href
+        .catch(error => {
             debugger;
-            fetch(href, { method: 'post', body: JSON.stringify(data) }).then(response => response.json()).then(data => {
-                debugger;
-                cb && cb()
-            }).catch(error => {
-                debugger;
-                cb && cb(error)
-                debugger;
-                return this
-            })
-        },
-        get: function (type) {
-
-        }
-    }
+        })
 }
 
-// firebase().setIdToken(idtoken).ref('https://turkmenistan-market.firebaseio.com/rest/users').set({ name: 'meross', fulname: 'baderos' }, () => {
-//     console.log('firebase updated')
+
+function customAuth() {
+    const auth = firebaseApp.auth()
+    auth.signInWithCustomToken(process.env.custom_token).then(credentials => {
+        debugger;
+    }).catch(error => {
+        debugger;
+    })
+    debugger
+
+}
+
+function renewIdToken() {
+    fetch(`https://securetoken.googleapis.com/v1/token?key=${process.env.api_key}`, { method: 'post', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: `grant_type=refresh_token&refresh_token=${process.env.refresh_token}` }).then(response => {
+
+        debugger;
+        return response.json()
+    }).then(data => {
+        const { id_token } = data
+        debugger;
+        fbRest().setIdToken(id_token).setProjectUri('https://turkmenistan-market.firebaseio.com').ref('rest').set({ greeting: 'hello friend' }, () => {
+            debugger;
+        })
+
+    }).catch(error => {
+        debugger;
+    })
+}
+//customAuth()
+
+//refreshCustomToken()
+//renewIdToken()
+
+
+// fbRest().setIdToken(process.env.idToken).setProjectUri('https://turkmenistan-market.firebaseio.com').ref('rest').set({ googby: 'good expiration....' }, (error ) => {
+//     if (error) {
+//         debugger;
+//     }
+//     debugger;
 // })
 
-// firebase().setIdToken(idtoken).ref('https://turkmenistan-market.firebaseio.com/rest/users').update({ fulname: 'monako' }, () => {
-//     console.log('firebase updated')
-// })
 
+const fbDatabase = fbRest().setIdToken(process.env.idToken).setProjectUri('https://turkmenistan-market.firebaseio.com').ref('users').orderByChild('email').equalTo('tkm.house.new@gmail.com').limitToLast(1)
 
-// firebase().setIdToken(idtoken).setProjectUri('https://turkmenistan-market.firebaseio.com').ref('rest/users').push({ fulname: 'monakod', name:"hellonamed" }, () => {
-//     console.log('firebase updated')
-// })
+fbDatabase.once(({ data, error }) => {
+  //  const accesstoken = Object.entries(data).map((m) => { return { val: () => m[1], key: m[0] } })
 
 
 
-
-
-//refreshToken()
+    debugger;
+})

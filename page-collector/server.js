@@ -125,7 +125,7 @@ function change() {
 
 
 if (process.env.SERVER === 'LOCAL_SERVER') {
-
+  const { renewIdToken } = require('../utils/firebase/firebase-rest')
   const http = require('http');
   const server = http.createServer((req, res) => {
     res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
@@ -144,35 +144,21 @@ if (process.env.SERVER === 'LOCAL_SERVER') {
           data.push(chunk);
         });
         req.on("end", async () => {
-
           if (data.length > 0) {
-
             const body = JSON.parse(data);
             const { inputs: { projectName, parameters } } = body
-
-            const { fbDatabase, firebaseApp } = require('../utils/firebase/firebaseInit')
-            const { startedDateTime, fb_custom_tkn } = parameters
+            const { startedDateTime, fb_refresh_token, uid, api_key, fb_database_url } = parameters
             debugger;
-            const auth = firebaseApp.auth()
-            auth.signInWithCustomToken(fb_custom_tkn).then(credential => {
-              const {user:{uid}} =credential
-              debugger;
-           
-              global.fb_run_id = startedDateTime
-              global.fb_custom_tkn = fb_custom_tkn
-              global.fb_uid=uid
-              process.env.projectName = projectName
-              debugger;
-              change()
-            }).catch(error => {
-              debugger;
-            })
-
-
-
-
+            const renewedData = await renewIdToken({ api_key, refresh_token: fb_refresh_token })
+            debugger;
+            global.fb_database_url = fb_database_url
+            global.fb_run_id = startedDateTime
+            // global.fb_refresh_token = fb_refresh_token
+            global.fb_uid = uid
+            global.fb_id_token = renewedData.id_token
+            process.env.projectName = projectName
+            change()
           }
-
         });
 
         res.statusCode = 200
@@ -191,8 +177,19 @@ if (process.env.SERVER === 'LOCAL_SERVER') {
   });
 
 } else if (process.env.SERVER === 'LOCAL') {
-  process.env.projectName = 'books'
-  change()
+
+  (async () => {
+    require('dotenv').config()
+    const { renewIdToken } = require('../utils/firebase/firebase-rest')
+    const renewedData = await renewIdToken({ api_key: process.env.api_key, refresh_token: process.env.fb_refresh_token })
+    global.fb_database_url = process.env.fb_database_url
+    global.fb_run_id = Date.now()
+    global.fb_uid = process.env.uid
+    global.fb_id_token = renewedData.id_token
+    process.env.projectName = 'books'
+    change()
+  })()
+
 
 } else if (process.env.SERVER === 'GITHUB_ACTION') {
   //change()

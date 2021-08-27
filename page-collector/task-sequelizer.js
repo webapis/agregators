@@ -1,14 +1,16 @@
 const EventEmitter = require('events');
 const { fb_steps } = require('../utils/firebase/firebaseEventEmitter');
-const { fbDatabase } = require('../utils/firebase/firebaseInit')
+//const { fbDatabase } = require('../utils/firebase/firebaseInit')
 const { countData } = require('../utils/firebase/firebaseEventEmitter')
+const { fbRest } = require('../utils/firebase/firebase-rest')
 
+const fbDatabase = fbRest().setIdToken(global.fb_id_token).setProjectUri(global.fb_database_url)
+debugger;
 const startedDateTime = global.fb_run_id
 const rootFirebaseRef = `runs/${global.fb_uid}/${process.env.projectName}/${startedDateTime}`
 class TaskListender extends EventEmitter {
     constructor({ tasks }) {
         super()
-
         this.on('taskComplete', (taskName, payload) => {
             taskComplete(taskName, payload)
             const activeTasks = tasks.filter(t => Object.values(t)[0] === true)
@@ -32,7 +34,6 @@ class TaskListender extends EventEmitter {
                 this.emit('no_more_task')
             }
         })
-
         this.on('nextTask', (taskName) => {
             taskStarted(taskName)
         })

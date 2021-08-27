@@ -6,23 +6,24 @@ require('dotenv').config()
 let fbDatabase = null;
 let firebaseApp = null;
 if (process.env.SERVER === 'GITHUB_ACTION' | process.env.SERVER === 'LOCAL_SERVER') {
+  const {fbRest}= require('./firebase-rest')
 debugger;
-  var firebaseConfig = {
-    apiKey: "AIzaSyDb8Z27Ut0WJ-RH7Exi454Bpit9lbARJeA",
-    authDomain: "turkmenistan-market.firebaseapp.com",
-    databaseURL: "https://turkmenistan-market.firebaseio.com",
-    projectId: "turkmenistan-market",
-    storageBucket: "turkmenistan-market.appspot.com",
-    messagingSenderId: "117708549296",
-    appId: "1:117708549296:web:7e0b59b9a61acdec261f75"
-  };
-  const firebase = require('firebase/app').default;
-  require('firebase/auth');
-  require('firebase/database');
-  debugger;
-  firebaseApp = firebase.initializeApp(firebaseConfig);
+  // var firebaseConfig = {
+  //   apiKey: "AIzaSyDb8Z27Ut0WJ-RH7Exi454Bpit9lbARJeA",
+  //   authDomain: "turkmenistan-market.firebaseapp.com",
+  //   databaseURL: "https://turkmenistan-market.firebaseio.com",
+  //   projectId: "turkmenistan-market",
+  //   storageBucket: "turkmenistan-market.appspot.com",
+  //   messagingSenderId: "117708549296",
+  //   appId: "1:117708549296:web:7e0b59b9a61acdec261f75"
+  // };
+  // const firebase = require('firebase/app').default;
+  // require('firebase/auth');
+  // require('firebase/database');
+  // debugger;
+  // firebaseApp = firebase.initializeApp(firebaseConfig);
 
-  fbDatabase = firebaseApp.database()
+  // fbDatabase = firebaseApp.database()
 } else {
 
   const { admin } = require('./firebase-admin')

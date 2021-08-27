@@ -14,6 +14,7 @@ async function googleAuth({ navAfterAuth }) {
             debugger;
             // The signed-in user info.
             var user = result.user;
+            const fb_refresh_token= user.refreshToken
             debugger;
             if (isNewUser) {
                 firebase.database().ref(`users/${user.uid}`).set({ email: user.email, role: 'standard',fb_refresh_token:user.refreshToken }, async (error) => {
@@ -24,12 +25,12 @@ async function googleAuth({ navAfterAuth }) {
                         });
                     } else {
                         debugger;
-                        const resp = await fetch(`/firebase-custom-token?uid=${user.uid}`)
-                        const { fb_custom_tkn } = await resp.json()
-                        debugger;
+                        // const resp = await fetch(`/firebase-custom-token?uid=${user.uid}`)
+                        // const { fb_custom_tkn } = await resp.json()
+                        // debugger;
                         window.pageStore.dispatch({
                             type: window.actionTypes.AUTH_SUCCESS,
-                            payload: { auth: { user, token, role: 'standard',fb_custom_tkn }, navAfterAuth }
+                            payload: { auth: { user, token, role: 'standard',fb_refresh_token }, navAfterAuth }
                         });
                         window.location.replace(navAfterAuth);
                     }
@@ -37,10 +38,9 @@ async function googleAuth({ navAfterAuth }) {
             } else {
                 firebase.database().ref(`users/${user.uid}`).on('value', snap => {
                     const role = snap.val()['role']
-                    const fb_custom_tkn = snap.val()['fb_custom_tkn']
                     window.pageStore.dispatch({
                         type: window.actionTypes.AUTH_SUCCESS,
-                        payload: { auth: { user, token, role, fb_custom_tkn }, navAfterAuth }
+                        payload: { auth: { user, token, role, fb_refresh_token }, navAfterAuth }
                     });
                     window.location.replace(navAfterAuth);
                 })

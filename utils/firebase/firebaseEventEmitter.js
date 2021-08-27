@@ -1,5 +1,5 @@
 const EventEmitter = require('events');
-const { fbDatabase } = require('./firebaseInit')
+//const { fbDatabase } = require('./firebaseInit')
 const { walkSync } = require('../../page-collector/walkSync');
 const path = require('path')
 const fs = require('fs')
@@ -23,7 +23,12 @@ const fb_steps = {
 }
 const projectName = process.env.projectName
 
+const { fbRest } = require('../firebase/firebase-rest')
 
+const fbDatabase = fbRest().setIdToken(global.fb_id_token).setProjectUri(global.fb_database_url)
+debugger;
+const startedDateTime = global.fb_run_id
+const rootFirebaseRef = `runs/${global.fb_uid}/${process.env.projectName}/${startedDateTime}`
 class FirebaseEmitter extends EventEmitter {
     constructor() {
         super()
@@ -41,7 +46,7 @@ class FirebaseEmitter extends EventEmitter {
 
         // })
         this.on(fb_steps.DATA_COLLECTION_FAILED, () => {
-            const dbRef = fbDatabase.ref(`projects/${projectName}/${global.fb_run_id}/DATA_COLLECTION_FAILED`)
+            const dbRef = fbDatabase.ref(`${rootFirebaseRef}/DATA_COLLECTION_FAILED`)
             dbRef.once('value', (snapshot) => {
                 let data = snapshot.val() === null ? 0 : snapshot.val()
 
@@ -57,7 +62,7 @@ class FirebaseEmitter extends EventEmitter {
         })
 
         this.on(fb_steps.RETRIE_PROMISE_FAILED, ({ batchName, taskName }) => {
-            const dbRef = fbDatabase.ref(`projects/${projectName}/${global.fb_run_id}/${taskName}/${batchName}`)
+            const dbRef = fbDatabase.ref(`${rootFirebaseRef}/${taskName}/${batchName}`)
             dbRef.once('value', (snapshot) => {
                 let data = snapshot.val() === null ? 0 : snapshot.val()
 
@@ -107,7 +112,7 @@ function countData(cb) {
                 }
             }
             if (counter) {
-                const dbRef = fbDatabase.ref(`projects/${projectName}/${global.fb_run_id}/DATA_COLLECTED`)
+                const dbRef = fbDatabase.ref(`${rootFirebaseRef}/DATA_COLLECTED`)
                 dbRef.set(counter, (error) => {
                     if (error) {
                         console.log(error)

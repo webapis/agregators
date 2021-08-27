@@ -1,10 +1,16 @@
-const { fbDatabase } = require('../utils/firebase/firebaseInit')
+//const { fbDatabase } = require('../utils/firebase/firebaseInit')
 const { walkSync } = require('./walkSync');
 //const { refreshAccessToken } = require('../utils/oauth2/server/server.oauth2')
 const { uploadExcelFile, folderExist, createFolder } = require('../utils/google-drive')
 // const fs = require('fs')
 // const path = require('path')
 // const fetch = require('node-fetch')
+const { fbRest } = require('../utils/firebase/firebase-rest')
+
+const fbDatabase = fbRest().setIdToken(global.fb_id_token).setProjectUri(global.fb_database_url)
+debugger;
+const startedDateTime = global.fb_run_id
+const rootFirebaseRef = `runs/${global.fb_uid}/${process.env.projectName}/${startedDateTime}`
 async function pageUploadExcel({ taskSequelizerEventEmitter }) {
     const email = process.env.email;
     const projectName = process.env.projectName

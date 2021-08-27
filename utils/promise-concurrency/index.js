@@ -3,7 +3,13 @@ const EventEmitter = require('events');
 const { uuidv4 } = require('../uuidv4');
 const { stateTableLog } = require('./state-table-log')
 const { fb_steps } = require('../../utils/firebase/firebaseEventEmitter')
-const { fbDatabase } = require('../../utils/firebase/firebaseInit')
+//const { fbDatabase } = require('../../utils/firebase/firebaseInit')
+const { fbRest } = require('../firebase/firebase-rest')
+
+const fbDatabase = fbRest().setIdToken(global.fb_id_token).setProjectUri(global.fb_database_url)
+
+const startedDateTime = global.fb_run_id
+const rootFirebaseRef = `runs/${global.fb_uid}/${process.env.projectName}/${startedDateTime}`
 class PromiseEmitter extends EventEmitter {
   constructor(batchConcur, rejectedRetry, taskName) {
     super();
@@ -90,7 +96,7 @@ class PromiseEmitter extends EventEmitter {
         }
         debugger;
         this.rejected.push(promise);
-debugger;
+        debugger;
         global.fb_eventEmitter.emit(fb_steps.RETRIE_PROMISE_FAILED, { batchName: promise.batchName, taskName })
 
       } else {
@@ -142,13 +148,13 @@ debugger;
       default:
         taskName = 'COLLECTING_RESOURCES';
     }
-    const dbRef = fbDatabase.ref(`projects/${process.env.projectName}/${global.fb_run_id}/${taskName}`)
+    const dbRef = fbDatabase.ref(`${rootFirebaseRef}/${taskName}`)
     dbRef.update(promiseState, (error) => {
       if (error) {
         console.log(error)
       } else {
         if (cb) {
-   
+
           cb()
         }
 
