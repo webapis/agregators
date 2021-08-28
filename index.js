@@ -3,7 +3,7 @@ const http = require('http');
 const path = require('path');
 const urlParser = require('url')
 const { exchangeCodeForAccessToken } = require('./utils/oauth2/server/server.oauth2')
-const dirPath = path.join(__dirname, `/src/${process.env.app}/`);
+const dirPath = path.join(__dirname, `/src/${process.env.APP}/`);
 const port = process.env.PORT || 3000;
 const client_id = process.env.client_id
 const client_secret = process.env.client_secret
@@ -35,7 +35,6 @@ const server = http.createServer((req, res) => {
             fetchGithubAccessToken(codeparam, res)
             debugger;
             break;
-
         default:
 
             serveStatic(req, res)
