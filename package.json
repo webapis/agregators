@@ -76,7 +76,8 @@
     "pageImageOptimizer:test": "mocha page-image-optimizer/test",
     "pagePrerender:test": "mocha page-prerender/test",
     "snipe": "node snipe.js",
-    "start": "node index.js & SERVER=LOCAL_SERVER  node page-collector/server.js"
+    "start": "node index.js",
+    "local:start": "SERVER=LOCAL_SERVER node index.js & SERVER=LOCAL_SERVER  node page-collector/server.js"
   },
   "nodemonConfig": {
     "ignore": [

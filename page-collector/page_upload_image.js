@@ -1,7 +1,8 @@
-const { fbDatabase } = require('../utils/firebase/firebaseInit')
+const { fbRest } = require('../utils/firebase/firebase-rest')
 const { walkSync } = require('./walkSync');
+const { uploadImageFile, folderExist, createFolder } = require('../utils/google-drive')
 
-const { uploadImageFile, folderExist, createFolder, deleteFolder } = require('../utils/google-drive')
+const fbDatabase = fbRest().setIdToken(global.fb_id_token).setProjectUri(global.fb_database_url)
 
 async function pageUploadImage({ taskSequelizerEventEmitter }) {
     const email = process.env.email;
@@ -15,20 +16,13 @@ async function pageUploadImage({ taskSequelizerEventEmitter }) {
         if (!filepath.includes('.DS_Store')) {
             files.push(filepath);
         }
-
-
     });
 
-    const userRef = fbDatabase.ref('users').orderByChild('email').equalTo(email).limitToLast(1)
-    userRef.once('value', async (snapshot) => {
-        let access_token = ''
-        let refresh_token = ''
-        let userkey = ''
-        snapshot.forEach(childsnap => {
-            access_token = childsnap.val().access_token
-            refresh_token = childsnap.val().refresh_token
-            userkey = childsnap.key
-        })
+    const userRef = fbDatabase.ref(`users/${global.fb_uid}`)
+    userRef.once(async (snapshot) => {
+        let access_token = snapshot.access_token
+        let refresh_token = snapshot.refresh_token
+        let userkey = snapshot.key
         try {
             debugger;
             const token = await folderExist({ folderName: projectName, access_token, refresh_token, email, userkey })

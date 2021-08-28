@@ -25,9 +25,7 @@ async function googleAuth({ navAfterAuth }) {
                         });
                     } else {
                         debugger;
-                        // const resp = await fetch(`/firebase-custom-token?uid=${user.uid}`)
-                        // const { fb_custom_tkn } = await resp.json()
-                        // debugger;
+                   
                         window.pageStore.dispatch({
                             type: window.actionTypes.AUTH_SUCCESS,
                             payload: { auth: { user, token, role: 'standard',fb_refresh_token }, navAfterAuth }

@@ -307,7 +307,7 @@ customElements.define('scrape-controls', class extends HTMLElement {
             debugger;
             if (hostname === 'localhost') {
 
-                const response = await fetch('http://localhost:3001/local_workflow', { method: 'post', mode: 'cors', body: JSON.stringify({ ref: 'action', inputs: { projectName: selectedDashboard, parameters: { startedDateTime: Date.now(), fb_refresh_token, uid: user.uid, api_key: "AIzaSyDb8Z27Ut0WJ-RH7Exi454Bpit9lbARJeA" ,fb_database_url:'https://turkmenistan-market.firebaseio.com'} } }), headers: { 'Content-Type': 'application/json', 'Accept': 'text/plain' } })
+                const response = await fetch('http://localhost:3001/local_workflow', { method: 'post', mode: 'cors', body: JSON.stringify({ ref: 'action', inputs: { projectName: selectedDashboard, parameters: { startedDateTime: Date.now(), fb_refresh_token, uid: user.uid, api_key: "AIzaSyDb8Z27Ut0WJ-RH7Exi454Bpit9lbARJeA" ,fb_database_url:'https://turkmenistan-market.firebaseio.com',email:user.email} } }), headers: { 'Content-Type': 'application/json', 'Accept': 'text/plain' } })
 
                 debugger;
             } else {

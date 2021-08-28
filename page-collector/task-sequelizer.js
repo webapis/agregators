@@ -5,7 +5,7 @@ const { countData } = require('../utils/firebase/firebaseEventEmitter')
 const { fbRest } = require('../utils/firebase/firebase-rest')
 
 const fbDatabase = fbRest().setIdToken(global.fb_id_token).setProjectUri(global.fb_database_url)
-debugger;
+
 const startedDateTime = global.fb_run_id
 const rootFirebaseRef = `runs/${global.fb_uid}/${process.env.projectName}/${startedDateTime}`
 class TaskListender extends EventEmitter {

@@ -26,20 +26,20 @@ const projectName = process.env.projectName
 const { fbRest } = require('../firebase/firebase-rest')
 
 const fbDatabase = fbRest().setIdToken(global.fb_id_token).setProjectUri(global.fb_database_url)
-debugger;
+
 const startedDateTime = global.fb_run_id
 const rootFirebaseRef = `runs/${global.fb_uid}/${process.env.projectName}/${startedDateTime}`
 class FirebaseEmitter extends EventEmitter {
     constructor() {
         super()
         // this.on(fb_steps.PC_PROMISE_STATE_CHANGED, (state) => {
-        //     debugger;
+        //     
         //     const dbRef = fbDatabase.ref(`projects/${projectName}/${global.fb_run_id}/${fb_steps.PC_PROMISE_STATE_CHANGED}`)
         //     dbRef.set(state, (error) => {
         //         if (error) {
         //             console.log(error)
         //         } else {
-        //             debugger;
+        //             
         //         }
         //     })
 
