@@ -49,9 +49,7 @@ async function exchangeCodeForAccessToken({ client_id, client_secret, code, redi
                     } else {
 
                         const dom = await JSDOM.fromFile(filepath)
-
                         const document = dom.window.document;
-
                         var input = document.createElement('input');
                         input.setAttribute('type', 'hidden');
                         input.setAttribute('id', 'email');
