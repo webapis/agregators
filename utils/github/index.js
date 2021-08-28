@@ -58,7 +58,7 @@ const dirPath = `${process.cwd()}/src/crawler/`;
 // }
 
 async function fetchGithubAuthCode(res) {
-    const url = `https://github.com/login/oauth/authorize?client_id=198fd462ac295507b855&redirect_uri=http://localhost:3000/user-settings.html&scope=repo public_repo workflow&state=${res.uid}&allow_signup=true`
+    const url = `https://github.com/login/oauth/authorize?client_id=198fd462ac295507b855&redirect_uri=${process.env.REDIRECT_URL}&scope=repo public_repo workflow&state=${res.uid}&allow_signup=true`
     res.writeHead(302, { 'Location': url });
     res.end();
 }
@@ -120,7 +120,7 @@ async function fetchGithubAccessToken(code, res) {
 //     }, interval * 2000)
 // }
 
-module.exports = {  fetchGithubAuthCode, fetchGithubAccessToken }
+module.exports = { fetchGithubAuthCode, fetchGithubAccessToken }
 
 
 

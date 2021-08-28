@@ -9,7 +9,7 @@ const client_id = process.env.client_id
 const client_secret = process.env.client_secret
 const serveStatic = require('./server/serve-static')
 const { fetchGithubAuthCode, fetchGithubAccessToken } = require('./utils/github')
-const REDIRECT_URL = (process.env.SERVER === 'LOCAL_SERVER' || process.env.SERVER === 'LOCAL') ? process.env.DEV_REDIRECT_URL : process.env.PRODUCTION_REDIRECT_URL
+process.env.REDIRECT_URL = (process.env.SERVER === 'LOCAL_SERVER' || process.env.SERVER === 'LOCAL') ? process.env.DEV_REDIRECT_URL : process.env.PRODUCTION_REDIRECT_URL
 debugger;
 const server = http.createServer((req, res) => {
     const { url } = req
@@ -19,7 +19,7 @@ const server = http.createServer((req, res) => {
 
         case /.*\/user-settings.html\?state=.*/.test(url):
             const redirectpath = dirPath + 'user-settings.html'
-            exchangeCodeForAccessToken({ client_id, client_secret, code: getUrlParams(url).code, redirect_uri: REDIRECT_URL, res, filepath: redirectpath })
+            exchangeCodeForAccessToken({ client_id, client_secret, code: getUrlParams(url).code, redirect_uri: process.env.REDIRECT_URL, res, filepath: redirectpath })
             break;
         case /github-verification.html\?.*/.test(url):
             const uidparam = urlParser.parse(url, true).query.uid
