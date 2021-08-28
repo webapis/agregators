@@ -6,7 +6,7 @@ module.exports = function serveStatic(request, response) {
     if (filePath == "./") {
         filePath = "/index.html";
     }
-    //
+    
     var extname = String(path.extname(filePath)).toLowerCase();
     var mimeTypes = {
         ".html": "text/html",
@@ -30,15 +30,11 @@ module.exports = function serveStatic(request, response) {
 
     let normailzie = "";
     if (filePath === "/index.html") {
-        normailzie = `${process.cwd()}/src/${process.env.app}/index.html`
-        //  path.normalize(
-        //   __dirname + `../../../builds/${process.env.appName}/build/index.html`
-        // );
+        normailzie = `${process.cwd()}/src/${process.env.APP}/index.html`
+  
     } else {
-        normailzie = `${process.cwd()}/src/${process.env.app}/${request.url}`
-        // normailzie = path.normalize(
-        //     __dirname + `../../../builds/${process.env.appName}/build/${request.url}`
-        // );
+        normailzie = `${process.cwd()}/src/${process.env.APP}/${request.url}`
+     
     }
   
     fs.readFile(normailzie, function (error, content) {
