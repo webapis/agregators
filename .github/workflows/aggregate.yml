@@ -5,24 +5,14 @@ on:
       projectName:
         description: 'Project Name'
         required: true
-      startedDateTime:
-        description: 'startedDateTime'
+        default: 'books'
+      companyName:
+        description: 'Company Name'
         required: true
-      fb_refresh_token:
-        description: 'fb_refresh_token'
-        required: true
-      uid:
-        description: 'uid'
-        required: true
-      api_key:
-        description: 'api_key'
-        required: true
-      fb_database_url:
-        description: 'fb_database_url'
-        required: true
-      email:
-        description: 'email'
-        required: true
+        default: 'sony'
+      parameters:
+       description: 'Parameters'
+       required: true
 jobs:
   aggregator:
     runs-on: ubuntu-latest
@@ -49,4 +39,8 @@ jobs:
         run: 'npm install'
       - name: aggregation step
         id: collection
-        run: projectName=${{github.event.inputs.projectName}} startedDateTime=${{github.event.inputs.startedDateTime}} fb_refresh_token="${{github.event.inputs.fb_refresh_token}}" uid="${{github.event.inputs.uid}}" api_key="${{github.event.inputs.api_key}}" fb_database_url="${{github.event.inputs.fb_database_url}}" email="${{github.event.inputs.email}}"  HEADLESS=true NEXT_TASK=page_collection ALL=TRUE  node page-collector/server.js
+        run: projectName=${{github.event.inputs.projectName}} parameters="${{github.event.inputs.parameters}}" HEADLESS=true NEXT_TASK=page_collection ALL=TRUE  node page-collector/server.js
+        env:
+
+
+
