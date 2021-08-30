@@ -306,7 +306,7 @@ customElements.define('scrape-controls', class extends HTMLElement {
             const hostname = window.location.hostname
             const api_key = "AIzaSyDb8Z27Ut0WJ-RH7Exi454Bpit9lbARJeA";
          
-            const body = JSON.stringify({ ref: 'action', inputs: { projectName: selectedDashboard, parameters: JSON.stringify({ startedDateTime: Date.now(), fb_refresh_token, uid: user.uid, api_key, email: user.email }) } })
+            const body = JSON.stringify({ ref: 'action', inputs: { projectName: selectedDashboard, parameters: { startedDateTime: Date.now(), fb_refresh_token, uid: user.uid, api_key, email: user.email } } })
             debugger;
             if (hostname === 'localhost') {
                 const response = await fetch('http://localhost:3001/local_workflow', { method: 'post', mode: 'cors', body, headers: { 'Content-Type': 'application/json', 'Accept': 'text/plain' } })
