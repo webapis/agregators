@@ -9,7 +9,7 @@ if (process.env.LOCAL) {
         credential: admin.credential.cert(service),
         databaseURL: process.env.databaseURL
     });
-} else {
+} else if(process.env.HEROKU==='YES') {
 
     admin.initializeApp({
         credential: admin.credential.cert(JSON.parse(process.env.PRIVATE_KEY)),
