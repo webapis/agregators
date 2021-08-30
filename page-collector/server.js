@@ -199,7 +199,7 @@ if (process.env.SERVER === 'LOCAL_SERVER') {
     const { renewIdToken } = require('../utils/firebase/firebase-rest')
 
     console.log('process.env.parameters||||||||||||||||||||', typeof (process.env.parameters))
-    const clonedstring = Object.assign("", process.env.parameters)
+    const clonedstring = Object.assign({}, process.env.parameters)
     console.log('clonedstring', clonedstring)
     // const startedDateTime = process.env.startedDateTime;
 
