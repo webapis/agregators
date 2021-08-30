@@ -207,8 +207,15 @@ if (process.env.SERVER === 'LOCAL_SERVER') {
     // const email = process.env.email
     debugger;
     const fb_database_url = 'https://turkmenistan-market.firebaseio.com'
+    const parameters = process.env.parameters
+    console.log('parameters.api_key.',parameters.api_key)
+    console.log('parameters.uid.',parameters.uid)
+    console.log('parameters.fb_refresh_token.',parameters.fb_refresh_token)
+    console.log('parameters.email.',parameters.email)
+    console.log('startedDateTime.',parameters.startedDateTime)
+    console.log('parameters',parameters)
     const { startedDateTime, fb_refresh_token, uid, api_key, email } = process.env.parameters
-    console.log('uid...........,,,,,,,,',uid)
+    console.log('uid...........,,,,,,,,', uid)
     debugger;
     const renewedData = await renewIdToken({ api_key, refresh_token: fb_refresh_token })
     global.fb_database_url = fb_database_url
