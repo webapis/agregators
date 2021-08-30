@@ -1,15 +1,16 @@
 
 
-const jsdom = require("jsdom");
-const { JSDOM } = jsdom;
-const { admin } = require('../../../utils/firebase/firebase-admin')
-
-const { default: fetch } = require('node-fetch');
 
 const client_id = process.env.client_id
 const client_secret = process.env.client_secret
-const fbDatabase = admin.database()
+
 async function exchangeCodeForAccessToken({ client_id, client_secret, code, redirect_uri, res, filepath }) {
+    const jsdom = require("jsdom");
+const { JSDOM } = jsdom;
+const { admin } = require('../../../utils/firebase/firebase-admin')
+const fbDatabase = admin.database()
+const { default: fetch } = require('node-fetch');
+
     try {
         const grant_type = 'authorization_code';
         var oauth2Endpoint = 'https://oauth2.googleapis.com/token';
