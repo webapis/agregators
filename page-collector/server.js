@@ -198,10 +198,11 @@ if (process.env.SERVER === 'LOCAL_SERVER') {
   (async () => {
     const { renewIdToken } = require('../utils/firebase/firebase-rest')
 
-    console.log('process.env.parameters||||||||||||||||||||',  typeof(process.env.parameters))
-    console.log('process.env.parameters parse as json',  JSON.parse(process.env.parameters))
+    console.log('process.env.parameters||||||||||||||||||||', typeof (process.env.parameters))
+    const clonedstring = Object.assign("", process.env.parameters)
+    console.log('clonedstring', clonedstring)
     // const startedDateTime = process.env.startedDateTime;
-    
+
     // const fb_refresh_token = process.env.fb_refresh_token
     // const uid = process.env.uid
     // const api_key = process.env.api_key
@@ -210,13 +211,13 @@ if (process.env.SERVER === 'LOCAL_SERVER') {
     debugger;
     const fb_database_url = 'https://turkmenistan-market.firebaseio.com'
     const parameters = process.env.parameters
-    console.log('parameters.api_key.',process.env.parameters['api_key'])
-    console.log('parameters.uid.',parameters.uid)
-    console.log('parameters.fb_refresh_token.',parameters.fb_refresh_token)
-    console.log('parameters.email.',parameters.email)
-    console.log('startedDateTime.',parameters.startedDateTime)
-    console.log('parameters',parameters)
-    console.log('parameters.api_key.',{...process.env.parameters}['api_key'])
+    console.log('parameters.api_key.', process.env.parameters['api_key'])
+    console.log('parameters.uid.', parameters.uid)
+    console.log('parameters.fb_refresh_token.', parameters.fb_refresh_token)
+    console.log('parameters.email.', parameters.email)
+    console.log('startedDateTime.', parameters.startedDateTime)
+    console.log('parameters', parameters)
+    console.log('parameters.api_key.', { ...process.env.parameters }['api_key'])
     const { startedDateTime, fb_refresh_token, uid, api_key, email } = process.env.parameters
     console.log('uid...........,,,,,,,,', uid)
     debugger;
