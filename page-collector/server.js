@@ -22,13 +22,13 @@ function change() {
   const { pageLeavesBy100 } = require('./pageLeavesBy100')
   const { pageUploadImage } = require('./page_upload_image')
   const { pagePrerender } = require('./pagePrerender')
- 
+
 
   const tasks = projects[process.env.projectName]
   const taskSequelizerEventEmitter = taskSequelizer({ tasks })
   firebaseEvetEmitter({ taskSequelizerEventEmitter })
   taskSequelizerEventEmitter.on('nextTask', async function (nextTaskName) {
-    
+
     switch (nextTaskName) {
       case 'page_collection':
         removeDerectory('page-data') && removeDerectory('page-collection-errors') && pageCrawler({ taskSequelizerEventEmitter })
@@ -46,7 +46,7 @@ function change() {
         batchImageCollection({ taskSequelizerEventEmitter })
         break;
       case 'page_upload_image':
-        
+
         pageUploadImage({ taskSequelizerEventEmitter })
         break;
       case 'test_image_collection':
@@ -147,16 +147,17 @@ if (process.env.SERVER === 'LOCAL_SERVER') {
           if (data.length > 0) {
             const body = JSON.parse(data);
             const { inputs: { projectName, parameters } } = body
-            const { startedDateTime, fb_refresh_token, uid, api_key, fb_database_url,email } = parameters
-            
+            debugger;
+            const { startedDateTime, fb_refresh_token, uid, api_key, fb_database_url, email } = JSON.parse(parameters)
+            debugger;
             const renewedData = await renewIdToken({ api_key, refresh_token: fb_refresh_token })
-         
+
             global.fb_database_url = fb_database_url
             global.fb_run_id = startedDateTime
             global.fb_uid = uid
             global.fb_id_token = renewedData.id_token
             process.env.projectName = projectName
-            process.env.email=email
+            process.env.email = email
             change()
           }
         });
@@ -188,11 +189,21 @@ if (process.env.SERVER === 'LOCAL_SERVER') {
     global.fb_uid = process.env.uid
     global.fb_id_token = renewedData.id_token
     process.env.projectName = 'books'
-    process.env.email="tkm.house.new@gmail.com"
+    process.env.email = "tkm.house.new@gmail.com"
     change()
   })()
 
 
-} else if (process.env.SERVER === 'GITHUB_ACTION') {
-  //change()
+} else { 
+  debugger;
+  const { startedDateTime, fb_refresh_token, uid, api_key, fb_database_url, email } = JSON.parse(process.env.parameters)
+  debugger;
+  const renewedData = await renewIdToken({ api_key, refresh_token: fb_refresh_token })
+  global.fb_database_url = fb_database_url
+  global.fb_run_id = startedDateTime
+  global.fb_uid = uid
+  global.fb_id_token = renewedData.id_token
+  process.env.projectName = process.env.projectName
+  process.env.email = email
+  change()
 }

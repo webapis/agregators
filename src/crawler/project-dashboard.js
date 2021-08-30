@@ -301,13 +301,15 @@ customElements.define('scrape-controls', class extends HTMLElement {
         
         </div>`
         document.getElementById('start-scraping-btn').addEventListener('click', async () => {
-            const { auth: { user,fb_refresh_token }, selectedDashboard } = window.pageStore.state
+            const { auth: { user, fb_refresh_token }, selectedDashboard } = window.pageStore.state
             debugger;
             const hostname = window.location.hostname
+            const api_key = "AIzaSyDb8Z27Ut0WJ-RH7Exi454Bpit9lbARJeA";
+            const fb_database_url = 'https://turkmenistan-market.firebaseio.com'
+            const body = JSON.stringify({ ref: 'action', inputs: { projectName: selectedDashboard, parameters: JSON.stringify({ startedDateTime: Date.now(), fb_refresh_token, uid: user.uid, api_key, fb_database_url, email: user.email }) } })
             debugger;
             if (hostname === 'localhost') {
-
-                const response = await fetch('http://localhost:3001/local_workflow', { method: 'post', mode: 'cors', body: JSON.stringify({ ref: 'action', inputs: { projectName: selectedDashboard, parameters: { startedDateTime: Date.now(), fb_refresh_token, uid: user.uid, api_key: "AIzaSyDb8Z27Ut0WJ-RH7Exi454Bpit9lbARJeA" ,fb_database_url:'https://turkmenistan-market.firebaseio.com',email:user.email} } }), headers: { 'Content-Type': 'application/json', 'Accept': 'text/plain' } })
+                const response = await fetch('http://localhost:3001/local_workflow', { method: 'post', mode: 'cors', body, headers: { 'Content-Type': 'application/json', 'Accept': 'text/plain' } })
 
                 debugger;
             } else {
@@ -319,7 +321,7 @@ customElements.define('scrape-controls', class extends HTMLElement {
                     if (ghToken) {
                         debugger;
 
-                        triggerAction({ ticket: ghToken, selectedProjectName: selectedDashboard, companyName: '', owner: ghuser })
+                        triggerAction({ ticket: ghToken, body, gh_action_url })
                     } else {
                         const trialTokenRef = firebase.database().ref('gitticket')
                         debugger;
@@ -646,51 +648,15 @@ customElements.define('query-tab', class extends HTMLElement {
 
 
 
-function triggerAction({ ticket, selectedProjectName, companyName, owner }) {
-    // import('https://cdn.skypack.dev/@octokit/request').then(module => {
-    //     const { request } = module;
-    //     request(
-    //         'POST /repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches',
-    //         {
-    //             headers: {
-    //                 authorization: `token ${ticket}`,
-    //                 Accept: 'application/vnd.github.v3+json'
-    //             },
-    //             data: { ref: 'action', inputs: { projectName: selectedProjectName, companyName, parameters: "all params here" } },
-    //             repo: 'agregators',
-    //             owner,
-    //             workflow_id: 'aggregate.yml'
-    //         }
-    //     )
-    //         .then((result) => {
+function triggerAction({ ticket, body, gh_action_url }) {
 
-    //             debugger;
-    //             //     dataCollectionRef.update({ dataCollection: 2 }, (error) => {
-    //             //       if (error) {
-
-    //             //         errorHandler({ error })
-    //             //       }
-    //             //     })
-    //             // //   })
-    //             //   .catch(error => {
-
-    //             //     errorHandler({ error })
-    //             //   });
-    //         }).then(data => {
-    //             debugger;
-    //         }).catch(error => {
-    //             debugger;
-    //         })
-
-    // })
-
-    fetch(`https://api.github.com/repos/${owner}/agregators/actions/workflows/aggregate.yml/dispatches`, {
+    fetch(gh_action_url, {
         method: 'post',
         headers: {
             authorization: `token ${ticket}`,
             Accept: 'application/vnd.github.v3+json'
         },
-        body: JSON.stringify({ ref: 'action', inputs: { projectName: selectedProjectName, companyName, parameters: { startedDateTime: Date.now() } } })
+        body
     }).then(result => {
         debugger;
 

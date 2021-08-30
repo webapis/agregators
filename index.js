@@ -15,7 +15,7 @@ process.env.REDIRECT_URL = (process.env.SERVER === 'LOCAL_SERVER' || process.env
 
 const server = http.createServer((req, res) => {
     const { url } = req
-debugger;
+
     res.statusCode = 200;
     switch (true) {
 
