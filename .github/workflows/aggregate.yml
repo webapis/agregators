@@ -40,7 +40,6 @@ jobs:
       - name: aggregation step
         id: collection
         run: projectName=${{github.event.inputs.projectName}} parameters="${{github.event.inputs.parameters}}" HEADLESS=true NEXT_TASK=page_collection ALL=TRUE  node page-collector/server.js
-        env:
 
 
 
