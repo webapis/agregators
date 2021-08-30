@@ -106,7 +106,7 @@ async function refreshAccessToken({ refresh_token, email, userkey, cb }) {
     return data
 
 }
-async function getUserEmail({ token }) {ƒƒ
+async function getUserEmail({ token }) {
     try {
         debugger;
         const oauthendpoint = 'https://www.googleapis.com/userinfo/v2/me'
