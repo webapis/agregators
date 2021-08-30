@@ -206,7 +206,7 @@ if (process.env.SERVER === 'LOCAL_SERVER') {
     // const fb_database_url = process.env.fb_database_url
     // const email = process.env.email
     debugger;
-    const { startedDateTime, fb_refresh_token, uid, api_key, fb_database_url, email } = JSON.parse(process.env.parameters)
+    const { startedDateTime, fb_refresh_token, uid, api_key, fb_database_url, email } = process.env.parameters
     debugger;
     const renewedData = await renewIdToken({ api_key, refresh_token: fb_refresh_token })
     global.fb_database_url = fb_database_url
