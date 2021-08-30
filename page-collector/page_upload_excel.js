@@ -2,6 +2,8 @@
 const { walkSync } = require('./walkSync');
 const { uploadExcelFile, folderExist, createFolder } = require('../utils/google-drive')
 const { fbRest } = require('../utils/firebase/firebase-rest')
+console.log('global.fb_uid|||||',global.fb_uid)
+console.log('global.fb_database_url||||',global.fb_database_url)
 const fbDatabase = fbRest().setIdToken(global.fb_id_token).setProjectUri(global.fb_database_url)
 
 async function pageUploadExcel({ taskSequelizerEventEmitter }) {
