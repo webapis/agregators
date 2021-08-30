@@ -208,12 +208,13 @@ if (process.env.SERVER === 'LOCAL_SERVER') {
     debugger;
     const fb_database_url = 'https://turkmenistan-market.firebaseio.com'
     const parameters = process.env.parameters
-    console.log('parameters.api_key.',parameters.api_key)
+    console.log('parameters.api_key.',process.env.parameters['api_key'])
     console.log('parameters.uid.',parameters.uid)
     console.log('parameters.fb_refresh_token.',parameters.fb_refresh_token)
     console.log('parameters.email.',parameters.email)
     console.log('startedDateTime.',parameters.startedDateTime)
     console.log('parameters',parameters)
+    console.log('parameters.api_key.',{...process.env.parameters}['api_key'])
     const { startedDateTime, fb_refresh_token, uid, api_key, email } = process.env.parameters
     console.log('uid...........,,,,,,,,', uid)
     debugger;
