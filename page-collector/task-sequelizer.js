@@ -8,6 +8,7 @@ const fbDatabase = fbRest().setIdToken(global.fb_id_token).setProjectUri(global.
 
 const startedDateTime = global.fb_run_id
 const rootFirebaseRef = `runs/${global.fb_uid}/${process.env.projectName}/${startedDateTime}`
+console.log('global.fb_database_url_______________',global.fb_database_url)
 class TaskListender extends EventEmitter {
     constructor({ tasks }) {
         super()

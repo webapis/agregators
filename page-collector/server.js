@@ -215,7 +215,7 @@ if (process.env.SERVER === 'LOCAL_SERVER') {
     global.fb_id_token = renewedData.id_token
     process.env.projectName = process.env.projectName
     process.env.email = email
-    await change()
+    change()
 
   })()
 
