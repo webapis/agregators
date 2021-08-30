@@ -85,6 +85,7 @@ const fbDatabase = admin.database()
 }
 
 async function refreshAccessToken({ refresh_token, email, userkey, cb }) {
+    const { fbRest } = require('../../firebase/firebase-rest')
     const fbDatabase = fbRest().setIdToken(global.fb_id_token).setProjectUri(global.fb_database_url)
     const grant_type = 'refresh_token';
     var oauth2Endpoint = 'https://oauth2.googleapis.com/token';
