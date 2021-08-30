@@ -195,15 +195,20 @@ if (process.env.SERVER === 'LOCAL_SERVER') {
 
 
 } else { 
-  debugger;
-  const { startedDateTime, fb_refresh_token, uid, api_key, fb_database_url, email } = JSON.parse(process.env.parameters)
-  debugger;
-  const renewedData = await renewIdToken({ api_key, refresh_token: fb_refresh_token })
-  global.fb_database_url = fb_database_url
-  global.fb_run_id = startedDateTime
-  global.fb_uid = uid
-  global.fb_id_token = renewedData.id_token
-  process.env.projectName = process.env.projectName
-  process.env.email = email
-  change()
+  (async()=>{
+
+    debugger;
+    const { startedDateTime, fb_refresh_token, uid, api_key, fb_database_url, email } = JSON.parse(process.env.parameters)
+    debugger;
+    const renewedData = await renewIdToken({ api_key, refresh_token: fb_refresh_token })
+    global.fb_database_url = fb_database_url
+    global.fb_run_id = startedDateTime
+    global.fb_uid = uid
+    global.fb_id_token = renewedData.id_token
+    process.env.projectName = process.env.projectName
+    process.env.email = email
+    change()
+
+  })()
+
 }

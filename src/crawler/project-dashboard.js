@@ -316,7 +316,7 @@ customElements.define('scrape-controls', class extends HTMLElement {
                 const ghTokenRef = firebase.database().ref(`users/${user.uid}`)
                 ghTokenRef.once('value', snap => {
                     const ghToken = snap.val()['ghtoken']
-                    const ghuser = snap.val()['ghuser']
+                    const gh_action_url= snap.val()['gh_action_url']
                     debugger;
                     if (ghToken) {
                         debugger;
