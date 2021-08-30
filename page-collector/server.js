@@ -208,6 +208,7 @@ if (process.env.SERVER === 'LOCAL_SERVER') {
     debugger;
     const fb_database_url = 'https://turkmenistan-market.firebaseio.com'
     const { startedDateTime, fb_refresh_token, uid, api_key, email } = process.env.parameters
+    console.log('uid...........,,,,,,,,',uid)
     debugger;
     const renewedData = await renewIdToken({ api_key, refresh_token: fb_refresh_token })
     global.fb_database_url = fb_database_url
