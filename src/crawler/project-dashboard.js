@@ -306,6 +306,7 @@ customElements.define('scrape-controls', class extends HTMLElement {
             const hostname = window.location.hostname
             const api_key = "AIzaSyDb8Z27Ut0WJ-RH7Exi454Bpit9lbARJeA";
             const fb_database_url = 'https://turkmenistan-market.firebaseio.com'
+            debugger;
             const body = JSON.stringify({ ref: 'action', inputs: { projectName: selectedDashboard, startedDateTime: Date.now(), fb_refresh_token, uid: user.uid, api_key, fb_database_url, email: user.email } })
             debugger;
             if (hostname === 'localhost') {

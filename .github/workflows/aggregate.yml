@@ -6,23 +6,23 @@ on:
         description: 'Project Name'
         required: true
       startedDateTime:
-       description: 'startedDateTime'
-       required: true
+        description: 'startedDateTime'
+        required: true
       fb_refresh_token:
-       description: 'fb_refresh_token'
-       required: true
+        description: 'fb_refresh_token'
+        required: true
       uid:
-       description: 'uid'
-       required: true
+        description: 'uid'
+        required: true
       api_key:
-       description: 'api_key'
-       required: true
+        description: 'api_key'
+        required: true
       fb_database_url:
-       description: 'fb_database_url'
-       required: true
+        description: 'fb_database_url'
+        required: true
       email:
-       description: 'email'
-       required: true
+        description: 'email'
+        required: true
 jobs:
   aggregator:
     runs-on: ubuntu-latest
