@@ -198,8 +198,10 @@ if (process.env.SERVER === 'LOCAL_SERVER') {
   (async () => {
     const { renewIdToken } = require('../utils/firebase/firebase-rest')
 
-    console.log('process.env.parameters||||||||||||||||||||', process.env.parameters)
+    console.log('process.env.parameters||||||||||||||||||||',  typeof(process.env.parameters))
+    console.log('process.env.parameters parse as json',  JSON.parse(process.env.parameters))
     // const startedDateTime = process.env.startedDateTime;
+    
     // const fb_refresh_token = process.env.fb_refresh_token
     // const uid = process.env.uid
     // const api_key = process.env.api_key
