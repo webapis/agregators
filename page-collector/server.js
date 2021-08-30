@@ -196,14 +196,17 @@ if (process.env.SERVER === 'LOCAL_SERVER') {
 
 } else {
   (async () => {
-    const startedDateTime = process.env.startedDateTime;
-    const fb_refresh_token = process.env.fb_refresh_token
-    const uid = process.env.uid
-    const api_key = process.env.api_key
-    const fb_database_url = process.env.fb_database_url
-    const email = process.env.email
+    const { renewIdToken } = require('../utils/firebase/firebase-rest')
+
+    console.log('process.env.parameters||||||||||||||||||||', process.env.parameters)
+    // const startedDateTime = process.env.startedDateTime;
+    // const fb_refresh_token = process.env.fb_refresh_token
+    // const uid = process.env.uid
+    // const api_key = process.env.api_key
+    // const fb_database_url = process.env.fb_database_url
+    // const email = process.env.email
     debugger;
-    // const { startedDateTime, fb_refresh_token, uid, api_key, fb_database_url, email } = JSON.parse(process.env.parameters)
+    const { startedDateTime, fb_refresh_token, uid, api_key, fb_database_url, email } = JSON.parse(process.env.parameters)
     debugger;
     const renewedData = await renewIdToken({ api_key, refresh_token: fb_refresh_token })
     global.fb_database_url = fb_database_url
