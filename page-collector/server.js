@@ -1,8 +1,8 @@
 
 
-
-function change() {
   require('dotenv').config()
+function change() {
+
 
   console.log('parameters...', process.env.parameters)
   const { firebaseEvetEmitter } = require('../utils/firebase/firebaseEventEmitter')
@@ -207,7 +207,7 @@ if (process.env.SERVER === 'LOCAL_SERVER') {
     global.fb_id_token = renewedData.id_token
     process.env.projectName = process.env.projectName
     process.env.email = email
-    change()
+    await change()
 
   })()
 
