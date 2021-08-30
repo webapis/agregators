@@ -25,13 +25,13 @@ function initServer() {
     const http = require('http');
     const path = require('path');
     const urlParser = require('url')
-    const { exchangeCodeForAccessToken } = require('./utils/oauth2/server/server.oauth2')
+    const { exchangeCodeForAccessToken } = require('../utils/oauth2/server/server.oauth2')
     const dirPath = path.join(__dirname, `/src/${process.env.APP}/`);
     const port = process.env.PORT || 3000;
     const client_id = process.env.client_id
     const client_secret = process.env.client_secret
-    const serveStatic = require('./server/serve-static')
-    const { fetchGithubAuthCode, fetchGithubAccessToken } = require('./utils/github')
+    const serveStatic = require('./serve-static')
+    const { fetchGithubAuthCode, fetchGithubAccessToken } = require('../utils/github/index')
 
     console.log('ab path----------------------', process.cwd())
     process.env.REDIRECT_URL = (process.env.SERVER === 'LOCAL_SERVER' || process.env.SERVER === 'LOCAL') ? process.env.DEV_REDIRECT_URL : process.env.PRODUCTION_REDIRECT_URL
