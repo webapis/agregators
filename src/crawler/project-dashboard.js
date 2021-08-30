@@ -305,8 +305,8 @@ customElements.define('scrape-controls', class extends HTMLElement {
             debugger;
             const hostname = window.location.hostname
             const api_key = "AIzaSyDb8Z27Ut0WJ-RH7Exi454Bpit9lbARJeA";
-            const fb_database_url = 'https://turkmenistan-market.firebaseio.com'
-            const body = JSON.stringify({ ref: 'action', inputs: { projectName: selectedDashboard, parameters: JSON.stringify({ startedDateTime: Date.now(), fb_refresh_token, uid: user.uid, api_key, fb_database_url, email: user.email }) } })
+         
+            const body = JSON.stringify({ ref: 'action', inputs: { projectName: selectedDashboard, parameters: JSON.stringify({ startedDateTime: Date.now(), fb_refresh_token, uid: user.uid, api_key, email: user.email }) } })
             debugger;
             if (hostname === 'localhost') {
                 const response = await fetch('http://localhost:3001/local_workflow', { method: 'post', mode: 'cors', body, headers: { 'Content-Type': 'application/json', 'Accept': 'text/plain' } })
@@ -316,7 +316,7 @@ customElements.define('scrape-controls', class extends HTMLElement {
                 const ghTokenRef = firebase.database().ref(`users/${user.uid}`)
                 ghTokenRef.once('value', snap => {
                     const ghToken = snap.val()['ghtoken']
-                    
+                 
                     const gh_action_url= snap.val()['gh_action_url']
                     debugger;
                     if (ghToken) {
