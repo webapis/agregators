@@ -21,13 +21,14 @@ async function pageUploadExcel({ taskSequelizerEventEmitter }) {
 
         const userRef = fbDatabase.ref(`users/${global.fb_uid}`)
 
-        userRef.once(async (snapshot) => {
+        userRef.once(async (snapshot,) => {
 
             let access_token = snapshot.access_token
             let refresh_token = snapshot.refresh_token
             let userkey = snapshot.key
+            debugger;
             console.log('userkey.....',userkey)
-            console.log('access_token.....',access_token)
+           
             try {
                 const token = await folderExist({ folderName: projectName, access_token, refresh_token, email, userkey })
                 const folderResult = await createFolder({ folderName: projectName, access_token: token.access_token })

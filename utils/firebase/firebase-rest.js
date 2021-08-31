@@ -60,7 +60,7 @@ function fbRest() {
             const fetchPath = `${this.projectUri}/${this.url}.json?auth=${this.idToken}`
             //`${this.projectUri}/${this.url}.json?&orderBy=\"${this.orderByChildValue}\"&auth=${this.idToken}&equalTo=\"${this.equalToValue}\"&limitToLast=${this.limitToLastValue}`
             fetch(fetchPath).then(response => response.json()).then(data => {
-                debugger;
+           
               // const mapped = Object.entries(data).map((m) => { return { val: () => m[1], key: m[0] } })
                 cb && cb(data)
             }).catch(error => {

@@ -94,9 +94,9 @@ class PromiseEmitter extends EventEmitter {
           default:
             taskName = 'COLLECTING_RESOURCES_FAILED';
         }
-        debugger;
+   ;
         this.rejected.push(promise);
-        debugger;
+   ;
         global.fb_eventEmitter.emit(fb_steps.RETRIE_PROMISE_FAILED, { batchName: promise.batchName, taskName })
 
       } else {
@@ -165,12 +165,12 @@ class PromiseEmitter extends EventEmitter {
 
 
     if (this.queue.length === 0 && this.promises.length === 0) {
-      debugger;
+  
       clearInterval(this.promiseStateMonitor)
 
       this.calculatePromiseState(
         () => {
-          debugger
+     
           this.emit('promiseExecComplete')
         }
       )

@@ -147,17 +147,22 @@ if (process.env.SERVER === 'LOCAL_SERVER') {
           if (data.length > 0) {
             const body = JSON.parse(data);
             const { inputs: { projectName, parameters } } = body
+            const splitterParams = parameters.split('--splitter--')
             debugger;
-            const { startedDateTime, fb_refresh_token, uid, api_key, fb_database_url, email } = JSON.parse(parameters)
+            //const { startedDateTime, fb_refresh_token, uid, api_key, fb_database_url, email } = JSON.parse(parameters)
             debugger;
+            const fb_refresh_token = splitterParams[1]
+            const api_key = splitterParams[3]
             const renewedData = await renewIdToken({ api_key, refresh_token: fb_refresh_token })
 
-            global.fb_database_url = fb_database_url
-            global.fb_run_id = startedDateTime
-            global.fb_uid = uid
+
+            global.fb_run_id = splitterParams[0]
+            global.fb_uid = splitterParams[2]
             global.fb_id_token = renewedData.id_token
             process.env.projectName = projectName
-            process.env.email = email
+            process.env.email = splitterParams[4]
+            global.fb_database_url = splitterParams[5]
+            debugger;
             change()
           }
         });
@@ -197,37 +202,19 @@ if (process.env.SERVER === 'LOCAL_SERVER') {
 } else {
   (async () => {
     const { renewIdToken } = require('../utils/firebase/firebase-rest')
-
-    console.log('process.env.parameters||||||||||||||||||||', typeof (process.env.parameters))
-    const clonedstring = Object.assign({}, process.env.parameters)
-    console.log('clonedstring', clonedstring)
-    // const startedDateTime = process.env.startedDateTime;
-
-    // const fb_refresh_token = process.env.fb_refresh_token
-    // const uid = process.env.uid
-    // const api_key = process.env.api_key
-    // const fb_database_url = process.env.fb_database_url
-    // const email = process.env.email
-    debugger;
-    const fb_database_url = 'https://turkmenistan-market.firebaseio.com'
     const parameters = process.env.parameters
-    console.log('parameters.api_key.', process.env.parameters['api_key'])
-    console.log('parameters.uid.', parameters.uid)
-    console.log('parameters.fb_refresh_token.', parameters.fb_refresh_token)
-    console.log('parameters.email.', parameters.email)
-    console.log('startedDateTime.', parameters.startedDateTime)
-    console.log('parameters', parameters)
-    console.log('parameters.api_key.', { ...process.env.parameters }['api_key'])
-    const { startedDateTime, fb_refresh_token, uid, api_key, email } = process.env.parameters
-    console.log('uid...........,,,,,,,,', uid)
-    debugger;
+    const splitterParams = parameters.split('--splitter--')
+    console.log('process.env.parameters||||||||||||||||||||', splitterParams)
+    const fb_refresh_token = splitterParams[1]
+    const api_key = splitterParams[3]
     const renewedData = await renewIdToken({ api_key, refresh_token: fb_refresh_token })
-    global.fb_database_url = fb_database_url
-    global.fb_run_id = startedDateTime
-    global.fb_uid = uid
+
+    global.fb_run_id = splitterParams[0]
+    global.fb_uid = splitterParams[2]
     global.fb_id_token = renewedData.id_token
     process.env.projectName = process.env.projectName
-    process.env.email = email
+    process.env.email = splitterParams[4]
+    global.fb_database_url = splitterParams[5]
     change()
 
   })()

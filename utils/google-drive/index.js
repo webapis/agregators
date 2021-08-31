@@ -144,7 +144,7 @@ async function createFolder({ folderName, access_token }) {
 }
 
 
-async function folderExist({ folderName, access_token, refresh_token, email, userkey }) {
+async function folderExist({ folderName, access_token, refresh_token }) {
     const apiendpoint = `https://www.googleapis.com/drive/v3/files?q=name%20%3D'${folderName}'%20and%20mimeType%20%3D%20'application%2Fvnd.google-apps.folder'`
 
     const response = await fetch(apiendpoint, {
@@ -159,8 +159,8 @@ async function folderExist({ folderName, access_token, refresh_token, email, use
 
     } else if (status === 401) {
         return await refreshAccessToken({
-            refresh_token, email, userkey, cb: () => { }
-
+            refresh_token, cb: () => { }
+            
         })
     }
 }
