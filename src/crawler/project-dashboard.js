@@ -5,9 +5,11 @@ customElements.define('project-dashboard', class extends HTMLElement {
     }
 
     async connectedCallback() {
-
         const resources = await import('./resources.js')
         await resources.default()
+        this.innerHTML = `<div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>`
         firebase.auth().onAuthStateChanged((user) => {
             if (user) {
                 var uid = user.uid;
@@ -19,12 +21,9 @@ customElements.define('project-dashboard', class extends HTMLElement {
                         type: window.actionTypes.SET_ALL_ACCOUNT_TYPES,
                         payload: conf
                     });
-
                     this.render({ selectedDashboard })
                 })
             }
-
-
         });
     }
 
@@ -166,15 +165,33 @@ customElements.define('scrape-logs', class extends HTMLElement {
 
     connectedCallback() {
 
-        this.innerHTML = `<div class="row">
-            <div class="col">
-            <log-accordion id="first" date="today"></log-accordion>
-            <log-accordion id="two" date="yesterday"></log-accordion>
-            </div>
-            </div>`
+        this.innerHTML =
+        `<div class="row" id="log-container">
+     
+        </div>
+        `
+    const { auth: { user }, selectedDashboard } = window.pageStore.state
 
+    firebase.database().ref(`runs/${user.uid}/${selectedDashboard}`).on('child_added', snap => {
+        const data = snap.val()
+        const key = snap.key
+        const start =data.CRAWLING_STARTED 
+        const end =data.CRAWLING_COMPLETE 
+        const download=data.PAGE_UPLOAD_EXCEL && data.PAGE_UPLOAD_EXCEL.webContentLink
+        const openfile=data.PAGE_UPLOAD_EXCEL && data.PAGE_UPLOAD_EXCEL.webViewLink
+        const imageLink =data.UPLOADING_IMAGES && data.UPLOADING_IMAGES.webViewLink
+        debugger;
+        document.getElementById('log-container').insertAdjacentHTML('afterbegin',
+            `<div class="col-12">
+        <log-accordion id="_i${key}" start=${start} end=${end} download=${download} open-file=${openfile} image-link=${imageLink}></log-accordion>
+        </div>`)
+        debugger;
+
+    })
 
     }
+
+   
 })
 
 
@@ -184,27 +201,35 @@ customElements.define('log-accordion', class extends HTMLElement {
     }
 
     connectedCallback() {
-
+        this.innerHTML = `<div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>`
         this.render()
-
-
     }
 
     render() {
         const id = this.getAttribute('id')
         const date = this.getAttribute('date')
+        const start = this.getAttribute('start')
+        const end = this.getAttribute('end')
+        const download = this.getAttribute('download')
+        const openFile = this.getAttribute('open-file')
+        const imageLink = this.getAttribute('image-link')
+        debugger;
         this.innerHTML = `
         <div class="py-1">
         <div class="accordion" id=${id}>
      <div class="accordion-item">
     <h2 class="accordion-header" id="headingOne">
       <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-${id}" aria-expanded="true" aria-controls="collapse-${id}">
-       ${date}
+       ${new Date(parseInt(start)).toLocaleString()} ${true ?`<div class="spinner-border ms-5" role="status">
+       <span class="visually-hidden">Loading...</span>
+     </div>`:''}
       </button>
     </h2>
-    <div id="collapse-${id}" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#${id}">
+    <div id="collapse-${id}" class="accordion-collapse collapse ${!end && 'show'}" aria-labelledby="headingOne" data-bs-parent="#${id}">
       <div class="accordion-body">
-    <accordion-item></accordion-item>
+    <accordion-item start=${start} end=${end} download=${download} open-file=${openFile} image-link=${imageLink}></accordion-item>
       </div>
     </div>
   </div>
@@ -220,51 +245,59 @@ customElements.define('accordion-item', class extends HTMLElement {
         super()
     }
     connectedCallback() {
+        const start = new Date(parseInt(this.getAttribute('start'))).toLocaleTimeString()
+        const end = new Date(parseInt(this.getAttribute('end'))).toLocaleTimeString()
+        const { minutes, seconds, hours } = calculateTimeSpan({ date_future: parseInt(this.getAttribute('end')), date_now: parseInt(this.getAttribute('start')) })
+        const download = this.getAttribute('download')
+        const openFile = this.getAttribute('open-file')
+        const imageLink = this.getAttribute('image-link')
         this.innerHTML = `
             <ol class="list-group list-group-numbered">
-      <li class="list-group-item d-flex justify-content-between align-items-start">
-        <div class="ms-2 me-auto">
-          <div class="fw-bold">Start</div>
-          When scraping started
-        </div>
-        <span class="badge bg-primary rounded-pill">14</span>
-      </li>
-      <li class="list-group-item d-flex justify-content-between align-items-start">
-        <div class="ms-2 me-auto">
-          <div class="fw-bold">End</div>
-          When scraping ended
-        </div>
-        <span class="badge bg-primary rounded-pill">14</span>
-      </li>
-      <li class="list-group-item d-flex justify-content-between align-items-start">
-        <div class="ms-2 me-auto">
-          <div class="fw-bold">Time span</div>
-          Total time 
-        </div>
-        <span class="badge bg-primary rounded-pill">14</span>
-      </li>
-      <li class="list-group-item d-flex justify-content-between align-items-start">
-      <div class="ms-2 me-auto">
-        <div class="fw-bold">Excel Link</div>
-       Link to the Google Sheet file
-      </div>
-      <span class="badge bg-primary rounded-pill">14</span>
-    </li>
-    <li class="list-group-item d-flex justify-content-between align-items-start">
-    <div class="ms-2 me-auto">
-      <div class="fw-bold"> Link to Image Folder</div>
-     Link to collected images uploaded to Google Drive
-    </div>
-    <span class="badge bg-primary rounded-pill">14</span>
-    </li>
+
+
+${start ? ` <li class="list-group-item d-flex justify-content-between align-items-start">
+<div class="ms-2 me-auto">
+  <div class="fw-bold">Start</div>
+When Scraping started
+</div>
+<span class="badge bg-primary rounded-pill">${start}</span>
+</li>`: ''}
+     
+${end ? ` <li class="list-group-item d-flex justify-content-between align-items-start">
+<div class="ms-2 me-auto">
+  <div class="fw-bold">End</div>
+  When scraping ended
+</div>
+<span class="badge bg-primary rounded-pill">${end}</span>
+</li>`: ''}
+     
+${(seconds || minutes) ? `  <li class="list-group-item d-flex justify-content-between align-items-start">
+<div class="ms-2 me-auto">
+  <div class="fw-bold">Time span</div>
+  Total time 
+</div>
+<span class="badge bg-primary rounded-pill">${hours}:${minutes}:${seconds}</span>
+</li>`: ''}
     
-    <li class="list-group-item d-flex justify-content-between align-items-start">
-    <div class="ms-2 me-auto">
-      <div class="fw-bold"> Link JSON</div>
-     Link to JSON data store to Google Firestore database
-    </div>
-    <span class="badge bg-primary rounded-pill">14</span>
-    </li>
+${download ? ` <li class="list-group-item d-flex justify-content-between align-items-start">
+<div class="ms-2 me-auto">
+  <div class="fw-bold">Excel Link</div>
+ Link to the Google Sheet file
+</div>
+<a href=${download} class="me-1">Download</a>or
+<a href=${openFile} class="ms-1" target="_blank">Open File</a>
+</li>`: ''}
+     
+${imageLink ? `  <li class="list-group-item d-flex justify-content-between align-items-start">
+<div class="ms-2 me-auto">
+  <div class="fw-bold"> Link to Image Folder</div>
+ Link to collected images uploaded to Google Drive
+</div>
+<a href=${imageLink} class="me-1" target="_blank">Open Images Link</a>
+</li>`: ''}
+  
+    
+  
     
     <li class="list-group-item d-flex justify-content-between align-items-start">
     <div class="ms-2 me-auto">
@@ -282,9 +315,24 @@ customElements.define('accordion-item', class extends HTMLElement {
     </div>
     <span class="badge bg-primary rounded-pill">Manual</span>
     </li>
+
     </ol>`
     }
 })
+
+function calculateTimeSpan({ date_future, date_now }) {
+    // get total seconds between the times
+    var seconds = Math.floor((date_future - (date_now)) / 1000);
+    var minutes = Math.floor(seconds / 60);
+    var hours = Math.floor(minutes / 60);
+    var days = Math.floor(hours / 24);
+
+    hours = hours - (days * 24);
+    minutes = minutes - (days * 24 * 60) - (hours * 60);
+    seconds = seconds - (days * 24 * 60 * 60) - (hours * 60 * 60) - (minutes * 60);
+
+    return { hours, minutes, seconds }
+}
 
 customElements.define('scrape-controls', class extends HTMLElement {
     constructor() {
@@ -306,7 +354,7 @@ customElements.define('scrape-controls', class extends HTMLElement {
             const hostname = window.location.hostname
             const api_key = "AIzaSyDb8Z27Ut0WJ-RH7Exi454Bpit9lbARJeA";
             const fb_database_url = 'https://turkmenistan-market.firebaseio.com'
-            //   const body = JSON.stringify({ ref: 'action', inputs: { projectName: selectedDashboard, parameters: JSON.stringify({ startedDateTime: Date.now(), fb_refresh_token, uid: user.uid, api_key, email: user.email }) } })
+
             const body = JSON.stringify({ ref: 'action', inputs: { projectName: selectedDashboard, parameters: `${Date.now()}--splitter--${fb_refresh_token}--splitter--${user.uid}--splitter--${api_key}--splitter--${user.email}--splitter--${fb_database_url}` } })
             debugger;
             if (hostname === 'localhost') {

@@ -4,7 +4,7 @@ require('dotenv').config()
 function change() {
 
 
-  console.log('parameters...', process.env.parameters)
+ 
   const { firebaseEvetEmitter } = require('../utils/firebase/firebaseEventEmitter')
   const { projects } = require('./project.config');
   const { removeDerectory } = require('./removeDerectory');
@@ -204,7 +204,7 @@ if (process.env.SERVER === 'LOCAL_SERVER') {
     const { renewIdToken } = require('../utils/firebase/firebase-rest')
     const parameters = process.env.parameters
     const splitterParams = parameters.split('--splitter--')
-    console.log('process.env.parameters||||||||||||||||||||', splitterParams)
+   
     const fb_refresh_token = splitterParams[1]
     const api_key = splitterParams[3]
     const renewedData = await renewIdToken({ api_key, refresh_token: fb_refresh_token })

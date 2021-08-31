@@ -5,7 +5,7 @@ const { uploadImageFile, folderExist, createFolder } = require('../utils/google-
 const fbDatabase = fbRest().setIdToken(global.fb_id_token).setProjectUri(global.fb_database_url)
 
 async function pageUploadImage({ taskSequelizerEventEmitter }) {
-    const email = process.env.email;
+ 
     const projectName = process.env.projectName
 
     let files = [];
@@ -22,25 +22,25 @@ async function pageUploadImage({ taskSequelizerEventEmitter }) {
     userRef.once(async (snapshot) => {
         let access_token = snapshot.access_token
         let refresh_token = snapshot.refresh_token
-        let userkey = snapshot.key
+     
         try {
-            debugger;
-            const token = await folderExist({ folderName: projectName, access_token, refresh_token, email, userkey })
+       
+            const token = await folderExist({ folderName: projectName, access_token, refresh_token })
             const folderResult = await createFolder({ folderName: projectName, access_token: token.access_token })
-            debugger;
+       
             if (folderResult.status === 200) {
                 const data = await folderResult.json()
                 await uploadImageFile({ access_token: token.access_token, files, taskSequelizerEventEmitter, parentFolder: data.id })
-                debugger;
+           
             } else {
-                debugger;
+           
                 throw 'unhandled http response Status'
             }
-            debugger;
+       
 
-            debugger;
+       
         } catch (error) {
-            debugger;
+       
             console.log('error', error)
         }
 
