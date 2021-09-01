@@ -23,7 +23,9 @@ export const initState = stateFromLS
     settingsServiceTab: 'email-tab',
     emaillist: [],
     googleServiceScopes: 'https://www.googleapis.com/auth/userinfo.email',
-    githubServiceScopes:''
+    githubServiceScopes: '',
+    startScrapingClicked: false,
+    runId: 0
   };
 
 export default (state, action) => {
@@ -63,10 +65,14 @@ export default (state, action) => {
     case actionTypes.SETTINGS_SERVICE_TAB_CHANGED:
       return { ...state, settingsServiceTab: action.payload }
     case actionTypes.GOOGLE_SERVICE_SCOPE_ADDED:
-      const nextState ={ ...state, googleServiceScopes: state.googleServiceScopes.concat(' ').concat(action.payload) }
+      const nextState = { ...state, googleServiceScopes: state.googleServiceScopes.concat(' ').concat(action.payload) }
       return nextState
     case actionTypes.GOOGLE_SERVICE_SCOPE_REMOVED:
       return { ...state, googleServiceScopes: state.googleServiceScopes.replace(action.payload, '').replace(/  +/g, '').replace(/\s$/g, '') }
+    case actionTypes.START_SCRAPING_CLICKED:
+      return { ...state, startScrapingClicked: true, runId: Date.now() }
+    case actionTypes.RUN_COMPLETE:
+      return { ...state, startScrapingClicked: false }
     default:
       return state;
   }
@@ -102,6 +108,10 @@ export const actionTypes = {
 
   SETTINGS_SERVICE_TAB_CHANGED: 'SETTINGS_SERVICE_TAB_CHANGED',
   GOOGLE_SERVICE_SCOPE_ADDED: 'GOOGLE_SERVICE_SCOPE_ADDED',
-  GOOGLE_SERVICE_SCOPE_REMOVED: 'GOOGLE_SERVICE_SCOPE_REMOVED'
+  GOOGLE_SERVICE_SCOPE_REMOVED: 'GOOGLE_SERVICE_SCOPE_REMOVED',
+  START_SCRAPING_CLICKED: 'START_SCRAPING_CLICKED',
+  GH_ACTION_TRIGGERED: 'GH_ACTION_TRIGGERED',
+  GH_ACTION_TRIGGERE_FAILED: 'GH_ACTION_TRIGGERE_FAILED',
+  RUN_COMPLETE: 'RUN_COMPLETE'
 
 };

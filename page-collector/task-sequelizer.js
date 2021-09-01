@@ -1,6 +1,5 @@
 const EventEmitter = require('events');
 const { fb_steps } = require('../utils/firebase/firebaseEventEmitter');
-//const { fbDatabase } = require('../utils/firebase/firebaseInit')
 const { countData } = require('../utils/firebase/firebaseEventEmitter')
 const { fbRest } = require('../utils/firebase/firebase-rest')
 
@@ -8,7 +7,7 @@ const fbDatabase = fbRest().setIdToken(global.fb_id_token).setProjectUri(global.
 
 const startedDateTime = global.fb_run_id
 const rootFirebaseRef = `runs/${global.fb_uid}/${process.env.projectName}/${startedDateTime}`
-console.log('global.fb_database_url_______________',global.fb_database_url)
+
 class TaskListender extends EventEmitter {
     constructor({ tasks }) {
         super()
@@ -42,10 +41,17 @@ class TaskListender extends EventEmitter {
             taskFailed(taskName)
         })
         this.on('no_more_task', () => {
-            clearInterval(global.fb_dataCounter)
-            countData(() => {
-                process.exit(0)
+
+            fbDatabase.ref(`${rootFirebaseRef}/RUN_COMPLETE`).set(Date.now(), (error) => {
+                if (error) {
+                    console.log('error', error)
+                }
+                clearInterval(global.fb_dataCounter)
+                countData(() => {
+                    process.exit(0)
+                })
             })
+
         })
     }
 }
@@ -212,7 +218,7 @@ function taskFailed(taskName) {
                 if (error) {
                     console.log(error)
                 } else {
-
+                    process.exit(1)
                 }
             })
             break;
@@ -222,7 +228,7 @@ function taskFailed(taskName) {
                 if (error) {
                     console.log(error)
                 } else {
-
+                    process.exit(1)
                 }
             })
             break;
@@ -232,7 +238,7 @@ function taskFailed(taskName) {
                 if (error) {
                     console.log(error)
                 } else {
-
+                    process.exit(1)
                 }
             })
             break;
@@ -243,7 +249,7 @@ function taskFailed(taskName) {
                 if (error) {
                     console.log(error)
                 } else {
-
+                    process.exit(1)
                 }
             })
             break;
@@ -253,7 +259,7 @@ function taskFailed(taskName) {
                 if (error) {
                     console.log(error)
                 } else {
-
+                    process.exit(1)
                 }
             })
             break;
@@ -263,7 +269,7 @@ function taskFailed(taskName) {
                 if (error) {
                     console.log(error)
                 } else {
-
+                    process.exit(1)
                 }
             })
             break;

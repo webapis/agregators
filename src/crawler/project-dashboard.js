@@ -114,7 +114,6 @@ customElements.define('dashboard-content', class extends HTMLElement {
 
         window.pageStore.subscribe(window.actionTypes.DASHBOARD_TAB_CHANGED, state => {
             const { dashboardTab } = state
-
             this.render({ selectedTab: dashboardTab })
         })
 
@@ -153,7 +152,6 @@ customElements.define('main-tab', class extends HTMLElement {
         
         <scrape-controls></scrape-controls>
         <scrape-logs></scrape-logs>
-        
         </div>`
     }
 })
@@ -166,32 +164,32 @@ customElements.define('scrape-logs', class extends HTMLElement {
     connectedCallback() {
 
         this.innerHTML =
-        `<div class="row" id="log-container">
+            `<div class="row" id="log-container">
      
         </div>
         `
-    const { auth: { user }, selectedDashboard } = window.pageStore.state
+        const { auth: { user }, selectedDashboard } = window.pageStore.state
 
-    firebase.database().ref(`runs/${user.uid}/${selectedDashboard}`).on('child_added', snap => {
-        const data = snap.val()
-        const key = snap.key
-        const start =data.CRAWLING_STARTED 
-        const end =data.CRAWLING_COMPLETE 
-        const download=data.PAGE_UPLOAD_EXCEL && data.PAGE_UPLOAD_EXCEL.webContentLink
-        const openfile=data.PAGE_UPLOAD_EXCEL && data.PAGE_UPLOAD_EXCEL.webViewLink
-        const imageLink =data.UPLOADING_IMAGES && data.UPLOADING_IMAGES.webViewLink
-        debugger;
-        document.getElementById('log-container').insertAdjacentHTML('afterbegin',
-            `<div class="col-12">
+        firebase.database().ref(`runs/${user.uid}/${selectedDashboard}`).on('child_added', snap => {
+            const data = snap.val()
+            const key = snap.key
+            const start = data.RUN_STARTED
+            const end = data.RUN_COMPLETE
+            const download = data.PAGE_UPLOAD_EXCEL && data.PAGE_UPLOAD_EXCEL.webContentLink
+            const openfile = data.PAGE_UPLOAD_EXCEL && data.PAGE_UPLOAD_EXCEL.webViewLink
+            const imageLink = data.UPLOADING_IMAGES && data.UPLOADING_IMAGES.webViewLink
+            debugger;
+            document.getElementById('log-container').insertAdjacentHTML('afterbegin',
+                `<div class="col-12">
         <log-accordion id="_i${key}" start=${start} end=${end} download=${download} open-file=${openfile} image-link=${imageLink}></log-accordion>
         </div>`)
-        debugger;
+            debugger;
 
-    })
+        })
 
     }
 
-   
+
 })
 
 
@@ -209,7 +207,6 @@ customElements.define('log-accordion', class extends HTMLElement {
 
     render() {
         const id = this.getAttribute('id')
-        const date = this.getAttribute('date')
         const start = this.getAttribute('start')
         const end = this.getAttribute('end')
         const download = this.getAttribute('download')
@@ -222,9 +219,7 @@ customElements.define('log-accordion', class extends HTMLElement {
      <div class="accordion-item">
     <h2 class="accordion-header" id="headingOne">
       <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-${id}" aria-expanded="true" aria-controls="collapse-${id}">
-       ${new Date(parseInt(start)).toLocaleString()} ${true ?`<div class="spinner-border ms-5" role="status">
-       <span class="visually-hidden">Loading...</span>
-     </div>`:''}
+        <run-state start=${start} end=${end}></run-state>
       </button>
     </h2>
     <div id="collapse-${id}" class="accordion-collapse collapse ${!end && 'show'}" aria-labelledby="headingOne" data-bs-parent="#${id}">
@@ -240,14 +235,63 @@ customElements.define('log-accordion', class extends HTMLElement {
     }
 })
 
+customElements.define('run-state', class extends HTMLElement {
+    constructor() {
+        super()
+    }
+
+    connectedCallback() {
+        const start = parseInt(this.getAttribute('start'))
+        const end = parseInt(this.getAttribute('end'))
+
+        const { minutes, seconds, hours } = start && end && calculateTimeSpan({ date_future: parseInt(this.getAttribute('end')), date_now: parseInt(this.getAttribute('start')) })
+        debugger;
+        this.innerHTML = `<div>
+        ${start ? `<div><i class="me-1 w-bold text-decoration-underline">Start: </i>${new Date(parseInt(start)).toLocaleString()}</div>` : ''}
+        ${end ? ` <div><i class="w-bold text-decoration-underline">End: </i>${new Date(parseInt(end)).toLocaleString()}</div>`
+                : `<div><i class="w-bold text-decoration-underline">End: </i><div class="spinner-border spinner-border-sm" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div></div>`}
+      ${start && end ? `<div><i class="w-bold text-decoration-underline">Duration: </i>${hours}:${minutes}:${seconds}</div>` : `<div><i class="w-bold text-decoration-underline">Duration: </i><stop-watch></stop-watch></div>`}
+        </div>`
+    }
+})
+
+
+customElements.define('stop-watch', class extends HTMLElement {
+    constructor() {
+        super()
+    }
+    connectedCallback() {
+        var millisecound = 0;
+        var timer;
+
+        //`<div id ="stop-counter"></div>`
+
+
+        clearInterval(timer);
+        timer = setInterval(() => {
+            millisecound += 10;
+
+            let dateTimer = new Date(millisecound);
+
+            this.innerHTML = `${('0' + dateTimer.getUTCHours()).slice(-2) + ':' +
+                ('0' + dateTimer.getUTCMinutes()).slice(-2) + ':' +
+                ('0' + dateTimer.getUTCSeconds()).slice(-2) + ':' +
+                ('0' + dateTimer.getUTCMilliseconds()).slice(-3, -1)
+                }
+         `
+        }, 10);
+    }
+})
+
+
+
 customElements.define('accordion-item', class extends HTMLElement {
     constructor() {
         super()
     }
     connectedCallback() {
-        const start = new Date(parseInt(this.getAttribute('start'))).toLocaleTimeString()
-        const end = new Date(parseInt(this.getAttribute('end'))).toLocaleTimeString()
-        const { minutes, seconds, hours } = calculateTimeSpan({ date_future: parseInt(this.getAttribute('end')), date_now: parseInt(this.getAttribute('start')) })
         const download = this.getAttribute('download')
         const openFile = this.getAttribute('open-file')
         const imageLink = this.getAttribute('image-link')
@@ -255,29 +299,9 @@ customElements.define('accordion-item', class extends HTMLElement {
             <ol class="list-group list-group-numbered">
 
 
-${start ? ` <li class="list-group-item d-flex justify-content-between align-items-start">
-<div class="ms-2 me-auto">
-  <div class="fw-bold">Start</div>
-When Scraping started
-</div>
-<span class="badge bg-primary rounded-pill">${start}</span>
-</li>`: ''}
-     
-${end ? ` <li class="list-group-item d-flex justify-content-between align-items-start">
-<div class="ms-2 me-auto">
-  <div class="fw-bold">End</div>
-  When scraping ended
-</div>
-<span class="badge bg-primary rounded-pill">${end}</span>
-</li>`: ''}
-     
-${(seconds || minutes) ? `  <li class="list-group-item d-flex justify-content-between align-items-start">
-<div class="ms-2 me-auto">
-  <div class="fw-bold">Time span</div>
-  Total time 
-</div>
-<span class="badge bg-primary rounded-pill">${hours}:${minutes}:${seconds}</span>
-</li>`: ''}
+
+
+    
     
 ${download ? ` <li class="list-group-item d-flex justify-content-between align-items-start">
 <div class="ms-2 me-auto">
@@ -343,22 +367,40 @@ customElements.define('scrape-controls', class extends HTMLElement {
 
         this.innerHTML = `<div class="row">
         <div class ="col py-5  my-1">
-        <button class="btn btn-secondary" id="start-scraping-btn">Start Scraping</button>
+        <start-scraping-btn></start-scraping-btn>
         <button class="btn btn-danger" id="cancel-scraping-btn">Cancel Scraping</button>
         </div>
         
         </div>`
-        document.getElementById('start-scraping-btn').addEventListener('click', async () => {
-            const { auth: { user, fb_refresh_token }, selectedDashboard } = window.pageStore.state
+
+
+        document.getElementById('cancel-scraping-btn').addEventListener('click', () => {
+            debugger;
+        })
+    }
+})
+
+customElements.define('start-scraping-btn', class extends HTMLElement {
+    constructor() {
+        super()
+    }
+
+    connectedCallback() {
+        const { startScrapingClicked, auth: { user }, runId, selectedDashboard } = window.pageStore.state
+        this.render({ startScrapingClicked })
+        window.pageStore.subscribe(window.actionTypes.START_SCRAPING_CLICKED, async (state) => {
+            const { auth: { user, fb_refresh_token }, selectedDashboard, startScrapingClicked, runId } = state
+            this.render({ startScrapingClicked })
+
             debugger;
             const hostname = window.location.hostname
             const api_key = "AIzaSyDb8Z27Ut0WJ-RH7Exi454Bpit9lbARJeA";
             const fb_database_url = 'https://turkmenistan-market.firebaseio.com'
 
-            const body = JSON.stringify({ ref: 'action', inputs: { projectName: selectedDashboard, parameters: `${Date.now()}--splitter--${fb_refresh_token}--splitter--${user.uid}--splitter--${api_key}--splitter--${user.email}--splitter--${fb_database_url}` } })
+            const body = JSON.stringify({ ref: 'action', inputs: { projectName: selectedDashboard, parameters: `${runId}--splitter--${fb_refresh_token}--splitter--${user.uid}--splitter--${api_key}--splitter--${user.email}--splitter--${fb_database_url}` } })
             debugger;
             if (hostname === 'localhost') {
-                const response = await fetch('http://localhost:3001/local_workflow', { method: 'post', mode: 'cors', body, headers: { 'Content-Type': 'application/json', 'Accept': 'text/plain' } })
+                await fetch('http://localhost:3001/local_workflow', { method: 'post', mode: 'cors', body, headers: { 'Content-Type': 'application/json', 'Accept': 'text/plain' } })
 
                 debugger;
             } else {
@@ -370,7 +412,6 @@ customElements.define('scrape-controls', class extends HTMLElement {
                     debugger;
                     if (ghToken) {
                         debugger;
-
                         triggerAction({ ticket: ghToken, body, gh_action_url })
                     } else {
                         const trialTokenRef = firebase.database().ref('gitticket')
@@ -384,15 +425,22 @@ customElements.define('scrape-controls', class extends HTMLElement {
                 })
                 debugger;
             }
-
         })
 
-        document.getElementById('cancel-scraping-btn').addEventListener('click', () => {
-            debugger;
+        firebase.database().ref(`runs/${user.uid}/${selectedDashboard}/${runId}/RUN_COMPLETE`).on('value', (snap) => {
+            window.pageStore.dispatch({ type: window.actionTypes.RUN_COMPLETE })
+        })
+    }
+
+    render({ startScrapingClicked }) {
+        this.innerHTML = `<button class="btn btn-secondary" id="start-scraping-btn" ${startScrapingClicked && 'disabled'}>Start Scraping</button>`
+        document.getElementById('start-scraping-btn').addEventListener('click', async () => {
+            window.pageStore.dispatch({ type: window.actionTypes.START_SCRAPING_CLICKED })
+
+
         })
     }
 })
-
 
 
 customElements.define('email-tab', class extends HTMLElement {
