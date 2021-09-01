@@ -433,7 +433,8 @@ customElements.define('start-scraping-btn', class extends HTMLElement {
     }
 
     render({ startScrapingClicked }) {
-        this.innerHTML = `<button class="btn btn-secondary" id="start-scraping-btn" ${startScrapingClicked && 'disabled'}>Start Scraping</button>`
+        this.innerHTML = `<button class="btn btn-secondary" id="start-scraping-btn" ${startScrapingClicked && 'disabled'}>${startScrapingClicked?`  <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+    Wait...`:'Start'}</button>`
         document.getElementById('start-scraping-btn').addEventListener('click', async () => {
             window.pageStore.dispatch({ type: window.actionTypes.START_SCRAPING_CLICKED })
 
