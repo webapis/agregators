@@ -178,12 +178,12 @@ customElements.define('scrape-logs', class extends HTMLElement {
             const download = data.PAGE_UPLOAD_EXCEL && data.PAGE_UPLOAD_EXCEL.webContentLink
             const openfile = data.PAGE_UPLOAD_EXCEL && data.PAGE_UPLOAD_EXCEL.webViewLink
             const imageLink = data.UPLOADING_IMAGES && data.UPLOADING_IMAGES.webViewLink
-            debugger;
+
             document.getElementById('log-container').insertAdjacentHTML('afterbegin',
                 `<div class="col-12">
         <log-accordion id="_i${key}" start=${start} end=${end} download=${download} open-file=${openfile} image-link=${imageLink}></log-accordion>
         </div>`)
-            debugger;
+
 
         })
 
@@ -212,7 +212,7 @@ customElements.define('log-accordion', class extends HTMLElement {
         const download = this.getAttribute('download')
         const openFile = this.getAttribute('open-file')
         const imageLink = this.getAttribute('image-link')
-        debugger;
+
         this.innerHTML = `
         <div class="py-1">
         <div class="accordion" id=${id}>
@@ -242,17 +242,30 @@ customElements.define('run-state', class extends HTMLElement {
 
     connectedCallback() {
         const start = parseInt(this.getAttribute('start'))
-        const end = parseInt(this.getAttribute('end'))
+        const { completeTime } = window.pageStore.state
+        this.render({ completeTime })
+        window.pageStore.subscribe(window.actionTypes.RUN_COMPLETE, state => {
+            const { runId, completeTime } = state
+            debugger;
+            if (runId === start) {
+                debugger;
+                this.render({ completeTime })
+            }
+        })
 
-        const { minutes, seconds, hours } = start && end && calculateTimeSpan({ date_future: parseInt(this.getAttribute('end')), date_now: parseInt(this.getAttribute('start')) })
-        debugger;
+    }
+    render({ completeTime }) {
+        const start = this.getAttribute('start')
+        const end = this.getAttribute('end')
+        const { minutes, seconds, hours } = start && end && calculateTimeSpan({ date_future: end !== "undefined" ? end : completeTime, date_now: start })
+
         this.innerHTML = `<div>
         ${start ? `<div><i class="me-1 w-bold text-decoration-underline">Start: </i>${new Date(parseInt(start)).toLocaleString()}</div>` : ''}
-        ${end ? ` <div><i class="w-bold text-decoration-underline">End: </i>${new Date(parseInt(end)).toLocaleString()}</div>`
-                : `<div><i class="w-bold text-decoration-underline">End: </i><div class="spinner-border spinner-border-sm" role="status">
+        ${(end !== "undefined" || completeTime > 1) ? ` <div><i class="w-bold text-decoration-underline">End: </i>${new Date(parseInt(completeTime)).toLocaleString()}</div>`
+                : `<div><i class="w-bold text-decoration-underline">End:</i><div class="spinner-border spinner-border-sm" role="status">
                 <span class="visually-hidden">Loading...</span>
               </div></div>`}
-      ${start && end ? `<div><i class="w-bold text-decoration-underline">Duration: </i>${hours}:${minutes}:${seconds}</div>` : `<div><i class="w-bold text-decoration-underline">Duration: </i><stop-watch></stop-watch></div>`}
+      ${(end !== "undefined" || completeTime > 1) ? `<div><i class="w-bold text-decoration-underline">Duration: </i>${hours}:${minutes}:${seconds}</div>` : `<div><i class="w-bold text-decoration-underline">Duration: </i><stop-watch></stop-watch></div>`}
         </div>`
     }
 })
@@ -375,7 +388,7 @@ customElements.define('scrape-controls', class extends HTMLElement {
 
 
         document.getElementById('cancel-scraping-btn').addEventListener('click', () => {
-            debugger;
+
         })
     }
 })
@@ -387,35 +400,38 @@ customElements.define('start-scraping-btn', class extends HTMLElement {
 
     connectedCallback() {
         const { startScrapingClicked, auth: { user }, runId, selectedDashboard } = window.pageStore.state
+
         this.render({ startScrapingClicked })
+
+
         window.pageStore.subscribe(window.actionTypes.START_SCRAPING_CLICKED, async (state) => {
             const { auth: { user, fb_refresh_token }, selectedDashboard, startScrapingClicked, runId } = state
             this.render({ startScrapingClicked })
 
-            debugger;
+
             const hostname = window.location.hostname
             const api_key = "AIzaSyDb8Z27Ut0WJ-RH7Exi454Bpit9lbARJeA";
             const fb_database_url = 'https://turkmenistan-market.firebaseio.com'
 
             const body = JSON.stringify({ ref: 'action', inputs: { projectName: selectedDashboard, parameters: `${runId}--splitter--${fb_refresh_token}--splitter--${user.uid}--splitter--${api_key}--splitter--${user.email}--splitter--${fb_database_url}` } })
-            debugger;
+
             if (hostname === 'localhost') {
                 await fetch('http://localhost:3001/local_workflow', { method: 'post', mode: 'cors', body, headers: { 'Content-Type': 'application/json', 'Accept': 'text/plain' } })
 
-                debugger;
+
             } else {
                 const ghTokenRef = firebase.database().ref(`users/${user.uid}`)
                 ghTokenRef.once('value', snap => {
                     const ghToken = snap.val()['ghtoken']
 
                     const gh_action_url = snap.val()['gh_action_url']
-                    debugger;
+
                     if (ghToken) {
                         debugger;
                         triggerAction({ ticket: ghToken, body, gh_action_url })
                     } else {
                         const trialTokenRef = firebase.database().ref('gitticket')
-                        debugger;
+
                         trialTokenRef.once('value', snap => {
                             const trialTicket = snap.val()
                             triggerAction(trialTicket)
@@ -423,22 +439,41 @@ customElements.define('start-scraping-btn', class extends HTMLElement {
                     }
 
                 })
-                debugger;
+
             }
+            firebase.database().ref(`runs/${user.uid}/${selectedDashboard}/${runId}/RUN_COMPLETE`).on('value', (snap) => {
+                const value = snap.val()
+                if (value) {
+
+                    debugger;
+                    window.pageStore.dispatch({ type: window.actionTypes.RUN_COMPLETE, payload: value })
+                }
+
+
+            })
+        })
+        window.pageStore.subscribe(window.actionTypes.RUN_COMPLETE, state => {
+            const { startScrapingClicked } = state
+            debugger;
+            this.render({ startScrapingClicked })
+
+
+
         })
 
-        firebase.database().ref(`runs/${user.uid}/${selectedDashboard}/${runId}/RUN_COMPLETE`).on('value', (snap) => {
-            window.pageStore.dispatch({ type: window.actionTypes.RUN_COMPLETE })
+        firebase.database().ref(`runs/${user.uid}/${selectedDashboard}/${runId}/RUN_STARTED`).on('value', (snap) => {
+            const value = snap.val()
+            debugger;
+            // window.pageStore.dispatch({ type: window.actionTypes.RUN_COMPLETE })
         })
+
     }
 
     render({ startScrapingClicked }) {
-        this.innerHTML = `<button class="btn btn-secondary" id="start-scraping-btn" ${startScrapingClicked && 'disabled'}>${startScrapingClicked?`  <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-    Wait...`:'Start'}</button>`
+        this.innerHTML = `<button class="btn btn-secondary" id="start-scraping-btn" ${startScrapingClicked && 'disabled'}>${startScrapingClicked ? `  <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+    Wait...`: 'Start'}</button>`
         document.getElementById('start-scraping-btn').addEventListener('click', async () => {
             window.pageStore.dispatch({ type: window.actionTypes.START_SCRAPING_CLICKED })
-
-
         })
     }
 })
@@ -757,12 +792,12 @@ function triggerAction({ ticket, body, gh_action_url }) {
         },
         body
     }).then(result => {
-        debugger;
+
 
     }).then(data => {
-        debugger;
+
     }).catch(error => {
-        debugger;
+
     })
 }
 

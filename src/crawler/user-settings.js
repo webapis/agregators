@@ -160,7 +160,7 @@ const updateAccountType = ({ serviceName, accountType }) => {
     const { selectedDashboard, auth: { user } } = window.pageStore.state
 
     var uid = user.uid;
-    debugger;
+    
     const myProjectsRef = firebase.database().ref(`myprojects/${uid}/${selectedDashboard}/conf`)
     myProjectsRef.update({ [serviceName]: accountType }, (error) => {
 
@@ -248,7 +248,7 @@ customElements.define('trial-professional-check', class extends HTMLElement {
 
     render({ accountType, serviceName }) {
         const { loading } = window.pageStore.state
-        debugger;
+        
         const trialInputId = this.getAttribute('trial-input-id')
         const professionalInputId = this.getAttribute('professional-input-id')
         const label = this.getAttribute('label')
@@ -383,9 +383,9 @@ customElements.define('google-services', class extends HTMLElement {
 
         document.getElementById('update-google-api').addEventListener('click', () => {
             const { googleServiceScopes } = window.pageStore.state
-            debugger;
+            
             window.pageStore.dispatch({ type: window.actionTypes.LOADING })
-            debugger;
+            
             var CLIENT_ID = '117708549296-uij0mup1c3biok6ifaupa2951vtvf418.apps.googleusercontent.com';
             var REDIRECT_URI = `${window.location.origin}/user-settings.html`;
             window.googleAuthorizationRequest({ client_id: CLIENT_ID, redirect_uri: REDIRECT_URI, scope: googleServiceScopes, state: 'google_services'.toLowerCase(), include_granted_scopes: true, response_type: 'code' })
@@ -451,9 +451,9 @@ customElements.define('github-services', class extends HTMLElement {
                 const { auth: { user } } = window.pageStore.state
                 window.location.replace(`/github-verification.html?uid=${user.uid}`)
 
-                debugger;
+                
             } catch (error) {
-                debugger;
+                
             }
 
         })

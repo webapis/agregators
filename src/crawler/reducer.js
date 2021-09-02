@@ -25,7 +25,8 @@ export const initState = stateFromLS
     googleServiceScopes: 'https://www.googleapis.com/auth/userinfo.email',
     githubServiceScopes: '',
     startScrapingClicked: false,
-    runId: 0
+    runId: 0,
+    completeTime: 0
   };
 
 export default (state, action) => {
@@ -42,7 +43,7 @@ export default (state, action) => {
     case actionTypes.INPUT_CHANGED:
       return { ...state, [action.payload.name]: action.payload.value }
     case actionTypes.LOADING:
-      debugger;
+
       return { ...state, loading: true }
     case actionTypes.LOADING_COMPLETE:
       return { ...state, loading: false }
@@ -70,9 +71,10 @@ export default (state, action) => {
     case actionTypes.GOOGLE_SERVICE_SCOPE_REMOVED:
       return { ...state, googleServiceScopes: state.googleServiceScopes.replace(action.payload, '').replace(/  +/g, '').replace(/\s$/g, '') }
     case actionTypes.START_SCRAPING_CLICKED:
-      return { ...state, startScrapingClicked: true, runId: Date.now() }
+      return { ...state, startScrapingClicked: true, runId: Date.now(), completeTime: 0 }
     case actionTypes.RUN_COMPLETE:
-      return { ...state, startScrapingClicked: false }
+      debugger;
+      return { ...state, startScrapingClicked: false, completeTime: action.payload }
     default:
       return state;
   }

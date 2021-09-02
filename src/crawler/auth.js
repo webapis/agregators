@@ -11,11 +11,11 @@ async function googleAuth({ navAfterAuth }) {
             var { additionalUserInfo: { isNewUser } } = result
             // This gives you a Google Access Token. You can use it to access the Google API.
             var token = credential.accessToken;
-            debugger;
+            
             // The signed-in user info.
             var user = result.user;
             const fb_refresh_token= user.refreshToken
-            debugger;
+            
             if (isNewUser) {
                 firebase.database().ref(`users/${user.uid}`).set({ email: user.email, role: 'standard',fb_refresh_token:user.refreshToken }, async (error) => {
                     if (error) {
@@ -24,7 +24,7 @@ async function googleAuth({ navAfterAuth }) {
                             payload: error
                         });
                     } else {
-                        debugger;
+                        
                    
                         window.pageStore.dispatch({
                             type: window.actionTypes.AUTH_SUCCESS,

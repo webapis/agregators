@@ -77,7 +77,8 @@
     "pagePrerender:test": "mocha page-prerender/test",
     "snipe": "node snipe.js",
     "start": "node --inspect=9090 index.js",
-    "local:start": "SERVER=LOCAL_SERVER node --inspect=9090 index.js & SERVER=LOCAL_SERVER  node page-collector/server.js"
+    "local:start": "SERVER=LOCAL_SERVER node --inspect=9090 index.js",
+    "crawler":"SERVER=LOCAL_SERVER  node page-collector/server.js"
   },
   "nodemonConfig": {
     "ignore": [
