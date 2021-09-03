@@ -72,6 +72,7 @@ if (process.env.SERVER === 'LOCAL_SERVER') {
 } else {
   (async () => {
     const { renewIdToken,fbRest } = require('../utils/firebase/firebase-rest')
+    const { crawlerWorker } = require('./crawlerWorker')
     const parameters = process.env.parameters
     const splitterParams = parameters.split('--splitter--')
     const fb_refresh_token = splitterParams[1]
