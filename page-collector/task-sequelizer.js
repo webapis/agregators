@@ -48,7 +48,8 @@ class TaskListender extends EventEmitter {
                 }
                 clearInterval(global.fb_dataCounter)
                 countData(() => {
-                    process.exit(0)
+                        process.exit(0)
+                   
                 })
             })
 

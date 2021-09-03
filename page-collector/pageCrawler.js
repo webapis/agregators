@@ -31,6 +31,7 @@ async function postNavHook({ page, origin }) {
 
 async function pageCrawler({ taskSequelizerEventEmitter }) {
     try {
+        debugger;
         const projectUrls = sitemaps[process.env.projectName]
         projectUrls.forEach(u => {
             const { dest, source } = u

@@ -34,7 +34,7 @@ function download(url, dest) {
 async function batchImageCollection({ taskSequelizerEventEmitter }) {
 
   eventEmitter.on('promiseExecComplete', async () => {
-    debugger;
+    
     taskSequelizerEventEmitter.emit('taskComplete', 'page_image_collection')
 
   })
@@ -43,7 +43,7 @@ async function batchImageCollection({ taskSequelizerEventEmitter }) {
   walkSync(`${process.cwd()}/page-data/${process.env.projectName}`, async filepath => {
     files.push(filepath)
   });
-  debugger;
+
   for (let filepath of files) {
 
     const batchName = path.basename(filepath, '.json');
@@ -56,9 +56,9 @@ async function batchImageCollection({ taskSequelizerEventEmitter }) {
     const dataObject = JSON.parse(data);
 
     for (let d of dataObject) {
-      debugger;
+      
       const { images } = d;
-      debugger;
+      
       images.forEach(imageUlr => {
         const filename = path.basename(imageUlr);
         const fileEndPath = `${output}/${filename}`;
@@ -82,7 +82,7 @@ async function batchImageCollection({ taskSequelizerEventEmitter }) {
     } else {
       taskSequelizerEventEmitter.emit('taskComplete', 'page_image_collection')
     }
-    debugger;
+    
    
 
   }

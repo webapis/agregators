@@ -14,7 +14,7 @@ async function uploadExcelFile({ access_token, filePath, taskSequelizerEventEmit
     const status = response.status
 
     if (status === 200) {
-        debugger;
+        
         //create permission
         const data = await response.json()
         const { id } = data;
@@ -23,7 +23,7 @@ async function uploadExcelFile({ access_token, filePath, taskSequelizerEventEmit
         const {
             webViewLink, webContentLink } = await publicLinkReponse.json()
         taskSequelizerEventEmitter.emit('taskComplete', 'page_upload_excel', { webViewLink, webContentLink })
-        debugger;
+     
         //get public link
     }
     else {
@@ -42,12 +42,12 @@ async function uploadImageFile({ access_token, files, taskSequelizerEventEmitter
         files.forEach(filePath => {
             let fileName = path.basename(filePath)
             let metadata = { name: fileName, mymeType: 'image/jpeg', parents: [parentFolder] }
-            debugger;
+            
             promises.push((async () => await multipartUpload({ access_token, filePath, parentFolder, metadata }))())
         })
-        debugger;
+        
         const response = await Promise.all(promises)
-        debugger;
+        
 
         // //HEALP FROM: https://stackoverflow.com/questions/44021538/how-to-send-a-file-in-request-node-fetch-or-node
 
@@ -59,9 +59,9 @@ async function uploadImageFile({ access_token, files, taskSequelizerEventEmitter
         // get public link
         const {
             webViewLink } = await publicLinkReponse.json()
-        debugger;
+        
         taskSequelizerEventEmitter.emit('taskComplete', 'page_upload_image', { webViewLink })
-        debugger;
+        
 
         return
 
@@ -70,7 +70,7 @@ async function uploadImageFile({ access_token, files, taskSequelizerEventEmitter
     } catch (error) {
         console.log('error', error)
         taskSequelizerEventEmitter.emit('taskFailed', 'page_upload_image')
-        debugger;
+        
 
     }
 
@@ -154,7 +154,7 @@ async function folderExist({ folderName, access_token, refresh_token }) {
 
     const status = response.status
     if (status === 200) {
-        debugger;
+   
         return { access_token }
 
     } else if (status === 401) {
@@ -166,7 +166,7 @@ async function folderExist({ folderName, access_token, refresh_token }) {
 }
 
 async function deleteFolder({ fileId, access_token }) {
-    debugger;
+    
     const apiendpoint = `https://www.googleapis.com/drive/v3/files/${fileId}`
 
     return await fetch(apiendpoint, {

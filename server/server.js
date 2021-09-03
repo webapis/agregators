@@ -33,7 +33,6 @@ function initServer() {
     const serveStatic = require('./serve-static')
     const { fetchGithubAuthCode, fetchGithubAccessToken } = require('../utils/github/index')
 
-    console.log('ab path----------------------', process.cwd())
     process.env.REDIRECT_URL = (process.env.SERVER === 'LOCAL_SERVER' || process.env.SERVER === 'LOCAL') ? process.env.DEV_REDIRECT_URL : process.env.PRODUCTION_REDIRECT_URL
 
     const server = http.createServer((req, res) => {
