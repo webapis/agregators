@@ -94,7 +94,7 @@ if (process.env.SERVER === 'LOCAL_SERVER') {
         crawlerWorker({fb_run_id:value,fb_uid:splitterParams[2],fb_id_token:renewData.id_token,projectName,email:splitterParams[4],fb_database_url:splitterParams[5]})
       }
     })
-    crawlerWorker({fb_run_id:splitterParams[0],fb_uid:splitterParams[2],fb_id_token:renewedData.id_token,projectName,email:splitterParams[4],fb_database_url:splitterParams[5]})
+    //crawlerWorker({fb_run_id:splitterParams[0],fb_uid:splitterParams[2],fb_id_token:renewedData.id_token,projectName,email:splitterParams[4],fb_database_url:splitterParams[5]})
 
 
   })()
