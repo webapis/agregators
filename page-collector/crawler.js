@@ -3,7 +3,7 @@ require('dotenv').config()
 const {
     isMainThread, workerData
 } = require('worker_threads');
-console.log('hello outside????????',workerData)
+
 
     if (workerData) {
         const { fb_run_id, fb_uid, fb_id_token, projectName, email, fb_database_url } = workerData
