@@ -76,6 +76,7 @@ if (process.env.SERVER === 'LOCAL_SERVER') {
     const splitterParams = parameters.split('--splitter--')
     const fb_refresh_token = splitterParams[1]
     const api_key = splitterParams[3]
+    const projectName= process.env.projectName
     const renewedData = await renewIdToken({ api_key, refresh_token: fb_refresh_token })
     // global.fb_run_id = splitterParams[0]
     // global.fb_uid = splitterParams[2]
@@ -86,15 +87,15 @@ if (process.env.SERVER === 'LOCAL_SERVER') {
     const fbDatabase = fbRest().setIdToken(renewedData.id_token).setProjectUri(splitterParams[5])
 
     const runId = splitterParams[0]
-    const rootFirebaseRef = `runs/${global.fb_uid}/${process.env.projectName}/${runId}/RUN_STARTED`
-    fbDatabase.ref(rootFirebaseRef).on('value',(snap)=>{
-      const value =snap.val()
-      if(value){
-        let renewData = await renewIdToken({ api_key, refresh_token: fb_refresh_token })
-        crawlerWorker({fb_run_id:value,fb_uid:splitterParams[2],fb_id_token:renewData.id_token,projectName,email:splitterParams[4],fb_database_url:splitterParams[5]})
-      }
-    })
-    //crawlerWorker({fb_run_id:splitterParams[0],fb_uid:splitterParams[2],fb_id_token:renewedData.id_token,projectName,email:splitterParams[4],fb_database_url:splitterParams[5]})
+    // const rootFirebaseRef = `runs/${global.fb_uid}/${process.env.projectName}/${runId}/RUN_STARTED`
+    // fbDatabase.ref(rootFirebaseRef).on('value',async(snap)=>{
+    //   const value =snap.val()
+    //   if(value){
+    //     let renewData = await renewIdToken({ api_key, refresh_token: fb_refresh_token })
+    //     crawlerWorker({fb_run_id:value,fb_uid:splitterParams[2],fb_id_token:renewData.id_token,projectName,email:splitterParams[4],fb_database_url:splitterParams[5]})
+    //   }
+    // })
+    crawlerWorker({fb_run_id:splitterParams[0],fb_uid:splitterParams[2],fb_id_token:renewedData.id_token,projectName,email:splitterParams[4],fb_database_url:splitterParams[5]})
 
 
   })()
