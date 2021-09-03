@@ -47,12 +47,12 @@ function crawler() {
     const fbDatabase = fbRest().setIdToken(global.fb_id_token).setProjectUri(global.fb_database_url)
 
     const startedDateTime = global.fb_run_id
-    const rootFirebaseRef = `runs/${global.fb_uid}/${process.env.projectName}/${startedDateTime}`
+   // const rootFirebaseRef = `runs/${global.fb_uid}/${process.env.projectName}/${startedDateTime}`
 
-    fbDatabase.ref(`${rootFirebaseRef}/RUN_STARTED`).set(parseInt(startedDateTime), (error) => {
-        if (error) {
-            console.log('error', error)
-        } else {
+   // fbDatabase.ref(`${rootFirebaseRef}/RUN_STARTED`).set(parseInt(startedDateTime), (error) => {
+       // if (error) {
+       //     console.log('error', error)
+       /// } else {
 
             const tasks = projects[process.env.projectName]
             const taskSequelizerEventEmitter = taskSequelizer({ tasks })
@@ -151,8 +151,8 @@ function crawler() {
             })
             console.log('nextTask started', process.env.NEXT_TASK)
             taskSequelizerEventEmitter.emit('nextTask', process.env.NEXT_TASK)
-        }
-    })
+    //    }
+ //   })
 }
 
 

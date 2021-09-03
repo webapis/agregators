@@ -408,39 +408,48 @@ customElements.define('start-scraping-btn', class extends HTMLElement {
             const { auth: { user, fb_refresh_token }, selectedDashboard, startScrapingClicked, runId } = state
             this.render({ startScrapingClicked })
 
+            const liveRef = firebase.database().ref(`myprojects/${user.uid}/${selectedDashboard}/LIVE`)
+            liveRef.on('value', snap => {
+                const value = snap.val()
+                if (value) {
+                    firebase.database().ref(`runs/${user.uid}/${selectedDashboard}/${runId}`).set({ RUN_STARTED: runId })
+                } else {
+                    const hostname = window.location.hostname
+                    const api_key = "AIzaSyDb8Z27Ut0WJ-RH7Exi454Bpit9lbARJeA";
+                    const fb_database_url = 'https://turkmenistan-market.firebaseio.com'
 
-            const hostname = window.location.hostname
-            const api_key = "AIzaSyDb8Z27Ut0WJ-RH7Exi454Bpit9lbARJeA";
-            const fb_database_url = 'https://turkmenistan-market.firebaseio.com'
+                    const body = JSON.stringify({ ref: 'action', inputs: { projectName: selectedDashboard, parameters: `${runId}--splitter--${fb_refresh_token}--splitter--${user.uid}--splitter--${api_key}--splitter--${user.email}--splitter--${fb_database_url}` } })
 
-            const body = JSON.stringify({ ref: 'action', inputs: { projectName: selectedDashboard, parameters: `${runId}--splitter--${fb_refresh_token}--splitter--${user.uid}--splitter--${api_key}--splitter--${user.email}--splitter--${fb_database_url}` } })
-
-            if (hostname === 'localhost') {
-                await fetch('http://localhost:3001/local_workflow', { method: 'post', mode: 'cors', body, headers: { 'Content-Type': 'application/json', 'Accept': 'text/plain' } })
+                    if (hostname === 'localhost') {
+                        await fetch('http://localhost:3001/local_workflow', { method: 'post', mode: 'cors', body, headers: { 'Content-Type': 'application/json', 'Accept': 'text/plain' } })
 
 
-            } else {
-                const ghTokenRef = firebase.database().ref(`users/${user.uid}`)
-                ghTokenRef.once('value', snap => {
-                    const ghToken = snap.val()['ghtoken']
-
-                    const gh_action_url = snap.val()['gh_action_url']
-
-                    if (ghToken) {
-                        debugger;
-                        triggerAction({ ticket: ghToken, body, gh_action_url })
                     } else {
-                        const trialTokenRef = firebase.database().ref('gitticket')
+                        const ghTokenRef = firebase.database().ref(`users/${user.uid}`)
+                        ghTokenRef.once('value', snap => {
+                            const ghToken = snap.val()['ghtoken']
 
-                        trialTokenRef.once('value', snap => {
-                            const trialTicket = snap.val()
-                            triggerAction(trialTicket)
+                            const gh_action_url = snap.val()['gh_action_url']
+
+                            if (ghToken) {
+                                debugger;
+                                triggerAction({ ticket: ghToken, body, gh_action_url })
+                            } else {
+                                const trialTokenRef = firebase.database().ref('gitticket')
+
+                                trialTokenRef.once('value', snap => {
+                                    const trialTicket = snap.val()
+                                    triggerAction(trialTicket)
+                                })
+                            }
+
                         })
+
                     }
 
-                })
+                }
+            })
 
-            }
             firebase.database().ref(`runs/${user.uid}/${selectedDashboard}/${runId}/RUN_COMPLETE`).on('value', (snap) => {
                 const value = snap.val()
                 if (value) {
