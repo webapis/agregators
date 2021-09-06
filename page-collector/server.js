@@ -74,10 +74,14 @@ debugger;
     const { renewIdToken, fbRest } = require('../utils/firebase/firebase-rest')
     const { crawlerWorker } = require('./crawlerWorker')
     const parameters = process.env.parameters
+
+
     const splitterParams = parameters.split('--splitter--')
+    console.log('splitterParams....',splitterParams)
     const fb_refresh_token = splitterParams[1]
     const api_key = splitterParams[3]
     const fb_uid= splitterParams[2]
+
     const projectName = process.env.projectName
     const renewedData = await renewIdToken({ api_key, refresh_token: fb_refresh_token })
 
