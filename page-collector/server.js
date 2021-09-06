@@ -29,12 +29,12 @@ if (process.env.SERVER === 'LOCAL_SERVER') {
             const body = JSON.parse(data);
             const { inputs: { projectName, parameters } } = body
             const splitterParams = parameters.split('--splitter--')
-           
+
             const fb_refresh_token = splitterParams[1]
             const api_key = splitterParams[3]
             const renewedData = await renewIdToken({ api_key, refresh_token: fb_refresh_token })
-           
-            crawlerWorker({fb_run_id:splitterParams[0],fb_uid:splitterParams[2],fb_id_token:renewedData.id_token,projectName,email:splitterParams[4],fb_database_url:splitterParams[5]})
+
+            crawlerWorker({ fb_run_id: splitterParams[0], fb_uid: splitterParams[2], fb_id_token: renewedData.id_token, projectName, email: splitterParams[4], fb_database_url: splitterParams[5] })
           }
         });
         res.statusCode = 200
@@ -71,42 +71,50 @@ if (process.env.SERVER === 'LOCAL_SERVER') {
 
 } else {
   (async () => {
-    const { renewIdToken,fbRest } = require('../utils/firebase/firebase-rest')
+    const { renewIdToken, fbRest } = require('../utils/firebase/firebase-rest')
     const { crawlerWorker } = require('./crawlerWorker')
     const parameters = process.env.parameters
     const splitterParams = parameters.split('--splitter--')
     const fb_refresh_token = splitterParams[1]
     const api_key = splitterParams[3]
-    const projectName= process.env.projectName
+    const projectName = process.env.projectName
     const renewedData = await renewIdToken({ api_key, refresh_token: fb_refresh_token })
-    // global.fb_run_id = splitterParams[0]
-    // global.fb_uid = splitterParams[2]
-    // global.fb_id_token = renewedData.id_token
-    // process.env.projectName = process.env.projectName
-    // process.env.email = splitterParams[4]
-    // global.fb_database_url = splitterParams[5]
+
     const fbDatabase = fbRest().setIdToken(renewedData.id_token).setProjectUri(splitterParams[5])
     const rootFirebaseRef = `runs/${global.fb_uid}/${process.env.projectName}`
-  
-    fbDatabase.ref(rootFirebaseRef).on('child_added',async(snap)=>{
-      const fb_run_id =snap.val()['RUN_STARTED']
-        let renewData = await renewIdToken({ api_key, refresh_token: fb_refresh_token })
-        crawlerWorker({fb_run_id,fb_uid:splitterParams[2],fb_id_token:renewData.id_token,projectName,email:splitterParams[4],fb_database_url:splitterParams[5]})
+
+    fbDatabase.ref(rootFirebaseRef).on('value', async (error, e) => {
+
+      const { data, path } = JSON.parse(e.data)
+      if (path !== '/') {
+        debugger;
+        console.log('value triggered')
+        const fb_run_id = data['RUN_STARTED']
+        const RUN_COMPLETE = data['RUN_COMPLETE']
+        if (fb_run_id && !RUN_COMPLETE) {
+          console.log('fb_run_id...', fb_run_id);
+          console.log('run_complete...', RUN_COMPLETE);
+          let renewData = await renewIdToken({ api_key, refresh_token: fb_refresh_token })
+          crawlerWorker({ fb_run_id, fb_uid: splitterParams[2], fb_id_token: renewData.id_token, projectName, email: splitterParams[4], fb_database_url: splitterParams[5] })
+        }
+
+      }
+
     })
-    const myProjectRef=`myprojects/${global.fb_uid}/${process.env.projectName}/LIVE`
-    fbDatabase.ref(myProjectRef).set(true,(error)=>{
-      if(error){
+    const myProjectRef = `myprojects/${global.fb_uid}/${process.env.projectName}/LIVE`
+    fbDatabase.ref(myProjectRef).set(true, (error) => {
+      if (error) {
         console.log('error', error)
-      }else{
-        crawlerWorker({fb_run_id:splitterParams[0],fb_uid:splitterParams[2],fb_id_token:renewedData.id_token,projectName,email:splitterParams[4],fb_database_url:splitterParams[5]})
+      } else {
+        crawlerWorker({ fb_run_id: splitterParams[0], fb_uid: splitterParams[2], fb_id_token: renewedData.id_token, projectName, email: splitterParams[4], fb_database_url: splitterParams[5] })
         setInterval(() => {
           console.log('...')
         }, 5000);
       }
     })
-    
 
-  
+
+
 
   })()
 

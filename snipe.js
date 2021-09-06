@@ -32,7 +32,7 @@ function customAuth() {
 }
 
 function renewIdToken() {
-    fetch(`https://securetoken.googleapis.com/v1/token?key=${process.env.api_key}`, { method: 'post', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: `grant_type=refresh_token&refresh_token=${process.env.refresh_token}` }).then(response => {
+    fetch(`https://securetoken.googleapis.com/v1/token?key=${process.env.api_key}`, { method: 'post', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: `grant_type=refresh_token&refresh_token=${process.env.fb_refresh_token}` }).then(response => {
 
         debugger;
         return response.json()
@@ -61,12 +61,12 @@ function renewIdToken() {
 // })
 
 
-const fbDatabase = fbRest().setIdToken(process.env.idToken).setProjectUri('https://turkmenistan-market.firebaseio.com').ref('users').orderByChild('email').equalTo('tkm.house.new@gmail.com').limitToLast(1)
+const fbDatabase = fbRest().setIdToken(process.env.idToken).setProjectUri('https://turkmenistan-market.firebaseio.com').ref('projects/books')
 
-fbDatabase.once(({ data, error }) => {
-  //  const accesstoken = Object.entries(data).map((m) => { return { val: () => m[1], key: m[0] } })
-
-
-
+fbDatabase.on('value',(error,e)=>{
+    const {data,path}=JSON.parse(e.data)
+    if(path!=='/'){
+        debugger;
+    }
     debugger;
 })

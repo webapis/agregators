@@ -11,6 +11,7 @@
     "console-table-printer": "2.9.0",
     "directory-tree": "2.2.9",
     "dotenv": "8.2.0",
+    "eventsource": "^1.1.0",
     "express": "4.17.1",
     "firebase": "^8.10.0",
     "firebase-admin": "9.9.0",
@@ -24,7 +25,8 @@
     "node-fetch": "2.6.1",
     "request": "2.88.2",
     "rollup-plugin-cpy": "2.0.1",
-    "sinon": "9.2.4"
+    "sinon": "9.2.4",
+    "sse": "0.0.8"
   },
   "devDependencies": {
     "@open-wc/rollup-plugin-html": "1.2.5",
@@ -78,7 +80,7 @@
     "snipe": "node snipe.js",
     "start": "node --inspect=9090 index.js",
     "local:start": "SERVER=LOCAL_SERVER node --inspect=9090 index.js",
-    "crawler":"SERVER=LOCAL_SERVER  node page-collector/server.js"
+    "crawler": "SERVER=LOCAL_SERVER  node page-collector/server.js"
   },
   "nodemonConfig": {
     "ignore": [
