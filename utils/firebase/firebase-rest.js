@@ -75,6 +75,17 @@ function fbRest() {
             }
 
         },
+        once: function ( cb) {
+            const fetchPath = `${this.projectUri}/${this.url}.json?auth=${this.idToken}`
+
+            fetch(fetchPath).then(response => response.json()).then(data => {
+                debugger;
+                cb && cb(data)
+            }).catch(error => {
+                
+                cb && cb({ error })
+                return this
+            })},
         orderByChild: function (orderByChildValue) {
             this.orderByChildValue = orderByChildValue
             return this
