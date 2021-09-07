@@ -100,8 +100,8 @@ debugger;
           console.log('...')
         }, 5000);
 
-        const rootFirebaseRef = `runs/${global.fb_uid}/${process.env.projectName}`
-
+        const rootFirebaseRef = `runs/${fb_uid}/${process.env.projectName}`
+        console.log('rootFirebaseRef....',rootFirebaseRef)
         fbDatabase.ref(rootFirebaseRef).on('value', async (error, e) => {
           const { data, path } = JSON.parse(e.data)
           console.log('second...try',data, path)
