@@ -414,6 +414,9 @@ customElements.define('start-scraping-btn', class extends HTMLElement {
                     const value = snap.val()
                     debugger;
                     if (value) {
+                        firebase.database().ref(`runs/${user.uid}/${selectedDashboard}/${runId}`).set({ RUN_STARTED: runId }, () => {
+                            debugger;
+                        })  
                         debugger;
                     } else {
                         const hostname = window.location.hostname
