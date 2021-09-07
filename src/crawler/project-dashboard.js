@@ -410,7 +410,7 @@ customElements.define('start-scraping-btn', class extends HTMLElement {
             firebase.database().ref(`runs/${user.uid}/${selectedDashboard}/${runId}`).set({ RUN_STARTED: runId }, () => {
                 debugger;
                 const liveRef = firebase.database().ref(`myprojects/${user.uid}/${selectedDashboard}/LIVE`)
-                liveRef.on('value', async snap => {
+                liveRef.get().then(async snap => {
                     const value = snap.val()
                     debugger;
                     if (value) {
