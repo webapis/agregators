@@ -13,7 +13,7 @@ const {
         process.env.projectName = projectName
         process.env.email = email
         global.fb_database_url = fb_database_url
-        console.log('hello outside')
+       
         crawler()
      
     }
@@ -42,17 +42,10 @@ function crawler() {
     const { pageLeavesBy100 } = require('./pageLeavesBy100')
     const { pageUploadImage } = require('./page_upload_image')
     const { pagePrerender } = require('./pagePrerender')
-    const { fbRest } = require('../utils/firebase/firebase-rest')
 
-    const fbDatabase = fbRest().setIdToken(global.fb_id_token).setProjectUri(global.fb_database_url)
 
-    const startedDateTime = global.fb_run_id
-   // const rootFirebaseRef = `runs/${global.fb_uid}/${process.env.projectName}/${startedDateTime}`
+ 
 
-   // fbDatabase.ref(`${rootFirebaseRef}/RUN_STARTED`).set(parseInt(startedDateTime), (error) => {
-       // if (error) {
-       //     console.log('error', error)
-       /// } else {
 
             const tasks = projects[process.env.projectName]
             const taskSequelizerEventEmitter = taskSequelizer({ tasks })
@@ -151,8 +144,7 @@ function crawler() {
             })
             console.log('nextTask started', process.env.NEXT_TASK)
             taskSequelizerEventEmitter.emit('nextTask', process.env.NEXT_TASK)
-    //    }
- //   })
+
 }
 
 

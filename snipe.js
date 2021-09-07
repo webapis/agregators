@@ -61,12 +61,34 @@ function renewIdToken() {
 // })
 
 
-const fbDatabase = fbRest().setIdToken(process.env.idToken).setProjectUri('https://turkmenistan-market.firebaseio.com').ref('projects/books')
+// const fbDatabase = fbRest().setIdToken(process.env.idToken).setProjectUri('https://turkmenistan-market.firebaseio.com').ref('projects/books')
 
-fbDatabase.on('value',(error,e)=>{
-    const {data,path}=JSON.parse(e.data)
-    if(path!=='/'){
-        debugger;
-    }
-    debugger;
-})
+// fbDatabase.on('value',(error,e)=>{
+//     const {data,path}=JSON.parse(e.data)
+//     if(path!=='/'){
+//         debugger;
+//     }
+//     debugger;
+// })
+
+const CheckReload = (() => {
+    let counter = 0;
+    return () => {
+        counter++;
+        return counter;
+    };
+})();
+
+{
+    const refreshId = setInterval(
+        () => {
+            const properID = CheckReload();
+            console.log(properID * 1000);
+            //wait 10 minutes
+            if ((properID * 1000) >= 60000 * 10) {
+                clearInterval(refreshId);
+            }
+        },
+        1000
+    );
+}
