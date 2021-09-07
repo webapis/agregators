@@ -104,6 +104,7 @@ debugger;
 
         fbDatabase.ref(rootFirebaseRef).on('value', async (error, e) => {
           const { data, path } = JSON.parse(e.data)
+          console.log('second...try',data, path)
           if (path !== '/') {
             debugger;
             console.log('value triggered')
