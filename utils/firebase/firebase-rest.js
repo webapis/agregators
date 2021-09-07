@@ -79,7 +79,7 @@ function fbRest() {
             const fetchPath = `${this.projectUri}/${this.url}.json?auth=${this.idToken}`
 
             fetch(fetchPath).then(response => response.json()).then(data => {
-                debugger;
+         
                 cb && cb(data)
             }).catch(error => {
                 

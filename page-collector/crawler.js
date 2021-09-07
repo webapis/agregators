@@ -56,7 +56,7 @@ function crawler() {
 
             const tasks = projects[process.env.projectName]
             const taskSequelizerEventEmitter = taskSequelizer({ tasks })
-            debugger;
+         
             firebaseEvetEmitter({ taskSequelizerEventEmitter })
             taskSequelizerEventEmitter.on('nextTask', async function (nextTaskName) {
 

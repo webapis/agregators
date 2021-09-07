@@ -422,11 +422,18 @@ customElements.define('start-scraping-btn', class extends HTMLElement {
                         const hostname = window.location.hostname
                         const api_key = "AIzaSyDb8Z27Ut0WJ-RH7Exi454Bpit9lbARJeA";
                         const fb_database_url = 'https://turkmenistan-market.firebaseio.com'
+                        const parameters =`${runId}--splitter--${fb_refresh_token}--splitter--${user.uid}--splitter--${api_key}--splitter--${user.email}--splitter--${fb_database_url}`
                         debugger;
-                        const body = JSON.stringify({ ref: 'action', inputs: { projectName: selectedDashboard, parameters: `${runId}--splitter--${fb_refresh_token}--splitter--${user.uid}--splitter--${api_key}--splitter--${user.email}--splitter--${fb_database_url}` } })
+                        const body = JSON.stringify({ ref: 'action', inputs: { projectName: selectedDashboard, parameters } })
 
                         if (hostname === 'localhost') {
-                            await fetch('http://localhost:3001/local_workflow', { method: 'post', mode: 'cors', body, headers: { 'Content-Type': 'application/json', 'Accept': 'text/plain' } })
+                            debugger;
+                            fetch(`http://localhost:3000/local_workflow?projectName=${selectedDashboard}&parameters=${parameters}`, { method: 'get', mode: 'cors',  headers: { 'Content-Type': 'application/json', 'Accept': 'text/plain' } }).then((response)=>{
+                            return response.json()
+                            }).then(data=>data).catch(error=>{
+                                debugger;
+                            })
+                            debugger;
                         } else {
                             const ghTokenRef = firebase.database().ref(`users/${user.uid}`)
                             ghTokenRef.once('value', snap => {

@@ -32,10 +32,11 @@ function initServer() {
     const client_secret = process.env.client_secret
     const serveStatic = require('./serve-static')
     const { fetchGithubAuthCode, fetchGithubAccessToken } = require('../utils/github/index')
-
+    const {crawerInitializer}=require('../page-collector/server')
+    const urlQuery = require('url');
     process.env.REDIRECT_URL = (process.env.SERVER === 'LOCAL_SERVER' || process.env.SERVER === 'LOCAL') ? process.env.DEV_REDIRECT_URL : process.env.PRODUCTION_REDIRECT_URL
 
-    const server = http.createServer((req, res) => {
+    const server = http.createServer(async(req, res) => {
         const { url } = req
 
         res.statusCode = 200;
@@ -59,6 +60,13 @@ function initServer() {
                 fetchGithubAccessToken(codeparam, res)
                 debugger;
                 break;
+
+                case /.*local_workflow.*/.test(url):
+                const projectName =urlQuery.parse(url,true).query.projectName
+                const parameters =urlQuery.parse(url,true).query.parameters
+                await crawerInitializer({projectName,parameters})
+             
+                    break;
             default:
 
                 serveStatic(req, res)
