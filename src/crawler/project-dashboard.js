@@ -407,28 +407,30 @@ customElements.define('start-scraping-btn', class extends HTMLElement {
         window.pageStore.subscribe(window.actionTypes.START_SCRAPING_CLICKED, async (state) => {
             const { auth: { user, fb_refresh_token }, selectedDashboard, startScrapingClicked, runId } = state
             this.render({ startScrapingClicked })
-            firebase.database().ref(`runs/${user.uid}/${selectedDashboard}/${runId}`).set({ RUN_STARTED: runId },()=>{
+            firebase.database().ref(`runs/${user.uid}/${selectedDashboard}/${runId}`).set({ RUN_STARTED: runId }, () => {
+                debugger;
                 const liveRef = firebase.database().ref(`myprojects/${user.uid}/${selectedDashboard}/LIVE`)
                 liveRef.on('value', async snap => {
                     const value = snap.val()
+                    debugger;
                     if (value) {
-                    
+                        debugger;
                     } else {
                         const hostname = window.location.hostname
                         const api_key = "AIzaSyDb8Z27Ut0WJ-RH7Exi454Bpit9lbARJeA";
                         const fb_database_url = 'https://turkmenistan-market.firebaseio.com'
-    
+                        debugger;
                         const body = JSON.stringify({ ref: 'action', inputs: { projectName: selectedDashboard, parameters: `${runId}--splitter--${fb_refresh_token}--splitter--${user.uid}--splitter--${api_key}--splitter--${user.email}--splitter--${fb_database_url}` } })
-    
+
                         if (hostname === 'localhost') {
                             await fetch('http://localhost:3001/local_workflow', { method: 'post', mode: 'cors', body, headers: { 'Content-Type': 'application/json', 'Accept': 'text/plain' } })
                         } else {
                             const ghTokenRef = firebase.database().ref(`users/${user.uid}`)
                             ghTokenRef.once('value', snap => {
                                 const ghToken = snap.val()['ghtoken']
-    
+
                                 const gh_action_url = snap.val()['gh_action_url']
-    
+                                debugger;
                                 if (ghToken) {
                                     debugger;
                                     triggerAction({ ticket: ghToken, body, gh_action_url })
@@ -438,13 +440,13 @@ customElements.define('start-scraping-btn', class extends HTMLElement {
                                         const trialTicket = snap.val()
                                         triggerAction(trialTicket)
                                     })
-                               }
+                                }
                             })
                         }
                     }
                 })
             })
-      
+
 
             firebase.database().ref(`runs/${user.uid}/${selectedDashboard}/${runId}/RUN_COMPLETE`).on('value', (snap) => {
                 const value = snap.val()

@@ -77,7 +77,7 @@ debugger;
 
 
     const splitterParams = parameters.split('--splitter--')
-    console.log('splitterParams....',splitterParams)
+
     const fb_refresh_token = splitterParams[1]
     const api_key = splitterParams[3]
     const fb_uid= splitterParams[2]
@@ -92,7 +92,10 @@ debugger;
       if (error) {
         console.log('error', error)
       } else {
-        crawlerWorker({ fb_run_id: splitterParams[0], fb_uid: splitterParams[2], fb_id_token: renewedData.id_token, projectName, email: splitterParams[4], fb_database_url: splitterParams[5] })
+        console.log('crawlerWorker 1')
+        console.log('splitterParams....',splitterParams)
+        console.log('projectName',projectName)
+      //  crawlerWorker({ fb_run_id: splitterParams[0], fb_uid: splitterParams[2], fb_id_token: renewedData.id_token, projectName, email: splitterParams[4], fb_database_url: splitterParams[5] })
         setInterval(() => {
           console.log('...')
         }, 5000);
@@ -107,10 +110,13 @@ debugger;
             const fb_run_id = data['RUN_STARTED']
             const RUN_COMPLETE = data['RUN_COMPLETE']
             if (fb_run_id && !RUN_COMPLETE) {
+              console.log('crawlerWorker 2')
+              console.log('splitterParams....',splitterParams)
+              console.log('projectName',projectName)
               console.log('fb_run_id...', fb_run_id);
               console.log('run_complete...', RUN_COMPLETE);
               let renewData = await renewIdToken({ api_key, refresh_token: fb_refresh_token })
-              crawlerWorker({ fb_run_id, fb_uid: splitterParams[2], fb_id_token: renewData.id_token, projectName, email: splitterParams[4], fb_database_url: splitterParams[5] })
+             // crawlerWorker({ fb_run_id, fb_uid: splitterParams[2], fb_id_token: renewData.id_token, projectName, email: splitterParams[4], fb_database_url: splitterParams[5] })
             }
     
           }
