@@ -95,7 +95,7 @@ debugger;
         console.log('crawlerWorker 1')
         console.log('splitterParams....',splitterParams)
         console.log('projectName',projectName)
-      //  crawlerWorker({ fb_run_id: splitterParams[0], fb_uid: splitterParams[2], fb_id_token: renewedData.id_token, projectName, email: splitterParams[4], fb_database_url: splitterParams[5] })
+        crawlerWorker({ fb_run_id: splitterParams[0], fb_uid: splitterParams[2], fb_id_token: renewedData.id_token, projectName, email: splitterParams[4], fb_database_url: splitterParams[5] })
         setInterval(() => {
           console.log('...')
         }, 5000);
@@ -117,7 +117,7 @@ debugger;
               console.log('fb_run_id...', fb_run_id);
               console.log('run_complete...', RUN_COMPLETE);
               let renewData = await renewIdToken({ api_key, refresh_token: fb_refresh_token })
-             // crawlerWorker({ fb_run_id, fb_uid: splitterParams[2], fb_id_token: renewData.id_token, projectName, email: splitterParams[4], fb_database_url: splitterParams[5] })
+              crawlerWorker({ fb_run_id, fb_uid: splitterParams[2], fb_id_token: renewData.id_token, projectName, email: splitterParams[4], fb_database_url: splitterParams[5] })
             }
     
           }
