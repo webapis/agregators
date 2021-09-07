@@ -108,9 +108,9 @@ async function crawerInitializer({ projectName, parameters }) {
       console.log('crawlerWorker 1')
    
       crawlerWorker({ fb_run_id: splitterParams[0], fb_uid: splitterParams[2], fb_id_token: renewedData.id_token, projectName, email: splitterParams[4], fb_database_url: splitterParams[5] })
-
+      global.timecounter=0
       const CheckTime = (() => {
-        let counter = 0;
+        let counter = global.timecounter;
         return () => {
           counter++;
           return counter;
@@ -146,6 +146,7 @@ async function crawerInitializer({ projectName, parameters }) {
           const RUN_COMPLETE = data['RUN_COMPLETE']
           if (fb_run_id && !RUN_COMPLETE) {
             debugger
+            global.timecounter=0
             console.log('crawlerWorker 2')
             // console.log('splitterParams....', splitterParams)
             // console.log('projectName', projectName)

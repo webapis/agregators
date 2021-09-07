@@ -70,9 +70,9 @@ function renewIdToken() {
 //     }
 //     debugger;
 // })
-
+global.timelimit=5
 const CheckReload = (() => {
-    let counter = 0;
+    let counter = global.timelimit;
     return () => {
         counter++;
         return counter;
