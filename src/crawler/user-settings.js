@@ -160,7 +160,7 @@ const updateAccountType = ({ serviceName, accountType }) => {
     const { selectedDashboard, auth: { user } } = window.pageStore.state
 
     var uid = user.uid;
-    
+
     const myProjectsRef = firebase.database().ref(`myprojects/${uid}/${selectedDashboard}/conf`)
     myProjectsRef.update({ [serviceName]: accountType }, (error) => {
 
@@ -248,7 +248,7 @@ customElements.define('trial-professional-check', class extends HTMLElement {
 
     render({ accountType, serviceName }) {
         const { loading } = window.pageStore.state
-        
+
         const trialInputId = this.getAttribute('trial-input-id')
         const professionalInputId = this.getAttribute('professional-input-id')
         const label = this.getAttribute('label')
@@ -383,9 +383,9 @@ customElements.define('google-services', class extends HTMLElement {
 
         document.getElementById('update-google-api').addEventListener('click', () => {
             const { googleServiceScopes } = window.pageStore.state
-            
+
             window.pageStore.dispatch({ type: window.actionTypes.LOADING })
-            
+
             var CLIENT_ID = '117708549296-uij0mup1c3biok6ifaupa2951vtvf418.apps.googleusercontent.com';
             var REDIRECT_URI = `${window.location.origin}/user-settings.html`;
             window.googleAuthorizationRequest({ client_id: CLIENT_ID, redirect_uri: REDIRECT_URI, scope: googleServiceScopes, state: 'google_services'.toLowerCase(), include_granted_scopes: true, response_type: 'code' })
@@ -414,32 +414,35 @@ customElements.define('github-services', class extends HTMLElement {
     }
 
     connectedCallback() {
-         const {auth:{user}}= window.pageStore.state
+        const { auth: { user } } = window.pageStore.state
         const ghServiceRef = firebase.database().ref(`users/${user.uid}/ghtoken`)
-        ghServiceRef.on("value", snap=>{
-            const hastoken = snap.val()
-          
-                this.render({hastoken})
-           
-            
+        ghServiceRef.on("value", snap => {
+            const hastoken = snap.val()['ghtoken']
+            const gh_user = snap.val()['gh_user']
+            if (hastoken) {
+                window.pageStore.dispatch({ type: window.actionTypes.SET_GH_TKN, payload: { gh_tkn, gh_user } })
+            }
+            this.render({ hastoken })
+
+
         })
-       
+
     }
 
-    render({hastoken}) {
+    render({ hastoken }) {
 
         const { loading } = window.pageStore.state
-       
+
 
         this.innerHTML = `   <div>
         <h5 class="mt-3 mb-5 fw-normal text-muted">Enable or Disable Github Services: </h5>
       
      
     <div class="mt-5">
-    <button class="btn btn-primary" type="button" ${(loading || hastoken)  && 'disabled'} id="update-github-api">
+    <button class="btn btn-primary" type="button" ${(loading || hastoken) && 'disabled'} id="update-github-api">
     ${loading ? '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>' : ''}
     
-    ${loading ? 'Enabling Github...' : hastoken? 'Github is Enabled': 'Enable Github service'}
+    ${loading ? 'Enabling Github...' : hastoken ? 'Github is Enabled' : 'Enable Github service'}
   </button>
 
     <div>
@@ -451,9 +454,9 @@ customElements.define('github-services', class extends HTMLElement {
                 const { auth: { user } } = window.pageStore.state
                 window.location.replace(`/github-verification.html?uid=${user.uid}`)
 
-                
+
             } catch (error) {
-                
+
             }
 
         })

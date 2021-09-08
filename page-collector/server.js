@@ -2,7 +2,7 @@
 
 require('dotenv').config()
 const { crawler } = require('./crawler')
-
+const fetch = require('node-fetch')
 
 if (process.env.SERVER === 'LOCAL_SERVER') {
   // // const { renewIdToken } = require('../utils/firebase/firebase-rest')
@@ -75,9 +75,29 @@ if (process.env.SERVER === 'LOCAL_SERVER') {
   (async () => {
 
     const parameters = process.env.parameters
-
     const projectName = process.env.projectName
-    await crawerInitializer({ projectName, parameters })
+    const splitterParams = parameters.split('--splitter--')
+    const gh_tkn = splitterParams[6]
+    const gh_user = splitterParams[7]
+    console.log('gh_tkn', gh_tkn, 'and___gh_user', gh_user)
+    fetch(`https://api.github.com//repos/${gh_user}/agregators/merge-upstream`, {
+      method: 'post',
+      headers: {
+        authorization: `token ${gh_tkn}`,
+        Accept: 'application/vnd.github.v3+json'
+      },
+      body
+    }).then(result => {
+
+      return result.json()
+    }).then(data => {
+      console.log('upstream data', data)
+      // await crawerInitializer({ projectName, parameters })
+    }).catch(error => {
+      console.log('upstream error', error)
+      process.exit(0)
+    })
+
 
 
   })()
@@ -106,9 +126,9 @@ async function crawerInitializer({ projectName, parameters }) {
       console.log('error', error)
     } else {
       console.log('crawlerWorker 1')
-   
+
       crawlerWorker({ fb_run_id: splitterParams[0], fb_uid: splitterParams[2], fb_id_token: renewedData.id_token, projectName, email: splitterParams[4], fb_database_url: splitterParams[5] })
-      global.timecounter=0
+      global.timecounter = 0
       const CheckTime = (() => {
         let counter = global.timecounter;
         return () => {
@@ -146,7 +166,7 @@ async function crawerInitializer({ projectName, parameters }) {
           const RUN_COMPLETE = data['RUN_COMPLETE']
           if (fb_run_id && !RUN_COMPLETE) {
             debugger
-            global.timecounter=0
+            global.timecounter = 0
             console.log('crawlerWorker 2')
             // console.log('splitterParams....', splitterParams)
             // console.log('projectName', projectName)

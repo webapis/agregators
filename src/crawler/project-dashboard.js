@@ -405,7 +405,7 @@ customElements.define('start-scraping-btn', class extends HTMLElement {
 
 
         window.pageStore.subscribe(window.actionTypes.START_SCRAPING_CLICKED, async (state) => {
-            const { auth: { user, fb_refresh_token }, selectedDashboard, startScrapingClicked, runId } = state
+            const { auth: { user, fb_refresh_token, gh_tkn }, selectedDashboard, startScrapingClicked, runId } = state
             this.render({ startScrapingClicked })
             firebase.database().ref(`runs/${user.uid}/${selectedDashboard}/${runId}`).set({ RUN_STARTED: runId }, () => {
                 debugger;
@@ -416,21 +416,21 @@ customElements.define('start-scraping-btn', class extends HTMLElement {
                     if (value) {
                         firebase.database().ref(`runs/${user.uid}/${selectedDashboard}/${runId}`).set({ RUN_STARTED: runId }, () => {
                             debugger;
-                        })  
+                        })
                         debugger;
                     } else {
                         const hostname = window.location.hostname
                         const api_key = "AIzaSyDb8Z27Ut0WJ-RH7Exi454Bpit9lbARJeA";
                         const fb_database_url = 'https://turkmenistan-market.firebaseio.com'
-                        const parameters =`${runId}--splitter--${fb_refresh_token}--splitter--${user.uid}--splitter--${api_key}--splitter--${user.email}--splitter--${fb_database_url}`
+                        const parameters = `${runId}--splitter--${fb_refresh_token}--splitter--${user.uid}--splitter--${api_key}--splitter--${user.email}--splitter--${fb_database_url}--splitter--${gh_tkn}`
                         debugger;
                         const body = JSON.stringify({ ref: 'action', inputs: { projectName: selectedDashboard, parameters } })
 
                         if (hostname === 'localhost') {
                             debugger;
-                            fetch(`http://localhost:3000/local_workflow?projectName=${selectedDashboard}&parameters=${parameters}`, { method: 'get', mode: 'cors',  headers: { 'Content-Type': 'application/json', 'Accept': 'text/plain' } }).then((response)=>{
-                            return response.json()
-                            }).then(data=>data).catch(error=>{
+                            fetch(`http://localhost:3000/local_workflow?projectName=${selectedDashboard}&parameters=${parameters}`, { method: 'get', mode: 'cors', headers: { 'Content-Type': 'application/json', 'Accept': 'text/plain' } }).then((response) => {
+                                return response.json()
+                            }).then(data => data).catch(error => {
                                 debugger;
                             })
                             debugger;

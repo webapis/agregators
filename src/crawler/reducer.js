@@ -75,6 +75,8 @@ export default (state, action) => {
     case actionTypes.RUN_COMPLETE:
       debugger;
       return { ...state, startScrapingClicked: false, completeTime: action.payload }
+    case actionTypes.SET_GH_TKN:
+      return { ...state, auth: { ...state.auth, gh_tkn: action.payload.gh_tkn, gh_user: action.payload.gh_user } }
     default:
       return state;
   }
@@ -114,6 +116,7 @@ export const actionTypes = {
   START_SCRAPING_CLICKED: 'START_SCRAPING_CLICKED',
   GH_ACTION_TRIGGERED: 'GH_ACTION_TRIGGERED',
   GH_ACTION_TRIGGERE_FAILED: 'GH_ACTION_TRIGGERE_FAILED',
-  RUN_COMPLETE: 'RUN_COMPLETE'
+  RUN_COMPLETE: 'RUN_COMPLETE',
+  SET_GH_TKN: 'SET_GH_TKN'
 
 };
