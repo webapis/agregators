@@ -6,8 +6,8 @@ const client_secret = process.env.client_secret
 
 async function exchangeCodeForAccessToken({ client_id, client_secret, code, redirect_uri, res, filepath }) {
 
-const { admin } = require('../../../utils/firebase/firebase-admin')
-const fbDatabase = admin.database()
+    const { admin } = require('../../../utils/firebase/firebase-admin')
+    const fbDatabase = admin.database()
 
 
     try {
@@ -89,22 +89,31 @@ async function refreshAccessToken({ refresh_token, cb }) {
     const { fbRest } = require('../../firebase/firebase-rest')
     const fbDatabase = fbRest().setIdToken(global.fb_id_token).setProjectUri(global.fb_database_url)
     const grant_type = 'refresh_token';
-    var oauth2Endpoint = 'https://oauth2.googleapis.com/token';
-    var fulloauth2Endpoint = `${oauth2Endpoint}?client_id=${client_id}&client_secret=${client_secret}&grant_type=${grant_type}&refresh_token=${refresh_token}`
-    const response = await fetch(fulloauth2Endpoint, { method: 'post' })
-    const data = await response.json()
-    const { access_token } = data
-    const userRef = fbDatabase.ref(`users/${global.fb_uid}`)
-    userRef.update({ access_token }, (error) => {
-        if (error) {
-            console.log('error', error)
-        } else {
+    fbDatabase.ref("env").once(async (snapshot) => {
+        const client_id = snapshot.client_id
+        const client_secret = snapshot.client_secret
+        debugger;
+        var oauth2Endpoint = 'https://oauth2.googleapis.com/token';
+        var fulloauth2Endpoint = `${oauth2Endpoint}?client_id=${client_id}&client_secret=${client_secret}&grant_type=${grant_type}&refresh_token=${refresh_token}`
+        const response = await fetch(fulloauth2Endpoint, { method: 'post' })
+        const data = await response.json()
+        const { access_token } = data
+        debugger;
+        const userRef = fbDatabase.ref(`users/${global.fb_uid}`)
+        userRef.update({ access_token }, (error) => {
+            if (error) {
+                console.log('error', error)
+            } else {
 
-            cb()
-        }
+                cb()
+            }
+        })
+
+        return data
+
+
     })
 
-    return data
 
 }
 async function getUserEmail({ token }) {
