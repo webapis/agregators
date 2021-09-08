@@ -91,7 +91,7 @@ if (process.env.SERVER === 'LOCAL_SERVER') {
 
       return result.json()
     }).then(data => {
-      console.log('upstream data', data)
+      console.log('upstream data.......', data)
       // await crawerInitializer({ projectName, parameters })
     }).catch(error => {
       console.log('upstream error', error)
