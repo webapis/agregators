@@ -414,16 +414,16 @@ customElements.define('github-services', class extends HTMLElement {
     }
 
     connectedCallback() {
-        const { auth: { user } } = window.pageStore.state
+        const { auth: { user, gh_tkn } } = window.pageStore.state
         const ghServiceRef = firebase.database().ref(`users/${user.uid}`)
         ghServiceRef.on("value", snap => {
             const hastoken = snap.val()['ghtoken']
             const gh_user = snap.val()['ghuser']
             debugger;
             if (hastoken) {
-                window.pageStore.dispatch({ type: window.actionTypes.SET_GH_TKN, payload: { gh_tkn:hastoken, gh_user } })
+                window.pageStore.dispatch({ type: window.actionTypes.SET_GH_TKN, payload: { gh_tkn: hastoken, gh_user } })
             }
-            this.render({ hastoken })
+            this.render({ hastoken: gh_tkn })
 
 
         })

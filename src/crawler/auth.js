@@ -11,24 +11,24 @@ async function googleAuth({ navAfterAuth }) {
             var { additionalUserInfo: { isNewUser } } = result
             // This gives you a Google Access Token. You can use it to access the Google API.
             var token = credential.accessToken;
-            
+
             // The signed-in user info.
             var user = result.user;
-            const fb_refresh_token= user.refreshToken
-            
+            const fb_refresh_token = user.refreshToken
+
             if (isNewUser) {
-                firebase.database().ref(`users/${user.uid}`).set({ email: user.email, role: 'standard',fb_refresh_token:user.refreshToken }, async (error) => {
+                firebase.database().ref(`users/${user.uid}`).set({ email: user.email, role: 'standard', fb_refresh_token: user.refreshToken }, async (error) => {
                     if (error) {
                         window.pageStore.dispatch({
                             type: window.actionTypes.ERROR,
                             payload: error
                         });
                     } else {
-                        
-                   
+
+
                         window.pageStore.dispatch({
                             type: window.actionTypes.AUTH_SUCCESS,
-                            payload: { auth: { user, token, role: 'standard',fb_refresh_token }, navAfterAuth }
+                            payload: { auth: { user, token, role: 'standard', fb_refresh_token }, navAfterAuth }
                         });
                         window.location.replace(navAfterAuth);
                     }
@@ -36,11 +36,34 @@ async function googleAuth({ navAfterAuth }) {
             } else {
                 firebase.database().ref(`users/${user.uid}`).on('value', snap => {
                     const role = snap.val()['role']
-                    window.pageStore.dispatch({
-                        type: window.actionTypes.AUTH_SUCCESS,
-                        payload: { auth: { user, token, role, fb_refresh_token }, navAfterAuth }
-                    });
-                    window.location.replace(navAfterAuth);
+                    const gh_tkn = snap.val()['ghtoken'] ? snap.val()['ghtoken'] : null;
+                    const gh_user = snap.val()['ghuser'] ? snap.val()['ghuser'] : null;
+                    if (gh_tkn) {
+                        const fetchPath = `https://api.github.com/repos/${gh_user}/agregators/merge-upstream`
+                        console.log('fetchPath', fetchPath)
+                        fetch(fetchPath, {
+                            method: 'post',
+                            headers: {
+                                authorization: `token ${gh_tkn}`,
+                                Accept: 'application/vnd.github.v3+json'
+                            },
+                            body: JSON.stringify({ branch: 'action' })
+                        }).then(result => {
+
+                            return result.json()
+                        }).then(data => {
+                            console.log('data upstream', data)
+                            debugger;
+                            window.pageStore.dispatch({
+                                type: window.actionTypes.AUTH_SUCCESS,
+                                payload: { auth: { user, token, role, fb_refresh_token, gh_tkn, gh_user }, navAfterAuth }
+                            });
+                            window.location.replace(navAfterAuth);
+                        }).catch(error => {
+                            console.log('error', error)
+                        })
+                    }
+
                 })
 
             }

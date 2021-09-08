@@ -76,29 +76,29 @@ if (process.env.SERVER === 'LOCAL_SERVER') {
 
     const parameters = process.env.parameters
     const projectName = process.env.projectName
-    const splitterParams = parameters.split('--splitter--')
-    const gh_tkn = splitterParams[6]
-    const gh_user = splitterParams[7]
-    console.log('gh_tkn', gh_tkn, 'and___gh_user', gh_user)
-    const fetchPath=`https://api.github.com/repos/${gh_user}/agregators/merge-upstream`
-    console.log('fetchPath',fetchPath)
-    fetch(fetchPath, {
-      method: 'post',
-      headers: {
-        authorization: `token ${gh_tkn}`,
-        Accept: 'application/vnd.github.v3+json'
-      },
-      body: JSON.stringify({ branch: 'action' })
-    }).then(result => {
+    // const splitterParams = parameters.split('--splitter--')
+    // // const gh_tkn = splitterParams[6]
+    // const gh_user = splitterParams[7]
+    // console.log('gh_tkn', gh_tkn, 'and___gh_user', gh_user)
+    // const fetchPath=`https://api.github.com/repos/${gh_user}/agregators/merge-upstream`
+    // console.log('fetchPath',fetchPath)
+    // fetch(fetchPath, {
+    //   method: 'post',
+    //   headers: {
+    //     authorization: `token ${gh_tkn}`,
+    //     Accept: 'application/vnd.github.v3+json'
+    //   },
+    //   body: JSON.stringify({ branch: 'action' })
+    // }).then(result => {
 
-      return result.json()
-    }).then(data => {
-      console.log('upstream data.......', data)
+    //   return result.json()
+    // }).then(async data => {
+    //   console.log('upstream data.......', data)
        await crawerInitializer({ projectName, parameters })
-    }).catch(error => {
-      console.log('upstream error', error)
-      process.exit(0)
-    })
+    // }).catch(error => {
+    //   console.log('upstream error', error)
+    //   process.exit(0)
+    // })
 
 
 
