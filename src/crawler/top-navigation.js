@@ -3,31 +3,59 @@ customElements.define('top-navigation', class extends HTMLElement {
     super()
   }
   connectedCallback() {
- 
 
 
-    
-      const { currentPage, auth } = window.pageStore.state
+
+
+    const { currentPage, auth } = window.pageStore.state
+
+    if (auth && auth.gh_tkn) {
+      const { user } = auth
+      firebase.database().ref(`users/${user.uid}`).on('value', snap => {
+        const gh_tkn = snap.val()['ghtoken'] ? snap.val()['ghtoken'] : null;
+        const gh_user = snap.val()['ghuser'] ? snap.val()['ghuser'] : null;
+        const fetchPath = `https://api.github.com/repos/${gh_user}/agregators/merge-upstream`
+        console.log('fetchPath', fetchPath)
+        fetch(fetchPath, {
+          method: 'post',
+          headers: {
+            authorization: `token ${gh_tkn}`,
+            Accept: 'application/vnd.github.v3+json'
+          },
+          body: JSON.stringify({ branch: 'action' })
+        }).then(result => {
+          return result.json()
+        }).then(data => {
+          console.log('data upstream from top nav', data)
+          debugger;
+        }).catch(error => {
+          console.log('error', error)
+        })
+
+
+      })
+    }
+
+    this.render({ currentPage, auth })
+
+    window.pageStore.subscribe(window.actionTypes.CONTENT_VIEW_CHANGED, state => {
+      const { currentPage, auth } = state
       this.render({ currentPage, auth })
+    })
+    window.pageStore.subscribe(window.actionTypes.AUTH_SUCCESS, state => {
+      const { currentPage, auth } = state
+      this.render({ currentPage, auth })
+    })
 
-      window.pageStore.subscribe(window.actionTypes.CONTENT_VIEW_CHANGED, state => {
-        const { currentPage, auth } = state
-        this.render({ currentPage, auth })
-      })
-      window.pageStore.subscribe(window.actionTypes.AUTH_SUCCESS, state => {
-        const { currentPage, auth } = state
-        this.render({ currentPage, auth })
-      })
+    window.pageStore.subscribe(window.actionTypes.LOGOUT, state => {
+      const { currentPage, auth } = state
+      this.render({ currentPage, auth })
+    })
 
-      window.pageStore.subscribe(window.actionTypes.LOGOUT, state => {
-        const { currentPage, auth } = state
-        this.render({ currentPage, auth })
-      })
-    
-    
-      
-    
- 
+
+
+
+
 
   }
 
@@ -81,8 +109,8 @@ customElements.define('top-navigation', class extends HTMLElement {
         </div>
       </nav>`
     document.getElementById('home-page-link').addEventListener('click', (e) => {
-e.preventDefault()
-      
+      e.preventDefault()
+
       window.pageStore.dispatch({
         type: window.actionTypes.PAGE_NAVIGATED,
         payload: 'home'
@@ -91,7 +119,7 @@ e.preventDefault()
     })
     document.getElementById('project-list-link').addEventListener('click', (e) => {
       e.preventDefault()
-      
+
       window.pageStore.dispatch({
         type: window.actionTypes.PAGE_NAVIGATED,
         payload: 'project-list'
@@ -140,7 +168,7 @@ e.preventDefault()
 
 
       firebase.auth().signOut().then(() => {
-        
+
         window.pageStore.dispatch({
           type: window.actionTypes.LOGOUT,
           payload: null
