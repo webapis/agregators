@@ -405,7 +405,7 @@ customElements.define('start-scraping-btn', class extends HTMLElement {
 
 
         window.pageStore.subscribe(window.actionTypes.START_SCRAPING_CLICKED, async (state) => {
-            const { auth: { user, fb_refresh_token, gh_tkn }, selectedDashboard, startScrapingClicked, runId } = state
+            const { auth: { user, fb_refresh_token, gh_tkn,gh_user }, selectedDashboard, startScrapingClicked, runId } = state
             this.render({ startScrapingClicked })
             firebase.database().ref(`runs/${user.uid}/${selectedDashboard}/${runId}`).set({ RUN_STARTED: runId }, () => {
                 debugger;
@@ -422,7 +422,7 @@ customElements.define('start-scraping-btn', class extends HTMLElement {
                         const hostname = window.location.hostname
                         const api_key = "AIzaSyDb8Z27Ut0WJ-RH7Exi454Bpit9lbARJeA";
                         const fb_database_url = 'https://turkmenistan-market.firebaseio.com'
-                        const parameters = `${runId}--splitter--${fb_refresh_token}--splitter--${user.uid}--splitter--${api_key}--splitter--${user.email}--splitter--${fb_database_url}--splitter--${gh_tkn}`
+                        const parameters = `${runId}--splitter--${fb_refresh_token}--splitter--${user.uid}--splitter--${api_key}--splitter--${user.email}--splitter--${fb_database_url}--splitter--${gh_tkn}--splitter--${gh_user}`
                         debugger;
                         const body = JSON.stringify({ ref: 'action', inputs: { projectName: selectedDashboard, parameters } })
 
