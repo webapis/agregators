@@ -131,14 +131,20 @@ async function crawerInitializer({ projectName, parameters }) {
 
       crawlerWorker({ fb_run_id: splitterParams[0], fb_uid: splitterParams[2], fb_id_token: renewedData.id_token, projectName, email: splitterParams[4], fb_database_url: splitterParams[5] })
       global.timecounter = 0
+      // const CheckTime = (() => {
+      //   let counter = global.timecounter;
+      //   return () => {
+      //     counter++;
+      //     return counter;
+      //   };
+      // })();
       const CheckTime = (() => {
-        let counter = global.timecounter;
+        
         return () => {
-          counter++;
-          return counter;
+          global.timecounter++;
+          return  global.timecounter;
         };
       })();
-
       {
         const refreshId = setInterval(
           () => {
