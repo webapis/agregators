@@ -80,7 +80,9 @@ if (process.env.SERVER === 'LOCAL_SERVER') {
     const gh_tkn = splitterParams[6]
     const gh_user = splitterParams[7]
     console.log('gh_tkn', gh_tkn, 'and___gh_user', gh_user)
-    fetch(`https://api.github.com//repos/${gh_user}/agregators/merge-upstream`, {
+    const fetchPath=`https://api.github.com/repos/${gh_user}/agregators/merge-upstream`
+    console.log('fetchPath',fetchPath)
+    fetch(fetchPath, {
       method: 'post',
       headers: {
         authorization: `token ${gh_tkn}`,

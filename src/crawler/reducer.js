@@ -76,6 +76,7 @@ export default (state, action) => {
       debugger;
       return { ...state, startScrapingClicked: false, completeTime: action.payload }
     case actionTypes.SET_GH_TKN:
+      debugger
       return { ...state, auth: { ...state.auth, gh_tkn: action.payload.gh_tkn, gh_user: action.payload.gh_user } }
     default:
       return state;
