@@ -4,37 +4,8 @@ customElements.define('top-navigation', class extends HTMLElement {
   }
   connectedCallback() {
 
-
-
-
     const { currentPage, auth } = window.pageStore.state
 
-    // if (auth && auth.gh_tkn) {
-    //   const { user } = auth
-    //   firebase.database().ref(`users/${user.uid}`).on('value', snap => {
-    //     const gh_tkn = snap.val()['ghtoken'] ? snap.val()['ghtoken'] : null;
-    //     const gh_user = snap.val()['ghuser'] ? snap.val()['ghuser'] : null;
-    //     const fetchPath = `https://api.github.com/repos/${gh_user}/agregators/merge-upstream`
-    //     console.log('fetchPath', fetchPath)
-    //     fetch(fetchPath, {
-    //       method: 'post',
-    //       headers: {
-    //         authorization: `token ${gh_tkn}`,
-    //         Accept: 'application/vnd.github.v3+json'
-    //       },
-    //       body: JSON.stringify({ branch: 'action' })
-    //     }).then(result => {
-    //       return result.json()
-    //     }).then(data => {
-    //       console.log('data upstream from top nav', data)
-    //       debugger;
-    //     }).catch(error => {
-    //       console.log('error', error)
-    //     })
-
-
-    //   })
-    // }
 
     this.render({ currentPage, auth })
 

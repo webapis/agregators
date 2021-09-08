@@ -36,7 +36,7 @@ async function pageUploadExcel({ taskSequelizerEventEmitter }) {
                     await uploadExcelFile({ access_token: token.access_token, filePath: files[0], taskSequelizerEventEmitter, parentFolder: data.id })
 
                 } else {
-                    
+                    console.log('error data',data)
                     throw 'unhandled http response Status'
                 }
 
