@@ -86,7 +86,7 @@ if (process.env.SERVER === 'LOCAL_SERVER') {
         authorization: `token ${gh_tkn}`,
         Accept: 'application/vnd.github.v3+json'
       },
-      body
+      body: JSON.stringify({ branch: 'action' })
     }).then(result => {
 
       return result.json()
