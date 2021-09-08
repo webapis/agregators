@@ -421,7 +421,7 @@ customElements.define('github-services', class extends HTMLElement {
             const gh_user = snap.val()['ghuser']
             debugger;
             if (hastoken) {
-                window.pageStore.dispatch({ type: window.actionTypes.SET_GH_TKN, payload: { gh_tkn, gh_user } })
+                window.pageStore.dispatch({ type: window.actionTypes.SET_GH_TKN, payload: { gh_tkn:hastoken, gh_user } })
             }
             this.render({ hastoken })
 
