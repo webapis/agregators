@@ -76,31 +76,7 @@ if (process.env.SERVER === 'LOCAL_SERVER') {
 
     const parameters = process.env.parameters
     const projectName = process.env.projectName
-    // const splitterParams = parameters.split('--splitter--')
-    // // const gh_tkn = splitterParams[6]
-    // const gh_user = splitterParams[7]
-    // console.log('gh_tkn', gh_tkn, 'and___gh_user', gh_user)
-    // const fetchPath=`https://api.github.com/repos/${gh_user}/agregators/merge-upstream`
-    // console.log('fetchPath',fetchPath)
-    // fetch(fetchPath, {
-    //   method: 'post',
-    //   headers: {
-    //     authorization: `token ${gh_tkn}`,
-    //     Accept: 'application/vnd.github.v3+json'
-    //   },
-    //   body: JSON.stringify({ branch: 'action' })
-    // }).then(result => {
-
-    //   return result.json()
-    // }).then(async data => {
-    //   console.log('upstream data.......', data)
        await crawerInitializer({ projectName, parameters })
-    // }).catch(error => {
-    //   console.log('upstream error', error)
-    //   process.exit(0)
-    // })
-
-
 
   })()
 
@@ -131,13 +107,7 @@ async function crawerInitializer({ projectName, parameters }) {
 
       crawlerWorker({ fb_run_id: splitterParams[0], fb_uid: splitterParams[2], fb_id_token: renewedData.id_token, projectName, email: splitterParams[4], fb_database_url: splitterParams[5] })
       global.timecounter = 0
-      // const CheckTime = (() => {
-      //   let counter = global.timecounter;
-      //   return () => {
-      //     counter++;
-      //     return counter;
-      //   };
-      // })();
+
       const CheckTime = (() => {
         
         return () => {
@@ -176,10 +146,7 @@ async function crawerInitializer({ projectName, parameters }) {
             debugger
             global.timecounter = 0
             console.log('crawlerWorker 2')
-            // console.log('splitterParams....', splitterParams)
-            // console.log('projectName', projectName)
-            // console.log('fb_run_id...', fb_run_id);
-            // console.log('run_complete...', RUN_COMPLETE);
+  
             let renewData = await renewIdToken({ api_key, refresh_token: fb_refresh_token })
             crawlerWorker({ fb_run_id, fb_uid: splitterParams[2], fb_id_token: renewData.id_token, projectName, email: splitterParams[4], fb_database_url: splitterParams[5] })
           }

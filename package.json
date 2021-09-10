@@ -9,6 +9,7 @@
     "@rollup/plugin-replace": "2.4.1",
     "blob": "^0.1.0",
     "console-table-printer": "2.9.0",
+    "deasync": "^0.1.23",
     "directory-tree": "2.2.9",
     "dotenv": "8.2.0",
     "eventsource": "^1.1.0",
