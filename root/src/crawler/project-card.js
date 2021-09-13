@@ -33,20 +33,28 @@ customElements.define('project-card', class extends HTMLElement {
             e.preventDefault()
             const { auth: { token } } = window.pageStore.state
             const gihubowner = githuburl.substring(githuburl.indexOf('.com/') + 5, githuburl.lastIndexOf('/'))
+            //GET USERNAME
+            const userNameReponse = await fetch(`https://api.github.com/user`, { headers: { Accept: "application/vnd.github.v3+json", authorization: `token ${token}` } })
+            const userNameData = await userNameReponse.json()
+            const { login } = userNameData
             debugger;
+            if (await branchExists({ branchName: projectName, branchOwner: login, repo: 'agregators' })) {
+                debugger;
+                await deleteBranch({ owner: login, repo: 'agregators', branchName: projectName, token })
+                debugger;
+            }
+            debugger;
+
+
             const shaResponse = await fetch(`https://api.github.com/repos/${gihubowner}/${projectName}/branches`)
             const shaData = await shaResponse.json()
             const mainSha = shaData.find(d => d.name === 'main')
             const { commit: { sha } } = mainSha
             debugger;
 
-            const treeResponse = await fetch(`https://api.github.com/repos/${gihubowner}/${projectName}/git/trees/${sha}`)
+            const treeResponse = await fetch(`https://api.github.com/repos/${gihubowner}/${projectName}/git/trees/${sha}?recursive=1`)
             const treeData = await treeResponse.json()
             const { tree } = treeData
-            //GET USERNAME
-            const userNameReponse = await fetch(`https://api.github.com/user`, { headers: { Accept: "application/vnd.github.v3+json", authorization: `token ${token}` } })
-            const userNameData = await userNameReponse.json()
-            const { login } = userNameData
             debugger;
             //create a new branch for a project inside forked agrefators repo
             //1.get the sha ofthe branch
@@ -56,24 +64,54 @@ customElements.define('project-card', class extends HTMLElement {
             debugger;
 
             const mainForkedSha = agsRepoMasterShaData.find(d => d.name === 'master')
-            const { commit: { sha:mastersha } } = mainForkedSha
+            const { commit: { sha: mastersha } } = mainForkedSha
             debugger;
             //2.Create a new branch with project name
-            // const newBranchResponse  = await fetch(`https://api.github.com/repos/serdartkm/agregators/git/refs`, { method: 'post', headers: { Accept: "application/vnd.github.v3+json", authorization: `token ${token}` }, body: JSON.stringify({ sha: mastersha, ref:`refs/heads/${projectName}` }) })
-           
-            // const newBranchData =await newBranchResponse.json()
+            const newBranchResponse = await fetch(`https://api.github.com/repos/serdartkm/agregators/git/refs`, { method: 'post', headers: { Accept: "application/vnd.github.v3+json", authorization: `token ${token}` }, body: JSON.stringify({ sha: mastersha, ref: `refs/heads/${projectName}` }) })
+            const newBranchData = await newBranchResponse.json()
             debugger;
-           // PUSH CONTENT TO PROJECT BRANCH
-           //1.retrieve all files from coders repository
-           
+            // PUSH CONTENT TO PROJECT BRANCH
+            //1.retrieve all files from coders repository
+            const getContent = async function ({ path }) {
+                const response = await fetch(`https://api.github.com/repos/${gihubowner}/${projectName}/contents/${path}`)
+                const data = await response.json()
+
+                return data;
+            }
             const promises = []
-            tree.forEach(t => {
+            const withoutTypeTree = tree.filter(f => f.type !== 'tree')
+            debugger;
+            for (let t of withoutTypeTree) {
+           
+                promises.push(getContent({ path: t.path }))
+             
 
+            }
+            const contents = await Promise.all(promises)
+            debugger;
+        
+            debugger;
+            //2. push contents to progect branch of projects user`s forked agregators repo
+            const pushContentPromises = []
+            const pushContent = async function ({ content, path }) {
+                try {
+                    debugger;
+                    const response = await fetch(`https://api.github.com/repos/${login}/agregators/contents/${path}`, { method: 'put', headers: { Accept: "application/vnd.github.v3+json", authorization: `token ${token}` }, body: JSON.stringify({ message: 'coder content', content, branch: projectName }) })
+                    const data = await response.text()
+                    debugger;
+                    return data;
+                } catch (error) {
+                    debugger;
+                }
+
+            }
+            debugger;
+
+            contents.forEach(c => {
                 debugger;
+                pushContentPromises.push(pushContent({ content: c.content, path: c.path }))
             })
-
-
-
+            const pushContentResult = await Promise.all(pushContentPromises)
             debugger;
             // co   nst { auth } = window.pageStore.state
 
@@ -172,3 +210,34 @@ customElements.define('eye-icon', class extends HTMLElement {
       </svg>`
     }
 })
+
+
+
+
+async function branchExists({ branchName, branchOwner, repo }) {
+    try {
+        const getbranches = await fetch(`https://api.github.com/repos/${branchOwner}/${repo}/branches`)
+
+        const branches = await getbranches.json()
+        const bExist = branches.find(b => b.name === branchName)
+        debugger;
+        return bExist
+    } catch (error) {
+        console.log('error', error)
+    }
+}
+
+
+async function deleteBranch({ owner, repo, branchName, token }) {
+    try {
+        const deletUrl = `https://api.github.com/repos/${owner}/${repo}/git/refs/heads/${branchName}`
+
+        debugger;
+        const responseDeleteABranch = await fetch(deletUrl, { method: 'delete', headers: { Accept: "application/vnd.github.v3+json", authorization: `token ${token}` } })
+        const deleteData = await responseDeleteABranch.text()
+        debugger;
+        return deleteData;
+    } catch (error) {
+        console.log('error', error)
+    }
+}

@@ -3,7 +3,7 @@
 async function googleAuth({ navAfterAuth }) {
     var provider = new firebase.auth.GithubAuthProvider();
 
-    provider.addScope('repo workflow user');
+    provider.addScope('repo workflow user delete_repo');
     provider.setCustomParameters({
         'allow_signup': 'false'
       });   

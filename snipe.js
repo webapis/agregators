@@ -178,3 +178,14 @@ const files = []
 //     }).catch(error => {
 //         debugger;
 //     })
+    
+
+const deletUrl =`https://api.github.com/repos/serdartkm/agregators/git/refs/heads/koton`
+// /repos/{owner}/{repo}/git/refs/{ref}
+debugger;
+const responseDeleteABranch =  fetch(deletUrl, { method: 'delete', headers: { Accept: "application/vnd.github.v3+json", authorization: `token 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` } }).then(response=> response.text()).then(data=>{
+    debugger;
+}).catch(error=>{
+    debugger;
+})
+
