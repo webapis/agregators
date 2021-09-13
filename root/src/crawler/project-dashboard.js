@@ -424,7 +424,7 @@ customElements.define('start-scraping-btn', class extends HTMLElement {
                         const fb_database_url = 'https://turkmenistan-market.firebaseio.com'
                         const parameters = `${runId}--splitter--${fb_refresh_token}--splitter--${user.uid}--splitter--${api_key}--splitter--${user.email}--splitter--${fb_database_url}--splitter--${gh_tkn}--splitter--${gh_user}`
                         debugger;
-                        const body = JSON.stringify({ ref: 'action', inputs: { projectName: selectedDashboard, parameters } })
+                        const body = JSON.stringify({ ref:selectedDashboard, inputs: { projectName: selectedDashboard, parameters } })
 
                         if (hostname === 'localhost') {
                             debugger;

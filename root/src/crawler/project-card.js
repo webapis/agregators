@@ -113,73 +113,73 @@ customElements.define('project-card', class extends HTMLElement {
             })
             const pushContentResult = await Promise.all(pushContentPromises)
             debugger;
-            // co   nst { auth } = window.pageStore.state
+            const { auth } = window.pageStore.state
 
-            // if (!auth) {
-            //     const result = await window.googleAuth({ navAfterAuth: '/project-dashboard.html' })
+            if (!auth) {
+                const result = await window.googleAuth({ navAfterAuth: '/project-dashboard.html' })
 
-            // } else {
+            } else {
 
-            //     const { uid, email } = firebase.auth().currentUser;
-            //     const userProjectsRef = firebase.database().ref(`myprojects/${uid}/${projectName}`)
+                const { uid, email } = firebase.auth().currentUser;
+                const userProjectsRef = firebase.database().ref(`myprojects/${uid}/${projectName}`)
 
-            //     userProjectsRef.on('value', snap => {
+                userProjectsRef.on('value', snap => {
 
-            //         const value = snap.val()
+                    const value = snap.val()
 
-            //         if (value === null) {
+                    if (value === null) {
 
-            //             const projectTemplatesRef = firebase.database().ref(`projects/${projectName}`)
-            //             projectTemplatesRef.on('value', snap => {
-            //                 const value = snap.val()
-            //                 const description = value['description']
-            //                 const conf = { emailService: 'trial', exportService: 'trial', databaseService: 'trial', scheduleService: 'trial' }
-            //                 userProjectsRef.set({ description, user: email, conf }, (error) => {
-            //                     if (error) {
-            //                         window.pageStore.dispatch({
-            //                             type: window.actionTypes.ERROR,
-            //                             payload: { error }
-            //                         });
-            //                     } else {
-            //                         window.pageStore.dispatch({
-            //                             type: window.actionTypes.SET_ALL_ACCOUNT_TYPES,
-            //                             payload: conf
-            //                         });
-            //                         window.pageStore.dispatch({
-            //                             type: window.actionTypes.CONTENT_VIEW_CHANGED,
-            //                             payload: { contentView: 'project-dashboard', selectedDashboard: projectName }
-            //                         });
+                        const projectTemplatesRef = firebase.database().ref(`projects/${projectName}`)
+                        projectTemplatesRef.on('value', snap => {
+                            const value = snap.val()
+                            const description = value['description']
+                            const conf = { emailService: 'trial', exportService: 'trial', databaseService: 'trial', scheduleService: 'trial' }
+                            userProjectsRef.set({ description, user: email, conf }, (error) => {
+                                if (error) {
+                                    window.pageStore.dispatch({
+                                        type: window.actionTypes.ERROR,
+                                        payload: { error }
+                                    });
+                                } else {
+                                    window.pageStore.dispatch({
+                                        type: window.actionTypes.SET_ALL_ACCOUNT_TYPES,
+                                        payload: conf
+                                    });
+                                    window.pageStore.dispatch({
+                                        type: window.actionTypes.CONTENT_VIEW_CHANGED,
+                                        payload: { contentView: 'project-dashboard', selectedDashboard: projectName }
+                                    });
 
-            //                         window.location.replace('/project-dashboard.html')
-            //                     }
-            //                 })
+                                    window.location.replace('/project-dashboard.html')
+                                }
+                            })
 
-            //             })
-            //         } else {
-
-
-            //             const conf = { emailService: value['emailService'], exportService: value['exportService'], databaseService: value['databaseService'], scheduleService: value['scheduleService'] }
-
-            //             window.pageStore.dispatch({
-            //                 type: window.actionTypes.SET_ALL_ACCOUNT_TYPES,
-            //                 payload: conf
-            //             });
-            //             window.pageStore.dispatch({
-            //                 type: window.actionTypes.CONTENT_VIEW_CHANGED,
-            //                 payload: { contentView: 'project-dashboard', selectedDashboard: projectName }
-            //             });
-            //             window.location.replace('/project-dashboard.html')
-
-            //         }
-            //     })
+                        })
+                    } else {
 
 
-            //     const { id } = e.target
-            //     window.pageStore.dispatch({
-            //         type: window.actionTypes.CONTENT_VIEW_CHANGED,
-            //         payload: { contentView: 'project-dashboard', selectedDashboard: projectName }
-            //     });
-            // }
+                        const conf = { emailService: value['emailService'], exportService: value['exportService'], databaseService: value['databaseService'], scheduleService: value['scheduleService'] }
+
+                        window.pageStore.dispatch({
+                            type: window.actionTypes.SET_ALL_ACCOUNT_TYPES,
+                            payload: conf
+                        });
+                        window.pageStore.dispatch({
+                            type: window.actionTypes.CONTENT_VIEW_CHANGED,
+                            payload: { contentView: 'project-dashboard', selectedDashboard: projectName }
+                        });
+                        window.location.replace('/project-dashboard.html')
+
+                    }
+                })
+
+
+                const { id } = e.target
+                window.pageStore.dispatch({
+                    type: window.actionTypes.CONTENT_VIEW_CHANGED,
+                    payload: { contentView: 'project-dashboard', selectedDashboard: projectName }
+                });
+            }
 
 
         })
