@@ -79,8 +79,8 @@
     "pageImageOptimizer:test": "mocha page-image-optimizer/test",
     "pagePrerender:test": "mocha page-prerender/test",
     "snipe": "node snipe.js",
-    "start": "node --inspect=9090 index.js",
-    "local:start": "SERVER=LOCAL_SERVER node --inspect=9090 index.js",
+    "start": "node --inspect=9090 root/index.js",
+    "local:start": "SERVER=LOCAL_SERVER node root/index.js",
     "crawler": "SERVER=LOCAL_SERVER  node page-collector/server.js"
   },
   "nodemonConfig": {
