@@ -54,7 +54,7 @@ const fetch = require('node-fetch')
 //renewIdToken()
 
 
-// fbRest().setIdToken(process.env.idToken).setProjectUri('https://turkmenistan-market.firebaseio.com').ref('rest').set({ googby: 'good expiration....' }, (error ) => {
+// fbRest().setProjectUri('https://turkmenistan-market.firebaseio.com').ref('rest').set({ googby: 'good expiration....' }, (error ) => {
 //     if (error) {
 //         debugger;
 //     }
@@ -76,9 +76,7 @@ const fetch = require('node-fetch')
 // clone('https://github.com/serdartkm/actor-prj.git',`${process.cwd()}/cloned-repo`,{},function(data){
 //     debugger;
 // })
-const fs = require('fs')
-const rootpath = 'https://api.github.com/repos/serdartkm/actor-prj/contents/'
-const files = []
+
 // fetch(`${rootpath}main.js`, { headers: { Accept: "application/vnd.github.v3+json", authorization: `token ${process.env.gitticket}`, } }).then(response => response.json()).then(data => {
 //     const { content } = data
 
@@ -172,20 +170,24 @@ const files = []
 //     debugger;
 // })
 
-// fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithIdp?key=AIzaSyDb8Z27Ut0WJ-RH7Exi454Bpit9lbARJeA`
-//     , {method:'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ postBody: "access_token='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'&providerId=github.com", requestUri: "https://crawler-node-webapp.herokuapp.com/user-settings.html", returnIdpCredential: true, returnSecureToken: true }) }).then(response => response.json()).then(data => {
-//         debugger;
-//     }).catch(error => {
-//         debugger;
-//     })
+fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithIdp?key=AIzaSyDb8Z27Ut0WJ-RH7Exi454Bpit9lbARJeA`
+    , {method:'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ postBody: "access_token=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&providerId=github.com", requestUri: "https://turkmenistan-market.firebaseapp.com/__/auth/handler", returnIdpCredential: true, returnSecureToken: true }) }).then(response => response.json()).then(data => {
+        debugger;
+    }).catch(error => {
+        debugger;
+    })
     
-
-const deletUrl =`https://api.github.com/repos/serdartkm/agregators/git/refs/heads/koton`
-// /repos/{owner}/{repo}/git/refs/{ref}
-debugger;
-const responseDeleteABranch =  fetch(deletUrl, { method: 'delete', headers: { Accept: "application/vnd.github.v3+json", authorization: `token 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` } }).then(response=> response.text()).then(data=>{
-    debugger;
-}).catch(error=>{
-    debugger;
-})
+// fetch(`https://api.github.com/applications/8aa21614dc0136a7a44b/token`, {method:'POST',headers: { Accept: "application/vnd.github.v3+json", Authorization: `Basic ${Buffer.from(unescape(encodeURIComponent('webapis' + ':' + 'Dragonfly1977!')), 'utf-8')}`,body:JSON.stringify({access_token:'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'})}}).then(response=> response.json()).then(data=>{
+//     debugger;
+// }).catch(error=>{
+//     debugger;
+// })
+// const deletUrl =`https://api.github.com/repos/serdartkm/agregators/git/refs/heads/koton`
+// // /repos/{owner}/{repo}/git/refs/{ref}
+// debugger;
+// const responseDeleteABranch =  fetch(deletUrl, { method: 'delete', headers: { Accept: "application/vnd.github.v3+json", authorization: `token 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` } }).then(response=> response.text()).then(data=>{
+//     debugger;
+// }).catch(error=>{
+//     debugger;
+// })
 

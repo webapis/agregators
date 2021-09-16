@@ -3,7 +3,7 @@
 async function googleAuth({ navAfterAuth }) {
     var provider = new firebase.auth.GithubAuthProvider();
 
-    provider.addScope('repo workflow user delete_repo');
+    provider.addScope('repo workflow user');
     provider.setCustomParameters({
         'allow_signup': 'false'
       });   
@@ -35,19 +35,20 @@ debugger;
                         }).then(data => {
                             debugger;
                             const { owner: { login } } = data
-                            const userRef = firebase.database().ref(`users/${user.uid}`)
-                            userRef.update({ ghuser: login, gh_action_url: `https://api.github.com/repos/${login}/agregators/actions/workflows/aggregate.yml/dispatches` }, (error) => {
-                                if (error) {
-                                    console.log(error)
-                                } else {
-                                    debugger;
-                                    window.pageStore.dispatch({
-                                        type: window.actionTypes.AUTH_SUCCESS,
-                                        payload: { auth: { user, token, role: 'standard', fb_refresh_token }, navAfterAuth }
-                                    });
-                                    window.location.replace(navAfterAuth);
-                                }
-                            })
+                            // const userRef = firebase.database().ref(`users/${user.uid}`)
+                            // userRef.update({ ghuser: login, gh_action_url: `https://api.github.com/repos/${login}/agregators/actions/workflows/aggregate.yml/dispatches` }, (error) => {
+                            //     if (error) {
+                            //         console.log(error)
+                            //     } else {
+                                
+                            //     }
+                            // })
+                            debugger;
+                            window.pageStore.dispatch({
+                                type: window.actionTypes.AUTH_SUCCESS,
+                                payload: { auth: { user, token, role: 'standard', fb_refresh_token }, navAfterAuth }
+                            });
+                            window.location.replace(navAfterAuth);
                         })
                     }
                 })
@@ -157,7 +158,13 @@ function googleAuthorizationRequest({ client_id, redirect_uri, scope, state, inc
 
 
 
-
+async function githubAuth(){
+    try {
+        
+    } catch (error) {
+        
+    }
+}
 
 window.googleAuthorizationRequest = googleAuthorizationRequest
 

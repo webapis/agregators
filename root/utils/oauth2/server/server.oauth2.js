@@ -4,7 +4,7 @@ const { default: fetch } = require('node-fetch');
 //const client_id = process.env.client_id
 //const client_secret = process.env.client_secret
 
-async function exchangeCodeForAccessToken({ client_id, client_secret, code, redirect_uri, res, filepath }) {
+async function  exchangeCodeForAccessToken({ client_id, client_secret, code, redirect_uri, res, filepath }) {
 
     const { admin } = require('../../../utils/firebase/firebase-admin')
     const fbDatabase = admin.database()

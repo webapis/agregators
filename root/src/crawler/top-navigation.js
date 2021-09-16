@@ -60,25 +60,34 @@ customElements.define('top-navigation', class extends HTMLElement {
             ${auth !== null ? ` <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            ${auth.user.email}
+            ${auth.email}
             </a>
             <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
-              <li><a class="dropdown-item" href="#">  ${auth.user.email}</a></li>
+              <li><a class="dropdown-item" href="#">  ${auth.email}</a></li>
               <li><hr class="dropdown-divider"></li>
               <li><a class="dropdown-item" href="/user-settings.html">Settings</a></li>
-          
-             
             </ul>
           </li>
             </ul>` : ''}    
-           
-                   
-              ${auth === null ? '<a class="btn btn-outline-success" href="/login.html" id="login">Login</a>' : ''}
+              ${auth === null ? '<a class="btn btn-outline-success" href="/login.html?authed=false" id="login">Login</a>' : ''}
               ${auth !== null ? '<button class="btn btn-outline-success" id="logout-btn">Logout</button>' : ''}
             </form>
           </div>
         </div>
       </nav>`
+
+    document.getElementById('login', (e) => {
+      e.preventDefault()
+      fetch('/login.html').then(response => {
+        debugger;
+        return response.json()
+      }).then(data => {
+        debugger;
+      }).catch(error => {
+        debugger;
+      })
+    })
+
     document.getElementById('home-page-link').addEventListener('click', (e) => {
       e.preventDefault()
 
@@ -113,43 +122,24 @@ customElements.define('top-navigation', class extends HTMLElement {
 
     document.getElementById('myprojects-btn').addEventListener('click', async (e) => {
       e.preventDefault()
-      firebase.auth().onAuthStateChanged((user) => {
-        if (user) {
+ 
           window.pageStore.dispatch({
             type: window.actionTypes.PAGE_NAVIGATED,
             payload: 'myprojects'
           });
           window.location.replace("/my-projects.html");
 
-          // ...
-        } else {
-          window.googleAuth({ navAfterAuth: '/my-projects.html' })
-          // User is signed out
-          // ...
-        }
-      })
-
-
-
-
-      // 
+  
+    
     })
     document.getElementById('logout-btn') && document.getElementById('logout-btn').addEventListener('click', e => {
       e.preventDefault()
-
-
-      firebase.auth().signOut().then(() => {
 
         window.pageStore.dispatch({
           type: window.actionTypes.LOGOUT,
           payload: null
         });
-
         window.location.replace("/");
-      }).catch((error) => {
-        // An error happened.
-      });
-
     })
   }
 })

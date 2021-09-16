@@ -1,3 +1,4 @@
+
 customElements.define('project-dashboard', class extends HTMLElement {
     constructor() {
         super()
@@ -7,24 +8,21 @@ customElements.define('project-dashboard', class extends HTMLElement {
     async connectedCallback() {
         const resources = await import('./resources.js')
         await resources.default()
+        const { auth: { idToken,localId:uid } } = window.pageStore.state
+        this.uid=uid
+    this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri('https://turkmenistan-market.firebaseio.com')
+
         this.innerHTML = `<div class="spinner-border" role="status">
         <span class="visually-hidden">Loading...</span>
       </div>`
-        firebase.auth().onAuthStateChanged((user) => {
-            if (user) {
-                var uid = user.uid;
-                const { selectedDashboard } = window.pageStore.state
-                const selectedMyProjectRef = firebase.database().ref(`myprojects/${uid}/${selectedDashboard}`)
-                selectedMyProjectRef.on('value', snap => {
-                    const conf = snap.val()['conf']
-                    window.pageStore.dispatch({
-                        type: window.actionTypes.SET_ALL_ACCOUNT_TYPES,
-                        payload: conf
-                    });
-                    this.render({ selectedDashboard })
-                })
-            }
-        });
+
+        const { selectedDashboard } = window.pageStore.state
+
+
+        this.render({ selectedDashboard })
+
+
+
     }
 
     render({ selectedDashboard }) {
@@ -162,7 +160,9 @@ customElements.define('scrape-logs', class extends HTMLElement {
     }
 
     connectedCallback() {
-
+        const {auth:{localId:uid}}=window.pageStore.state
+        this.uid=uid
+    this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri('https://turkmenistan-market.firebaseio.com')
         this.innerHTML =
             `<div class="row" id="log-container">
      
@@ -170,7 +170,7 @@ customElements.define('scrape-logs', class extends HTMLElement {
         `
         const { auth: { user }, selectedDashboard } = window.pageStore.state
 
-        firebase.database().ref(`runs/${user.uid}/${selectedDashboard}`).on('child_added', snap => {
+       this.FB_DATABASE.ref(`runs/${this.uid}/${selectedDashboard}`).on('child_added', snap => {
             const data = snap.val()
             const key = snap.key
             const start = data.RUN_STARTED
@@ -399,22 +399,23 @@ customElements.define('start-scraping-btn', class extends HTMLElement {
     }
 
     connectedCallback() {
-        const { startScrapingClicked, auth: { user }, runId, selectedDashboard } = window.pageStore.state
-
+        const { startScrapingClicked, auth: { localId:uid,idToken }, runId, selectedDashboard } = window.pageStore.state
+        this.uid=uid
+    this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri('https://turkmenistan-market.firebaseio.com')
         this.render({ startScrapingClicked })
 
 
         window.pageStore.subscribe(window.actionTypes.START_SCRAPING_CLICKED, async (state) => {
-            const { auth: { user, fb_refresh_token, gh_tkn,gh_user }, selectedDashboard, startScrapingClicked, runId } = state
+            const { auth: { user, fb_refresh_token, gh_tkn, gh_user }, selectedDashboard, startScrapingClicked, runId } = state
             this.render({ startScrapingClicked })
-            firebase.database().ref(`runs/${user.uid}/${selectedDashboard}/${runId}`).set({ RUN_STARTED: runId }, () => {
+           this.FB_DATABASE.ref(`runs/${this.uid}/${selectedDashboard}/${runId}`).set({ RUN_STARTED: runId }, () => {
                 debugger;
-                const liveRef = firebase.database().ref(`myprojects/${user.uid}/${selectedDashboard}/LIVE`)
+                const liveRef =FB_DATABASE.ref(`myprojects/${this.uid}/${selectedDashboard}/LIVE`)
                 liveRef.get().then(async snap => {
                     const value = snap.val()
                     debugger;
                     if (value) {
-                        firebase.database().ref(`runs/${user.uid}/${selectedDashboard}/${runId}`).set({ RUN_STARTED: runId }, () => {
+                       this.FB_DATABASE.ref(`runs/${this.uid}/${selectedDashboard}/${runId}`).set({ RUN_STARTED: runId }, () => {
                             debugger;
                         })
                         debugger;
@@ -422,11 +423,11 @@ customElements.define('start-scraping-btn', class extends HTMLElement {
                         const hostname = window.location.hostname
                         const api_key = "AIzaSyDb8Z27Ut0WJ-RH7Exi454Bpit9lbARJeA";
                         const fb_database_url = 'https://turkmenistan-market.firebaseio.com'
-                        const parameters = `${runId}--splitter--${fb_refresh_token}--splitter--${user.uid}--splitter--${api_key}--splitter--${user.email}--splitter--${fb_database_url}--splitter--${gh_tkn}--splitter--${gh_user}`
+                        const parameters = `${runId}--splitter--${fb_refresh_token}--splitter--${this.uid}--splitter--${api_key}--splitter--${user.email}--splitter--${fb_database_url}--splitter--${gh_tkn}--splitter--${gh_user}`
                         debugger;
-                        const body = JSON.stringify({ ref:selectedDashboard, inputs: { projectName: selectedDashboard, parameters } })
+                        const body = JSON.stringify({ ref: selectedDashboard, inputs: { projectName: selectedDashboard, parameters } })
 
-                        if (hostname === 'localhost') {
+                        if (false) {
                             debugger;
                             fetch(`http://localhost:3000/local_workflow?projectName=${selectedDashboard}&parameters=${parameters}`, { method: 'get', mode: 'cors', headers: { 'Content-Type': 'application/json', 'Accept': 'text/plain' } }).then((response) => {
                                 return response.json()
@@ -435,32 +436,18 @@ customElements.define('start-scraping-btn', class extends HTMLElement {
                             })
                             debugger;
                         } else {
-                            const ghTokenRef = firebase.database().ref(`users/${user.uid}`)
-                            ghTokenRef.once('value', snap => {
-                                const ghToken = snap.val()['ghtoken']
-
-                                const gh_action_url = snap.val()['gh_action_url']
-                                debugger;
-                                if (ghToken) {
-                                    debugger;
-                                    triggerAction({ ticket: ghToken, body, gh_action_url })
-                                } else {
-                                    const trialTokenRef = firebase.database().ref('gitticket')
-                                    trialTokenRef.once('value', snap => {
-                                        const trialTicket = snap.val()
-                                        triggerAction(trialTicket)
-                                    })
-                                }
-                            })
+                            const { auth: { token } } = window.pageStore.state
+                            triggerAction({ ticket: token, body, gh_action_url })
                         }
                     }
                 })
             })
 
 
-            firebase.database().ref(`runs/${user.uid}/${selectedDashboard}/${runId}/RUN_COMPLETE`).on('value', (snap) => {
-                const value = snap.val()
-                if (value) {
+           this.FB_DATABASE.ref(`runs/${this.uid}/${selectedDashboard}/${runId}/RUN_COMPLETE`).on('value', (error,snap) => {
+            const dataObject = JSON.parse(snap.data)['data']
+        
+                if (dataObject) {
 
                     debugger;
                     window.pageStore.dispatch({ type: window.actionTypes.RUN_COMPLETE, payload: value })
@@ -478,8 +465,8 @@ customElements.define('start-scraping-btn', class extends HTMLElement {
 
         })
 
-        firebase.database().ref(`runs/${user.uid}/${selectedDashboard}/${runId}/RUN_STARTED`).on('value', (snap) => {
-            const value = snap.val()
+        this.FB_DATABASE.ref(`runs/${this.uid}/${selectedDashboard}/${runId}/RUN_STARTED`).on('value', (error,snap) => {
+           
             debugger;
             // window.pageStore.dispatch({ type: window.actionTypes.RUN_COMPLETE })
         })
@@ -572,7 +559,7 @@ customElements.define('email-list', class extends HTMLElement {
 
         const user = firebase.auth().currentUser
 
-        const emaillistRef = firebase.database().ref(`myprojects/${user.uid}/${selectedDashboard}/emaillist`)
+        const emaillistRef =FB_DATABASE.ref(`myprojects/${this.uid}/${selectedDashboard}/emaillist`)
         emaillistRef.on('value', snap => {
             if (snap.val()) {
                 const emaillist = Object.entries(snap.val())
@@ -643,7 +630,7 @@ customElements.define('email-list', class extends HTMLElement {
             const user = firebase.auth().currentUser
             const email = document.getElementById('email-input').value
             const { selectedDashboard } = window.pageStore.state
-            const emailListRef = firebase.database().ref(`myprojects/${user.uid}/${selectedDashboard}/emaillist`)
+            const emailListRef =FB_DATABASE.ref(`myprojects/${this.uid}/${selectedDashboard}/emaillist`)
             emailListRef.push({ email }, (error) => {
                 if (error) {
                     console.log('error', error)
@@ -655,7 +642,7 @@ customElements.define('email-list', class extends HTMLElement {
             const user = firebase.auth().currentUser
             const email = document.getElementById('email-input').value
             const { selectedDashboard } = window.pageStore.state
-            const emailListRef = firebase.database().ref(`myprojects/${user.uid}/${selectedDashboard}/emaillist/${key}`)
+            const emailListRef =FB_DATABASE.ref(`myprojects/${this.uid}/${selectedDashboard}/emaillist/${key}`)
             emailListRef.update({ email }, (error) => {
                 if (error) {
                     console.log('error', error)
@@ -706,7 +693,7 @@ customElements.define('email-table-row', class extends HTMLElement {
         document.getElementById(`${id}-delete-btn`).addEventListener('click', () => {
             const user = firebase.auth().currentUser
             const { selectedDashboard } = window.pageStore.state
-            const emaillistRef = firebase.database().ref(`myprojects/${user.uid}/${selectedDashboard}/emaillist/${id}`)
+            const emaillistRef =FB_DATABASE.ref(`myprojects/${this.uid}/${selectedDashboard}/emaillist/${id}`)
             emaillistRef.remove((error) => {
 
 

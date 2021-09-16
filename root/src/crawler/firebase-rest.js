@@ -1,6 +1,5 @@
-const fetch = require('node-fetch')
-const EventSource = require('eventsource')
-function fbRest() {
+
+function firebase() {
     this.url = ''
     this.idToken = '',
         this.projectUri = '',
@@ -20,7 +19,7 @@ function fbRest() {
             return this
         },
         ref: function (url) {
-            ;
+         
             this.url = url
             return this
         },
@@ -75,18 +74,18 @@ function fbRest() {
             }
 
         },
-        once: function ( cb) {
-            debugger;
+        once: function (cb) {
             const fetchPath = `${this.projectUri}/${this.url}.json?auth=${this.idToken}`
 
             fetch(fetchPath).then(response => response.json()).then(data => {
-         
+
                 cb && cb(data)
             }).catch(error => {
-                
-                cb && cb({ error })
+
+                cb && cb(error,data)
                 return this
-            })},
+            })
+        },
         orderByChild: function (orderByChildValue) {
             this.orderByChildValue = orderByChildValue
             return this
@@ -102,9 +101,4 @@ function fbRest() {
     }
 }
 
-async function renewIdToken({ api_key, refresh_token }) {
-    const response = await fetch(`https://securetoken.googleapis.com/v1/token?key=${api_key}`, { method: 'post', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: `grant_type=refresh_token&refresh_token=${refresh_token}` })
-    const data = await response.json()
-    return data
-}
-module.exports = { fbRest, renewIdToken }
+window.firebase = firebase

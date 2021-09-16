@@ -31,10 +31,10 @@ module.exports = function serveStatic(request, response) {
     let normailzie = "";
     if (filePath === "/index.html") {
         normailzie = `${process.cwd()}/root/src/crawler/index.html`
-  debugger;
+
     } else {
         normailzie = `${process.cwd()}/root/src/crawler/${request.url}`
-     debugger;
+     
     }
   
     fs.readFile(normailzie, function (error, content) {
