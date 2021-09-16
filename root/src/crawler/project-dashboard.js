@@ -246,9 +246,9 @@ customElements.define('run-state', class extends HTMLElement {
         this.render({ completeTime })
         window.pageStore.subscribe(window.actionTypes.RUN_COMPLETE, state => {
             const { runId, completeTime } = state
-            debugger;
+            
             if (runId === start) {
-                debugger;
+                
                 this.render({ completeTime })
             }
         })
@@ -409,32 +409,32 @@ customElements.define('start-scraping-btn', class extends HTMLElement {
             const { auth: { user, fb_refresh_token, gh_tkn, gh_user }, selectedDashboard, startScrapingClicked, runId } = state
             this.render({ startScrapingClicked })
            this.FB_DATABASE.ref(`runs/${this.uid}/${selectedDashboard}/${runId}`).set({ RUN_STARTED: runId }, () => {
-                debugger;
+                
                 const liveRef =FB_DATABASE.ref(`myprojects/${this.uid}/${selectedDashboard}/LIVE`)
                 liveRef.get().then(async snap => {
                     const value = snap.val()
-                    debugger;
+                    
                     if (value) {
                        this.FB_DATABASE.ref(`runs/${this.uid}/${selectedDashboard}/${runId}`).set({ RUN_STARTED: runId }, () => {
-                            debugger;
+                            
                         })
-                        debugger;
+                        
                     } else {
                         const hostname = window.location.hostname
                         const api_key = "AIzaSyDb8Z27Ut0WJ-RH7Exi454Bpit9lbARJeA";
                         const fb_database_url = 'https://turkmenistan-market.firebaseio.com'
                         const parameters = `${runId}--splitter--${fb_refresh_token}--splitter--${this.uid}--splitter--${api_key}--splitter--${user.email}--splitter--${fb_database_url}--splitter--${gh_tkn}--splitter--${gh_user}`
-                        debugger;
+                        
                         const body = JSON.stringify({ ref: selectedDashboard, inputs: { projectName: selectedDashboard, parameters } })
 
                         if (false) {
-                            debugger;
+                            
                             fetch(`http://localhost:3000/local_workflow?projectName=${selectedDashboard}&parameters=${parameters}`, { method: 'get', mode: 'cors', headers: { 'Content-Type': 'application/json', 'Accept': 'text/plain' } }).then((response) => {
                                 return response.json()
                             }).then(data => data).catch(error => {
-                                debugger;
+                                
                             })
-                            debugger;
+                            
                         } else {
                             const { auth: { token } } = window.pageStore.state
                             triggerAction({ ticket: token, body, gh_action_url })
@@ -449,7 +449,7 @@ customElements.define('start-scraping-btn', class extends HTMLElement {
         
                 if (dataObject) {
 
-                    debugger;
+                    
                     window.pageStore.dispatch({ type: window.actionTypes.RUN_COMPLETE, payload: value })
                 }
 
@@ -458,7 +458,7 @@ customElements.define('start-scraping-btn', class extends HTMLElement {
         })
         window.pageStore.subscribe(window.actionTypes.RUN_COMPLETE, state => {
             const { startScrapingClicked } = state
-            debugger;
+            
             this.render({ startScrapingClicked })
 
 
@@ -467,7 +467,7 @@ customElements.define('start-scraping-btn', class extends HTMLElement {
 
         this.FB_DATABASE.ref(`runs/${this.uid}/${selectedDashboard}/${runId}/RUN_STARTED`).on('value', (error,snap) => {
            
-            debugger;
+            
             // window.pageStore.dispatch({ type: window.actionTypes.RUN_COMPLETE })
         })
 

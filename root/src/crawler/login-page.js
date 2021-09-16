@@ -23,7 +23,7 @@ customElements.define('login-page', class extends HTMLElement {
             this.render({ authed: true, email })
         }
 
-        debugger;
+        
 
 
 
