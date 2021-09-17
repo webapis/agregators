@@ -159,23 +159,23 @@ const fetch = require('node-fetch')
 
 //--- UPLOAD CONTENT TO NEW BRANCH (PROJECT RELATED BRANCH)
 //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
-// const bs64string = Buffer.from("Hello World").toString('base64')
-// // debugger;
-// fetch(`https://api.github.com/repos/serdartkm/actor-prj/contents/firstcontent.txt`, { method: 'put', headers: { Accept: "application/vnd.github.v3+json", authorization: `token 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` }, body: JSON.stringify({ message: "first content", content: bs64string, branch:'books' }) }).then(response => response.json()).then(data => {
+const bs64string = Buffer.from("Hello World").toString('base64')
+// debugger;
+fetch(`https://api.github.com/repos/serdartkm/agregators/contents/secondcontent.txt`, { method: 'put', headers: { Accept: "application/vnd.github.v3+json", authorization: `token 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` }, body: JSON.stringify({ message: "first content", content: bs64string, branch:'books' }) }).then(response => response.json()).then(data => {
 
-//     debugger;
+    debugger;
 
-// }).catch(error => {
+}).catch(error => {
 
-//     debugger;
-// })
+    debugger;
+})
 
-fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithIdp?key=AIzaSyDb8Z27Ut0WJ-RH7Exi454Bpit9lbARJeA`
-    , {method:'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ postBody: "access_token=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&providerId=github.com", requestUri: "https://turkmenistan-market.firebaseapp.com/__/auth/handler", returnIdpCredential: true, returnSecureToken: true }) }).then(response => response.json()).then(data => {
-        debugger;
-    }).catch(error => {
-        debugger;
-    })
+// fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithIdp?key=AIzaSyDb8Z27Ut0WJ-RH7Exi454Bpit9lbARJeA`
+//     , {method:'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ postBody: "access_token=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&providerId=github.com", requestUri: "https://turkmenistan-market.firebaseapp.com/__/auth/handler", returnIdpCredential: true, returnSecureToken: true }) }).then(response => response.json()).then(data => {
+//         debugger;
+//     }).catch(error => {
+//         debugger;
+//     })
     
 // fetch(`https://api.github.com/applications/8aa21614dc0136a7a44b/token`, {method:'POST',headers: { Accept: "application/vnd.github.v3+json", Authorization: `Basic ${Buffer.from(unescape(encodeURIComponent('webapis' + ':' + 'Dragonfly1977!')), 'utf-8')}`,body:JSON.stringify({access_token:'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'})}}).then(response=> response.json()).then(data=>{
 //     debugger;

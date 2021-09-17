@@ -8,9 +8,9 @@ customElements.define('project-dashboard', class extends HTMLElement {
     async connectedCallback() {
         const resources = await import('./resources.js')
         await resources.default()
-        const { auth: { idToken,localId:uid } } = window.pageStore.state
-        this.uid=uid
-    this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri('https://turkmenistan-market.firebaseio.com')
+        const { auth: { idToken, localId: uid } } = window.pageStore.state
+        this.uid = uid
+        this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri('https://turkmenistan-market.firebaseio.com')
 
         this.innerHTML = `<div class="spinner-border" role="status">
         <span class="visually-hidden">Loading...</span>
@@ -65,28 +65,14 @@ customElements.define('dashboard-tabs', class extends HTMLElement {
             <a class="nav-link ${selectedTab === 'main-tab' && 'active'}"  href="#" id="main-tab">Main</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link ${selectedTab === 'email-tab' && 'active'}" href="#" id="email-tab">Email</a>
+            <a class="nav-link ${selectedTab === 'email-tab' && 'active'}" href="#" id="plugins-tab">Plugins</a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link ${selectedTab === 'export-tab' && 'active'}" href="#" id="export-tab">Export</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link ${selectedTab === 'database-tab' && 'active'}" href="#" id ="database-tab">Database</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link ${selectedTab === 'schedule-tab' && 'active'}" href="#" id ="schedule-tab">Schedule</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link ${selectedTab === 'query-tab' && 'active'}" href="#" id="query-tab">Query</a>
-        </li>
+   
     </ul>
 </div>`
         document.getElementById('main-tab').addEventListener('click', this.handleTabSelection)
-        document.getElementById('email-tab').addEventListener('click', this.handleTabSelection)
-        document.getElementById('export-tab').addEventListener('click', this.handleTabSelection)
-        document.getElementById('database-tab').addEventListener('click', this.handleTabSelection)
-        document.getElementById('schedule-tab').addEventListener('click', this.handleTabSelection)
-        document.getElementById('query-tab').addEventListener('click', this.handleTabSelection)
+        document.getElementById('plugins-tab').addEventListener('click', this.handleTabSelection)
+
     }
 
     handleTabSelection(e) {
@@ -107,26 +93,17 @@ customElements.define('dashboard-content', class extends HTMLElement {
     }
     connectedCallback() {
         const { dashboardTab } = window.pageStore.state
-
         this.render({ selectedTab: dashboardTab })
-
         window.pageStore.subscribe(window.actionTypes.DASHBOARD_TAB_CHANGED, state => {
             const { dashboardTab } = state
             this.render({ selectedTab: dashboardTab })
         })
-
     }
 
     render({ selectedTab }) {
-
         this.innerHTML = `<div>
         ${selectedTab === 'main-tab' ? `<main-tab></main-tab>` : ''}
-        ${selectedTab === 'email-tab' ? `<email-tab></email-tab>` : ''}
-        ${selectedTab === 'export-tab' ? `<export-tab></export-tab>` : ''}
-        ${selectedTab === 'database-tab' ? `<database-tab></database-tab>` : ''}
-        ${selectedTab === 'schedule-tab' ? `<schedule-tab></schedule-tab>` : ''}
-        ${selectedTab === 'query-tab' ? `<query-tab></query-tab>` : ''}
-        
+        ${selectedTab === 'plugins-tab' ? `<plugins-tab></plugins-tab>` : ''}
         </div>`
     }
 })
@@ -160,9 +137,9 @@ customElements.define('scrape-logs', class extends HTMLElement {
     }
 
     connectedCallback() {
-        const {auth:{localId:uid}}=window.pageStore.state
-        this.uid=uid
-    this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri('https://turkmenistan-market.firebaseio.com')
+        const { auth: { localId: uid } } = window.pageStore.state
+        this.uid = uid
+        this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri('https://turkmenistan-market.firebaseio.com')
         this.innerHTML =
             `<div class="row" id="log-container">
      
@@ -170,7 +147,7 @@ customElements.define('scrape-logs', class extends HTMLElement {
         `
         const { auth: { user }, selectedDashboard } = window.pageStore.state
 
-       this.FB_DATABASE.ref(`runs/${this.uid}/${selectedDashboard}`).on('child_added', snap => {
+        this.FB_DATABASE.ref(`runs/${this.uid}/${selectedDashboard}`).on('child_added', snap => {
             const data = snap.val()
             const key = snap.key
             const start = data.RUN_STARTED
@@ -246,9 +223,9 @@ customElements.define('run-state', class extends HTMLElement {
         this.render({ completeTime })
         window.pageStore.subscribe(window.actionTypes.RUN_COMPLETE, state => {
             const { runId, completeTime } = state
-            
+
             if (runId === start) {
-                
+
                 this.render({ completeTime })
             }
         })
@@ -399,77 +376,77 @@ customElements.define('start-scraping-btn', class extends HTMLElement {
     }
 
     connectedCallback() {
-        const { startScrapingClicked, auth: { localId:uid,idToken }, runId, selectedDashboard } = window.pageStore.state
-        this.uid=uid
-    this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri('https://turkmenistan-market.firebaseio.com')
+        const { startScrapingClicked, auth: { localId: uid, idToken }, runId, selectedDashboard } = window.pageStore.state
+        this.uid = uid
+        this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri('https://turkmenistan-market.firebaseio.com')
         this.render({ startScrapingClicked })
 
 
-        window.pageStore.subscribe(window.actionTypes.START_SCRAPING_CLICKED, async (state) => {
-            const { auth: { user, fb_refresh_token, gh_tkn, gh_user }, selectedDashboard, startScrapingClicked, runId } = state
-            this.render({ startScrapingClicked })
-           this.FB_DATABASE.ref(`runs/${this.uid}/${selectedDashboard}/${runId}`).set({ RUN_STARTED: runId }, () => {
-                
-                const liveRef =FB_DATABASE.ref(`myprojects/${this.uid}/${selectedDashboard}/LIVE`)
-                liveRef.get().then(async snap => {
-                    const value = snap.val()
-                    
-                    if (value) {
-                       this.FB_DATABASE.ref(`runs/${this.uid}/${selectedDashboard}/${runId}`).set({ RUN_STARTED: runId }, () => {
-                            
-                        })
-                        
-                    } else {
-                        const hostname = window.location.hostname
-                        const api_key = "AIzaSyDb8Z27Ut0WJ-RH7Exi454Bpit9lbARJeA";
-                        const fb_database_url = 'https://turkmenistan-market.firebaseio.com'
-                        const parameters = `${runId}--splitter--${fb_refresh_token}--splitter--${this.uid}--splitter--${api_key}--splitter--${user.email}--splitter--${fb_database_url}--splitter--${gh_tkn}--splitter--${gh_user}`
-                        
-                        const body = JSON.stringify({ ref: selectedDashboard, inputs: { projectName: selectedDashboard, parameters } })
+        // window.pageStore.subscribe(window.actionTypes.START_SCRAPING_CLICKED, async (state) => {
+        //     const { auth: { user, fb_refresh_token, gh_tkn, gh_user }, selectedDashboard, startScrapingClicked, runId } = state
+        //     this.render({ startScrapingClicked })
+        //    this.FB_DATABASE.ref(`runs/${this.uid}/${selectedDashboard}/${runId}`).set({ RUN_STARTED: runId }, () => {
 
-                        if (false) {
-                            
-                            fetch(`http://localhost:3000/local_workflow?projectName=${selectedDashboard}&parameters=${parameters}`, { method: 'get', mode: 'cors', headers: { 'Content-Type': 'application/json', 'Accept': 'text/plain' } }).then((response) => {
-                                return response.json()
-                            }).then(data => data).catch(error => {
-                                
-                            })
-                            
-                        } else {
-                            const { auth: { token } } = window.pageStore.state
-                            triggerAction({ ticket: token, body, gh_action_url })
-                        }
-                    }
-                })
-            })
+        //         const liveRef =FB_DATABASE.ref(`myprojects/${this.uid}/${selectedDashboard}/LIVE`)
+        //         liveRef.get().then(async snap => {
+        //             const value = snap.val()
 
+        //             if (value) {
+        //                this.FB_DATABASE.ref(`runs/${this.uid}/${selectedDashboard}/${runId}`).set({ RUN_STARTED: runId }, () => {
 
-           this.FB_DATABASE.ref(`runs/${this.uid}/${selectedDashboard}/${runId}/RUN_COMPLETE`).on('value', (error,snap) => {
-            const dataObject = JSON.parse(snap.data)['data']
-        
-                if (dataObject) {
+        //                 })
 
-                    
-                    window.pageStore.dispatch({ type: window.actionTypes.RUN_COMPLETE, payload: value })
-                }
+        //             } else {
+        //                 const hostname = window.location.hostname
+        //                 const api_key = "AIzaSyDb8Z27Ut0WJ-RH7Exi454Bpit9lbARJeA";
+        //                 const fb_database_url = 'https://turkmenistan-market.firebaseio.com'
+        //                 const parameters = `${runId}--splitter--${fb_refresh_token}--splitter--${this.uid}--splitter--${api_key}--splitter--${user.email}--splitter--${fb_database_url}--splitter--${gh_tkn}--splitter--${gh_user}`
+
+        //                 const body = JSON.stringify({ ref: selectedDashboard, inputs: { projectName: selectedDashboard, parameters } })
+
+        //                 if (false) {
+
+        //                     fetch(`http://localhost:3000/local_workflow?projectName=${selectedDashboard}&parameters=${parameters}`, { method: 'get', mode: 'cors', headers: { 'Content-Type': 'application/json', 'Accept': 'text/plain' } }).then((response) => {
+        //                         return response.json()
+        //                     }).then(data => data).catch(error => {
+
+        //                     })
+
+        //                 } else {
+        //                     const { auth: { token } } = window.pageStore.state
+        //                     triggerAction({ ticket: token, body, gh_action_url })
+        //                 }
+        //             }
+        //         })
+        //     })
 
 
-            })
-        })
-        window.pageStore.subscribe(window.actionTypes.RUN_COMPLETE, state => {
-            const { startScrapingClicked } = state
-            
-            this.render({ startScrapingClicked })
+        //    this.FB_DATABASE.ref(`runs/${this.uid}/${selectedDashboard}/${runId}/RUN_COMPLETE`).on('value', (error,snap) => {
+        //     const dataObject = JSON.parse(snap.data)['data']
+
+        //         if (dataObject) {
+
+
+        //             window.pageStore.dispatch({ type: window.actionTypes.RUN_COMPLETE, payload: value })
+        //         }
+
+
+        //     })
+        // })
+        // window.pageStore.subscribe(window.actionTypes.RUN_COMPLETE, state => {
+        //     const { startScrapingClicked } = state
+
+        //     this.render({ startScrapingClicked })
 
 
 
-        })
+        // })
 
-        this.FB_DATABASE.ref(`runs/${this.uid}/${selectedDashboard}/${runId}/RUN_STARTED`).on('value', (error,snap) => {
-           
-            
-            // window.pageStore.dispatch({ type: window.actionTypes.RUN_COMPLETE })
-        })
+        // this.FB_DATABASE.ref(`runs/${this.uid}/${selectedDashboard}/${runId}/RUN_STARTED`).on('value', (error,snap) => {
+
+
+        //     // window.pageStore.dispatch({ type: window.actionTypes.RUN_COMPLETE })
+        // })
 
     }
 
@@ -477,13 +454,18 @@ customElements.define('start-scraping-btn', class extends HTMLElement {
         this.innerHTML = `<button class="btn btn-secondary" id="start-scraping-btn" ${startScrapingClicked && 'disabled'}>${startScrapingClicked ? `  <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
     Wait...`: 'Start'}</button>`
         document.getElementById('start-scraping-btn').addEventListener('click', async () => {
-            window.pageStore.dispatch({ type: window.actionTypes.START_SCRAPING_CLICKED })
+            const { auth: { token, screenName: owner }, selectedDashboard } = window.pageStore.state
+            const body = JSON.stringify({ ref: selectedDashboard, inputs: { projectName: selectedDashboard, parameters: `sdsdsdsdsdsdasdasdasd` } })
+            debugger;   
+            triggerAction({ gh_action_url: `https://api.github.com/repos/${owner}/agregators/actions/workflows/aggregate.yml/dispatches`, ticket: token, body })
+         
+            //  window.pageStore.dispatch({ type: window.actionTypes.START_SCRAPING_CLICKED })
         })
     }
 })
 
 
-customElements.define('email-tab', class extends HTMLElement {
+customElements.define('plugins-tab', class extends HTMLElement {
     constructor() {
         super()
     }
@@ -499,7 +481,7 @@ customElements.define('email-tab', class extends HTMLElement {
         this.innerHTML = `<div>
     
 
-        <email-list></email-list>
+       Plugins
         </div>`
     }
 })
@@ -559,7 +541,7 @@ customElements.define('email-list', class extends HTMLElement {
 
         const user = firebase.auth().currentUser
 
-        const emaillistRef =FB_DATABASE.ref(`myprojects/${this.uid}/${selectedDashboard}/emaillist`)
+        const emaillistRef = FB_DATABASE.ref(`myprojects/${this.uid}/${selectedDashboard}/emaillist`)
         emaillistRef.on('value', snap => {
             if (snap.val()) {
                 const emaillist = Object.entries(snap.val())
@@ -630,7 +612,7 @@ customElements.define('email-list', class extends HTMLElement {
             const user = firebase.auth().currentUser
             const email = document.getElementById('email-input').value
             const { selectedDashboard } = window.pageStore.state
-            const emailListRef =FB_DATABASE.ref(`myprojects/${this.uid}/${selectedDashboard}/emaillist`)
+            const emailListRef = FB_DATABASE.ref(`myprojects/${this.uid}/${selectedDashboard}/emaillist`)
             emailListRef.push({ email }, (error) => {
                 if (error) {
                     console.log('error', error)
@@ -642,7 +624,7 @@ customElements.define('email-list', class extends HTMLElement {
             const user = firebase.auth().currentUser
             const email = document.getElementById('email-input').value
             const { selectedDashboard } = window.pageStore.state
-            const emailListRef =FB_DATABASE.ref(`myprojects/${this.uid}/${selectedDashboard}/emaillist/${key}`)
+            const emailListRef = FB_DATABASE.ref(`myprojects/${this.uid}/${selectedDashboard}/emaillist/${key}`)
             emailListRef.update({ email }, (error) => {
                 if (error) {
                     console.log('error', error)
@@ -693,7 +675,7 @@ customElements.define('email-table-row', class extends HTMLElement {
         document.getElementById(`${id}-delete-btn`).addEventListener('click', () => {
             const user = firebase.auth().currentUser
             const { selectedDashboard } = window.pageStore.state
-            const emaillistRef =FB_DATABASE.ref(`myprojects/${this.uid}/${selectedDashboard}/emaillist/${id}`)
+            const emaillistRef = FB_DATABASE.ref(`myprojects/${this.uid}/${selectedDashboard}/emaillist/${id}`)
             emaillistRef.remove((error) => {
 
 
@@ -787,7 +769,7 @@ customElements.define('query-tab', class extends HTMLElement {
 
 
 function triggerAction({ ticket, body, gh_action_url }) {
-
+debugger;
     fetch(gh_action_url, {
         method: 'post',
         headers: {
@@ -796,12 +778,12 @@ function triggerAction({ ticket, body, gh_action_url }) {
         },
         body
     }).then(result => {
-
-
+debugger;
+return result.json()
     }).then(data => {
-
+debugger;
     }).catch(error => {
-
+debugger;
     })
 }
 
