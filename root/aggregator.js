@@ -1,6 +1,6 @@
 const { main } = require(`${process.cwd()}/main`)
-const { plugins } = require(`${process.cwd}/plugins`)
+const { aggregationPlugins } = require(`${process.cwd}/aggregation-plugins`)
 main()
-plugins()
+aggregationPlugins()
 
 

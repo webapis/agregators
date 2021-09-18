@@ -193,6 +193,25 @@ async function getSourceCodeTree({ gihubowner, projectName }) {
     return tree
 }
 
+async function getPluginsSourceCodeTree(){
+       // Retrieve source code for project
+    //Retrieved source code will be copied to project branch of forked agregators repo
+    //---- List branches endpoint----
+    /*required for the next endoint*/
+    const response = await fetch(`https://api.github.com/repos/aggregationplugins/aggregation-plugins/branches`)
+    const data = await response.json()
+    const mainSha = data.find(d => d.name === 'main')
+    const { commit: { sha } } = mainSha
+
+    //------Git database / Get a tree endpoint------
+    /*required to retrieve list of file and folder into*/
+    const treeResponse = await fetch(`https://api.github.com/repos/aggregationplugins/aggregation-plugins/git/trees/${sha}?recursive=1`)
+    const treeData = await treeResponse.json()
+    const { tree } = treeData
+    
+    return tree
+}
+
 async function createNewBranch({ login, token, projectName }) {
     //Create a new branch with project name in forked agregators repo
     //Project source code will be copied here
@@ -247,7 +266,9 @@ async function CopySourceCode({ gihubowner, projectName, login, token }) {
     try {
         await createNewBranch({ login, token, projectName })
         const tree = await getSourceCodeTree({ gihubowner, projectName })
-       await pushContentToProjectBranch({ gihubowner, projectName, login, token, tree })  
+       await pushContentToProjectBranch({ gihubowner, projectName, login, token, tree })
+       const pluginsTree = await getPluginsSourceCodeTree()
+       await pushContentToProjectBranch({ gihubowner, projectName, login, token, tree:pluginsTree })
     } catch (error) {
         
     }
