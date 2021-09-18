@@ -208,7 +208,7 @@ async function getPluginsSourceCodeTree(){
     const treeResponse = await fetch(`https://api.github.com/repos/aggregationplugins/aggregation-plugins/git/trees/${sha}?recursive=1`)
     const treeData = await treeResponse.json()
     const { tree } = treeData
-    
+    debugger;
     return tree
 }
 
@@ -261,14 +261,43 @@ async function pushContentToProjectBranch({ gihubowner, projectName, login, toke
 
 
 }
+async function pushPluginContentToProjectbranch({  projectName, login, token, tree }){
+    const getContent = async function ({ path }) {
+        const response = await fetch(`https://api.github.com/repos/aggregationplugins/aggregation-plugins/contents/${path}`)
+        const data = await response.json()
 
+        return data;
+    }
+    const promises = []
+    const withoutTypeTree = tree.filter(f => f.type !== 'tree')
+    const contents =[]
+    for (let t of withoutTypeTree) {
+        const content = await getContent({ path: t.path })
+        
+        contents.push(content)
+
+    }
+
+    
+ 
+
+    for(let cont of contents){
+        
+        const {content,path} =cont
+        
+         const response = await fetch(`https://api.github.com/repos/${login}/agregators/contents/${path}`, { method: 'put', headers: { Accept: "application/vnd.github.v3+json", authorization: `token ${token}` }, body: JSON.stringify({ message: 'coder content', content, branch: projectName }) })
+        const data = await response.text()
+        
+    }
+
+}
 async function CopySourceCode({ gihubowner, projectName, login, token }) {
     try {
         await createNewBranch({ login, token, projectName })
         const tree = await getSourceCodeTree({ gihubowner, projectName })
        await pushContentToProjectBranch({ gihubowner, projectName, login, token, tree })
        const pluginsTree = await getPluginsSourceCodeTree()
-       await pushContentToProjectBranch({ gihubowner, projectName, login, token, tree:pluginsTree })
+       await pushPluginContentToProjectbranch({  projectName, login, token, tree:pluginsTree })
     } catch (error) {
         
     }
