@@ -27,7 +27,7 @@ customElements.define('project-list', class extends HTMLElement {
         `
         // const projectsRef= firebase.database().ref('projects')
 
-     
+     debugger;
         window.firebase().setIdToken(idToken).setProjectUri('https://turkmenistan-market.firebaseio.com').ref('projects').on('value', function (error, snap) {
             const dataObject = JSON.parse(snap.data)['data']
             const arrayData =Object.entries(dataObject)

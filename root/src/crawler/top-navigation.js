@@ -8,15 +8,34 @@ customElements.define('top-navigation', class extends HTMLElement {
 
 
     this.render({ currentPage, auth })
+    if(auth){
+      const { auth:{screenName:owner,token} } = window.pageStore.state
+      const fetchPath = `https://api.github.com/repos/${owner}/agregators/merge-upstream`
+      console.log('fetchPath', fetchPath)
+      fetch(fetchPath, {
+          method: 'post',
+          headers: {
+              authorization: `token ${token}`,
+              Accept: 'application/vnd.github.v3+json'
+          },
+          body: JSON.stringify({ branch: 'master' })
+      }).then(result => {
+        debugger;
+          return result.json()
+      }).then(data => {
+          console.log('data upstream', data)
+        debugger;
+      }).catch(error => {
+          console.log('error', error)
+      })
+    }
+ 
 
     window.pageStore.subscribe(window.actionTypes.CONTENT_VIEW_CHANGED, state => {
       const { currentPage, auth } = state
       this.render({ currentPage, auth })
     })
-    window.pageStore.subscribe(window.actionTypes.AUTH_SUCCESS, state => {
-      const { currentPage, auth } = state
-      this.render({ currentPage, auth })
-    })
+  
 
     window.pageStore.subscribe(window.actionTypes.LOGOUT, state => {
       const { currentPage, auth } = state
@@ -52,8 +71,6 @@ customElements.define('top-navigation', class extends HTMLElement {
               <li class="nav-item">
                 <a class="nav-link ${currentPage === 'project-editor' && 'active'}" href="#" tabindex="-1" aria-disabled="true" id="add-project-template-link">Add Project Template</a>
               </li>
-
-         
             </ul>
           
             <form class="d-flex">
@@ -128,9 +145,6 @@ customElements.define('top-navigation', class extends HTMLElement {
             payload: 'myprojects'
           });
           window.location.replace("/my-projects.html");
-
-  
-    
     })
     document.getElementById('logout-btn') && document.getElementById('logout-btn').addEventListener('click', e => {
       e.preventDefault()

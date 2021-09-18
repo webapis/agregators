@@ -39,7 +39,7 @@ jobs:
         run: 'npm install'
       - name: aggregation step
         id: collection
-        run: projectName=${{github.event.inputs.projectName}} parameters="${{github.event.inputs.parameters}}" HEADLESS=true NEXT_TASK=page_collection ALL=TRUE  node main.js
+        run: projectName=${{github.event.inputs.projectName}} parameters="${{github.event.inputs.parameters}}" HEADLESS=true NEXT_TASK=page_collection ALL=TRUE  node root/aggregator.js
 
 
 

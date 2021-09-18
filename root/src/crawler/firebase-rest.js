@@ -53,6 +53,7 @@ function firebase() {
             switch (event) {
                 case "value":
                     const fetchPath = `${this.projectUri}/${this.url}.json?auth=${this.idToken}`
+                    debugger;
                     var childaddedEvent = new EventSource(fetchPath, {});
                     childaddedEvent.onerror = function (error) {
                         cb(error, null)
