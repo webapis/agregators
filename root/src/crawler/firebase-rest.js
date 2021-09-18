@@ -53,7 +53,7 @@ function firebase() {
             switch (event) {
                 case "value":
                     const fetchPath = `${this.projectUri}/${this.url}.json?auth=${this.idToken}`
-                    debugger;
+                    
                     var childaddedEvent = new EventSource(fetchPath, {});
                     childaddedEvent.onerror = function (error) {
                         cb(error, null)
@@ -108,7 +108,7 @@ async function updateIdToken() {
     
         if (Date.now() > timestamp) {
             const { id_token } = await renewIdToken({ api_key, refreshToken })
-          debugger;
+          
             window.pageStore.dispatch({ type: window.actionTypes.ID_TOKEN_UPDATED, payload: { idToken: id_token } })
         }
 

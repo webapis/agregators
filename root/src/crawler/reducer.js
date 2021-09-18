@@ -80,6 +80,11 @@ export default (state, action) => {
       return { ...state, auth: { ...state.auth, gh_tkn: action.payload.gh_tkn, gh_user: action.payload.gh_user } }
     case actionTypes.ID_TOKEN_UPDATED:
       return { ...state, auth: { ...state.auth, ...action.payload, timestamp: Date.now() + 3600000 } }
+    case actionTypes.PROJECT_SELECTED:
+      debugger;
+      return { ...state, ...action.payload }
+    case actionTypes.GITHUB_INITIALIZATION_CHANGED:
+      return { ...state, githubInitialization: { ...state.githubInitialization, ...action.payload } }
     default:
       return state;
   }
@@ -121,6 +126,8 @@ export const actionTypes = {
   GH_ACTION_TRIGGERE_FAILED: 'GH_ACTION_TRIGGERE_FAILED',
   RUN_COMPLETE: 'RUN_COMPLETE',
   SET_GH_TKN: 'SET_GH_TKN',
-  ID_TOKEN_UPDATED:'ID_TOKEN_UPDATED'
+  ID_TOKEN_UPDATED: 'ID_TOKEN_UPDATED',
+  PROJECT_SELECTED: 'PROJECT_SELECTED',
+  GITHUB_INITIALIZATION_CHANGED: 'GITHUB_INITIALIZATION_CHANGED'
 
 };

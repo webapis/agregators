@@ -8,27 +8,27 @@ customElements.define('top-navigation', class extends HTMLElement {
 
 
     this.render({ currentPage, auth })
-    if(auth){
-      const { auth:{screenName:owner,token} } = window.pageStore.state
-      const fetchPath = `https://api.github.com/repos/${owner}/agregators/merge-upstream`
-      console.log('fetchPath', fetchPath)
-      fetch(fetchPath, {
-          method: 'post',
-          headers: {
-              authorization: `token ${token}`,
-              Accept: 'application/vnd.github.v3+json'
-          },
-          body: JSON.stringify({ branch: 'master' })
-      }).then(result => {
-        debugger;
-          return result.json()
-      }).then(data => {
-          console.log('data upstream', data)
-        debugger;
-      }).catch(error => {
-          console.log('error', error)
-      })
-    }
+    // if(auth){
+    //   const { auth:{screenName:owner,token} } = window.pageStore.state
+    //   const fetchPath = `https://api.github.com/repos/${owner}/agregators/merge-upstream`
+    //   console.log('fetchPath', fetchPath)
+    //   fetch(fetchPath, {
+    //       method: 'post',
+    //       headers: {
+    //           authorization: `token ${token}`,
+    //           Accept: 'application/vnd.github.v3+json'
+    //       },
+    //       body: JSON.stringify({ branch: 'master' })
+    //   }).then(result => {
+    //     debugger;
+    //       return result.json()
+    //   }).then(data => {
+    //       console.log('data upstream', data)
+    //     debugger;
+    //   }).catch(error => {
+    //       console.log('error', error)
+    //   })
+    // }
  
 
     window.pageStore.subscribe(window.actionTypes.CONTENT_VIEW_CHANGED, state => {
