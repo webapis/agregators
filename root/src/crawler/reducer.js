@@ -6,27 +6,29 @@ export const initState = stateFromLS
     projectName: '',
     description: '',
     projectNames: [],
-    currentPage: 'home',
+    // currentPage: 'home',
     selectedDashboard: '',
-    projects: [{ projectName: 'projectOne' }, { projectName: 'projectTwo' }, { projectName: 'projectTrhee' }],
+    // projects: [{ projectName: 'projectOne' }, { projectName: 'projectTwo' }, { projectName: 'projectTrhee' }],
     selectedProjectName: '',
     companyName: '',
     dashboardTab: 'main-tab',
     navAfterAuth: 'home',
-    emailService: '',
-    databaseService: '',
-    exportService: '',
-    scheduleService: '',
+    // emailService: '',
+    // databaseService: '',
+    // exportService: '',
+    // scheduleService: '',
     emailToEdit: { key: '', email: '' },
     error: null,
     loading: false,
-    settingsServiceTab: 'email-tab',
+    //  settingsServiceTab: 'email-tab',
     emaillist: [],
     googleServiceScopes: 'https://www.googleapis.com/auth/userinfo.email',
     githubServiceScopes: '',
     startScrapingClicked: false,
     runId: 0,
-    completeTime: 0
+    completeTime: 0,
+    selectedProjectTab: 'project-workflows',
+    workflowEditor: { workflowName: '', workflowRepo: '', workflowDescription: '', id: null }
   };
 
 export default (state, action) => {
@@ -85,6 +87,11 @@ export default (state, action) => {
       return { ...state, ...action.payload }
     case actionTypes.GITHUB_INITIALIZATION_CHANGED:
       return { ...state, githubInitialization: { ...state.githubInitialization, ...action.payload } }
+    case actionTypes.PROJECT_EDITOR_TAB_CHANGED:
+      return { ...state, selectedProjectTab: action.payload }
+    case actionTypes.WORKFLOW_EDITOR_INPUT_CHANGED:
+      return { ...state, workflowEditor: { ...state.workflowEditor, [action.payload.input]: action.payload.value } }
+
     default:
       return state;
   }
@@ -128,6 +135,8 @@ export const actionTypes = {
   SET_GH_TKN: 'SET_GH_TKN',
   ID_TOKEN_UPDATED: 'ID_TOKEN_UPDATED',
   PROJECT_SELECTED: 'PROJECT_SELECTED',
-  GITHUB_INITIALIZATION_CHANGED: 'GITHUB_INITIALIZATION_CHANGED'
+  GITHUB_INITIALIZATION_CHANGED: 'GITHUB_INITIALIZATION_CHANGED',
+  PROJECT_EDITOR_TAB_CHANGED: 'PROJECT_EDITOR_TAB_CHANGED',
+  WORKFLOW_EDITOR_INPUT_CHANGED: 'WORKFLOW_EDITOR_INPUT_CHANGED'
 
 };

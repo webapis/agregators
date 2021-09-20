@@ -19,7 +19,7 @@ customElements.define('project-list', class extends HTMLElement {
         
         <div class="container">
         <div id="project-list-container" class="row">  
-        <legend>Project Templates:</legend>
+        <legend>Aggregators:</legend>
         <div id="loaing">Loading....</div>
         </div>
         </div>

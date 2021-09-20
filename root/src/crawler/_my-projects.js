@@ -53,7 +53,7 @@ customElements.define('my-projects', class extends HTMLElement {
         <top-navigation></top-navigation>
         <div class="container">
         <div id="project-list-container" class="row">  
-        <legend>My Projects:</legend>
+        <legend>Tasks:</legend>
         <div id="loaing">Loading....</div>
         </div>
         </div>

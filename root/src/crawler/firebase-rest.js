@@ -42,9 +42,10 @@ function firebase() {
         push: async function (data, cb) {
             await updateIdToken()
             fetch(`${this.projectUri}/${this.url}/.json?auth=${this.idToken}`, { method: 'post', body: JSON.stringify(data) }).then(response => response.json()).then(data => {
-                cb && cb()
+              
+                cb && cb(null,data)
             }).catch(error => {
-                cb && cb(error)
+                cb && cb(error,null)
                 return this
             })
         },
