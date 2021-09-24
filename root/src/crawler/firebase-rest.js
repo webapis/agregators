@@ -23,9 +23,9 @@ function firebase() {
         set: async function (data, cb) {
             await updateIdToken()
             fetch(`${this.projectUri}/${this.url}/.json?auth=${this.idToken}`, { method: 'put', body: JSON.stringify(data) }).then(response => response.json()).then(data => {
-                cb && cb()
+                cb && cb(null,data)
             }).catch(error => {
-                cb && cb(error)
+                cb && cb(error,null)
                 return this
             })
 
@@ -57,10 +57,13 @@ function firebase() {
                     
                     var childaddedEvent = new EventSource(fetchPath, {});
                     childaddedEvent.onerror = function (error) {
+                       
                         cb(error, null)
                     };
                     childaddedEvent.addEventListener('put', function (e) {
-                        cb(null, e)
+                        const response =JSON.parse(e.data)
+                    
+                        cb(null, response)
                         console.log(e.data)
                     })
                     break;

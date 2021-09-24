@@ -8,32 +8,45 @@ customElements.define('workflow-editor', class extends HTMLElement {
     const resources = await import('./resources.js')
     await resources.default()
 
-    const { workflowEditor: { workflowDescription, workflowName, workflowRepo }, auth: { idToken, localId: uid } } = window.pageStore.state
+    const { workflowEditor: { workflowDescription, workflowName, tokenFPR, isPrivate }, auth: { idToken, localId: uid } } = window.pageStore.state
 
     this.uid = uid
     this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri('https://turkmenistan-market.firebaseio.com')
-    this.render({ workflowDescription, workflowName, workflowRepo })
+    this.render({ workflowDescription, workflowName, token: tokenFPR, isPrivate })
 
-
+    window.pageStore.subscribe(window.actionTypes.BRANCH_SELECTED, state => {
+      const { workflowEditor: { workflowDescription, workflowName, tokenFPR, isPrivate } } = state
+      this.render({ workflowDescription, workflowName, token: tokenFPR, isPrivate })
+    })
+    window.pageStore.subscribe(window.actionTypes.REPO_SELECTED, state => {
+      const { workflowEditor: { workflowDescription, workflowName, tokenFPR, isPrivate } } = state
+      this.render({ workflowDescription, workflowName, token: tokenFPR, isPrivate })
+    })
   }
-  render({ workflowDescription, workflowName, workflowRepo }) {
+  render({ workflowDescription, workflowName, token, isPrivate }) {
+    
     this.innerHTML = ` 
-        
-        
         <top-navigation></top-navigation>
-
         <div class="container">
         <h3>Workflow Editor:</h3>
         <div class="row">
       <div class="col-12">
       <div class="mb-3">
         <label for="workflowNameInput" class="form-label">Workflow Name:</label>
-        <input type="text" class="form-control input" id="workflowNameInput" name="workflowName" placeholder="Enter Workflow Name" value="${workflowName}"/>
+        <input type="text" readonly class="form-control" id="workflowNameInput" name="workflowName"  value="${workflowName}"/>
       </div>
       <div class="mb-3">
-      <label for="workflowRepoInput" class="form-label">Workflow repo:</label>
-      <input type="text" class="form-control input" id="workflowRepoInput" name="workflowRepo" placeholder="Enter Workflow Repo Url" value="${workflowRepo}"/>
+    
+      <owners-repos></owners-repos>
     </div>
+    <div class="mb-3">
+    
+    <repo-branches></repo-branches>
+  </div>
+  ${isPrivate ? `  <div class="mb-3">
+  <label for="tokenFPR" class="form-label">Token For private repo</label>
+  <input class="form-control input" id="tokenFPR" name="tokenFPR" value="${token}">
+</div>`: ""}
       <div class="mb-3">
         <label for="workflowDescriptionTextarea" class="form-label">Workflow description</label>
         <textarea class="form-control input" id="workflowDescriptionTextarea" name="workflowDescription" rows="3">${workflowDescription}</textarea>
@@ -47,6 +60,11 @@ customElements.define('workflow-editor', class extends HTMLElement {
         </div>
         <app-footer></app-footer>`
 
+        document.getElementById('tokenFPR')&&  document.getElementById('tokenFPR').addEventListener('input', (e) => {
+      const { value } = e.target
+      window.pageStore.dispatch({ type: window.actionTypes.TOKEN_FPR_CHANGED, payload: value })
+    })
+
     this.querySelectorAll('.input').forEach(element => {
       element.addEventListener('input', (e) => {
 
@@ -58,19 +76,139 @@ customElements.define('workflow-editor', class extends HTMLElement {
     })
 
     document.getElementById('save-workflow-btn').addEventListener('click', (e) => {
-      const { workflowEditor: { workflowDescription, workflowName, workflowRepo, id }, auth: { screenName } } = window.pageStore.state
-
-      if (!id) {
-        this.FB_DATABASE.ref('workflows').push({ workflowDescription, workflowName, workflowRepo, visibility: 'private', owner: screenName }, (error, data) => {
-          const { name } = data
-          window.pageStore.dispatch({ type: window.actionTypes.WORKFLOW_EDITOR_INPUT_CHANGED, payload: { value: name, input: 'id' } })
-          window.pageStore.dispatch({ type: window.actionTypes.WORKFLOW_EDITOR_INPUT_CHANGED, payload: { value: screenName, input: 'owner' } })
-          window.pageStore.dispatch({ type: window.actionTypes.WORKFLOW_EDITOR_INPUT_CHANGED, payload: { value: 'private', input: 'visibility' } })
+      const { workflowEditor: { workflowDescription, selectedRepo, isPrivate, selectedBranch, workflowName, tokenFPR}, auth: { screenName,localId } } = window.pageStore.state
+        this.FB_DATABASE.ref(`workflows/${localId}/${workflowName}`).set({workflowDescription, selectedRepo, isPrivate, selectedBranch, tokenFPR,screenName}, (error, data) => {
+          window.pageStore.dispatch({type:window.actionTypes.WORKFLOW_UPDATED})
+          window.location.replace('/workflow-list.html')
         })
-
-      } else {
-        debugger;
-      }
     })
+  }
+})
+
+
+
+customElements.define('owners-repos', class extends HTMLElement {
+  constructor() {
+    super()
+  }
+  async connectedCallback() {
+    const { workflowEditor: { selectedRepo } } = window.pageStore.state
+    this.render({ selectedRepo })
+
+    window.pageStore.subscribe(window.actionTypes.REPO_SELECTED, state => {
+      const { workflowEditor: { selectedRepo } } = state
+
+      this.render({ selectedRepo })
+    })
+
+
+  }
+  render({ selectedRepo }) {
+    this.innerHTML = `<label for="repoDataList" class="form-label">Repos</label>
+    <input class="form-control" list="repoDatalistOptions" id="repoDataList" placeholder="Type to search..." value="${selectedRepo}">
+    <datalist id="repoDatalistOptions">
+    
+    </datalist>`
+    window.pageStore.subscribe(window.actionTypes.USER_REPOS_FETCHED, state => {
+      const { workflowEditor: { ownersRepos } } = state
+      const datalist = document.getElementById('repoDatalistOptions')
+      datalist.innerHTML = ''
+      ownersRepos.forEach(repo => {
+        const element = document.createElement('option')
+        element.value = repo.name
+        datalist.appendChild(element)
+      })
+    })
+
+    document.getElementById('repoDataList').addEventListener('input', (e) => {
+
+      console.log('e', e.inputType)
+      if (e.inputType === undefined) {
+        const { value } = e.target
+        const { workflowEditor: { ownersRepos } } = window.pageStore.state
+        const selectedRepository = ownersRepos.find(o => o.name === value)
+        // const { private } = selectedRepo
+
+        window.pageStore.dispatch({ type: window.actionTypes.REPO_SELECTED, payload: { selectedRepo: value, isPrivate: selectedRepository.private } })
+      }
+
+    })
+
+    document.getElementById('repoDataList').addEventListener('focus', (e) => {
+
+
+      const { auth: { token } } = window.pageStore.state
+      this.getRepos({ token })
+
+
+    })
+  }
+  async getRepos({ token }) {
+    const response = await fetch('https://api.github.com/user/repos', { method: 'get', headers: { Accept: "application/vnd.github.v3+json", authorization: `token ${token}` } })
+    const data = await response.json()
+    window.pageStore.dispatch({ type: window.actionTypes.USER_REPOS_FETCHED, payload: data })
+
+
+  }
+})
+
+
+
+customElements.define('repo-branches', class extends HTMLElement {
+  constructor() {
+    super()
+  }
+  async connectedCallback() {
+    const { workflowEditor: { selectedBranch } } = window.pageStore.state
+
+    this.render({ selectedBranch })
+
+    window.pageStore.subscribe(window.actionTypes.BRANCH_SELECTED, state => {
+      const { workflowEditor: { selectedBranch } } = state
+      this.render({ selectedBranch })
+    })
+
+  }
+  render({ selectedBranch }) {
+    this.innerHTML = `<label for="branchDataList" class="form-label">Branches</label>
+    <input class="form-control" list="branchDatalistOptions" id="branchDataList" placeholder="Type to search..." value=${selectedBranch}>
+    <datalist id="branchDatalistOptions">
+    
+    </datalist>`
+    window.pageStore.subscribe(window.actionTypes.REPOS_BRANCHES_FETCHED, state => {
+      const { workflowEditor: { repoBranches } } = state
+      const datalist = document.getElementById('branchDatalistOptions')
+      datalist.innerHTML = ''
+      repoBranches.forEach(repo => {
+        const element = document.createElement('option')
+        element.value = repo.name
+        datalist.appendChild(element)
+      })
+    })
+
+    document.getElementById('branchDataList').addEventListener('focus', () => {
+      const { auth: { token, screenName }, workflowEditor: { selectedRepo } } = window.pageStore.state
+      this.getBranches({ token, screenName, selectedRepo })
+    })
+
+    document.getElementById('branchDataList').addEventListener('input', (e) => {
+
+      console.log('e', e.inputType)
+      if (e.inputType === undefined) {
+        const { value } = e.target
+
+        window.pageStore.dispatch({ type: window.actionTypes.BRANCH_SELECTED, payload: value })
+      }
+
+    })
+  }
+  async getBranches({ token, screenName, selectedRepo }) {
+
+    const response = await fetch(`https://api.github.com/repos/${screenName}/${selectedRepo}/branches`, { method: 'get', headers: { Accept: "application/vnd.github.v3+json", authorization: `token ${token}` } })
+    const data = await response.json()
+
+    window.pageStore.dispatch({ type: window.actionTypes.REPOS_BRANCHES_FETCHED, payload: data })
+
+
   }
 })

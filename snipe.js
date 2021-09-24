@@ -2,7 +2,7 @@ process.env.SERVER = 'LOCAL_SERVER'
 require('dotenv').config()
 const fetch = require('node-fetch')
 //const { firebaseApp, fbDatabase } = require('./utils/firebase/firebaseInit')
-// const { fbRest } = require('./utils/firebase/firebase-rest')
+ const { fbRest } = require('./root/utils/firebase/firebase-rest')
 
 
 // function refreshCustomToken() {
@@ -62,15 +62,7 @@ const fetch = require('node-fetch')
 // })
 
 
-// const fbDatabase = fbRest().setIdToken(process.env.idToken).setProjectUri('https://turkmenistan-market.firebaseio.com').ref('projects/books')
 
-// fbDatabase.on('value',(error,e)=>{
-//     const {data,path}=JSON.parse(e.data)
-//     if(path!=='/'){
-//         debugger;
-//     }
-//     debugger;
-// })
 // var clone = require('git-clone');
 
 // clone('https://github.com/serdartkm/actor-prj.git',`${process.cwd()}/cloned-repo`,{},function(data){
@@ -159,16 +151,16 @@ const fetch = require('node-fetch')
 
 //--- UPLOAD CONTENT TO NEW BRANCH (PROJECT RELATED BRANCH)
 //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
-const bs64string = Buffer.from("Hello World").toString('base64')
-// debugger;
-fetch(`https://api.github.com/repos/serdartkm/agregators/contents/secondcontent.txt`, { method: 'put', headers: { Accept: "application/vnd.github.v3+json", authorization: `token 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` }, body: JSON.stringify({ message: "first content", content: bs64string, branch:'books' }) }).then(response => response.json()).then(data => {
+// const bs64string = Buffer.from("Hello World").toString('base64')
+// // debugger;
+// fetch(`https://api.github.com/repos/serdartkm/agregators/contents/secondcontent.txt`, { method: 'put', headers: { Accept: "application/vnd.github.v3+json", authorization: `token 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` }, body: JSON.stringify({ message: "first content", content: bs64string, branch:'books' }) }).then(response => response.json()).then(data => {
 
-    debugger;
+//     debugger;
 
-}).catch(error => {
+// }).catch(error => {
 
-    debugger;
-})
+//     debugger;
+// })
 
 // fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithIdp?key=AIzaSyDb8Z27Ut0WJ-RH7Exi454Bpit9lbARJeA`
 //     , {method:'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ postBody: "access_token=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&providerId=github.com", requestUri: "https://turkmenistan-market.firebaseapp.com/__/auth/handler", returnIdpCredential: true, returnSecureToken: true }) }).then(response => response.json()).then(data => {
@@ -191,3 +183,13 @@ fetch(`https://api.github.com/repos/serdartkm/agregators/contents/secondcontent.
 //     debugger;
 // })
 
+const fbDatabase = fbRest().setIdToken(process.env.idToken).setProjectUri('https://turkmenistan-market.firebaseio.com').ref('workflows').orderByChild('owner').equalTo('serdartkm')
+debugger
+fbDatabase.on('value',(error,e)=>{
+    debugger;
+    const {data,path}=JSON.parse(e.data)
+    if(path!=='/'){
+        debugger;
+    }
+    debugger;
+})

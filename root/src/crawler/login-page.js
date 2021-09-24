@@ -15,9 +15,21 @@ customElements.define('login-page', class extends HTMLElement {
             const refreshToken = document.getElementById('refreshToken').value
             const idToken = document.getElementById('idToken').value
             const localId = document.getElementById('localId').value
-            window.pageStore.dispatch({ type: window.actionTypes.AUTH_SUCCESS, payload: { auth: { email, token, screenName, photoUrl, refreshToken, idToken, localId, api_key: 'AIzaSyDb8Z27Ut0WJ-RH7Exi454Bpit9lbARJeA', timestamp: Date.now() + 3600000 } } })
-            window.location.replace('/login.html')
-            this.render({ authed: true, email })
+
+            this.uid = localId
+            this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri('https://turkmenistan-market.firebaseio.com')
+            this.FB_DATABASE.ref(`users/${localId}`).set({ email, token, screenName, photoUrl, refreshToken, idToken }, (error, data) => {
+                debugger;
+                if (error) {
+
+                } else {
+                    debugger;
+                    window.pageStore.dispatch({ type: window.actionTypes.AUTH_SUCCESS, payload: { auth: { email, token, screenName, photoUrl, refreshToken, idToken, localId, api_key: 'AIzaSyDb8Z27Ut0WJ-RH7Exi454Bpit9lbARJeA', timestamp: Date.now() + 3600000 } } })
+                    window.location.replace('/login.html')
+                    this.render({ authed: true, email })
+                }
+            })
+
         } else {
             const { auth: { email } } = window.pageStore.state
             this.render({ authed: true, email })

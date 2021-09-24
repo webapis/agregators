@@ -19,8 +19,8 @@ function fbRest() {
 
             return this
         },
-        ref: function (url) {
-            ;
+        ref:  function(url) {
+            
             this.url = url
             return this
         },
@@ -57,10 +57,15 @@ function fbRest() {
                 return this
             })
         },
-        on: function (event, cb) {
+        on:  function(event, cb) {
+            debugger;
             switch (event) {
                 case "value":
                     const fetchPath = `${this.projectUri}/${this.url}.json?auth=${this.idToken}`
+                    debugger;
+                 //   let withFilter = this.orderByChildValue !==''? `${fetchPath}&orderBy=\"${this.orderByChildValue}\"&${this.equalToValue!==''?`equalTo=\"${this.equalToValue}\"`:fetchPath}`:fetchPath
+                    let withFilter = `${fetchPath}&orderBy="owner"&equalTo=\"serdartkm\"`
+                    debugger;
                     var childaddedEvent = new EventSource(fetchPath, {});
                     childaddedEvent.onerror = function (error) {
                         cb(error, null)

@@ -28,7 +28,8 @@ export const initState = stateFromLS
     runId: 0,
     completeTime: 0,
     selectedProjectTab: 'project-workflows',
-    workflowEditor: { workflowName: '', workflowRepo: '', workflowDescription: '', id: null }
+    workflowEditor: { workflowName: '', workflowDescription: '', ownersRepos: [], selectedRepo: '', isPrivate: '', selectedBranch: '', workflowName: '', tokenFPR: '' },
+    workflowList: { workflowTab: 'private-workflows', workflows: [] }
   };
 
 export default (state, action) => {
@@ -91,7 +92,26 @@ export default (state, action) => {
       return { ...state, selectedProjectTab: action.payload }
     case actionTypes.WORKFLOW_EDITOR_INPUT_CHANGED:
       return { ...state, workflowEditor: { ...state.workflowEditor, [action.payload.input]: action.payload.value } }
+    case actionTypes.WORKFLOW_TAB_CHANGED:
+      return { ...state, workflowList: { ...state.workflowList, workflowTab: action.payload } }
+    case actionTypes.USER_REPOS_FETCHED:
+      return { ...state, workflowEditor: { ...state.workflowEditor, ownersRepos: action.payload } }
+    case actionTypes.REPOS_BRANCHES_FETCHED:
+      return { ...state, workflowEditor: { ...state.workflowEditor, repoBranches: action.payload } }
+    case actionTypes.REPO_SELECTED:
 
+      return { ...state, workflowEditor: { ...state.workflowEditor, isPrivate: action.payload.isPrivate, selectedRepo: action.payload.selectedRepo, workflowName: `${state.auth.screenName}_${action.payload.selectedRepo}_${state.workflowEditor.selectedBranch}` } }
+    case actionTypes.BRANCH_SELECTED:
+
+      return { ...state, workflowEditor: { ...state.workflowEditor, selectedBranch: action.payload, workflowName: `${state.auth.screenName}_${state.workflowEditor.selectedRepo}_${action.payload}` } }
+    case actionTypes.TOKEN_FPR_CHANGED:
+      return { ...state, workflowEditor: { ...state.workflowEditor, tokenFPR: action.payload } }
+    case actionTypes.WORKFLOWS_FETCHED:
+      return { ...state, workflowList: { workflows: action.payload } }
+    case actionTypes.WORKFLOW_UPDATED:
+      return {...state,workflowEditor:{workflowName: '', workflowDescription: '', ownersRepos: [], selectedRepo: '', isPrivate: '', selectedBranch: '', workflowName: '', tokenFPR: '' }}
+    case actionTypes.EDIT_WORKFLOW:
+      return {...state,workflowEditor:{...state.workflowEditor,... action.payload}}
     default:
       return state;
   }
@@ -137,6 +157,15 @@ export const actionTypes = {
   PROJECT_SELECTED: 'PROJECT_SELECTED',
   GITHUB_INITIALIZATION_CHANGED: 'GITHUB_INITIALIZATION_CHANGED',
   PROJECT_EDITOR_TAB_CHANGED: 'PROJECT_EDITOR_TAB_CHANGED',
-  WORKFLOW_EDITOR_INPUT_CHANGED: 'WORKFLOW_EDITOR_INPUT_CHANGED'
+  WORKFLOW_EDITOR_INPUT_CHANGED: 'WORKFLOW_EDITOR_INPUT_CHANGED',
+  WORKFLOW_TAB_CHANGED: 'WORKFLOW_TAB_CHANGED',
+  USER_REPOS_FETCHED: 'USER_REPOS_FETCHED',
+  REPOS_BRANCHES_FETCHED: 'REPOS_BRANCHES_FETCHED',
+  REPO_SELECTED: 'REPO_SELECTED',
+  BRANCH_SELECTED: 'BRANCH_SELECTED',
+  TOKEN_FPR_CHANGED: 'TOKEN_FPR_CHANGED',
+  WORKFLOWS_FETCHED: 'WORKFLOWS_FETCHED',
+  WORKFLOW_UPDATED:'WORKFLOW_UPDATED',
+  EDIT_WORKFLOW:'EDIT_WORKFLOW'
 
 };
