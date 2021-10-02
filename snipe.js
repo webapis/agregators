@@ -183,11 +183,35 @@ const fetch = require('node-fetch')
 //     debugger;
 // })
 
-const fbDatabase = fbRest().setIdToken(process.env.idToken).setProjectUri('https://turkmenistan-market.firebaseio.com').ref('workflows').orderByChild('owner').equalTo('serdartkm')
+// const fbDatabase = fbRest().setIdToken(process.env.idToken).setProjectUri('https://turkmenistan-market.firebaseio.com').ref('users').orderByChild('owner').equalTo('serdartkm')
+// debugger
+// fbDatabase.on('value',(error,e)=>{
+//     debugger;
+//     const {data,path}=JSON.parse(e.data)
+//     if(path!=='/'){
+//         debugger;
+//     }
+//     debugger;
+// })
+
+
+// const fbDatabase = fbRest().setIdToken(process.env.idToken).setProjectUri('https://turkmenistan-market.firebaseio.com').ref(`users`)
+// debugger
+// fbDatabase.update({"private/Wc44bMH8DUhatv9UYvPNH3nfdnB3":{token:'tkn123'},"public/Wc44bMH8DUhatv9UYvPNH3nfdnB3":{token:'tkn123'}},(error,e)=>{
+//     debugger;
+//     const {data,path}=JSON.parse(e.data)
+//     if(path!=='/'){
+//         debugger;
+//     }
+//     debugger;
+// })
+
+const fbDatabase = fbRest().setIdToken(process.env.idToken).setProjectUri('https://turkmenistan-market.firebaseio.com').ref('workflows')//.orderByKey().equalTo('allan')
 debugger
 fbDatabase.on('value',(error,e)=>{
     debugger;
     const {data,path}=JSON.parse(e.data)
+    debugger;
     if(path!=='/'){
         debugger;
     }

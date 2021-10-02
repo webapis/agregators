@@ -29,7 +29,12 @@ export const initState = stateFromLS
     completeTime: 0,
     selectedProjectTab: 'project-workflows',
     workflowEditor: { workflowName: '', workflowDescription: '', ownersRepos: [], selectedRepo: '', isPrivate: '', selectedBranch: '', workflowName: '', tokenFPR: '' },
-    workflowList: { workflowTab: 'private-workflows', workflows: [] }
+    workflowList: { workflowTab: 'private-workflows', workflows: [] },
+    workspaceList: { workspaces: [] },
+    workspaceDashboard: { selectedTab: 'workflows-tab', selectedWfContainerTab: 'collection-tab', containers: [], selectedContainer: '', selectedWfContainerEditorTab: 'workflows-tab' },
+    workspace: { workspaceSelected: '' },
+    containerName: { name: '' },
+    wfContainer: { selectedContainer: '' }
   };
 
 export default (state, action) => {
@@ -109,10 +114,26 @@ export default (state, action) => {
     case actionTypes.WORKFLOWS_FETCHED:
       return { ...state, workflowList: { workflows: action.payload } }
     case actionTypes.WORKFLOW_UPDATED:
-      return {...state,workflowEditor:{workflowName: '', workflowDescription: '', ownersRepos: [], selectedRepo: '', isPrivate: '', selectedBranch: '', workflowName: '', tokenFPR: '' }}
+      return { ...state, workflowEditor: { workflowName: '', workflowDescription: '', ownersRepos: [], selectedRepo: '', isPrivate: '', selectedBranch: '', workflowName: '', tokenFPR: '' } }
     case actionTypes.EDIT_WORKFLOW:
-      return {...state,workflowEditor:{...state.workflowEditor,... action.payload}}
+      return { ...state, workflowEditor: { ...state.workflowEditor, ...action.payload } }
+    case actionTypes.WORKSPACE_NAME_CHANGED:
+      return { ...state, workspaceName: action.payload }
+    case actionTypes.WORKSPACES_FETCHED:
+      return { ...state, workspaceList: { ...state.workspaceList, workspaces: action.payload } }
+    case actionTypes.WORKSPACE_SELECTED:
+      return { ...state, workspace: { ...state.workspace, workspaceSelected: action.payload } }
+    case actionTypes.CONTAINER_NAME_CHANGED:
+      return { ...state, containerName: { ...state.containerName, name: action.payload } }
+    case actionTypes.CONTAINERS_FETCHED:
+      return { ...state, workspaceDashboard: { ...state.workspaceDashboard, containers: action.payload } }
+    case actionTypes.WF_CONTAINER_SELECTED:
+      return { ...state, wfContainer: { ...state.wfContainer, selectedContainer: action.payload } }
+
+    case actionTypes.CONTAINER_NAME_SAVED:
+      return { ...state, containerName: { name: '' } }
     default:
+
       return state;
   }
 };
@@ -165,7 +186,17 @@ export const actionTypes = {
   BRANCH_SELECTED: 'BRANCH_SELECTED',
   TOKEN_FPR_CHANGED: 'TOKEN_FPR_CHANGED',
   WORKFLOWS_FETCHED: 'WORKFLOWS_FETCHED',
-  WORKFLOW_UPDATED:'WORKFLOW_UPDATED',
-  EDIT_WORKFLOW:'EDIT_WORKFLOW'
+  WORKFLOW_UPDATED: 'WORKFLOW_UPDATED',
+  EDIT_WORKFLOW: 'EDIT_WORKFLOW',
+  WORKSPACE_NAME_CHANGED: 'WORKSPACE_NAME_CHANGED',
+  WORKSPACES_FETCHED: 'WORKSPACES_FETCHED',
+  WORKSPACE_SELECTED: 'WORKSPACE_SELECTED',
+  // WS_DASHBOARD_TAB_CHANGED: 'WS_DASHBOARD_TAB_CHANGED',
+  // WF_CONTAINER_TAB_CHANGED: 'WF_CONTAINER_TAB_CHANGED',
+  CONTAINER_NAME_CHANGED: 'CONTAINER_NAME_CHANGED',
+  CONTAINERS_FETCHED: 'CONTAINERS_FETCHED',
+  WF_CONTAINER_SELECTED: 'WF_CONTAINER_SELECTED',
+  WF_CONTAINER_EDITOR_TAB_CHANGED: 'WF_CONTAINER_EDITOR_TAB_CHANGED',
+  CONTAINER_NAME_SAVED: 'CONTAINER_NAME_SAVED'
 
 };

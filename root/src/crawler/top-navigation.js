@@ -55,7 +55,16 @@ const pathname =window.location.pathname
           </li>
           <li class="nav-item">
           <a class="nav-link ${pathname === '/workflow-project-editor.html' && 'active'}" href="/workflow-project-editor.html" id="workflow-editor-link">Add Workflow Project</a>
+          
         </li>
+        <li class="nav-item">
+       
+        <a class="nav-link ${pathname === '/workspace-name.html' && 'active'}" href="/workspace-name.html" id="workflow-editor-link">Create Workspace</a>
+      </li>
+      <li class="nav-item">
+       
+      <a class="nav-link ${pathname === '/workspaces-list.html' && 'active'}" href="/workspaces-list.html" id="workflow-editor-link">Workspaces</a>
+    </li>
             </ul>
           
             <form class="d-flex">

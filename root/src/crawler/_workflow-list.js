@@ -12,13 +12,10 @@ customElements.define('workflow-list', class extends HTMLElement {
 
         this.uid = uid
         this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri('https://turkmenistan-market.firebaseio.com')
-        this.FB_DATABASE.ref(`workflows/${uid}`).on('value', (error, snap) => {
+        this.FB_DATABASE.ref(`workflows`).on('value', (error, snap) => {
             const data = Object.entries(snap.data)
             debugger;
             window.pageStore.dispatch({ type: window.actionTypes.WORKFLOWS_FETCHED, payload: data })
-
-
-
 
         })
         this.render({ workflows })

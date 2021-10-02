@@ -3,13 +3,14 @@ customElements.define('workflow-editor', class extends HTMLElement {
     super()
   }
 
-  async connectedCallback() {
+   async connectedCallback() {
 
     const resources = await import('./resources.js')
     await resources.default()
+    const { workflowEditor: { workflowDescription, workflowName, tokenFPR, isPrivate }, auth: { idToken, localId: uid } , workspace: { workspaceSelected },wfContainer:{selectedContainer}} = window.pageStore.state
 
-    const { workflowEditor: { workflowDescription, workflowName, tokenFPR, isPrivate }, auth: { idToken, localId: uid } } = window.pageStore.state
-
+    document.getElementById('ws-breadcrumb').innerText=`Workspace(${workspaceSelected})`
+    document.getElementById('wf-container-breadcrumb').innerText=`Container(${selectedContainer})`
     this.uid = uid
     this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri('https://turkmenistan-market.firebaseio.com')
     this.render({ workflowDescription, workflowName, token: tokenFPR, isPrivate })
@@ -26,8 +27,8 @@ customElements.define('workflow-editor', class extends HTMLElement {
   render({ workflowDescription, workflowName, token, isPrivate }) {
     
     this.innerHTML = ` 
-        <top-navigation></top-navigation>
-        <div class="container">
+      
+        <div >
         <h3>Workflow Editor:</h3>
         <div class="row">
       <div class="col-12">
@@ -58,7 +59,7 @@ customElements.define('workflow-editor', class extends HTMLElement {
     </div>
         </div>
         </div>
-        <app-footer></app-footer>`
+     `
 
         document.getElementById('tokenFPR')&&  document.getElementById('tokenFPR').addEventListener('input', (e) => {
       const { value } = e.target
@@ -67,19 +68,19 @@ customElements.define('workflow-editor', class extends HTMLElement {
 
     this.querySelectorAll('.input').forEach(element => {
       element.addEventListener('input', (e) => {
-
         const { value, name } = e.target
-
         window.pageStore.dispatch({ type: window.actionTypes.WORKFLOW_EDITOR_INPUT_CHANGED, payload: { value, input: name } })
 
       })
     })
 
     document.getElementById('save-workflow-btn').addEventListener('click', (e) => {
-      const { workflowEditor: { workflowDescription, selectedRepo, isPrivate, selectedBranch, workflowName, tokenFPR}, auth: { screenName,localId } } = window.pageStore.state
-        this.FB_DATABASE.ref(`workflows/${localId}/${workflowName}`).set({workflowDescription, selectedRepo, isPrivate, selectedBranch, tokenFPR,screenName}, (error, data) => {
+      const { workflowEditor: { workflowDescription, selectedRepo, isPrivate, selectedBranch, workflowName, tokenFPR}, auth: { screenName },workspace:{workspaceSelected},wfContainer:{selectedContainer} } = window.pageStore.state
+      debugger;
+        this.FB_DATABASE.ref(`workspaces/${workspaceSelected}/containers/${selectedContainer}/workflows/${workflowName}`).set({workflowDescription, selectedRepo, isPrivate, selectedBranch, tokenFPR,screenName}, (error, data) => {
           window.pageStore.dispatch({type:window.actionTypes.WORKFLOW_UPDATED})
-          window.location.replace('/workflow-list.html')
+          debugger;
+          window.location.replace('/wf-container.html')
         })
     })
   }
@@ -136,10 +137,8 @@ customElements.define('owners-repos', class extends HTMLElement {
 
     document.getElementById('repoDataList').addEventListener('focus', (e) => {
 
-
       const { auth: { token } } = window.pageStore.state
       this.getRepos({ token })
-
 
     })
   }

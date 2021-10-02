@@ -10,8 +10,8 @@ customElements.define('workflow-projects', class extends HTMLElement{
     }
 
     render(){
-        this.innerHTML=`        <top-navigation></top-navigation>
-
+        this.innerHTML=`
+        <top-navigation></top-navigation>
         <div class="container">
         <h3>Workflow Projects:</h3>
         <div class="row">

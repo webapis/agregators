@@ -38,21 +38,18 @@ function fbRest() {
 
         },
         update: function (data, cb) {
+            debugger;
             fetch(`${this.projectUri}/${this.url}/.json?auth=${this.idToken}`, { method: 'patch', body: JSON.stringify(data) }).then(response => response.json()).then(data => {
-
-                cb && cb()
+                cb && cb(null,data)
             }).catch(error => {
-
-                cb && cb(error)
+                cb && cb(error,null)
                 return this
             })
         },
         push: function (data, cb) {
             fetch(`${this.projectUri}/${this.url}/.json?auth=${this.idToken}`, { method: 'post', body: JSON.stringify(data) }).then(response => response.json()).then(data => {
-
                 cb && cb()
             }).catch(error => {
-
                 cb && cb(error)
                 return this
             })
@@ -64,7 +61,7 @@ function fbRest() {
                     const fetchPath = `${this.projectUri}/${this.url}.json?auth=${this.idToken}`
                     debugger;
                  //   let withFilter = this.orderByChildValue !==''? `${fetchPath}&orderBy=\"${this.orderByChildValue}\"&${this.equalToValue!==''?`equalTo=\"${this.equalToValue}\"`:fetchPath}`:fetchPath
-                    let withFilter = `${fetchPath}&orderBy="owner"&equalTo=\"serdartkm\"`
+                    let withFilter = `${fetchPath}&orderByChild="$key"&equalTo=\"allan\"`
                     debugger;
                     var childaddedEvent = new EventSource(fetchPath, {});
                     childaddedEvent.onerror = function (error) {
@@ -94,6 +91,10 @@ function fbRest() {
             })},
         orderByChild: function (orderByChildValue) {
             this.orderByChildValue = orderByChildValue
+            return this
+        },
+        orderByKey: function (orderByKeyValue) {
+            this.orderByChildValue = orderByKeyValue
             return this
         },
         equalTo: function (equalToValue) {

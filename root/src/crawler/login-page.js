@@ -8,6 +8,7 @@ customElements.define('login-page', class extends HTMLElement {
         await resources.default()
 
         if (document.getElementById('email')) {
+            debugger;
             const email = document.getElementById('email').value
             const token = document.getElementById('oauthAccessToken').value
             const screenName = document.getElementById('screenName').value
@@ -18,10 +19,12 @@ customElements.define('login-page', class extends HTMLElement {
 
             this.uid = localId
             this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri('https://turkmenistan-market.firebaseio.com')
-            this.FB_DATABASE.ref(`users/${localId}`).set({ email, token, screenName, photoUrl, refreshToken, idToken }, (error, data) => {
+            const publicData ={email,screenName,photoUrl}
+            const privateData={token,refreshToken,idToken}
+            this.FB_DATABASE.ref(`users`).update({[`private/${localId}`]:privateData,[`public/${localId}`]:publicData}, (error, data) => {
                 debugger;
                 if (error) {
-
+                    
                 } else {
                     debugger;
                     window.pageStore.dispatch({ type: window.actionTypes.AUTH_SUCCESS, payload: { auth: { email, token, screenName, photoUrl, refreshToken, idToken, localId, api_key: 'AIzaSyDb8Z27Ut0WJ-RH7Exi454Bpit9lbARJeA', timestamp: Date.now() + 3600000 } } })
@@ -31,6 +34,7 @@ customElements.define('login-page', class extends HTMLElement {
             })
 
         } else {
+            debugger;
             const { auth: { email } } = window.pageStore.state
             this.render({ authed: true, email })
         }
@@ -46,7 +50,7 @@ customElements.define('login-page', class extends HTMLElement {
 
     render({ authed, email }) {
         this.innerHTML = `
-        <top-navigation></top-navigation>
+
         <div class ="container">
         <div class ="row">
               ${authed ? `You are authenticated with ${email}` : 'You are not authenticated'}
