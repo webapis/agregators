@@ -5,14 +5,11 @@ customElements.define('workflows-list', class extends HTMLElement {
     }
 
     connectedCallback() {
-        const { workflowEditor: { workflowDescription, workflowName, tokenFPR, isPrivate }, auth: { idToken, localId: uid } } = window.pageStore.state
 
-        this.uid = uid
-        this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri('https://turkmenistan-market.firebaseio.com')
-     this.render()
+        this.render()
     }
 
-    render(){
+    render() {
         this.innerHTML = `<div>
         <workflow-table></workflow-table>
         </div>`
@@ -21,34 +18,60 @@ customElements.define('workflows-list', class extends HTMLElement {
 
 
 
-customElements.define('workflow-table', class extends HTMLElement{
-    constructor(){
+customElements.define('workflow-table', class extends HTMLElement {
+    constructor() {
         super()
     }
-    connectedCallback(){
-        this.innerHTML=`<div">
-      <div class="row border-bottom fw-bold mb-2">
-            <div class="col">#</div>
-            <div class="col">Workflow</div>
-            <div class="col">Configuration</div>
-            <div class="col">Remove</div>
-      </div>
-     <project-workflow-table-row></project-workflow-table-row>
-     <project-workflow-table-row></project-workflow-table-row>
-      </div>`
+    connectedCallback() {
+       
+        const { auth: { idToken, localId: uid } } = window.pageStore.state
+
+        this.uid = uid
+        this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri('https://turkmenistan-market.firebaseio.com')
+        this.render()
+    }
+
+    render() {
+        this.innerHTML = `<div id="workflow-container">
+        <div class="row border-bottom fw-bold mb-2">
+              <div class="col">#</div>
+              <div class="col">Workflow</div>
+              <div class="col">Configuration</div>
+              <div class="col">Remove</div>
+        </div>
+      
+     
+        </div>`
+    
+        const {workspace:{workspaceSelected},wfContainer:{selectedContainer} } = window.pageStore.state
+        debugger;
+          this.FB_DATABASE.ref(`workspaces/${workspaceSelected}/containers/${selectedContainer}/workflows`).on('value', (error, wf) => {
+        
+            const workflows = Object.keys(wf.data)
+
+            workflows.forEach((w,i)=>{
+                document.getElementById('workflow-container').insertAdjacentHTML('beforeend',`<project-workflow-table-row order="${i}" workflow-name="${w}"></project-workflow-table-row>`)
+            })
+          
+            debugger;
+            
+          })
+
     }
 })
 
-customElements.define('project-workflow-table-row', class extends HTMLElement{
-    constructor(){
+customElements.define('project-workflow-table-row', class extends HTMLElement {
+    constructor() {
         super()
     }
 
-    connectedCallback(){
-        this.innerHTML=`
+    connectedCallback() {
+        const workflowname = this.getAttribute('workflow-name')
+        const order =this.getAttribute('order')
+        this.innerHTML = `
        <div class="row border-bottom">
-        <div class="col">1</div>
-        <div class="col">Mark</div>
+        <div class="col">${order}</div>
+        <div class="col">${workflowname}</div>
         <div class="col">
         <button class="btn">
         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-gear" viewBox="0 0 16 16">
@@ -64,3 +87,5 @@ customElements.define('project-workflow-table-row', class extends HTMLElement{
         `
     }
 })
+
+
