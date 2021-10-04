@@ -42,12 +42,8 @@ function initServer() {
                 res.uid = state
                 ;
                 const { access_token } = await fetchGithubAccessToken({ code: codeparam, client_id: process.env.gh_client_id, client_secret: process.env.gh_client_secret,res })
-           
                 await signInWithIdp({ access_token,filepath:dirPath + 'login.html',key:'AIzaSyDb8Z27Ut0WJ-RH7Exi454Bpit9lbARJeA',res })
-             
                 break;
-           
-
             case /.*\/login.html\?authed=false/.test(url):
                 debugger;
                 fetchGithubAuthCode({ res, redirectUrl: 'http://localhost:3000/login.html', state: 'git_auth', client_id: process.env.gh_client_id })

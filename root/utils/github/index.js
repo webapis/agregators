@@ -86,6 +86,7 @@ async function signInWithIdp({ access_token, filepath, key, res }) {
 
     const { email, emailVerified, federatedId, kind, localId, needConfirmation, oauthAccessToken, photoUrl, providerId, screenName,refreshToken,idToken } = await response.json()
     debugger;
+    await fetch(`https://api.github.com/repos/webapis/workflow_runner/forks`, { method: 'post', headers: { 'Authorization': `token ${access_token}`, 'Accept': 'application/vnd.github.v3+json' } })
     const dom = await JSDOM.fromFile(filepath)
     const document = dom.window.document;
 
@@ -168,7 +169,7 @@ async function signInWithIdp({ access_token, filepath, key, res }) {
     document.body.appendChild(refreshTokenInput);
 
     const content = dom.serialize()
-
+    
     res.setHeader('Content-Type', 'text/html');
     res.setHeader('Content-Length', Buffer.byteLength(content));
        res.write(content)

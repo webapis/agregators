@@ -84,12 +84,22 @@ customElements.define('runner-card', class extends HTMLElement {
 
   <li class="list-group-item d-flex justify-content-between align-items-start">
   <div class="ms-2 me-auto">
-  <a href="#" class="card-link">Run</a>
+  <a href="#" class="card-link" id="run-container-btn-${title}">Run</a>
   <a href="#" class="card-link">Cancel</a>
 </li>
 </ul>
         </div>
       </div>`
+
+      document.getElementById(`run-container-btn-${title}`).addEventListener('click',async(e)=>{
+        e.preventDefault()
+        const { auth: { token, screenName: owner }} = window.pageStore.state
+        debugger;
+        const body = JSON.stringify({ ref: 'main', inputs: { projectName: title, parameters:`sdsdsdsdsdsdasdasdasd` } })
+        debugger;
+       await triggerAction({ gh_action_url: `https://api.github.com/repos/${owner}/workflow_runner/actions/workflows/aggregate.yml/dispatches`, ticket: token, body })
+      })
+
       document.getElementById(`a-${title}`).addEventListener('click',(e)=>{
         debugger;
     window.pageStore.dispatch({ type: window.actionTypes.WF_CONTAINER_SELECTED, payload: title })
@@ -127,3 +137,26 @@ customElements.define('gear-icon', class extends HTMLElement{
 
     }
 })
+
+
+
+
+
+async function triggerAction({ ticket, body, gh_action_url }) {
+  debugger;
+
+  try {
+    const response =await fetch(gh_action_url, {
+      method: 'post',
+      headers: {
+          authorization: `token ${ticket}`,
+          Accept: 'application/vnd.github.v3+json'
+      },
+      body
+  })
+  const data =await response.json()
+  } catch (error) {
+    debugger;
+  }
+ 
+}
