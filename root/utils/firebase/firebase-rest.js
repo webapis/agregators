@@ -77,16 +77,16 @@ function fbRest() {
             }
 
         },
-        once: function ( cb) {
+        once: function (type, cb) {
             debugger;
             const fetchPath = `${this.projectUri}/${this.url}.json?auth=${this.idToken}`
-
+debugger;
             fetch(fetchPath).then(response => response.json()).then(data => {
-         
-                cb && cb(data)
+         debugger;
+                cb && cb(null,data)
             }).catch(error => {
-                
-                cb && cb({ error })
+                debugger;
+                cb && cb(error,null )
                 return this
             })},
         orderByChild: function (orderByChildValue) {

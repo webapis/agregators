@@ -35,7 +35,7 @@ customElements.define('container-name',class extends HTMLElement{
 
         document.getElementById('save-container-name').addEventListener('click',(e)=>{
            
-            const { workspaceList: { workspaceSelected }, auth: { screenName }, containerName:{name}} = window.pageStore.state
+            const { workspace: { workspaceSelected }, auth: { screenName }, containerName:{name}} = window.pageStore.state
 
             this.FB_DATABASE.ref(`workspaces/${workspaceSelected}/containers/${name}`).set({ owner: screenName }, (error, data) => {
                 if(!error){

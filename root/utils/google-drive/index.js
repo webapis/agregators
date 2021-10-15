@@ -25,6 +25,7 @@ async function uploadExcelFile({ access_token, filePath, taskSequelizerEventEmit
         taskSequelizerEventEmitter.emit('taskComplete', 'page_upload_excel', { webViewLink, webContentLink })
      
         //get public link
+
     }
     else {
         console.log('Error:Unhandled status code')
@@ -176,6 +177,7 @@ async function deleteFolder({ fileId, access_token }) {
 
 
 }
+
 module.exports = { folderExist, createFolder, uploadExcelFile, uploadImageFile, deleteFolder }
 
 

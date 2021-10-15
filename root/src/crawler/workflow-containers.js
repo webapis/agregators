@@ -23,13 +23,20 @@ customElements.define('workflow-containers', class extends HTMLElement {
         </div>`
         document.getElementById('containers').innerHTML = `Loading...`
         this.FB_DATABASE.ref(`workspaces/${workspaceSelected}/containers`).on('value', (error, response) => {
-            const containers = Object.keys(response.data)
-            document.getElementById('containers').innerHTML = ``
             debugger;
-            containers.forEach(c => {
-                document.getElementById('containers').insertAdjacentHTML('beforeend', `<container-card title="${c}" page-link="/wf-container.html">${c}</container-card>`)
-            })
-            window.pageStore.dispatch({ type: window.actionTypes.CONTAINERS_FETCHED, payload: containers })
+            if(response.data){
+                const containers = Object.keys(response.data)
+                document.getElementById('containers').innerHTML = ``
+                debugger;
+                containers.forEach(c => {
+                    document.getElementById('containers').insertAdjacentHTML('beforeend', `<container-card title="${c}" page-link="/wf-container.html">${c}</container-card>`)
+                })
+                window.pageStore.dispatch({ type: window.actionTypes.CONTAINERS_FETCHED, payload: containers })
+
+            } else{
+                document.getElementById('containers').innerHTML = `No containers available`
+            }
+        
 
         })
 

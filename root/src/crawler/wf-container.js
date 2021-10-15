@@ -23,12 +23,17 @@ customElements.define('wf-container', class extends HTMLElement{
 
 
         this.FB_DATABASE.ref(`workspaces/${workspaceSelected}/containers/${selectedContainer}/workflows`).on('value', (error, response) => {
+          if(response.data){
             const workflows = Object.keys(response.data)
             document.getElementById('workflows').innerHTML = ``
             debugger;
             workflows.forEach(c => {
                 document.getElementById('workflows').insertAdjacentHTML('beforeend', `<worklow-card class="m-1 col-3" title="${c}" >${c}</worklow-card>`)
             })
+          } else{
+            document.getElementById('workflows').innerHTML=`No worklows available`
+          }
+           
          
 
         })

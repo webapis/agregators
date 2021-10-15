@@ -6,7 +6,7 @@ const { admin } = require('../../utils/firebase/firebase-admin')
 
 const path = require('path')
 const fs = require('fs')
-const fbDatabase = admin.database()
+const { fbRest } = require('../firebase/firebase-rest')
 const dirPath = `${process.cwd()}/src/crawler/`;
 // function fetchDeviceAndUserVerificationCode(req, res) {
 //     fetch('https://github.com/login/oauth/authorize?client_id=91c666c1cc595de45f17d0d4cc157c2fd9a76f83&redirect_url=http://localhost:3000/user-settings.html&scope=repo gist&state=gh_state&alow_signup=true', { method: 'get', headers: { 'Accept': 'application/json' } }).then(response => {
@@ -84,116 +84,147 @@ fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithIdp?key=AIza
 async function signInWithIdp({ access_token, filepath, key, res }) {
     const response = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithIdp?key=${key}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ postBody: `access_token=${access_token}&providerId=github.com`, requestUri: "https://turkmenistan-market.firebaseapp.com/__/auth/handler", returnIdpCredential: true, returnSecureToken: true }) })
 
-    const { email, emailVerified, federatedId, kind, localId, needConfirmation, oauthAccessToken, photoUrl, providerId, screenName,refreshToken,idToken } = await response.json()
+    const data = await response.json()
+debugger;
+    const { email, emailVerified, federatedId, kind, localId, needConfirmation, oauthAccessToken, photoUrl, providerId, screenName,refreshToken,idToken }=data
+    const publicData ={email,screenName,photoUrl}
+    const privateData={token:oauthAccessToken,refreshToken,idToken}
+    const fbDatabase = fbRest().setIdToken(idToken).setProjectUri('https://turkmenistan-market.firebaseio.com')
+debugger;
+    fbDatabase.ref(`users/private/${localId}`).once('value',async(error,response)=>{
+        debugger;
+       // const userData =JSON.parse(response.data)
+        if(!response){
+            await fetch(`https://api.github.com/repos/webapis/workflow_runner/forks`, { method: 'post', headers: { 'Authorization': `token ${access_token}`, 'Accept': 'application/vnd.github.v3+json' } })
+          //  await fetch(`https://api.github.com/repos/${screenName}/workflow_runner/actions/workflows/aggregate.yml/enable`, { method: 'PUT', headers: { 'Authorization': `token ${access_token}`, 'Accept': 'application/vnd.github.v3+json' } })
+          //  await fetch(` https://api.github.com/user/repos`, { method: 'post', headers: { 'Authorization': `token ${access_token}`, 'Accept': 'application/vnd.github.v3+json' },body:JSON.stringify({name:'workflow_runner'}) })
+            debugger;
+            await responseHandler({fbDatabase,publicData,privateData,filepath,emailVerified,federatedId,kind,needConfirmation,providerId,localId,email,oauthAccessToken,refreshToken,idToken,screenName,photoUrl,res})
+        
+        } else{
+            const fetchPath = `https://api.github.com/repos/${screenName}/workflow_runner/merge-upstream`
+
+          const response=  await fetch(fetchPath, {
+                method: 'post',
+                headers: {
+                    authorization: `token ${access_token}`,
+                    Accept: 'application/vnd.github.v3+json'
+                },
+                body: JSON.stringify({ branch: 'main' })
+            })
+
+            const resData =await response.json()
+            debugger;
+            await responseHandler({fbDatabase,publicData,privateData,filepath,emailVerified,federatedId,kind,needConfirmation,providerId,localId,email,oauthAccessToken,refreshToken,idToken,screenName,photoUrl,res})
+
+        }
+debugger;
+
+
+
+    })
+  
+   // const userInfo =JSON.parse(rawUserInfo) 
     debugger;
-    await fetch(`https://api.github.com/repos/webapis/workflow_runner/forks`, { method: 'post', headers: { 'Authorization': `token ${access_token}`, 'Accept': 'application/vnd.github.v3+json' } })
-    const dom = await JSDOM.fromFile(filepath)
-    const document = dom.window.document;
-
-    var emailInput = document.createElement('input');
-    emailInput.setAttribute('type', 'hidden');
-    emailInput.setAttribute('id', 'email');
-    emailInput.setAttribute('value', email);
-    document.body.appendChild(emailInput);
-
-    var emailVerifiedInput = document.createElement('input');
-    emailVerifiedInput.setAttribute('type', 'hidden');
-    emailVerifiedInput.setAttribute('id', 'emailVerified');
-    emailVerifiedInput.setAttribute('value', emailVerified);
-    document.body.appendChild(emailVerifiedInput);
-
-    var federatedIdInput = document.createElement('input');
-    federatedIdInput.setAttribute('type', 'hidden');
-    federatedIdInput.setAttribute('id', 'federatedId');
-    federatedIdInput.setAttribute('value', federatedId);
-    document.body.appendChild(federatedIdInput);
-
-    var kindInput = document.createElement('input');
-    kindInput.setAttribute('type', 'hidden');
-    kindInput.setAttribute('id', 'kind');
-    kindInput.setAttribute('value', kind);
-    document.body.appendChild(kindInput);
-
-
-    var localIdInput = document.createElement('input');
-    localIdInput.setAttribute('type', 'hidden');
-    localIdInput.setAttribute('id', 'localId');
-    localIdInput.setAttribute('value', localId);
-    document.body.appendChild(localIdInput);
-
-
-    var needConfirmationInput = document.createElement('input');
-    needConfirmationInput.setAttribute('type', 'hidden');
-    needConfirmationInput.setAttribute('id', 'needConfirmation');
-    needConfirmationInput.setAttribute('value', needConfirmation);
-    document.body.appendChild(needConfirmationInput);
-
-
-    var oauthAccessTokenInput = document.createElement('input');
-    oauthAccessTokenInput.setAttribute('type', 'hidden');
-    oauthAccessTokenInput.setAttribute('id', 'oauthAccessToken');
-    oauthAccessTokenInput.setAttribute('value', oauthAccessToken);
-    document.body.appendChild(oauthAccessTokenInput);
-
-
-    var photoUrlInput = document.createElement('input');
-    photoUrlInput.setAttribute('type', 'hidden');
-    photoUrlInput.setAttribute('id', 'photoUrl');
-    photoUrlInput.setAttribute('value', photoUrl);
-    document.body.appendChild(photoUrlInput);
-
-    var providerIdInput = document.createElement('input');
-    providerIdInput.setAttribute('type', 'hidden');
-    providerIdInput.setAttribute('id', 'providerId');
-    providerIdInput.setAttribute('value', providerId);
-    document.body.appendChild(providerIdInput);
-
-
-
-    var screenNameInput = document.createElement('input');
-    screenNameInput.setAttribute('type', 'hidden');
-    screenNameInput.setAttribute('id', 'screenName');
-    screenNameInput.setAttribute('value', screenName);
-    document.body.appendChild(screenNameInput);
-
-    var idTokenInput = document.createElement('input');
-    idTokenInput.setAttribute('type', 'hidden');
-    idTokenInput.setAttribute('id', 'idToken');
-    idTokenInput.setAttribute('value', idToken);
-    document.body.appendChild(idTokenInput);
-
-    var refreshTokenInput = document.createElement('input');
-    refreshTokenInput.setAttribute('type', 'hidden');
-    refreshTokenInput.setAttribute('id', 'refreshToken');
-    refreshTokenInput.setAttribute('value', refreshToken);
-    document.body.appendChild(refreshTokenInput);
-
-    const content = dom.serialize()
-    
-    res.setHeader('Content-Type', 'text/html');
-    res.setHeader('Content-Length', Buffer.byteLength(content));
-       res.write(content)
-       res.end()
+   // await fetch(`https://api.github.com/repos/webapis/workflow_runner/forks`, { method: 'post', headers: { 'Authorization': `token ${access_token}`, 'Accept': 'application/vnd.github.v3+json' } })
+  
 
     }
-// function deviceAuthRequestPoll({ interval, device_code }) {
-//     const pollInterval = setInterval(async () => {
-//         //  const url = new URL(`https://github.com/login/oauth/access_token?client_id=da589515a4265ee07cc7 & device_code=${device_code}`).href
-//         const url = new URL(`https://github.com/login/oauth/access_token`)
-//         url.searchParams.append('client_id', '198fd462ac295507b855')
-//         // url.searchParams.append('client_secret', process.env.gh_client_secret)
-//         url.searchParams.append('device_code', device_code)
-//         const href = url.href
-//         debugger;
-//         const response = await fetch(href, { method: 'post', headers: { 'Accept': 'application/json' } })
-//         debugger;
-//         const data = await response.json()
-//         console.log('data', data)
-//         debugger;
 
-//     }, interval * 2000)
-// }
+async function responseHandler({fbDatabase,privateData,publicData,filepath,emailVerified,federatedId,kind,needConfirmation,providerId,localId,email,oauthAccessToken,refreshToken,idToken,screenName,photoUrl,res}){
+    fbDatabase.ref(`users`).update({[`private/${localId}`]:privateData,[`public/${localId}`]:publicData},async (error, data) => {
+        const dom = await JSDOM.fromFile(filepath)
+        const document = dom.window.document;
+    
+        var emailInput = document.createElement('input');
+        emailInput.setAttribute('type', 'hidden');
+        emailInput.setAttribute('id', 'email');
+        emailInput.setAttribute('value', email);
+        document.body.appendChild(emailInput);
+    
+        var emailVerifiedInput = document.createElement('input');
+        emailVerifiedInput.setAttribute('type', 'hidden');
+        emailVerifiedInput.setAttribute('id', 'emailVerified');
+        emailVerifiedInput.setAttribute('value', emailVerified);
+        document.body.appendChild(emailVerifiedInput);
+    
+        var federatedIdInput = document.createElement('input');
+        federatedIdInput.setAttribute('type', 'hidden');
+        federatedIdInput.setAttribute('id', 'federatedId');
+        federatedIdInput.setAttribute('value', federatedId);
+        document.body.appendChild(federatedIdInput);
+    
+        var kindInput = document.createElement('input');
+        kindInput.setAttribute('type', 'hidden');
+        kindInput.setAttribute('id', 'kind');
+        kindInput.setAttribute('value', kind);
+        document.body.appendChild(kindInput);
+    
+    
+        var localIdInput = document.createElement('input');
+        localIdInput.setAttribute('type', 'hidden');
+        localIdInput.setAttribute('id', 'localId');
+        localIdInput.setAttribute('value', localId);
+        document.body.appendChild(localIdInput);
+    
+    
+        var needConfirmationInput = document.createElement('input');
+        needConfirmationInput.setAttribute('type', 'hidden');
+        needConfirmationInput.setAttribute('id', 'needConfirmation');
+        needConfirmationInput.setAttribute('value', needConfirmation);
+        document.body.appendChild(needConfirmationInput);
+    
+    
+        var oauthAccessTokenInput = document.createElement('input');
+        oauthAccessTokenInput.setAttribute('type', 'hidden');
+        oauthAccessTokenInput.setAttribute('id', 'oauthAccessToken');
+        oauthAccessTokenInput.setAttribute('value', oauthAccessToken);
+        document.body.appendChild(oauthAccessTokenInput);
+    
+    
+        var photoUrlInput = document.createElement('input');
+        photoUrlInput.setAttribute('type', 'hidden');
+        photoUrlInput.setAttribute('id', 'photoUrl');
+        photoUrlInput.setAttribute('value', photoUrl);
+        document.body.appendChild(photoUrlInput);
+    
+        var providerIdInput = document.createElement('input');
+        providerIdInput.setAttribute('type', 'hidden');
+        providerIdInput.setAttribute('id', 'providerId');
+        providerIdInput.setAttribute('value', providerId);
+        document.body.appendChild(providerIdInput);
+    
+    
+    
+        var screenNameInput = document.createElement('input');
+        screenNameInput.setAttribute('type', 'hidden');
+        screenNameInput.setAttribute('id', 'screenName');
+        screenNameInput.setAttribute('value', screenName);
+        document.body.appendChild(screenNameInput);
+    
+        var idTokenInput = document.createElement('input');
+        idTokenInput.setAttribute('type', 'hidden');
+        idTokenInput.setAttribute('id', 'idToken');
+        idTokenInput.setAttribute('value', idToken);
+        document.body.appendChild(idTokenInput);
+    
+        var refreshTokenInput = document.createElement('input');
+        refreshTokenInput.setAttribute('type', 'hidden');
+        refreshTokenInput.setAttribute('id', 'refreshToken');
+        refreshTokenInput.setAttribute('value', refreshToken);
+        document.body.appendChild(refreshTokenInput);
+    
+        const content = dom.serialize()
+        
+        res.setHeader('Content-Type', 'text/html');
+        res.setHeader('Content-Length', Buffer.byteLength(content));
+           res.write(content)
+           res.end()
+        debugger;
+    
+    })
 
+}
 module.exports = { fetchGithubAuthCode, fetchGithubAccessToken, signInWithIdp }
 
 

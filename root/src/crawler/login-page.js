@@ -18,20 +18,21 @@ customElements.define('login-page', class extends HTMLElement {
             const localId = document.getElementById('localId').value
 
             this.uid = localId
-            this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri('https://turkmenistan-market.firebaseio.com')
-            const publicData ={email,screenName,photoUrl}
-            const privateData={token,refreshToken,idToken}
-            this.FB_DATABASE.ref(`users`).update({[`private/${localId}`]:privateData,[`public/${localId}`]:publicData}, (error, data) => {
-                debugger;
-                if (error) {
+            window.pageStore.dispatch({ type: window.actionTypes.AUTH_SUCCESS, payload: { auth: { email, token, screenName, photoUrl, refreshToken, idToken, localId, api_key: 'AIzaSyDb8Z27Ut0WJ-RH7Exi454Bpit9lbARJeA', timestamp: Date.now() + 3600000 } } })
+            // this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri('https://turkmenistan-market.firebaseio.com')
+            // const publicData ={email,screenName,photoUrl}
+            // const privateData={token,refreshToken,idToken}
+            // this.FB_DATABASE.ref(`users`).update({[`private/${localId}`]:privateData,[`public/${localId}`]:publicData}, (error, data) => {
+            //     debugger;
+            //     if (error) {
                     
-                } else {
-                    debugger;
-                    window.pageStore.dispatch({ type: window.actionTypes.AUTH_SUCCESS, payload: { auth: { email, token, screenName, photoUrl, refreshToken, idToken, localId, api_key: 'AIzaSyDb8Z27Ut0WJ-RH7Exi454Bpit9lbARJeA', timestamp: Date.now() + 3600000 } } })
-                    window.location.replace('/login.html')
-                    this.render({ authed: true, email })
-                }
-            })
+            //     } else {
+            //         debugger;
+
+            //         window.location.replace('/login.html')
+            //         this.render({ authed: true, email })
+            //     }
+            // })
 
         } else {
             debugger;

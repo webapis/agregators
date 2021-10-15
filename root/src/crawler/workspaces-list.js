@@ -15,9 +15,12 @@ customElements.define('workspaces-list', class extends HTMLElement {
         debugger;
         this.FB_DATABASE.ref(`users/workspaces/${uid}`).on('value', (error, ws) => {
             debugger;
-            const workspaces = Object.keys(ws.data)
-            debugger;
-            window.pageStore.dispatch({ type: window.actionTypes.WORKSPACES_FETCHED, payload: workspaces })
+            if(ws.data){
+                const workspaces = Object.keys(ws.data)
+                debugger;
+                window.pageStore.dispatch({ type: window.actionTypes.WORKSPACES_FETCHED, payload: workspaces })
+            }
+ 
         })
         this.render({ workspaces })
         window.pageStore.subscribe(window.pageStore.WORKSPACES_FETCHED, state => {
@@ -35,6 +38,7 @@ customElements.define('workspaces-list', class extends HTMLElement {
 
         <div class="container">
         <h5>Workspaces:</h5>
+        <a class="btn btn-outline-secondary" href="/workspace-name.html">Create Workspace</a>
         <div class="row" id="ws-container">
         
         </div>

@@ -93,9 +93,13 @@ customElements.define('runner-card', class extends HTMLElement {
 
       document.getElementById(`run-container-btn-${title}`).addEventListener('click',async(e)=>{
         e.preventDefault()
-        const { auth: { token, screenName: owner }} = window.pageStore.state
+        const { auth: { token, screenName: owner,idToken ,email,localId,refreshToken},workspace:{workspaceSelected}} = window.pageStore.state
+        const projectUrl='https://turkmenistan-market.firebaseio.com'
+        const selectedContainer=title
+        const parameters=`${token}--xxx--${owner}--xxx--${idToken}--xxx--${email}--xxx--${localId}--xxx--${refreshToken}--xxx--${selectedContainer}--xxx--${projectUrl}--xxx--${workspaceSelected}`
         debugger;
-        const body = JSON.stringify({ ref: 'main', inputs: { projectName: title, parameters:`sdsdsdsdsdsdasdasdasd` } })
+        const body = JSON.stringify({ ref: 'main', inputs: { projectName: title, parameters } })
+     
         debugger;
        await triggerAction({ gh_action_url: `https://api.github.com/repos/${owner}/workflow_runner/actions/workflows/aggregate.yml/dispatches`, ticket: token, body })
       })
@@ -103,10 +107,8 @@ customElements.define('runner-card', class extends HTMLElement {
       document.getElementById(`a-${title}`).addEventListener('click',(e)=>{
         debugger;
     window.pageStore.dispatch({ type: window.actionTypes.WF_CONTAINER_SELECTED, payload: title })
-
 })
    
-
     }
 })
 
