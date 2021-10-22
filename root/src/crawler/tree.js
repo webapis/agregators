@@ -24,19 +24,14 @@ const workspace = {
 
 function traverseWorkflow(containerWorkflows, parent, workflowPath) {
 const workflowName =Object.entries(containerWorkflows)[0][0]
-  // const wf = Object.entries(containerWorkflows)[0][1]['workflows']
-  // 
-  // const workflows=wf && Object.entries(wf)
-
-  // const hasSubWorkflows= Object.entries(containerWorkflows)[0][1]['workflows']
-  
 
   const rowForArrow = document.createElement('DIV')
   rowForArrow.className = `row`
+
+  const workflowTreeContainer =document.getElementById('workflow-tree-container')
   
-  parent.appendChild(rowForArrow)
- // const totalWorkflows =hasSubWorkflows===undefined?0: workflows.length
-  //const cols = Math.round(12 / totalWorkflows)
+  workflowTreeContainer.appendChild(rowForArrow)
+
 
 
   const arrow = document.createElement('DIV')
@@ -45,21 +40,25 @@ const workflowName =Object.entries(containerWorkflows)[0][0]
   rowForArrow.appendChild(arrow)
   const rowForWorkflows = document.createElement('DIV')
 rowForWorkflows.className = `row`
-parent.appendChild(rowForWorkflows)
+workflowTreeContainer.appendChild(rowForWorkflows)
+
 const workflowElement = document.createElement('DIV')
 workflowElement.className = `col-12 text-center`
 
-// workflowElement.textContent = workflowName
+
 workflowElement.insertAdjacentHTML('beforeend', `<workflow-element workflow-name="${workflowName}" workflow-path="${workflowPath}" id="${workflowName}"></workflow-element>`)
 
 rowForWorkflows.appendChild(workflowElement)
 
   //has workflow children
-    //const hasWorkflows = Object.entries(w[1])[0] && Object.entries(w[1])[0][0] === 'workflows'
+
 const workflows=Object.values(containerWorkflows)[0]['workflows']
 
     if(workflows){
-
+      const rowsForWorkflows = document.createElement('DIV')
+      rowsForWorkflows.className = `row`
+      rowsForWorkflows.id= "10"
+      workflowTreeContainer.appendChild(rowsForWorkflows)
       
       const wfArray=Object.entries(workflows)
       const totalWorkflows =workflows===undefined?0: wfArray.length
@@ -67,35 +66,40 @@ const workflows=Object.values(containerWorkflows)[0]['workflows']
       //draw donarrow
     
       wfArray.forEach(w => {
-        debugger;
-        //const workflowName = w[0]
+        
+     
        const arrow = document.createElement('DIV')
        arrow.className = `col-${cols} text-center`
        arrow.insertAdjacentHTML('beforeend', `<workflow-arrow></workflow-arrow>`)
-       document.getElementById(workflowName).appendChild(arrow)
+        
+      const prnt= document.getElementsByClassName('row')[document.getElementsByClassName('row').length-1]
+      
+      prnt.appendChild(arrow)
      
      })
      
      const rowForWorkflows = document.createElement('DIV')
      rowForWorkflows.className = `row`
-     parent.appendChild(rowForWorkflows)
+     workflowTreeContainer.appendChild(rowForWorkflows)
      //draw workflows
      wfArray.forEach(w => {
      
-       const workflowName = w[0]
+       const curentworkflowName = w[0]
        const subWorkflows=w[1]['workflows']
        const workflowElement = document.createElement('DIV')
        workflowElement.className = `col-${cols} text-center`
-       // workflowElement.textContent = workflowName
-       workflowElement.insertAdjacentHTML('beforeend', `<workflow-element workflow-name="${workflowName}" workflow-path="${workflowPath}" id="${workflowName}"></workflow-element>`)
+       const nextWorkflowPath = `${workflowPath}/${workflowName}`
+       debugger;
+       workflowElement.insertAdjacentHTML('beforeend', `<workflow-element workflow-name="${curentworkflowName}" workflow-path="${nextWorkflowPath}"></workflow-element>`)
      
        rowForWorkflows.appendChild(workflowElement)
      
-       const nextWorkflowPath = `${workflowPath}/${workflowName}`
-       
+     
+       debugger;
        if(subWorkflows){
          
         traverseWorkflow(subWorkflows, workflowElement, nextWorkflowPath)
+
        }
        
      
@@ -124,21 +128,16 @@ customElements.define('workflow-tree', class extends HTMLElement {
       if (response.data) {
         
         const workflows = Object.entries(response.data)[1]&& Object.entries(response.data)[1][1]
-      
-       // const tree = Object.entries(workspace)
-        //  const container = Object.entries(tree[0][1])
-        const containerName = selectedContainer
 
+        const containerName = selectedContainer
         const containerElement = document.getElementById('container')
         const div = document.createElement('DIV')
         div.className = 'col-12 text-center'
-        // div.textContent = containerName
+  
         containerElement.appendChild(div)
         containerElement.insertAdjacentHTML('beforebegin', `<container-element container-name="${containerName}" class="d-flex justify-content-center"></container-element>`)
-        //const containerWorkflows = container[0][1]
-        const workflowPath = `workspaces/${workspaceSelected}/containers/${selectedContainer}`
-
-        
+    
+        const workflowPath = `workspaces/${workspaceSelected}/containers/${selectedContainer}/workflows`      
         if(workflows){
 
           traverseWorkflow(workflows, div, workflowPath)
