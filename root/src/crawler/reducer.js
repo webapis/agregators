@@ -34,7 +34,8 @@ export const initState = stateFromLS
     workspaceDashboard: { selectedTab: 'workflows-tab', selectedWfContainerTab: 'collection-tab', containers: [], selectedContainer: '', selectedWfContainerEditorTab: 'workflows-tab' },
     workspace: { workspaceSelected: '' },
     containerName: { name: '' },
-    wfContainer: { selectedContainer: '' }
+    wfContainer: { selectedContainer: '' },
+    workflowTree: { workflowPath: '' }
   };
 
 export default (state, action) => {
@@ -132,6 +133,9 @@ export default (state, action) => {
 
     case actionTypes.CONTAINER_NAME_SAVED:
       return { ...state, containerName: { name: '' } }
+    case actionTypes.WORKFLOW_PATH_CHANGED:
+      debugger;
+      return { ...state, workflowTree: { workflowPath: action.payload } }
     default:
 
       return state;
@@ -197,6 +201,7 @@ export const actionTypes = {
   CONTAINERS_FETCHED: 'CONTAINERS_FETCHED',
   WF_CONTAINER_SELECTED: 'WF_CONTAINER_SELECTED',
   WF_CONTAINER_EDITOR_TAB_CHANGED: 'WF_CONTAINER_EDITOR_TAB_CHANGED',
-  CONTAINER_NAME_SAVED: 'CONTAINER_NAME_SAVED'
+  CONTAINER_NAME_SAVED: 'CONTAINER_NAME_SAVED',
+  WORKFLOW_PATH_CHANGED: 'WORKFLOW_PATH_CHANGED'
 
 };

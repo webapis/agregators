@@ -3,29 +3,30 @@ customElements.define('workflow-editor', class extends HTMLElement {
     super()
   }
 
-   async connectedCallback() {
+  async connectedCallback() {
 
     const resources = await import('./resources.js')
     await resources.default()
-    const { workflowEditor: { workflowDescription, workflowName, tokenFPR, isPrivate,workflowOrder }, auth: { idToken, localId: uid } , workspace: { workspaceSelected },wfContainer:{selectedContainer}} = window.pageStore.state
+    const { workflowEditor: { workflowDescription, workflowName, tokenFPR, isPrivate, workflowOrder }, auth: { idToken, localId: uid }, workspace: { workspaceSelected }, wfContainer: { selectedContainer } } = window.pageStore.state
 
-    document.getElementById('ws-breadcrumb').innerText=`Workspace(${workspaceSelected})`
-    document.getElementById('wf-container-breadcrumb').innerText=`Container(${selectedContainer})`
+    document.getElementById('ws-breadcrumb').innerText = `Workspace(${workspaceSelected})`
+    document.getElementById('wf-container-breadcrumb').innerText = `Container(${selectedContainer})`
     this.uid = uid
+    debugger;
     this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri('https://turkmenistan-market.firebaseio.com')
-    this.render({ workflowDescription, workflowName, token: tokenFPR, isPrivate,workflowOrder })
+    this.render({ workflowDescription, workflowName, token: tokenFPR, isPrivate, workflowOrder })
 
     window.pageStore.subscribe(window.actionTypes.BRANCH_SELECTED, state => {
       const { workflowEditor: { workflowDescription, workflowName, tokenFPR, isPrivate } } = state
-      this.render({ workflowDescription, workflowName, token: tokenFPR, isPrivate,workflowOrder })
+      this.render({ workflowDescription, workflowName, token: tokenFPR, isPrivate, workflowOrder })
     })
     window.pageStore.subscribe(window.actionTypes.REPO_SELECTED, state => {
-      const { workflowEditor: { workflowDescription, workflowName, tokenFPR, isPrivate,workflowOrder } } = state
-      this.render({ workflowDescription, workflowName, token: tokenFPR, isPrivate,workflowOrder })
+      const { workflowEditor: { workflowDescription, workflowName, tokenFPR, isPrivate, workflowOrder } } = state
+      this.render({ workflowDescription, workflowName, token: tokenFPR, isPrivate, workflowOrder })
     })
   }
-  render({ workflowDescription, workflowName, token, isPrivate,workflowOrder }) {
-    
+  render({ workflowDescription, workflowName, token, isPrivate, workflowOrder }) {
+
     this.innerHTML = ` 
       
         <div >
@@ -65,11 +66,11 @@ customElements.define('workflow-editor', class extends HTMLElement {
         </div>
      `
 
-        document.getElementById('tokenFPR')&&  document.getElementById('tokenFPR').addEventListener('input', (e) => {
-      
-            const { value } = e.target
+    document.getElementById('tokenFPR') && document.getElementById('tokenFPR').addEventListener('input', (e) => {
 
-          window.pageStore.dispatch({ type: window.actionTypes.TOKEN_FPR_CHANGED, payload: value })
+      const { value } = e.target
+
+      window.pageStore.dispatch({ type: window.actionTypes.TOKEN_FPR_CHANGED, payload: value })
     })
 
     this.querySelectorAll('.input').forEach(element => {
@@ -81,13 +82,18 @@ customElements.define('workflow-editor', class extends HTMLElement {
     })
 
     document.getElementById('save-workflow-btn').addEventListener('click', (e) => {
-          const { workflowEditor: { workflowDescription, selectedRepo, isPrivate, selectedBranch, workflowName, tokenFPR,workflowOrder}, auth: { screenName },workspace:{workspaceSelected},wfContainer:{selectedContainer} } = window.pageStore.state
-          debugger;
-          this.FB_DATABASE.ref(`workspaces/${workspaceSelected}/containers/${selectedContainer}/workflows/${workflowName}`).set({workflowDescription, selectedRepo, isPrivate, selectedBranch, tokenFPR,screenName,workflowOrder}, (error, data) => {
-          window.pageStore.dispatch({type:window.actionTypes.WORKFLOW_UPDATED})
-          debugger;
-          window.location.replace('/wf-container.html')
-        })
+      const { workflowEditor: { workflowDescription, selectedRepo, isPrivate, selectedBranch, workflowName, tokenFPR, workflowOrder }, auth: { screenName }, workflowTree: { workflowPath } } = window.pageStore.state
+      const wfpath = `${workflowPath}`
+
+    
+
+      const update = { workflowDescription, selectedRepo, isPrivate, selectedBranch, tokenFPR, screenName, workflowOrder } 
+      debugger;
+      this.FB_DATABASE.ref(`${wfpath}/workflows/${workflowName}`).update(update, (error, data) => {
+        window.pageStore.dispatch({ type: window.actionTypes.WORKFLOW_UPDATED })
+        debugger;
+        window.location.replace('/workflow-tree.html')
+      })
     })
   }
 })

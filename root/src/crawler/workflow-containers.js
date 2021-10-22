@@ -29,7 +29,7 @@ customElements.define('workflow-containers', class extends HTMLElement {
                 document.getElementById('containers').innerHTML = ``
                 debugger;
                 containers.forEach(c => {
-                    document.getElementById('containers').insertAdjacentHTML('beforeend', `<container-card title="${c}" page-link="/wf-container.html">${c}</container-card>`)
+                    document.getElementById('containers').insertAdjacentHTML('beforeend', `<container-card title="${c}" page-link="/workflow-tree.html">${c}</container-card>`)
                 })
                 window.pageStore.dispatch({ type: window.actionTypes.CONTAINERS_FETCHED, payload: containers })
 

@@ -63,7 +63,7 @@ function firebase() {
                     };
                     childaddedEvent.addEventListener('put', function (e) {
                         const response =JSON.parse(e.data)
-                    
+                 
                         cb(null, response)
                         console.log(e.data)
                     })
