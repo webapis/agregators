@@ -102,6 +102,8 @@ customElements.define('runner-card', class extends HTMLElement {
      
         debugger;
        await triggerAction({ gh_action_url: `https://api.github.com/repos/${owner}/workflow_runner/actions/workflows/aggregate.yml/dispatches`, ticket: token, body })
+    
+    
       })
 
       document.getElementById(`a-${title}`).addEventListener('click',(e)=>{

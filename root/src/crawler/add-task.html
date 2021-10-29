@@ -4,30 +4,26 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Workflow Editor</title>
+    <title>Add Task</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
     <link href="./ws-dashboard/breadcrumb.css" rel="stylesheet">
 </head>
 <body>
     <div class="container mt-1">
-
         <div class="breadcrumb flat">
-            <a href="/index.html">Home</a>
-            <a href="/workspaces-list.html">Workspaces</a>
+            <a href="/index.html" >Home</a>
+            <a href="/workspaces-list.html" >Workspaces</a>
             <a href="/workspace.html" id="ws-breadcrumb">Workspace</a>
-            <a href="/workspace.html" id="task-breadcrumb">Task</a>
-            <a href="/task-workflows.html" >Tasks</a>
-            <a href="/wf-container.html" class="active" id="wf-editor-breadcrumb">Add Workflow</a>
-            </div>
+            <a href="/workspace-tasks.html" >Tasks</a>
+            <a href="/add-taks.html" class="active" >Add Task</a>
             </div>
     </div>
-
     <div class="container">
     
-        <workflow-editor class="row"></workflow-editor>
+        <add-task class="row"></add-task>
     </div>
     
-        <script src="./workflow-editor.js"></script>
+        <script src="./add-task.js"></script>
 </body>
 </html>

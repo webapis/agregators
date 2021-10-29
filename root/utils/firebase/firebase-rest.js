@@ -37,9 +37,10 @@ function fbRest() {
             })
 
         },
-        update: function (data, cb) {
+        update: async function (data, cb) {
+         
             debugger;
-            fetch(`${this.projectUri}/${this.url}/.json?auth=${this.idToken}`, { method: 'patch', body: JSON.stringify(data) }).then(response => response.json()).then(data => {
+            fetch(`${this.projectUri}/${this.url}/.json?auth=${this.idToken}`, { method: 'PATCH', body: JSON.stringify(data) }).then(response => response.json()).then(data => {
                 cb && cb(null,data)
             }).catch(error => {
                 cb && cb(error,null)
@@ -55,20 +56,20 @@ function fbRest() {
             })
         },
         on:  function(event, cb) {
-            debugger;
+            
             switch (event) {
                 case "value":
                     const fetchPath = `${this.projectUri}/${this.url}.json?auth=${this.idToken}`
-                    debugger;
-                 //   let withFilter = this.orderByChildValue !==''? `${fetchPath}&orderBy=\"${this.orderByChildValue}\"&${this.equalToValue!==''?`equalTo=\"${this.equalToValue}\"`:fetchPath}`:fetchPath
-                    let withFilter = `${fetchPath}&orderByChild="$key"&equalTo=\"allan\"`
-                    debugger;
+                    
                     var childaddedEvent = new EventSource(fetchPath, {});
                     childaddedEvent.onerror = function (error) {
+                       
                         cb(error, null)
                     };
                     childaddedEvent.addEventListener('put', function (e) {
-                        cb(null, e)
+                        const response =JSON.parse(e.data)
+                 
+                        cb(null, response)
                         console.log(e.data)
                     })
                     break;
@@ -78,14 +79,14 @@ function fbRest() {
 
         },
         once: function (type, cb) {
-            debugger;
+            
             const fetchPath = `${this.projectUri}/${this.url}.json?auth=${this.idToken}`
-debugger;
+
             fetch(fetchPath).then(response => response.json()).then(data => {
-         debugger;
+         
                 cb && cb(null,data)
             }).catch(error => {
-                debugger;
+                
                 cb && cb(error,null )
                 return this
             })},

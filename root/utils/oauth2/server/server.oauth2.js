@@ -4,8 +4,8 @@ const { default: fetch } = require('node-fetch');
 //const client_id = process.env.client_id
 //const client_secret = process.env.client_secret
 
-async function  exchangeCodeForAccessToken({ client_id, client_secret, code, redirect_uri, res, filepath }) {
-
+async function  exchangeCodeForAccessToken({ client_id, client_secret, code, redirect_uri, res, filepath,state }) {
+debugger;
     const { admin } = require('../../../utils/firebase/firebase-admin')
     const fbDatabase = admin.database()
 
@@ -32,16 +32,16 @@ async function  exchangeCodeForAccessToken({ client_id, client_secret, code, red
             const authData = await response.json()
             debugger;
             const { access_token, refresh_token, scope } = authData
-            const { email } = await getUserEmail({ token: access_token })
+            debugger;
+          //  const { email } = await getUserEmail({ token: access_token })
             debugger;
 
-            const uidRef = fbDatabase.ref(`users`).orderByChild('email').equalTo(email)
-            uidRef.once('child_added', snap => {
-                const key = snap.key
-                debugger;
-                const userRef = fbDatabase.ref(`users/${key}`)
+            const uidRef = fbDatabase.ref(`workspaces/${state}/auth`)
+             debugger;
+             const update ={google:{access_token, refresh_token, scope }}
 
-                userRef.update({ access_token, refresh_token, scope }, async (error) => {
+                uidRef.update(update, async (error,data) => {
+                    debugger;
                     if (error) {
                         console.log('error', error)
                         res.setHeader('Content-Type', 'text/plain');
@@ -50,11 +50,11 @@ async function  exchangeCodeForAccessToken({ client_id, client_secret, code, red
 
                         const dom = await JSDOM.fromFile(filepath)
                         const document = dom.window.document;
-                        var input = document.createElement('input');
-                        input.setAttribute('type', 'hidden');
-                        input.setAttribute('id', 'email');
-                        input.setAttribute('value', email);
-                        document.body.appendChild(input);
+                        // var input = document.createElement('input');
+                        // input.setAttribute('type', 'hidden');
+                        // // input.setAttribute('id', 'email');
+                        // // input.setAttribute('value', email);
+                        // document.body.appendChild(input);
                         var input = document.createElement('input');
                         input.setAttribute('type', 'hidden');
                         input.setAttribute('id', 'token');
@@ -69,9 +69,8 @@ async function  exchangeCodeForAccessToken({ client_id, client_secret, code, red
                         res.end()
                     }
                 })
-
-
-            })
+        
+         
 
         }
 
@@ -118,12 +117,12 @@ async function refreshAccessToken({ refresh_token, cb }) {
 }
 async function getUserEmail({ token }) {
     try {
-        debugger;
+       
         const oauthendpoint = 'https://www.googleapis.com/userinfo/v2/me'
         const response = await fetch(oauthendpoint, { headers: { 'Authorization': `Bearer ${token}`, method: 'get' } })
-        debugger;
+     
         const data = await response.json()
-        debugger;
+      debugger;
         return data
 
     } catch (error) {
@@ -135,3 +134,86 @@ async function getUserEmail({ token }) {
 
 
 module.exports = { exchangeCodeForAccessToken, refreshAccessToken }
+
+
+
+
+// async function  exchangeCodeForAccessToken({ client_id, client_secret, code, redirect_uri, res, filepath }) {
+
+//     const { admin } = require('../../../utils/firebase/firebase-admin')
+//     const fbDatabase = admin.database()
+
+
+//     try {
+//         const grant_type = 'authorization_code';
+//         var oauth2Endpoint = 'https://oauth2.googleapis.com/token';
+//         var fulloauth2Endpoint = `${oauth2Endpoint}?client_id=${client_id}&client_secret=${client_secret}&code=${code}&grant_type=${grant_type}&redirect_uri=${redirect_uri}`
+//         debugger;
+//         const response = await fetch(fulloauth2Endpoint, { method: 'post' })
+//         const contentType = response.headers.get('content-type')
+//         debugger;
+//         if (/text\/html.*/.test(contentType)) {
+//             debugger;
+//             res.setHeader('Content-Type', 'text/html');
+//             const data = await response.text()
+//             debugger;
+//             res.setHeader('Content-Type', 'text/html');
+//             res.setHeader('Content-Length', Buffer.byteLength(data));
+//             res.write(data)
+//             res.end()
+//         } else {
+//             debugger;
+//             const authData = await response.json()
+//             debugger;
+//             const { access_token, refresh_token, scope } = authData
+//             const { email } = await getUserEmail({ token: access_token })
+//             debugger;
+
+//             const uidRef = fbDatabase.ref(`users`).orderByChild('email').equalTo(email)
+//             uidRef.once('child_added', snap => {
+//                 const key = snap.key
+//                 debugger;
+//                 const userRef = fbDatabase.ref(`users/${key}`)
+
+//                 userRef.update({ access_token, refresh_token, scope }, async (error) => {
+//                     if (error) {
+//                         console.log('error', error)
+//                         res.setHeader('Content-Type', 'text/plain');
+//                         res.end('database Error');
+//                     } else {
+
+//                         const dom = await JSDOM.fromFile(filepath)
+//                         const document = dom.window.document;
+//                         var input = document.createElement('input');
+//                         input.setAttribute('type', 'hidden');
+//                         input.setAttribute('id', 'email');
+//                         input.setAttribute('value', email);
+//                         document.body.appendChild(input);
+//                         var input = document.createElement('input');
+//                         input.setAttribute('type', 'hidden');
+//                         input.setAttribute('id', 'token');
+//                         input.setAttribute('value', access_token);
+//                         document.body.prepend(input);
+//                         const content = dom.serialize()
+
+//                         res.setHeader('Content-Type', 'text/html');
+
+//                         res.setHeader('Content-Length', Buffer.byteLength(content));
+//                         res.write(content)
+//                         res.end()
+//                     }
+//                 })
+
+
+//             })
+
+//         }
+
+
+//     } catch (error) {
+//         debugger;
+//         console.log('error', error)
+//     }
+
+
+// }

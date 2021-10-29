@@ -109,7 +109,7 @@ export default (state, action) => {
       return { ...state, workflowEditor: { ...state.workflowEditor, isPrivate: action.payload.isPrivate, selectedRepo: action.payload.selectedRepo, workflowName: `${state.auth.screenName}_${action.payload.selectedRepo}_${state.workflowEditor.selectedBranch}` } }
     case actionTypes.BRANCH_SELECTED:
 
-      return { ...state, workflowEditor: { ...state.workflowEditor, selectedBranch: action.payload, workflowName: `${state.auth.screenName}_${state.workflowEditor.selectedRepo}_${action.payload}` } }
+      return { ...state, workflowEditor: { ...state.workflowEditor, selectedBranch: action.payload.branch, workflowName: `${state.auth.screenName}_${state.workflowEditor.selectedRepo}_${action.payload.branch}`, workflowConfig: action.payload.workflowConfig } }
     case actionTypes.TOKEN_FPR_CHANGED:
       return { ...state, workflowEditor: { ...state.workflowEditor, tokenFPR: action.payload } }
     case actionTypes.WORKFLOWS_FETCHED:
@@ -136,6 +136,14 @@ export default (state, action) => {
     case actionTypes.WORKFLOW_PATH_CHANGED:
       debugger;
       return { ...state, workflowTree: { workflowPath: action.payload } }
+    case actionTypes.TASK_SELECTED:
+      return { ...state, workspaceTasks: { ...state.workspaceTasks, taskSelected: action.payload } }
+    case actionTypes.GOOGLE_SCOPES:
+      return { ...state, workspaceTasks: { ...state.workspaceTasks, googleScopes: action.payload } }
+    case actionTypes.GOOGLE_AUTH_SUCCESS:
+      return { ...state, auth: { ...state.auth, googleToken: action.payload } }
+    case actionTypes.WORKFLOW_SELECTED:
+      return { ...state, taskWorkflows: { ...state.taskWorkflows, workflowSelected:{...action.payload} } }
     default:
 
       return state;
@@ -202,6 +210,10 @@ export const actionTypes = {
   WF_CONTAINER_SELECTED: 'WF_CONTAINER_SELECTED',
   WF_CONTAINER_EDITOR_TAB_CHANGED: 'WF_CONTAINER_EDITOR_TAB_CHANGED',
   CONTAINER_NAME_SAVED: 'CONTAINER_NAME_SAVED',
-  WORKFLOW_PATH_CHANGED: 'WORKFLOW_PATH_CHANGED'
+  WORKFLOW_PATH_CHANGED: 'WORKFLOW_PATH_CHANGED',
+  TASK_SELECTED: 'TASK_SELECTED',
+  GOOGLE_SCOPES: 'GOOGLE_SCOPES',
+  GOOGLE_AUTH_SUCCESS: 'GOOGLE_AUTH_SUCCESS',
+  WORKFLOW_SELECTED: 'WORKFLOW_SELECTED'
 
 };

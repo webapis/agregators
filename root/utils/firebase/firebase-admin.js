@@ -4,7 +4,7 @@ const admin = require('firebase-admin');
 
 if (process.env.LOCAL) {
 
-    var service = require('./gol74b0fe0d7246.json');
+    var service = require('./turkmenistan-market-firebase-adminsdk-d0s1d-7289a84f0e.json');
     admin.initializeApp({
         credential: admin.credential.cert(service),
         databaseURL: process.env.databaseURL

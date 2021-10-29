@@ -7,28 +7,27 @@ customElements.define('workflow-editor', class extends HTMLElement {
 
     const resources = await import('./resources.js')
     await resources.default()
-    const { workflowEditor: { workflowDescription, workflowName, tokenFPR, isPrivate, workflowOrder }, auth: { idToken, localId: uid }, workspace: { workspaceSelected }, wfContainer: { selectedContainer } } = window.pageStore.state
+    const { workflowEditor: { workflowDescription, workflowName, tokenFPR, isPrivate, workflowOrder,workflowConfig }, auth: { idToken, localId: uid }, workspace: { workspaceSelected }, wfContainer: { selectedContainer }, workspaceTasks: { taskSelected } } = window.pageStore.state
 
+    document.getElementById('task-breadcrumb').innerText = `Task(${taskSelected})`
     document.getElementById('ws-breadcrumb').innerText = `Workspace(${workspaceSelected})`
-    document.getElementById('wf-container-breadcrumb').innerText = `Container(${selectedContainer})`
     this.uid = uid
     debugger;
     this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri('https://turkmenistan-market.firebaseio.com')
-    this.render({ workflowDescription, workflowName, token: tokenFPR, isPrivate, workflowOrder })
+    this.render({ workflowDescription, workflowName, token: tokenFPR, isPrivate, workflowOrder,workflowConfig })
 
     window.pageStore.subscribe(window.actionTypes.BRANCH_SELECTED, state => {
-      const { workflowEditor: { workflowDescription, workflowName, tokenFPR, isPrivate } } = state
-      this.render({ workflowDescription, workflowName, token: tokenFPR, isPrivate, workflowOrder })
+      const { workflowEditor: { workflowDescription, workflowName, tokenFPR, isPrivate, workflowConfig } } = state
+      this.render({ workflowDescription, workflowName, token: tokenFPR, isPrivate, workflowOrder, workflowConfig })
     })
     window.pageStore.subscribe(window.actionTypes.REPO_SELECTED, state => {
-      const { workflowEditor: { workflowDescription, workflowName, tokenFPR, isPrivate, workflowOrder } } = state
-      this.render({ workflowDescription, workflowName, token: tokenFPR, isPrivate, workflowOrder })
+      const { workflowEditor: { workflowDescription, workflowName, tokenFPR, isPrivate, workflowOrder, workflowConfig } } = state
+      this.render({ workflowDescription, workflowName, token: tokenFPR, isPrivate, workflowOrder, workflowConfig })
     })
   }
-  render({ workflowDescription, workflowName, token, isPrivate, workflowOrder }) {
-
-    this.innerHTML = ` 
-      
+  render({ workflowDescription, workflowName, token, isPrivate, workflowOrder, workflowConfig }) {
+debugger;
+    this.innerHTML = `
         <div >
         <h3>Workflow Editor:</h3>
         <div class="row">
@@ -57,7 +56,10 @@ customElements.define('workflow-editor', class extends HTMLElement {
         <label for="workflowDescriptionTextarea" class="form-label">Workflow description</label>
         <textarea class="form-control input" id="workflowDescriptionTextarea" name="workflowDescription" rows="3">${workflowDescription}</textarea>
       </div>
-
+      <div class="mb-3">
+        <label for="workflowConfigFile" class="form-label">Workflow Config</label>
+        <textarea class="form-control input" id="workflowConfig" name="workflowConfig" rows="3" readonly>${JSON.stringify(workflowConfig)}</textarea>
+      </div>
     </div>
     <div class="col-12 mt-2">
     <button type="button" class="btn btn-secondary" id="save-workflow-btn">Save Workflow</button>
@@ -82,17 +84,15 @@ customElements.define('workflow-editor', class extends HTMLElement {
     })
 
     document.getElementById('save-workflow-btn').addEventListener('click', (e) => {
-      const { workflowEditor: { workflowDescription, selectedRepo, isPrivate, selectedBranch, workflowName, tokenFPR, workflowOrder }, auth: { screenName }, workflowTree: { workflowPath } } = window.pageStore.state
-      const wfpath = `${workflowPath}`
+      const { workflowEditor: { workflowDescription, selectedRepo, isPrivate, selectedBranch, workflowName, tokenFPR, workflowOrder,workflowConfig }, auth: { screenName }, workspace: { workspaceSelected }, workspaceTasks: { taskSelected } } = window.pageStore.state
 
-    
 
-      const update = { workflowDescription, selectedRepo, isPrivate, selectedBranch, tokenFPR, screenName, workflowOrder } 
+      const update = { workflowDescription, selectedRepo, isPrivate, selectedBranch, tokenFPR, screenName, workflowOrder, workflowName,workflowConfig }
       debugger;
-      this.FB_DATABASE.ref(`${wfpath}/workflows/${workflowName}`).update(update, (error, data) => {
+      this.FB_DATABASE.ref(`workspaces/${workspaceSelected}/tasks/${taskSelected}/workflows/${Date.now()}`).update(update, (error, data) => {
         window.pageStore.dispatch({ type: window.actionTypes.WORKFLOW_UPDATED })
         debugger;
-        window.location.replace('/workflow-tree.html')
+        window.location.replace('/task-workflows.html')
       })
     })
   }
@@ -113,7 +113,6 @@ customElements.define('owners-repos', class extends HTMLElement {
 
       this.render({ selectedRepo })
     })
-
 
   }
   render({ selectedRepo }) {
@@ -158,8 +157,6 @@ customElements.define('owners-repos', class extends HTMLElement {
     const response = await fetch('https://api.github.com/user/repos', { method: 'get', headers: { Accept: "application/vnd.github.v3+json", authorization: `token ${token}` } })
     const data = await response.json()
     window.pageStore.dispatch({ type: window.actionTypes.USER_REPOS_FETCHED, payload: data })
-
-
   }
 })
 
@@ -202,13 +199,20 @@ customElements.define('repo-branches', class extends HTMLElement {
       this.getBranches({ token, screenName, selectedRepo })
     })
 
-    document.getElementById('branchDataList').addEventListener('input', (e) => {
-
+    document.getElementById('branchDataList').addEventListener('input', async (e) => {
+      const { auth: { token, screenName }, workflowEditor: { selectedRepo } } = window.pageStore.state
       console.log('e', e.inputType)
+      const response = await fetch(`https://api.github.com/repos/${screenName}/${selectedRepo}/contents/workflow.config.json?ref=main`, { method: 'get', headers: { Accept: "application/vnd.github.v3+json", authorization: `token ${token}` } })
+      const data = await response.json()
+      const { content } = data
+      debugger;
+      const workflowConfig = JSON.parse(atob(content))
+
+      debugger;
       if (e.inputType === undefined) {
         const { value } = e.target
 
-        window.pageStore.dispatch({ type: window.actionTypes.BRANCH_SELECTED, payload: value })
+        window.pageStore.dispatch({ type: window.actionTypes.BRANCH_SELECTED, payload: {branch:value,workflowConfig} })
       }
 
     })

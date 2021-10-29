@@ -11,10 +11,10 @@ const dirPath = `${process.cwd()}/src/crawler/`;
 // function fetchDeviceAndUserVerificationCode(req, res) {
 //     fetch('https://github.com/login/oauth/authorize?client_id=91c666c1cc595de45f17d0d4cc157c2fd9a76f83&redirect_url=http://localhost:3000/user-settings.html&scope=repo gist&state=gh_state&alow_signup=true', { method: 'get', headers: { 'Accept': 'application/json' } }).then(response => {
 //         const status = response.status
-//         debugger;
+//         
 //         return response.json()
 //     }).then(async data => {
-//         debugger;
+//         
 //         const dom = await JSDOM.fromFile(`${dirPath}/github-verification.html`)
 //         const document = dom.window.document;
 //         const label1 = document.createElement('label')
@@ -44,7 +44,7 @@ const dirPath = `${process.cwd()}/src/crawler/`;
 //         document.getElementById('user_code').setAttribute('value', data.user_code)
 //         document.getElementById('verification_uri').setAttribute('href', data.verification_uri)
 //         deviceAuthRequestPoll({ interval: data.interval, device_code: data.device_code })
-//         debugger;
+//         
 //         const content = dom.serialize()
 //         res.setHeader('Content-Type', 'text/html');
 //         res.setHeader('Content-Length', Buffer.byteLength(content));
@@ -75,9 +75,9 @@ async function fetchGithubAccessToken({ code, client_id, client_secret, res, req
 /*
 fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithIdp?key=AIzaSyDb8Z27Ut0WJ-RH7Exi454Bpit9lbARJeA`
     , {method:'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ postBody: "access_token=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&providerId=github.com", requestUri: "https://turkmenistan-market.firebaseapp.com/__/auth/handler", returnIdpCredential: true, returnSecureToken: true }) }).then(response => response.json()).then(data => {
-        debugger;
+        
     }).catch(error => {
-        debugger;
+        
     })
 */
 
@@ -85,20 +85,20 @@ async function signInWithIdp({ access_token, filepath, key, res }) {
     const response = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithIdp?key=${key}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ postBody: `access_token=${access_token}&providerId=github.com`, requestUri: "https://turkmenistan-market.firebaseapp.com/__/auth/handler", returnIdpCredential: true, returnSecureToken: true }) })
 
     const data = await response.json()
-debugger;
+
     const { email, emailVerified, federatedId, kind, localId, needConfirmation, oauthAccessToken, photoUrl, providerId, screenName,refreshToken,idToken }=data
     const publicData ={email,screenName,photoUrl}
     const privateData={token:oauthAccessToken,refreshToken,idToken}
     const fbDatabase = fbRest().setIdToken(idToken).setProjectUri('https://turkmenistan-market.firebaseio.com')
-debugger;
+
     fbDatabase.ref(`users/private/${localId}`).once('value',async(error,response)=>{
-        debugger;
+        
        // const userData =JSON.parse(response.data)
         if(!response){
             await fetch(`https://api.github.com/repos/webapis/workflow_runner/forks`, { method: 'post', headers: { 'Authorization': `token ${access_token}`, 'Accept': 'application/vnd.github.v3+json' } })
           //  await fetch(`https://api.github.com/repos/${screenName}/workflow_runner/actions/workflows/aggregate.yml/enable`, { method: 'PUT', headers: { 'Authorization': `token ${access_token}`, 'Accept': 'application/vnd.github.v3+json' } })
           //  await fetch(` https://api.github.com/user/repos`, { method: 'post', headers: { 'Authorization': `token ${access_token}`, 'Accept': 'application/vnd.github.v3+json' },body:JSON.stringify({name:'workflow_runner'}) })
-            debugger;
+            
             await responseHandler({fbDatabase,publicData,privateData,filepath,emailVerified,federatedId,kind,needConfirmation,providerId,localId,email,oauthAccessToken,refreshToken,idToken,screenName,photoUrl,res})
         
         } else{
@@ -114,18 +114,18 @@ debugger;
             })
 
             const resData =await response.json()
-            debugger;
+            
             await responseHandler({fbDatabase,publicData,privateData,filepath,emailVerified,federatedId,kind,needConfirmation,providerId,localId,email,oauthAccessToken,refreshToken,idToken,screenName,photoUrl,res})
 
         }
-debugger;
+
 
 
 
     })
   
    // const userInfo =JSON.parse(rawUserInfo) 
-    debugger;
+    
    // await fetch(`https://api.github.com/repos/webapis/workflow_runner/forks`, { method: 'post', headers: { 'Authorization': `token ${access_token}`, 'Accept': 'application/vnd.github.v3+json' } })
   
 
@@ -220,7 +220,7 @@ async function responseHandler({fbDatabase,privateData,publicData,filepath,email
         res.setHeader('Content-Length', Buffer.byteLength(content));
            res.write(content)
            res.end()
-        debugger;
+        
     
     })
 
@@ -231,17 +231,17 @@ module.exports = { fetchGithubAuthCode, fetchGithubAccessToken, signInWithIdp }
 
 /*
    fetch(`https://api.github.com/repos/webapis/agregators/forks`, { method: 'post', headers: { 'Authorization': `token ${access_token}`, 'Accept': 'application/vnd.github.v3+json' } }).then(response => {
-                debugger;
+                
                 return response.json()
             }).then(data => {
-                debugger;
+                
                 const { owner: { login } } = data
                 userRef.update({ ghuser: login, gh_action_url: `https://api.github.com/repos/${login}/agregators/actions/workflows/aggregate.yml/dispatches` }, (error) => {
                     if (error) {
                         console.log(error)
                     } else {
                         const filepath = `${process.cwd()}/src/crawler/user-settings.html`;
-                        debugger;
+                        
                         res.setHeader('Content-Type', 'text/html');
                         fs.createReadStream(filepath).pipe(res)
                     }

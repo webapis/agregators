@@ -16,7 +16,7 @@ customElements.define('workspace-view', class extends HTMLElement{
         <h5 class="text-muted text-uppercase mx-2">${workspaceSelected}</h5>
         </div>
         <div class="row">
-        <workspace-card title="Containers" page-link="./workflow-containers.html"></workspace-card>
+        <workspace-card title="Containers" page-link="./workspace-tasks.html"></workspace-card>
         <workspace-card title="Runners" page-link="./container-runners.html"></workspace-card>
         <workspace-card title="Users" page-link="./workspace-users.html"></workspace-card>
         </div>`
