@@ -35,8 +35,11 @@ debugger;
             debugger;
           //  const { email } = await getUserEmail({ token: access_token })
             debugger;
-
-            const uidRef = fbDatabase.ref(`workspaces/${state}/auth`)
+            const params=state.split('--xxx--')
+            const selectedWorkspace=params[0]
+            const uid =params[1]
+            debugger;
+            const uidRef = fbDatabase.ref(`server/users/${uid}/workspaces/${selectedWorkspace}/auth`)
              debugger;
              const update ={google:{access_token, refresh_token, scope }}
 

@@ -7,17 +7,18 @@ customElements.define('workspace-view', class extends HTMLElement{
         const resources = await import('./resources.js')
         await resources.default()
 
-        const {workspace:{workspaceSelected}}=window.pageStore.state
+        const {workspace:{workspaceSelected:{title}}}=window.pageStore.state
 
-        document.getElementById('ws-breadcrumb').innerText=`Workspace(${workspaceSelected})`
+        document.getElementById('ws-breadcrumb').innerText=`Workspace(${title})`
         this.innerHTML=`
+        <signed-in-as></signed-in-as>
         <div class="d-flex">
         <h5>Workspace:</h5>
-        <h5 class="text-muted text-uppercase mx-2">${workspaceSelected}</h5>
+        <h5 class="text-muted text-uppercase mx-2">${title}</h5>
         </div>
         <div class="row">
-        <workspace-card title="Containers" page-link="./workspace-tasks.html"></workspace-card>
-        <workspace-card title="Runners" page-link="./container-runners.html"></workspace-card>
+        <workspace-card title="Tasks" page-link="./workspace-tasks.html"></workspace-card>
+   
         <workspace-card title="Users" page-link="./workspace-users.html"></workspace-card>
         </div>`
     }

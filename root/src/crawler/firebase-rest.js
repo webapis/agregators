@@ -33,7 +33,7 @@ function firebase() {
         update: async function (data, cb) {
             await updateIdToken()
             debugger;
-            fetch(`${this.projectUri}/${this.url}/.json?auth=${this.idToken}`, { method: 'PATCH', body: JSON.stringify(data) }).then(response => response.json()).then(data => {
+            fetch(`${this.projectUri}/${this.url}.json?auth=${this.idToken}`, { method: 'PATCH', body: JSON.stringify(data) }).then(response => response.json()).then(data => {
                 cb && cb(null,data)
             }).catch(error => {
                 cb && cb(error,null)

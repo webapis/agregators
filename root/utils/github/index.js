@@ -86,12 +86,13 @@ async function signInWithIdp({ access_token, filepath, key, res }) {
 
     const data = await response.json()
 
-    const { email, emailVerified, federatedId, kind, localId, needConfirmation, oauthAccessToken, photoUrl, providerId, screenName,refreshToken,idToken }=data
-    const publicData ={email,screenName,photoUrl}
-    const privateData={token:oauthAccessToken,refreshToken,idToken}
+    const { email, emailVerified, federatedId, kind, localId, needConfirmation, oauthAccessToken, photoUrl, providerId, screenName,refreshToken,idToken, expiresIn }=data
+    debugger;
+    const publicData ={email,photoUrl}
+    const privateData={token:oauthAccessToken,refreshToken,idToken,screenName,email}
     const fbDatabase = fbRest().setIdToken(idToken).setProjectUri('https://turkmenistan-market.firebaseio.com')
 
-    fbDatabase.ref(`users/private/${localId}`).once('value',async(error,response)=>{
+    fbDatabase.ref(`users/private/${localId}/fb_auth`).once('value',async(error,response)=>{
         
        // const userData =JSON.parse(response.data)
         if(!response){
@@ -99,7 +100,7 @@ async function signInWithIdp({ access_token, filepath, key, res }) {
           //  await fetch(`https://api.github.com/repos/${screenName}/workflow_runner/actions/workflows/aggregate.yml/enable`, { method: 'PUT', headers: { 'Authorization': `token ${access_token}`, 'Accept': 'application/vnd.github.v3+json' } })
           //  await fetch(` https://api.github.com/user/repos`, { method: 'post', headers: { 'Authorization': `token ${access_token}`, 'Accept': 'application/vnd.github.v3+json' },body:JSON.stringify({name:'workflow_runner'}) })
             
-            await responseHandler({fbDatabase,publicData,privateData,filepath,emailVerified,federatedId,kind,needConfirmation,providerId,localId,email,oauthAccessToken,refreshToken,idToken,screenName,photoUrl,res})
+            await responseHandler({fbDatabase,publicData,privateData,filepath,emailVerified,federatedId,kind,needConfirmation,providerId,localId,email,oauthAccessToken,refreshToken,idToken,screenName,photoUrl,res,expiresIn})
         
         } else{
             const fetchPath = `https://api.github.com/repos/${screenName}/workflow_runner/merge-upstream`
@@ -115,7 +116,7 @@ async function signInWithIdp({ access_token, filepath, key, res }) {
 
             const resData =await response.json()
             
-            await responseHandler({fbDatabase,publicData,privateData,filepath,emailVerified,federatedId,kind,needConfirmation,providerId,localId,email,oauthAccessToken,refreshToken,idToken,screenName,photoUrl,res})
+            await responseHandler({fbDatabase,publicData,privateData,filepath,emailVerified,federatedId,kind,needConfirmation,providerId,localId,email,oauthAccessToken,refreshToken,idToken,screenName,photoUrl,res,expiresIn})
 
         }
 
@@ -131,8 +132,8 @@ async function signInWithIdp({ access_token, filepath, key, res }) {
 
     }
 
-async function responseHandler({fbDatabase,privateData,publicData,filepath,emailVerified,federatedId,kind,needConfirmation,providerId,localId,email,oauthAccessToken,refreshToken,idToken,screenName,photoUrl,res}){
-    fbDatabase.ref(`users`).update({[`private/${localId}`]:privateData,[`public/${localId}`]:publicData},async (error, data) => {
+async function responseHandler({fbDatabase,privateData,publicData,filepath,emailVerified,federatedId,kind,needConfirmation,providerId,localId,email,oauthAccessToken,refreshToken,idToken,screenName,photoUrl,res,expiresIn}){
+    fbDatabase.ref(`users`).update({[`private/${localId}/fb_auth`]:privateData,[`public/users/${screenName}`]:publicData},async (error, data) => {
         const dom = await JSDOM.fromFile(filepath)
         const document = dom.window.document;
     
@@ -214,6 +215,12 @@ async function responseHandler({fbDatabase,privateData,publicData,filepath,email
         refreshTokenInput.setAttribute('value', refreshToken);
         document.body.appendChild(refreshTokenInput);
     
+        var expiresInInput = document.createElement('input');
+        expiresInInput.setAttribute('type', 'hidden');
+        expiresInInput.setAttribute('id', 'expiresIn');
+        expiresInInput.setAttribute('value', expiresIn);
+        document.body.appendChild(expiresInInput);
+
         const content = dom.serialize()
         
         res.setHeader('Content-Type', 'text/html');

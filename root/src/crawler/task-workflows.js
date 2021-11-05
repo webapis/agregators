@@ -6,21 +6,24 @@ customElements.define('task-workflows', class extends HTMLElement {
         const resources = await import('./resources.js')
         await resources.default()
 
-        const { auth: { idToken, localId: uid }, workspace: { workspaceSelected }, workspaceTasks: { taskSelected } } = window.pageStore.state
+        const { auth: { idToken, localId: uid }, workspace: { workspaceSelected:{title:workspaceName} }, workspaceTasks: { taskSelected:{taskName,id:taskId} } } = window.pageStore.state
 
-        document.getElementById('task-breadcrumb').innerText = `Task(${taskSelected})`
-        document.getElementById('ws-breadcrumb').innerText = `Workspace(${workspaceSelected})`
+        document.getElementById('task-breadcrumb').innerText = `Task(${taskName})`
+        document.getElementById('ws-breadcrumb').innerText = `Workspace(${workspaceName})`
         this.uid = uid
         this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri('https://turkmenistan-market.firebaseio.com')
         this.innerHTML =
-            `<div>
+        
+            `
+            <signed-in-as></signed-in-as>
+            <div>
             <a class="btn btn-secondary" href="./workflow-editor.html">Add workflow</a>
             </div>
             <h5>Task workflows:</h5>
             <div id="workflows" class="list-group"></div>
             `
 
-        this.FB_DATABASE.ref(`/workspaces/${workspaceSelected}/tasks/${taskSelected}/workflows`).on('value', (error, result) => {
+        this.FB_DATABASE.ref(`workspaces/${workspaceName}/workflowInitials/tasks/${taskId}/workflows`).on('value', (error, result) => {
             const workflows = Object.entries(result.data)
             workflows.forEach(wf => {
                 debugger;

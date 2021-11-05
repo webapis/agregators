@@ -7,14 +7,14 @@ customElements.define('workflow-editor', class extends HTMLElement {
 
     const resources = await import('./resources.js')
     await resources.default()
-    const { workflowEditor: { workflowDescription, workflowName, tokenFPR, isPrivate, workflowOrder,workflowConfig }, auth: { idToken, localId: uid }, workspace: { workspaceSelected }, wfContainer: { selectedContainer }, workspaceTasks: { taskSelected } } = window.pageStore.state
+    const { workflowEditor: { workflowDescription, workflowName, tokenFPR, isPrivate, workflowOrder, workflowConfig }, auth: { idToken, localId: uid }, workspace: { workspaceSelected: { title: workspaceName } }, wfContainer: { selectedContainer }, workspaceTasks: { taskSelected: { taskName } } } = window.pageStore.state
 
-    document.getElementById('task-breadcrumb').innerText = `Task(${taskSelected})`
-    document.getElementById('ws-breadcrumb').innerText = `Workspace(${workspaceSelected})`
+    document.getElementById('task-breadcrumb').innerText = `Task(${taskName})`
+    document.getElementById('ws-breadcrumb').innerText = `Workspace(${workspaceName})`
     this.uid = uid
     debugger;
     this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri('https://turkmenistan-market.firebaseio.com')
-    this.render({ workflowDescription, workflowName, token: tokenFPR, isPrivate, workflowOrder,workflowConfig })
+    this.render({ workflowDescription, workflowName, token: tokenFPR, isPrivate, workflowOrder, workflowConfig })
 
     window.pageStore.subscribe(window.actionTypes.BRANCH_SELECTED, state => {
       const { workflowEditor: { workflowDescription, workflowName, tokenFPR, isPrivate, workflowConfig } } = state
@@ -26,8 +26,9 @@ customElements.define('workflow-editor', class extends HTMLElement {
     })
   }
   render({ workflowDescription, workflowName, token, isPrivate, workflowOrder, workflowConfig }) {
-debugger;
+    debugger;
     this.innerHTML = `
+    <signed-in-as></signed-in-as>
         <div >
         <h3>Workflow Editor:</h3>
         <div class="row">
@@ -84,12 +85,15 @@ debugger;
     })
 
     document.getElementById('save-workflow-btn').addEventListener('click', (e) => {
-      const { workflowEditor: { workflowDescription, selectedRepo, isPrivate, selectedBranch, workflowName, tokenFPR, workflowOrder,workflowConfig }, auth: { screenName }, workspace: { workspaceSelected }, workspaceTasks: { taskSelected } } = window.pageStore.state
-
-
-      const update = { workflowDescription, selectedRepo, isPrivate, selectedBranch, tokenFPR, screenName, workflowOrder, workflowName,workflowConfig }
+      const { workflowEditor: { workflowDescription, selectedRepo, isPrivate, selectedBranch, workflowName, tokenFPR, workflowOrder, workflowConfig }, auth: { screenName }, workspace: { workspaceSelected: { title: workspaceName } }, workspaceTasks: { taskSelected: { taskName, id: taskId } } } = window.pageStore.state
+      // { workflowDescription, selectedRepo, isPrivate, selectedBranch, tokenFPR, screenName, workflowOrder, workflowName,workflowConfig }
+      const workflowId = Date.now()
+      const workflowInitials = { [`workspaces/${workspaceName}/workflowInitials/tasks/${taskId}/workflows/${workflowId}`]: { workflowDescription, workflowName } }
+      const workflowProps = { [`workspaces/${workspaceName}/workflowProps/tasks/${taskId}/workflows/${workflowId}`]: { selectedRepo, isPrivate, selectedBranch, tokenFPR, screenName, workflowOrder } }
+      const upadteworkflowConfigs = { [`workspaces/${workspaceName}/workflowConfigs/tasks/${taskId}/workflows/${workflowId}`]: { ...workflowConfig } }
+      const updateServer = { [`server/workspaces/${workspaceName}/tasks/${taskId}/workflows/${workflowId}`]: { workflowDescription, selectedRepo, isPrivate, selectedBranch, tokenFPR, screenName, workflowOrder, workflowName, workflowConfig } }
       debugger;
-      this.FB_DATABASE.ref(`workspaces/${workspaceSelected}/tasks/${taskSelected}/workflows/${Date.now()}`).update(update, (error, data) => {
+      this.FB_DATABASE.ref(`/`).update({ ...workflowInitials, ...workflowProps, ...upadteworkflowConfigs, ...updateServer }, (error, data) => {
         window.pageStore.dispatch({ type: window.actionTypes.WORKFLOW_UPDATED })
         debugger;
         window.location.replace('/task-workflows.html')
@@ -212,7 +216,7 @@ customElements.define('repo-branches', class extends HTMLElement {
       if (e.inputType === undefined) {
         const { value } = e.target
 
-        window.pageStore.dispatch({ type: window.actionTypes.BRANCH_SELECTED, payload: {branch:value,workflowConfig} })
+        window.pageStore.dispatch({ type: window.actionTypes.BRANCH_SELECTED, payload: { branch: value, workflowConfig } })
       }
 
     })

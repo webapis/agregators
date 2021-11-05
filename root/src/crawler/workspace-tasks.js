@@ -9,13 +9,15 @@ customElements.define('workspace-tasks', class extends HTMLElement {
         const resources = await import('./resources.js')
         await resources.default()
 
-        const { auth: { idToken, localId: uid }, workspace: { workspaceSelected } } = window.pageStore.state
+        const { auth: { idToken, localId: uid }, workspace: { workspaceSelected:{title:workspaceName} } } = window.pageStore.state
         this.uid = uid
         this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri('https://turkmenistan-market.firebaseio.com')
-        document.getElementById('ws-breadcrumb').innerText = `Workspace(${workspaceSelected})`
+        document.getElementById('ws-breadcrumb').innerText = `Workspace(${workspaceName})`
         this.innerHTML = `
+        <signed-in-as></signed-in-as>
         <div class="d-flex justify-content-between">
-        <a class="btn btn-secondary" href="#">Add Task</a>
+      
+        <a class="btn btn-secondary" href="/add-task.html">Add Task</a>
         <div>
         <a class="btn btn-outline-secondary" href="/tasks-configuration.html" id="tasks-config-btn">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-gear" viewBox="0 0 16 16">
@@ -29,38 +31,53 @@ customElements.define('workspace-tasks', class extends HTMLElement {
         <p>Tasks:</p>
         <div id="tasks" class="list-group"></div>
         `
-        this.FB_DATABASE.ref(`workspaces/${workspaceSelected}/tasks`).on('value', (error, result) => {
-            const tasks = Object.keys(result.data)
+        debugger;
+        this.FB_DATABASE.ref(`workspaces/${workspaceName}/tasks`).on('value', (error, result) => {
+            debugger;
+            const tasks = result.data && Object.entries(result.data)
+
+
             tasks.forEach(task => {
-                document.getElementById('tasks').insertAdjacentHTML('beforeend', ` <a href="/task-workflows.html" class="list-group-item list-group-item-action" id="${task}">${task}</a>`)
+                debugger;
+                const taskId = task[0]
+                const taskName = task[1]['taskName']
+                document.getElementById('tasks').insertAdjacentHTML('beforeend', ` <a href="/task-workflows.html" class="list-group-item list-group-item-action" id="${taskId}" name="${taskName}">${taskName}</a>`)
             })
             Array.from(document.getElementsByClassName('list-group-item')).forEach(element => {
                 element.addEventListener('click', e => {
                     e.preventDefault()
-                    const { id } = e.target
+                    const { id, name } = e.target
                     debugger;
-                    window.pageStore.dispatch({ type: window.actionTypes.TASK_SELECTED, payload: id })
+                    window.pageStore.dispatch({ type: window.actionTypes.TASK_SELECTED, payload: { id, taskName: name } })
                     window.location.replace('./task-workflows.html')
                 })
-            })  
+            })
             debugger;
         })
-        document.getElementById('run-tasks-btn').addEventListener('click',async(e)=>{
+        document.getElementById('run-tasks-btn').addEventListener('click', async (e) => {
             e.preventDefault()
 
-            const { auth: { token, screenName: owner,idToken ,email,localId,refreshToken},workspace:{workspaceSelected}} = window.pageStore.state
-            const projectUrl='https://turkmenistan-market.firebaseio.com'
+            const { auth: { token, screenName: owner, idToken, email, localId, refreshToken }, workspace: { workspaceSelected:{title} } } = window.pageStore.state
+            const projectUrl = 'https://turkmenistan-market.firebaseio.com'
             //const selectedContainer=title
-            const parameters=`${token}--xxx--${owner}--xxx--${idToken}--xxx--${email}--xxx--${localId}--xxx--${refreshToken}--xxx--${'selectedContainer'}--xxx--${projectUrl}--xxx--${workspaceSelected}`
+            const parameters = `${token}--xxx--${owner}--xxx--${idToken}--xxx--${email}--xxx--${localId}--xxx--${refreshToken}--xxx--${'selectedContainer'}--xxx--${projectUrl}--xxx--${title}`
             debugger;
-            const body = JSON.stringify({ ref: 'main', inputs: { projectName: workspaceSelected, parameters } })
-         
+            const body = JSON.stringify({ ref: 'main', inputs: { projectName: title, parameters } })
+            if (title === 'local_test') {
+                debugger;
+                await fetch('http://localhost:3001', { body, method: 'post' })
+            } else {
+                debugger;
+                await triggerAction({ gh_action_url: `https://api.github.com/repos/${owner}/workflow_runner/actions/workflows/aggregate.yml/dispatches`, ticket: token, body })
+            }
             debugger;
-           await triggerAction({ gh_action_url: `https://api.github.com/repos/${owner}/workflow_runner/actions/workflows/aggregate.yml/dispatches`, ticket: token, body })
-        
-        
+
+
+
             debugger;
         })
+
+
     }
 
 
@@ -70,19 +87,19 @@ customElements.define('workspace-tasks', class extends HTMLElement {
 
 async function triggerAction({ ticket, body, gh_action_url }) {
     debugger;
-  
+
     try {
-      const response =await fetch(gh_action_url, {
-        method: 'post',
-        headers: {
-            authorization: `token ${ticket}`,
-            Accept: 'application/vnd.github.v3+json'
-        },
-        body
-    })
-    const data =await response.json()
+        const response = await fetch(gh_action_url, {
+            method: 'post',
+            headers: {
+                authorization: `token ${ticket}`,
+                Accept: 'application/vnd.github.v3+json'
+            },
+            body
+        })
+        const data = await response.json()
     } catch (error) {
-      debugger;
+        debugger;
     }
-   
-  }
+
+}

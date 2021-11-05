@@ -30,12 +30,14 @@ export const initState = stateFromLS
     selectedProjectTab: 'project-workflows',
     workflowEditor: { workflowName: '', workflowDescription: '', ownersRepos: [], selectedRepo: '', isPrivate: '', selectedBranch: '', workflowName: '', tokenFPR: '' },
     workflowList: { workflowTab: 'private-workflows', workflows: [] },
-    workspaceList: { workspaces: [] },
+    workspaceList: { workspaces: [], selectedWorkspaceTab: 'private-tab' },
     workspaceDashboard: { selectedTab: 'workflows-tab', selectedWfContainerTab: 'collection-tab', containers: [], selectedContainer: '', selectedWfContainerEditorTab: 'workflows-tab' },
     workspace: { workspaceSelected: '' },
     containerName: { name: '' },
     wfContainer: { selectedContainer: '' },
-    workflowTree: { workflowPath: '' }
+    workflowTree: { workflowPath: '' },
+    workspaceEditor: { workspaceName: "", description: "", accessLevel: "" },
+    workspaceUsers: { username: "", role: "" }
   };
 
 export default (state, action) => {
@@ -118,8 +120,8 @@ export default (state, action) => {
       return { ...state, workflowEditor: { workflowName: '', workflowDescription: '', ownersRepos: [], selectedRepo: '', isPrivate: '', selectedBranch: '', workflowName: '', tokenFPR: '' } }
     case actionTypes.EDIT_WORKFLOW:
       return { ...state, workflowEditor: { ...state.workflowEditor, ...action.payload } }
-    case actionTypes.WORKSPACE_NAME_CHANGED:
-      return { ...state, workspaceName: action.payload }
+    case actionTypes.WORKSPACE_EDITOR_INPUT_CHANGED:
+      return { ...state, workspaceEditor: { ...state.workspaceEditor, ...action.payload } }
     case actionTypes.WORKSPACES_FETCHED:
       return { ...state, workspaceList: { ...state.workspaceList, workspaces: action.payload } }
     case actionTypes.WORKSPACE_SELECTED:
@@ -137,13 +139,23 @@ export default (state, action) => {
       debugger;
       return { ...state, workflowTree: { workflowPath: action.payload } }
     case actionTypes.TASK_SELECTED:
-      return { ...state, workspaceTasks: { ...state.workspaceTasks, taskSelected: action.payload } }
+      return { ...state, workspaceTasks: { ...state.workspaceTasks, taskSelected: { ...action.payload } } }
     case actionTypes.GOOGLE_SCOPES:
       return { ...state, workspaceTasks: { ...state.workspaceTasks, googleScopes: action.payload } }
     case actionTypes.GOOGLE_AUTH_SUCCESS:
       return { ...state, auth: { ...state.auth, googleToken: action.payload } }
     case actionTypes.WORKFLOW_SELECTED:
-      return { ...state, taskWorkflows: { ...state.taskWorkflows, workflowSelected:{...action.payload} } }
+      return { ...state, taskWorkflows: { ...state.taskWorkflows, workflowSelected: { ...action.payload } } }
+
+    case actionTypes.CREATE_NEW_WORKSPACE:
+      return { ...state, workspaceEditor: { workspaceName: "", description: "", accessLevel: "" } }
+    case actionTypes.WORKSPACE_TAB_CHANGED:
+  
+      return { ...state, workspaceList: { ...state.workspaceList, selectedWorkspaceTab: action.payload } }
+    case actionTypes.WORKSPACE_USER_INPUT_CHANGED:
+      return { ...state, workspaceUsers: { ...state.workspaceUsers, ...action.payload } }
+    case actionTypes.WORKSPACES_COUNTED:
+      return { ...state, workspaceList: { ...state.workspaceList, ...action.payload } }
     default:
 
       return state;
@@ -200,11 +212,13 @@ export const actionTypes = {
   WORKFLOWS_FETCHED: 'WORKFLOWS_FETCHED',
   WORKFLOW_UPDATED: 'WORKFLOW_UPDATED',
   EDIT_WORKFLOW: 'EDIT_WORKFLOW',
-  WORKSPACE_NAME_CHANGED: 'WORKSPACE_NAME_CHANGED',
+
+  WORKSPACE_EDITOR_INPUT_CHANGED: 'WORKSPACE_EDITOR_INPUT_CHANGED',
+  CREATE_NEW_WORKSPACE: 'CREATE_NEW_WORKSPACE',
+
   WORKSPACES_FETCHED: 'WORKSPACES_FETCHED',
   WORKSPACE_SELECTED: 'WORKSPACE_SELECTED',
-  // WS_DASHBOARD_TAB_CHANGED: 'WS_DASHBOARD_TAB_CHANGED',
-  // WF_CONTAINER_TAB_CHANGED: 'WF_CONTAINER_TAB_CHANGED',
+
   CONTAINER_NAME_CHANGED: 'CONTAINER_NAME_CHANGED',
   CONTAINERS_FETCHED: 'CONTAINERS_FETCHED',
   WF_CONTAINER_SELECTED: 'WF_CONTAINER_SELECTED',
@@ -214,6 +228,10 @@ export const actionTypes = {
   TASK_SELECTED: 'TASK_SELECTED',
   GOOGLE_SCOPES: 'GOOGLE_SCOPES',
   GOOGLE_AUTH_SUCCESS: 'GOOGLE_AUTH_SUCCESS',
-  WORKFLOW_SELECTED: 'WORKFLOW_SELECTED'
+  WORKFLOW_SELECTED: 'WORKFLOW_SELECTED',
+  WORKSPACE_TAB_CHANGED: 'WORKSPACE_TAB_CHANGED',
+  WORKSPACE_USER_INPUT_CHANGED: 'WORKSPACE_USER_INPUT_CHANGED',
+  WORKSPACES_COUNTED: 'WORKSPACES_COUNTED'
+
 
 };

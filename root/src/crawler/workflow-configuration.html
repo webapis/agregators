@@ -13,21 +13,22 @@
 
 <body>
     <div class="container mt-1">
-
+        <div id="top-bar" class="d-flex justify-content-between">
         <div class="breadcrumb flat">
             <a href="/index.html">Home</a>
             <a href="/workspaces-list.html">Workspaces</a>
             <a href="/workspace.html" id="ws-breadcrumb">Workspace</a>
             <a href="/workspace-tasks.html" id="task-breadcrumb">Task</a>
-            <a href="/task-workflows.html" class="active" id="ws-breadcrumb">Workflows</a>
+            <a href="/task-workflows.html" >Workflows</a>
             <a href="/workflow-configuration.html" class="active" id="workflow-breadcrumb">Configuration</a>
         </div>
+    </div>
     </div>
     <div class="container">
 
         <workflow-configuration class="row"></workflow-configuration>
     </div>
-
+    <script src="./signed-in-as.js"></script>
     <script src="./workflow-configuration.js"></script>
 </body>
 

@@ -7,22 +7,25 @@ customElements.define('workflow-configuration', class extends HTMLElement {
         const resources = await import('./resources.js')
         await resources.default()
 
-        const { auth: { idToken, localId: uid }, workspace: { workspaceSelected }, workspaceTasks: { taskSelected }, taskWorkflows: { workflowSelected: { workflowName, workflowKey } } } = window.pageStore.state
+        const { auth: { idToken, localId: uid }, workspace: { workspaceSelected:{title:workspaceName} }, workspaceTasks: { taskSelected:{taskName,id:taskId} }, taskWorkflows: { workflowSelected: { workflowName, workflowKey } } } = window.pageStore.state
 
 
-        document.getElementById('ws-breadcrumb').innerText = `Workspace(${workspaceSelected})`
-        document.getElementById('task-breadcrumb').innerText = `Task(${taskSelected})`
+        document.getElementById('ws-breadcrumb').innerText = `Workspace(${workspaceName})`
+        document.getElementById('task-breadcrumb').innerText = `Task(${taskName})`
         document.getElementById('workflow-breadcrumb').innerText = `Configuration(${workflowName})`
         this.uid = uid
         this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri('https://turkmenistan-market.firebaseio.com')
         this.innerHTML = `
+        <signed-in-as></signed-in-as>
         <div>
         <h5>Workflow Enviroment Valiables:</h5>
         </div>
         <div id="var-container" class="row"></div>`
 
-        this.FB_DATABASE.ref(`workspaces/${workspaceSelected}/tasks/${taskSelected}/workflows/${workflowKey}/workflowConfig/vars`).on('value', (error, result) => {
+        this.FB_DATABASE.ref(`workspaces/${workspaceName}/workflowConfigs/tasks/${taskId}/workflows/${workflowKey}/vars`).on('value', (error, result) => {
+            
             const vars = Object.entries(result.data)
+            debugger;
             vars.forEach(v => {
                 const varName = v[0]
                 const varValue = v[1]
@@ -50,7 +53,10 @@ customElements.define('workflow-configuration', class extends HTMLElement {
                     update ={...update,[inputId]:document.getElementById(inputId).value}  
                  
                 })
-                this.FB_DATABASE.ref(`workspaces/${workspaceSelected}/tasks/${taskSelected}/workflows/${workflowKey}/workflowConfig/vars`).update(update,(error,data)=>{
+                const updateServerWorkflowConfig ={[`server/workspaces/${workspaceName}/tasks/${taskId}/workflows/${workflowKey}/workflowConfig/vars`]:update}
+                const updateClientWorkflowConfig ={[`workspaces/${workspaceName}/workflowConfigs/tasks/${taskId}/workflows/${workflowKey}/vars`]:update}
+                this.FB_DATABASE.ref('/').update({...updateServerWorkflowConfig,...updateClientWorkflowConfig},(error,data)=>{
+
                     debugger;
                 })
                 debugger;
