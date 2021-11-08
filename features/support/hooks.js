@@ -1,18 +1,38 @@
-const { Before, After } = require('@cucumber/cucumber');
+const { Before, After,BeforeAll,AfterAll } = require('@cucumber/cucumber');
+const puppeteer = require("puppeteer");
 
-Before(async function () {
+const launchOptions = { timeout:0,
+  headless: false,
+  // executablePath:
+  //   process.env.MACHINE === "mac"
+  //     ? "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+  //     : "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe",
 
-await this.launch()
-this.page = await this.browser.newPage()
-this.page.goto('http://localhost:3000')
+  args: [
+    //    "--no-sandbox",
+    //    "--disable-setuid-sandbox",
+    // `--window-position=1200,0`,
+     `--window-size=1200,1250`,
+    "--allow-insecure-localhost",
+    // "--user-data-dir=/tmp/foo",
+    "--ignore-certificate-errors",
+    "--unsafely-treat-insecure-origin-as-secure=https://localhost:3000"
+  ] //,devtools: true
+};
+BeforeAll(async function () {
+
+global.browser = await puppeteer.launch(launchOptions);
+global.page = await global.browser.newPage()
+global.page.goto('http://localhost:3000')
   // perform some shared setup
 });
 
-After(async function(){
-  await this.browser.close()
-})
+// AfterAll(async function(){
+//   debugger;
+//   await   global.browser.close()
+// })
 
-Before({tags:'@signin'},async function (){
-  await this.page.waitForSelector('home-card > div > a')
-  await this.page.click('home-card > div > a')
-})
+// Before({tags:'@signin'},async function (){
+//   await global.page.waitForSelector('home-card > div > a')
+//   await global.page.click('home-card > div > a')
+// })

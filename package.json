@@ -81,7 +81,7 @@
     "start": "node --inspect=9090 root/index.js",
     "local:start": "SERVER=LOCAL_SERVER node root/index.js",
     "crawler": "SERVER=LOCAL_SERVER  node page-collector/server.js",
-    "testCucumber": "cucumber-js"
+    "testCucumber": "./node_modules/.bin/cucumber-js"
   },
   "nodemonConfig": {
     "ignore": [

@@ -1,6 +1,6 @@
 const puppeteer = require("puppeteer");
 const launchOptions = { timeout:0,
-    headless: true,
+    headless: false,
     // executablePath:
     //   process.env.MACHINE === "mac"
     //     ? "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
@@ -20,7 +20,7 @@ const launchOptions = { timeout:0,
 
 module.exports.launch = async function() {
     try {
-      this.browser = await puppeteer.launch(launchOptions);
+      global.browser = await puppeteer.launch(launchOptions);
  
     } catch (error) {
       throw error;

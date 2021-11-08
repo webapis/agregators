@@ -18,7 +18,7 @@ customElements.define('signed-in-as',
                 document.getElementById('top-bar').insertAdjacentHTML('beforeend', `
             <div class="mt-1">
             <span>Signed in as</span>
-            <span class="fw-bolder">${auth.screenName}</span>
+            <span class="fw-bolder" id="screenname">${auth.screenName}</span>
             <span class="fw-bolder">
             <a href="/invitations.html" >
     

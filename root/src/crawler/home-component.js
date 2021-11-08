@@ -15,13 +15,13 @@ customElements.define('home-component', class extends HTMLElement {
             this.innerHTML = `<div>
            <signed-in-as></signed-in-as>
            
-            <home-card title="Workspaces" page-link="/workspaces-list.html"></home-card>
+            <home-card title="Workspaces" page-link="/workspaces-list.html" link-id="workspace"></home-card>
        
             </div>`
         } else {
             this.innerHTML = `<div>
             
-            <home-card title="Sign in" page-link="/login.html?authed=false"></home-card>
+            <home-card title="Sign in" page-link="/login.html?authed=false" link-id="signin"></home-card>
             </div>`
         }
 
@@ -37,8 +37,9 @@ customElements.define('home-card', class extends HTMLElement {
     connectedCallback() {
         const title = this.getAttribute('title')
         const pageLink = this.getAttribute('page-link')
+        const id =this.getAttribute('link-id')
         this.innerHTML = `<div>
-        <a class="btn btn-warning m-1" style="height:10vh; width:10vh;" href="${pageLink}">${title}</a>
+        <a class="btn btn-warning m-1" style="height:10vh; width:10vh;" href="${pageLink}" id=${id}>${title}</a>
         </div>`
     }
 })
