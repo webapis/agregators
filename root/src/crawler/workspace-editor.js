@@ -8,7 +8,7 @@ customElements.define('workspace-editor', class extends HTMLElement {
         await resources.default()
         const { auth: { idToken, localId: uid }, workspaceEditor } = window.pageStore.state
         this.uid = uid
-        this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri('https://turkmenistan-market.firebaseio.com')
+        this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
         this.render({ workspaceEditor })
     }
 

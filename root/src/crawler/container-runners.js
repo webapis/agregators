@@ -9,7 +9,7 @@ customElements.define('container-runners', class extends HTMLElement{
 
         const { workspace: { workspaceSelected }, auth: { idToken, localId: uid } } = window.pageStore.state
         this.uid = uid
-        this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri('https://turkmenistan-market.firebaseio.com')
+        this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
         this.render({ workspaceSelected })
      
     }
@@ -94,7 +94,7 @@ customElements.define('runner-card', class extends HTMLElement {
       document.getElementById(`run-container-btn-${title}`).addEventListener('click',async(e)=>{
         e.preventDefault()
         const { auth: { token, screenName: owner,idToken ,email,localId,refreshToken},workspace:{workspaceSelected}} = window.pageStore.state
-        const projectUrl='https://turkmenistan-market.firebaseio.com'
+        const projectUrl=window.projectUrl
         const selectedContainer=title
         const parameters=`${token}--xxx--${owner}--xxx--${idToken}--xxx--${email}--xxx--${localId}--xxx--${refreshToken}--xxx--${selectedContainer}--xxx--${projectUrl}--xxx--${workspaceSelected}`
         debugger;

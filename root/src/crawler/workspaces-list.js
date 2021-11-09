@@ -8,7 +8,7 @@ customElements.define('workspaces-list', class extends HTMLElement {
         await resources.default()
         const { auth: { idToken, localId: uid }, workspaceList: { workspaces, selectedWorkspaceTab } } = window.pageStore.state
         this.uid = uid
-        this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri('https://turkmenistan-market.firebaseio.com')
+        this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
         this.innerHTML = `  <signed-in-as></signed-in-as>
         <div class="container" id="container"></div>
         `
@@ -66,7 +66,7 @@ debugger;
             const title = ws[0]
             const { accessLevel, description, owner } = ws[1]
 
-            document.getElementById('ws-container').insertAdjacentHTML(`beforeend`, `<workspace-component title="${title}" accesslevel="${accessLevel}" description="${description}" owner="${owner}"></workspace-component>`)
+            document.getElementById('ws-container').insertAdjacentHTML(`beforeend`, `<workspace-component title="${title}" accesslevel="${accessLevel}" description="${description}" owner="${owner}" id="${title}-ws"></workspace-component>`)
         })
 
         document.getElementById('create-workspace-btn').addEventListener('click', (e) => {
@@ -106,22 +106,22 @@ customElements.define('workspace-component', class extends HTMLElement {
    
     </div>
     <ul class="list-group list-group-flush">
-    <li class="list-group-item d-flex justify-content-between"><span class="fw-normal">name:</span><span class="fw-light">${title}</span></li>
-    <li class="list-group-item d-flex justify-content-between"><span class="fw-normal">description:</span><span class="fw-light">${description}</span></li>
-    <li class="list-group-item d-flex justify-content-between"><span class="fw-normal">access_level:</span><span class="fw-light">${accessLevel}</span></li>
-    <li class="list-group-item d-flex justify-content-between"><span class="fw-normal">owner:</span><span class="fw-light">${owner}</span></li>
+    <li class="list-group-item d-flex justify-content-between"><span class="fw-normal">name:</span><span class="fw-light" id="${title}-ws-title">${title}</span></li>
+    <li class="list-group-item d-flex justify-content-between"><span class="fw-normal">description:</span><span class="fw-light" id="${title}-ws-description">${description}</span></li>
+    <li class="list-group-item d-flex justify-content-between"><span class="fw-normal">access_level:</span><span class="fw-light" id="${title}-ws-access-level">${accessLevel}</span></li>
+    <li class="list-group-item d-flex justify-content-between"><span class="fw-normal">owner:</span><span class="fw-light" id ="${title}-ws-owner">${owner}</span></li>
 
   </ul>
   <div class="card-body">
 
-  <a href="#" class="card-link" id="${title}">Go to tasks</a>
+  <a href="#" class="card-link" id="${title}-link">Go to tasks</a>
 </div>
       <div class="card-footer">
     
     </div>
         </div>`
 
-        document.getElementById(title).addEventListener('click', (e) => {
+        document.getElementById(`${title}-link`).addEventListener('click', (e) => {
             const { id } = e.target
 
             window.pageStore.dispatch({ type: window.actionTypes.WORKSPACE_SELECTED, payload: { title, accessLevel, description, owner } })
@@ -140,7 +140,7 @@ customElements.define('workspaces-tab', class extends HTMLElement {
 
     connectedCallback() {
         const { auth: { idToken, localId: uid } } = window.pageStore.state
-        this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri('https://turkmenistan-market.firebaseio.com')
+        this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
 
         const { workspaceList: { selectedWorkspaceTab,totalPrivate ,totalPublic,totalShared } } = window.pageStore.state
         this.render({ selectedWorkspaceTab,totalPrivate ,totalPublic,totalShared })

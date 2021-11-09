@@ -9,7 +9,7 @@ customElements.define('signed-in-as',
         connectedCallback() {
             const { auth: { idToken, localId: uid,screenName }} = window.pageStore.state
             this.uid = uid
-            this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri('https://turkmenistan-market.firebaseio.com')
+            this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
 
             this.FB_DATABASE.ref(`invitations/${screenName}/workspaces`).on('value',(error,response)=>{
                 const data=response && response.data &&  Object.keys(response.data)

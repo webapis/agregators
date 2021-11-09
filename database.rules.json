@@ -1,0 +1,71 @@
+{
+  "rules": {
+    "workspaces": {
+      "$workspace": {
+        ".read": "true",
+        ".write": "auth != null"
+      }
+    },
+    "server": {
+      "users": {
+        "$uid": {
+          ".read": "auth != null && auth.uid == $uid",
+          ".write": "auth != null && auth.uid == $uid"
+        }
+      },
+      "workspaces": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      }
+    },
+    "users": {
+      ".read": "true",
+      ".write": "true",
+      "public": {
+        "$uid": {
+          ".read": "auth != null"
+        }
+      }
+    },
+    "shared": {
+      "user": {
+        "$uid": {
+          ".read": "auth != null && auth.uid == $uid",
+          ".write": "auth != null && auth.uid == $uid"
+        }
+      }
+    },
+    "private": {
+      "$uid": {
+        ".read": "auth != null && auth.uid == $uid",
+        ".write": "auth != null && auth.uid == $uid"
+      }
+    },
+    "public": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+    "tasks": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+    "invitations": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+    "shared_workspaces": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+    "runs": {
+      "$uid": {
+        ".read": "auth != null && auth.uid == $uid",
+        ".write": "auth != null && auth.uid == $uid"
+      }
+    },
+    "env": {
+      ".read": "auth != null",
+      ".write": "false"
+    }
+  }
+}

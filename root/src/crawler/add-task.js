@@ -9,7 +9,7 @@ customElements.define('add-task', class extends HTMLElement {
 
         const { auth: { idToken, localId: uid }, workspace: { workspaceSelected: { title: workspaceName } } } = window.pageStore.state
         this.uid = uid
-        this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri('https://turkmenistan-market.firebaseio.com')
+        this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
         document.getElementById('ws-breadcrumb').innerText = `Workspace(${workspaceName})`
         this.innerHTML = `
     <signed-in-as></signed-in-as>
@@ -24,7 +24,7 @@ customElements.define('add-task', class extends HTMLElement {
             const { workspace: { workspaceSelected: { title: workspaceName } } } = window.pageStore.state
             const taskName = document.getElementById('taskname').value
             const taskorder = document.getElementById('taskorder').value
-            const taskId = uuidv4()
+            const taskId = Date.now()
             const updateServerWorkSpace = { [`server/workspaces/${workspaceName}/tasks/${taskId}`]: { taskName, taskorder } }
             const updateClientWorkSpace = {
                 [`workspaces/${workspaceName}/tasks/${taskId}`]: {

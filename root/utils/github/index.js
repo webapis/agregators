@@ -8,54 +8,7 @@ const path = require('path')
 const fs = require('fs')
 const { fbRest } = require('../firebase/firebase-rest')
 const dirPath = `${process.cwd()}/src/crawler/`;
-// function fetchDeviceAndUserVerificationCode(req, res) {
-//     fetch('https://github.com/login/oauth/authorize?client_id=91c666c1cc595de45f17d0d4cc157c2fd9a76f83&redirect_url=http://localhost:3000/user-settings.html&scope=repo gist&state=gh_state&alow_signup=true', { method: 'get', headers: { 'Accept': 'application/json' } }).then(response => {
-//         const status = response.status
-//         
-//         return response.json()
-//     }).then(async data => {
-//         
-//         const dom = await JSDOM.fromFile(`${dirPath}/github-verification.html`)
-//         const document = dom.window.document;
-//         const label1 = document.createElement('label')
-//         label1.setAttribute('for', 'user_code')
-//         label1.innerText = 'User verification code:'
-//         label1.classList.add('form-label')
-//         document.getElementById('root').appendChild(label1)
-//         const input1 = document.createElement('input')
-//         input1.id = 'user_code'
-//         input1.classList.add('form-control')
-//         input1.setAttribute('readonly', true)
-//         input1.type = 'text'
-//         document.getElementById('root').appendChild(input1)
-//         const label2 = document.createElement('label')
-//         label2.setAttribute('for', 'verification_url')
-//         label2.textContent = 'Please, click the following link and enter above verification code:'
-//         label2.classList.add('form-label')
-//         document.getElementById('root').appendChild(label2)
-//         const a = document.createElement('a')
-//         a.id = 'verification_uri'
-//         a.classList.add('nav-link')
-//         a.classList.add('form-control')
-//         a.setAttribute('readonly', true)
-//         a.textContent = 'Confirmation Link'
-//         a.getAttribute("target", "_blank")
-//         document.getElementById('root').appendChild(a)
-//         document.getElementById('user_code').setAttribute('value', data.user_code)
-//         document.getElementById('verification_uri').setAttribute('href', data.verification_uri)
-//         deviceAuthRequestPoll({ interval: data.interval, device_code: data.device_code })
-//         
-//         const content = dom.serialize()
-//         res.setHeader('Content-Type', 'text/html');
-//         res.setHeader('Content-Length', Buffer.byteLength(content));
-//         res.write(content)
-//         res.end()
 
-//     }).catch(error => {
-//         console.log('error', error)
-//     })
-
-// }
 
 async function fetchGithubAuthCode({ res, redirectUrl, state, client_id }) {
     const url = `https://github.com/login/oauth/authorize?client_id=${client_id}&redirect_uri=${redirectUrl}&scope=repo public_repo workflow user&state=${state}&allow_signup=true`
@@ -72,14 +25,7 @@ async function fetchGithubAccessToken({ code, client_id, client_secret, res, req
     return data
 }
 
-/*
-fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithIdp?key=AIzaSyDb8Z27Ut0WJ-RH7Exi454Bpit9lbARJeA`
-    , {method:'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ postBody: "access_token=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&providerId=github.com", requestUri: "https://turkmenistan-market.firebaseapp.com/__/auth/handler", returnIdpCredential: true, returnSecureToken: true }) }).then(response => response.json()).then(data => {
-        
-    }).catch(error => {
-        
-    })
-*/
+
 
 async function signInWithIdp({ access_token, filepath, key, res }) {
     const response = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithIdp?key=${key}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ postBody: `access_token=${access_token}&providerId=github.com`, requestUri: "https://turkmenistan-market.firebaseapp.com/__/auth/handler", returnIdpCredential: true, returnSecureToken: true }) })
@@ -90,16 +36,13 @@ async function signInWithIdp({ access_token, filepath, key, res }) {
     debugger;
     const publicData ={email,photoUrl}
     const privateData={token:oauthAccessToken,refreshToken,idToken,screenName,email}
-    const fbDatabase = fbRest().setIdToken(idToken).setProjectUri('https://turkmenistan-market.firebaseio.com')
+    const fbDatabase = fbRest().setIdToken(idToken).setProjectUri(process.env.databaseURL)
 
     fbDatabase.ref(`users/private/${localId}/fb_auth`).once('value',async(error,response)=>{
         
-       // const userData =JSON.parse(response.data)
         if(!response){
             await fetch(`https://api.github.com/repos/webapis/workflow_runner/forks`, { method: 'post', headers: { 'Authorization': `token ${access_token}`, 'Accept': 'application/vnd.github.v3+json' } })
-          //  await fetch(`https://api.github.com/repos/${screenName}/workflow_runner/actions/workflows/aggregate.yml/enable`, { method: 'PUT', headers: { 'Authorization': `token ${access_token}`, 'Accept': 'application/vnd.github.v3+json' } })
-          //  await fetch(` https://api.github.com/user/repos`, { method: 'post', headers: { 'Authorization': `token ${access_token}`, 'Accept': 'application/vnd.github.v3+json' },body:JSON.stringify({name:'workflow_runner'}) })
-            
+       
             await responseHandler({fbDatabase,publicData,privateData,filepath,emailVerified,federatedId,kind,needConfirmation,providerId,localId,email,oauthAccessToken,refreshToken,idToken,screenName,photoUrl,res,expiresIn})
         
         } else{
@@ -125,10 +68,7 @@ async function signInWithIdp({ access_token, filepath, key, res }) {
 
     })
   
-   // const userInfo =JSON.parse(rawUserInfo) 
-    
-   // await fetch(`https://api.github.com/repos/webapis/workflow_runner/forks`, { method: 'post', headers: { 'Authorization': `token ${access_token}`, 'Accept': 'application/vnd.github.v3+json' } })
-  
+
 
     }
 
@@ -236,23 +176,3 @@ module.exports = { fetchGithubAuthCode, fetchGithubAccessToken, signInWithIdp }
 
 
 
-/*
-   fetch(`https://api.github.com/repos/webapis/agregators/forks`, { method: 'post', headers: { 'Authorization': `token ${access_token}`, 'Accept': 'application/vnd.github.v3+json' } }).then(response => {
-                
-                return response.json()
-            }).then(data => {
-                
-                const { owner: { login } } = data
-                userRef.update({ ghuser: login, gh_action_url: `https://api.github.com/repos/${login}/agregators/actions/workflows/aggregate.yml/dispatches` }, (error) => {
-                    if (error) {
-                        console.log(error)
-                    } else {
-                        const filepath = `${process.cwd()}/src/crawler/user-settings.html`;
-                        
-                        res.setHeader('Content-Type', 'text/html');
-                        fs.createReadStream(filepath).pipe(res)
-                    }
-
-                })
-            })
-*/

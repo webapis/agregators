@@ -9,7 +9,7 @@ customElements.define('workspace-users', class extends HTMLElement {
 
     const { auth: { idToken, localId: uid }, workspace: { workspaceSelected:{title:workspaceName} } } = window.pageStore.state
     this.uid = uid
-    this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri('https://turkmenistan-market.firebaseio.com')
+    this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
     document.getElementById('ws-breadcrumb').innerText = `Workspace(${workspaceName})`
 
     this.innerHTML = `
@@ -32,7 +32,7 @@ customElements.define('user-table', class extends HTMLElement {
     const { auth: { idToken, localId: uid }, workspace: { workspaceSelected:{title:workspaceName} }, workspaceUsers } = window.pageStore.state
 
     this.uid = uid
-    this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri('https://turkmenistan-market.firebaseio.com')
+    this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
     this.FB_DATABASE.ref(`shared_workspaces/user/${uid}/workspaces/${workspaceName}/users`).on('value', (error, result) => {
       debugger;
       const users = result.data ? Object.entries(result.data) : []

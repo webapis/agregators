@@ -9,7 +9,7 @@ customElements.define('container-name',class extends HTMLElement{
         await resources.default()
         const { auth: { idToken, localId: uid },workspace:{workspaceSelected},containerName:{name}} = window.pageStore.state
         this.uid = uid
-        this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri('https://turkmenistan-market.firebaseio.com')
+        this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
         document.getElementById('ws-breadcrumb').innerText=`workspace(${workspaceSelected})`
         this.innerHTML=`<div>
         <h5>New Container:</h5>

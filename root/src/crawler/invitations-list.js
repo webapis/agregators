@@ -9,7 +9,7 @@ customElements.define('invitations-list', class extends HTMLElement {
     debugger;
     const { auth: { idToken, localId: uid, screenName }, workspace: { workspaceSelected } } = window.pageStore.state
     this.uid = uid
-    this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri('https://turkmenistan-market.firebaseio.com')
+    this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
 
     this.innerHTML = `<div>Invitations to join workspace
         <signed-in-as></signed-in-as>

@@ -25,7 +25,7 @@ debugger;
     render() {
         const { auth: { idToken, localId: uid,googleToken }, workspace: { workspaceSelected:{title:workspaceName} },workspaceTasks: { taskSelected:{taskName,id:taskId} }, } = window.pageStore.state
         this.uid = uid
-        this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri('https://turkmenistan-market.firebaseio.com')
+        this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
         document.getElementById('ws-breadcrumb').innerText = `Workspace(${workspaceName})`
         this.innerHTML = `
      

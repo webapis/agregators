@@ -11,20 +11,20 @@ customElements.define('task-workflows', class extends HTMLElement {
         document.getElementById('task-breadcrumb').innerText = `Task(${taskName})`
         document.getElementById('ws-breadcrumb').innerText = `Workspace(${workspaceName})`
         this.uid = uid
-        this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri('https://turkmenistan-market.firebaseio.com')
+        this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
         this.innerHTML =
         
             `
             <signed-in-as></signed-in-as>
             <div>
-            <a class="btn btn-secondary" href="./workflow-editor.html">Add workflow</a>
+            <a class="btn btn-secondary" href="./workflow-editor.html" id="add-workflow-btn">Add workflow</a>
             </div>
             <h5>Task workflows:</h5>
             <div id="workflows" class="list-group"></div>
             `
 
         this.FB_DATABASE.ref(`workspaces/${workspaceName}/workflowInitials/tasks/${taskId}/workflows`).on('value', (error, result) => {
-            const workflows = Object.entries(result.data)
+            const workflows =result.data && Object.entries(result.data)
             workflows.forEach(wf => {
                 debugger;
                 const workflowKey =wf[0]

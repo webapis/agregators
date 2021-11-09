@@ -8,7 +8,7 @@ Feature: Authentication
     Then page is navigated to "https://github.com/login?" url
 
   Scenario: User Signs in
-    Given user types "serdartkm" to input with "#login_field" selector
+    Given user types "codergihub" to input with "#login_field" selector
     And user types "password" to input with "#password" selector
     When user clicks to button with ".btn-primary.btn-block.js-sign-in-button" selector
     Then component with "#workspace" selector is visible to user

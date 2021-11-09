@@ -11,13 +11,13 @@ customElements.define('workspace-tasks', class extends HTMLElement {
 
         const { auth: { idToken, localId: uid }, workspace: { workspaceSelected:{title:workspaceName} } } = window.pageStore.state
         this.uid = uid
-        this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri('https://turkmenistan-market.firebaseio.com')
+        this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
         document.getElementById('ws-breadcrumb').innerText = `Workspace(${workspaceName})`
         this.innerHTML = `
         <signed-in-as></signed-in-as>
         <div class="d-flex justify-content-between">
       
-        <a class="btn btn-secondary" href="/add-task.html">Add Task</a>
+        <a class="btn btn-secondary" href="/add-task.html" id="add-task-btn">Add Task</a>
         <div>
         <a class="btn btn-outline-secondary" href="/tasks-configuration.html" id="tasks-config-btn">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-gear" viewBox="0 0 16 16">
@@ -58,7 +58,7 @@ customElements.define('workspace-tasks', class extends HTMLElement {
             e.preventDefault()
 
             const { auth: { token, screenName: owner, idToken, email, localId, refreshToken }, workspace: { workspaceSelected:{title} } } = window.pageStore.state
-            const projectUrl = 'https://turkmenistan-market.firebaseio.com'
+            const projectUrl = window.projectUrl
             //const selectedContainer=title
             const parameters = `${token}--xxx--${owner}--xxx--${idToken}--xxx--${email}--xxx--${localId}--xxx--${refreshToken}--xxx--${'selectedContainer'}--xxx--${projectUrl}--xxx--${title}`
             debugger;

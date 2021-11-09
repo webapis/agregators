@@ -13,7 +13,7 @@ customElements.define('workflow-editor', class extends HTMLElement {
     document.getElementById('ws-breadcrumb').innerText = `Workspace(${workspaceName})`
     this.uid = uid
     debugger;
-    this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri('https://turkmenistan-market.firebaseio.com')
+    this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
     this.render({ workflowDescription, workflowName, token: tokenFPR, isPrivate, workflowOrder, workflowConfig })
 
     window.pageStore.subscribe(window.actionTypes.BRANCH_SELECTED, state => {
@@ -37,7 +37,7 @@ customElements.define('workflow-editor', class extends HTMLElement {
         <label for="workflowNameInput" class="form-label">Workflow Name:</label>
         <input type="text" readonly class="form-control" id="workflowNameInput" name="workflowName"  value="${workflowName}"/>
       </div>
-      <div class="mb-3">
+      <div class="mb-3" hidden>
       <label for="workflowNameInput" class="form-label">Workflow Order:</label>
       <input type="number" class="form-control input" id="workflowOrderInput" name="workflowOrder"  value="${workflowOrder}"/>
     </div>
