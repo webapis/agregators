@@ -13,7 +13,7 @@ export default async () => {
         'page-store'
     );
     window.projectUrl =window.location.hostname==='localhost'?'http://localhost:9000':'https://turkmenistan-market.firebaseio.com'
-    debugger;
+
     window.actionTypes = loadedResources[1].actionTypes;
 
     

@@ -12,31 +12,21 @@ customElements.define('workflow-editor', class extends HTMLElement {
     document.getElementById('task-breadcrumb').innerText = `Task(${taskName})`
     document.getElementById('ws-breadcrumb').innerText = `Workspace(${workspaceName})`
     this.uid = uid
-    debugger;
+
     this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
     this.render({ workflowDescription, workflowName, token: tokenFPR, isPrivate, workflowOrder, workflowConfig })
 
-    window.pageStore.subscribe(window.actionTypes.BRANCH_SELECTED, state => {
-      const { workflowEditor: { workflowDescription, workflowName, tokenFPR, isPrivate, workflowConfig } } = state
-      this.render({ workflowDescription, workflowName, token: tokenFPR, isPrivate, workflowOrder, workflowConfig })
-    })
-    window.pageStore.subscribe(window.actionTypes.REPO_SELECTED, state => {
-      const { workflowEditor: { workflowDescription, workflowName, tokenFPR, isPrivate, workflowOrder, workflowConfig } } = state
-      this.render({ workflowDescription, workflowName, token: tokenFPR, isPrivate, workflowOrder, workflowConfig })
-    })
+  
   }
-  render({ workflowDescription, workflowName, token, isPrivate, workflowOrder, workflowConfig }) {
-    debugger;
+  render({ workflowDescription, token, isPrivate, workflowOrder, workflowConfig }) {
+
     this.innerHTML = `
     <signed-in-as></signed-in-as>
         <div >
         <h3>Workflow Editor:</h3>
         <div class="row">
       <div class="col-12">
-      <div class="mb-3">
-        <label for="workflowNameInput" class="form-label">Workflow Name:</label>
-        <input type="text" readonly class="form-control" id="workflowNameInput" name="workflowName"  value="${workflowName}"/>
-      </div>
+   <workflow-name></workflow-name>
       <div class="mb-3" hidden>
       <label for="workflowNameInput" class="form-label">Workflow Order:</label>
       <input type="number" class="form-control input" id="workflowOrderInput" name="workflowOrder"  value="${workflowOrder}"/>
@@ -57,10 +47,7 @@ customElements.define('workflow-editor', class extends HTMLElement {
         <label for="workflowDescriptionTextarea" class="form-label">Workflow description</label>
         <textarea class="form-control input" id="workflowDescriptionTextarea" name="workflowDescription" rows="3">${workflowDescription}</textarea>
       </div>
-      <div class="mb-3">
-        <label for="workflowConfigFile" class="form-label">Workflow Config</label>
-        <textarea class="form-control input" id="workflowConfig" name="workflowConfig" rows="3" readonly>${JSON.stringify(workflowConfig)}</textarea>
-      </div>
+ <workflow-config></workflow-config>
     </div>
     <div class="col-12 mt-2">
     <button type="button" class="btn btn-secondary" id="save-workflow-btn">Save Workflow</button>
@@ -92,10 +79,10 @@ customElements.define('workflow-editor', class extends HTMLElement {
       const workflowProps = { [`workspaces/${workspaceName}/workflowProps/tasks/${taskId}/workflows/${workflowId}`]: { selectedRepo, isPrivate, selectedBranch, tokenFPR, screenName, workflowOrder } }
       const upadteworkflowConfigs = { [`workspaces/${workspaceName}/workflowConfigs/tasks/${taskId}/workflows/${workflowId}`]: { ...workflowConfig } }
       const updateServer = { [`server/workspaces/${workspaceName}/tasks/${taskId}/workflows/${workflowId}`]: { workflowDescription, selectedRepo, isPrivate, selectedBranch, tokenFPR, screenName, workflowOrder, workflowName, workflowConfig } }
-      debugger;
+
       this.FB_DATABASE.ref(`/`).update({ ...workflowInitials, ...workflowProps, ...upadteworkflowConfigs, ...updateServer }, (error, data) => {
         window.pageStore.dispatch({ type: window.actionTypes.WORKFLOW_UPDATED })
-        debugger;
+
         window.location.replace('/task-workflows.html')
       })
     })
@@ -109,59 +96,43 @@ customElements.define('owners-repos', class extends HTMLElement {
     super()
   }
   async connectedCallback() {
-    const { workflowEditor: { selectedRepo } } = window.pageStore.state
-    this.render({ selectedRepo })
 
-    window.pageStore.subscribe(window.actionTypes.REPO_SELECTED, state => {
-      const { workflowEditor: { selectedRepo } } = state
-
-      this.render({ selectedRepo })
-    })
-
-  }
-  render({ selectedRepo }) {
     this.innerHTML = `<label for="repoDataList" class="form-label">Repos</label>
-    <input class="form-control" list="repoDatalistOptions" id="repoDataList" placeholder="Type to search..." value="${selectedRepo}">
-    <datalist id="repoDatalistOptions">
-    
-    </datalist>`
-    window.pageStore.subscribe(window.actionTypes.USER_REPOS_FETCHED, state => {
-      const { workflowEditor: { ownersRepos } } = state
-      const datalist = document.getElementById('repoDatalistOptions')
-      datalist.innerHTML = ''
-      ownersRepos.forEach(repo => {
-        const element = document.createElement('option')
-        element.value = repo.name
-        datalist.appendChild(element)
-      })
+    <select id="repos" name="repoDataList" class="form-control">
+    <option value="default">...Select repository</option>
+    </select>`
+    this.render()
+  }
+  async render() {
+    const { auth: { token }, workflowEditor: { selectedRepo } } = window.pageStore.state
+    const response = await fetch('https://api.github.com/user/repos', { method: 'get', headers: { Accept: "application/vnd.github.v3+json", authorization: `token ${token}` } })
+    const ownersRepos = await response.json()
+    window.pageStore.dispatch({ type: window.actionTypes.USER_REPOS_FETCHED, payload: ownersRepos })
+    const selector = document.getElementById('repos')
+
+    ownersRepos&&  ownersRepos.forEach(repo => {
+
+      selector.insertAdjacentHTML('beforeend', `<option ${selectedRepo === repo.name && 'selected'} value=${repo.name}>${repo.name}</option>`)
     })
 
-    document.getElementById('repoDataList').addEventListener('input', (e) => {
+
+    document.getElementById('repos').addEventListener('change', (e) => {
 
       console.log('e', e.inputType)
       if (e.inputType === undefined) {
         const { value } = e.target
         const { workflowEditor: { ownersRepos } } = window.pageStore.state
         const selectedRepository = ownersRepos.find(o => o.name === value)
-        // const { private } = selectedRepo
+
 
         window.pageStore.dispatch({ type: window.actionTypes.REPO_SELECTED, payload: { selectedRepo: value, isPrivate: selectedRepository.private } })
       }
 
     })
 
-    document.getElementById('repoDataList').addEventListener('focus', (e) => {
 
-      const { auth: { token } } = window.pageStore.state
-      this.getRepos({ token })
+  }
 
-    })
-  }
-  async getRepos({ token }) {
-    const response = await fetch('https://api.github.com/user/repos', { method: 'get', headers: { Accept: "application/vnd.github.v3+json", authorization: `token ${token}` } })
-    const data = await response.json()
-    window.pageStore.dispatch({ type: window.actionTypes.USER_REPOS_FETCHED, payload: data })
-  }
 })
 
 
@@ -171,48 +142,57 @@ customElements.define('repo-branches', class extends HTMLElement {
     super()
   }
   async connectedCallback() {
-    const { workflowEditor: { selectedBranch } } = window.pageStore.state
 
-    this.render({ selectedBranch })
+    this.innerHTML = `<label for="repobranches" class="form-label">Branches</label>
+   
+    <select id="repobranches" name="branches" class="form-control">
+    <option value="main">...Select branch</option>
+    </select>`
+    window.pageStore.subscribe(window.actionTypes.REPO_SELECTED, async state => {
 
-    window.pageStore.subscribe(window.actionTypes.BRANCH_SELECTED, state => {
-      const { workflowEditor: { selectedBranch } } = state
-      this.render({ selectedBranch })
+      const { auth: { token, screenName }, workflowEditor: { selectedRepo,selectedBranch } } = state
+      
+      const response = await fetch(`https://api.github.com/repos/${screenName}/${selectedRepo}/branches`, { method: 'get', headers: { Accept: "application/vnd.github.v3+json", authorization: `token ${token}` } })
+      const data = await response.json()
+     debugger;
+      this.render({ repoBranches:data,selectedBranch })
+      window.pageStore.dispatch({ type: window.actionTypes.REPOS_BRANCHES_FETCHED, payload: data })
+
+
     })
+   
+      const { workflowEditor: { repoBranches,selectedBranch } } =window.pageStore. state
 
-  }
-  render({ selectedBranch }) {
-    this.innerHTML = `<label for="branchDataList" class="form-label">Branches</label>
-    <input class="form-control" list="branchDatalistOptions" id="branchDataList" placeholder="Type to search..." value=${selectedBranch}>
-    <datalist id="branchDatalistOptions">
+      this.render({ repoBranches,selectedBranch })
+  } 
+
+  render({ repoBranches,selectedBranch }) {
+
+
+
+    const selector = document.getElementById('repobranches')
     
-    </datalist>`
-    window.pageStore.subscribe(window.actionTypes.REPOS_BRANCHES_FETCHED, state => {
-      const { workflowEditor: { repoBranches } } = state
-      const datalist = document.getElementById('branchDatalistOptions')
-      datalist.innerHTML = ''
-      repoBranches.forEach(repo => {
-        const element = document.createElement('option')
-        element.value = repo.name
-        datalist.appendChild(element)
-      })
+    repoBranches&&   repoBranches.forEach(branch => {
+      selector.innerHTML=`<option value="main">...Select branch</option>`
+      
+   
+      selector.insertAdjacentHTML('beforeend', `<option ${selectedBranch === branch.name && 'selected'} value=${branch.name}>${branch.name}</option>`)
     })
 
-    document.getElementById('branchDataList').addEventListener('focus', () => {
-      const { auth: { token, screenName }, workflowEditor: { selectedRepo } } = window.pageStore.state
-      this.getBranches({ token, screenName, selectedRepo })
-    })
 
-    document.getElementById('branchDataList').addEventListener('input', async (e) => {
+  
+
+    document.getElementById('repobranches').addEventListener('change', async (e) => {
+      
       const { auth: { token, screenName }, workflowEditor: { selectedRepo } } = window.pageStore.state
       console.log('e', e.inputType)
       const response = await fetch(`https://api.github.com/repos/${screenName}/${selectedRepo}/contents/workflow.config.json?ref=main`, { method: 'get', headers: { Accept: "application/vnd.github.v3+json", authorization: `token ${token}` } })
       const data = await response.json()
       const { content } = data
-      debugger;
-      const workflowConfig = JSON.parse(atob(content))
 
-      debugger;
+      const workflowConfig = JSON.parse(atob(content))
+      
+
       if (e.inputType === undefined) {
         const { value } = e.target
 
@@ -221,13 +201,67 @@ customElements.define('repo-branches', class extends HTMLElement {
 
     })
   }
-  async getBranches({ token, screenName, selectedRepo }) {
 
-    const response = await fetch(`https://api.github.com/repos/${screenName}/${selectedRepo}/branches`, { method: 'get', headers: { Accept: "application/vnd.github.v3+json", authorization: `token ${token}` } })
-    const data = await response.json()
-
-    window.pageStore.dispatch({ type: window.actionTypes.REPOS_BRANCHES_FETCHED, payload: data })
+})
 
 
+customElements.define('workflow-name',class extends HTMLElement{
+  constructor(){
+    super()
+  }
+
+  connectedCallback(){
+    const {workflowEditor:{workflowName}}=window.pageStore.state
+    this.render({workflowName})
+
+window.pageStore.subscribe(window.actionTypes.REPO_SELECTED,state=>{
+  const {workflowEditor:{workflowName}}=state
+  this.render({workflowName})
+})
+
+window.pageStore.subscribe(window.actionTypes.BRANCH_SELECTED,state=>{
+  const {workflowEditor:{workflowName}}=state
+  this.render({workflowName})
+})
+   
+
+  }
+
+  render({workflowName}){
+    this.innerHTML=`   <div class="mb-3">
+    <label for="workflowNameInput" class="form-label">Workflow Name:</label>
+    <input type="text" readonly class="form-control" id="workflowNameInput" name="workflowName"  value="${workflowName}"/>
+  </div>`
+  }
+})
+
+
+customElements.define('workflow-config',class extends HTMLElement{
+  constructor(){
+    super()
+  }
+
+  connectedCallback(){
+    const {workflowEditor:{workflowConfig}}=window.pageStore.state
+    this.render({workflowConfig})
+
+window.pageStore.subscribe(window.actionTypes.REPO_SELECTED,state=>{
+  const {workflowEditor:{workflowConfig}}=state
+  this.render({workflowConfig})
+})
+
+window.pageStore.subscribe(window.actionTypes.BRANCH_SELECTED,state=>{
+  const {workflowEditor:{workflowConfig}}=state
+  this.render({workflowConfig})
+})
+   
+
+  }
+
+  render({workflowConfig}){
+    this.innerHTML=   `  <div class="mb-3">
+    <label for="workflowConfigFile" class="form-label">Workflow Config</label>
+    <textarea class="form-control input" id="workflowConfig" name="workflowConfig" rows="3" readonly>${JSON.stringify(workflowConfig)}</textarea>
+  </div>` 
   }
 })
