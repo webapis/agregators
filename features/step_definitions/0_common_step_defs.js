@@ -5,9 +5,9 @@ Given('user clicks to button with {string} selector',{ timeout: 15000 }, async f
     
     await global.page.waitForSelector(id)
     await global.page.click(id)
-  if(id==="#add-workflow-btn"){
-   debugger;
-  }
+//   if(id==="#add-workflow-btn"){
+//    debugger;
+//   }
     
 })
 
@@ -55,4 +55,13 @@ Then('page is navigated to {string} url',{ timeout: 15000 }, async function (url
     const actualUrl = pageUrl.substring(0, pageUrl.indexOf(url) + url.length)
     
     assert.equal(actualUrl, url)
+})
+
+Given('user selects {string} from {string} select tag',async function(value,id){
+   
+    await global.page.select(`select${id}`,value)
+    if(id==='#repobranches'){
+        debugger;
+    }
+    
 })

@@ -24,8 +24,9 @@ customElements.define('task-workflows', class extends HTMLElement {
             `
 
         this.FB_DATABASE.ref(`workspaces/${workspaceName}/workflowInitials/tasks/${taskId}/workflows`).on('value', (error, result) => {
+            debugger;
             const workflows =result.data && Object.entries(result.data)
-            workflows.forEach(wf => {
+            workflows&&  workflows.forEach(wf => {
                 debugger;
                 const workflowKey =wf[0]
                 const workflowName =wf[1]['workflowName']

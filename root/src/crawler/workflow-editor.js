@@ -186,17 +186,17 @@ customElements.define('repo-branches', class extends HTMLElement {
       
       const { auth: { token, screenName }, workflowEditor: { selectedRepo } } = window.pageStore.state
       console.log('e', e.inputType)
-      const response = await fetch(`https://api.github.com/repos/${screenName}/${selectedRepo}/contents/workflow.config.json?ref=main`, { method: 'get', headers: { Accept: "application/vnd.github.v3+json", authorization: `token ${token}` } })
-      const data = await response.json()
-      const { content } = data
+      // const response = await fetch(`https://api.github.com/repos/${screenName}/${selectedRepo}/contents/workflow.config.json?ref=main`, { method: 'get', headers: { Accept: "application/vnd.github.v3+json", authorization: `token ${token}` } })
+      // const data = await response.json()
+      // const { content } = data
 
-      const workflowConfig = JSON.parse(atob(content))
+      // const workflowConfig = JSON.parse(atob(content))
       
 
       if (e.inputType === undefined) {
         const { value } = e.target
 
-        window.pageStore.dispatch({ type: window.actionTypes.BRANCH_SELECTED, payload: { branch: value, workflowConfig } })
+        window.pageStore.dispatch({ type: window.actionTypes.BRANCH_SELECTED, payload: { branch: value } })
       }
 
     })
@@ -247,6 +247,7 @@ customElements.define('workflow-config',class extends HTMLElement{
 
 window.pageStore.subscribe(window.actionTypes.REPO_SELECTED,state=>{
   const {workflowEditor:{workflowConfig}}=state
+  
   this.render({workflowConfig})
 })
 
@@ -263,5 +264,14 @@ window.pageStore.subscribe(window.actionTypes.BRANCH_SELECTED,state=>{
     <label for="workflowConfigFile" class="form-label">Workflow Config</label>
     <textarea class="form-control input" id="workflowConfig" name="workflowConfig" rows="3" readonly>${JSON.stringify(workflowConfig)}</textarea>
   </div>` 
+  }
+
+  async getWebConfigs({}){
+
+    const response = await fetch(`https://api.github.com/repos/${screenName}/${selectedRepo}/contents/workflow.config.json?ref=main`, { method: 'get', headers: { Accept: "application/vnd.github.v3+json", authorization: `token ${token}` } })
+    const data = await response.json()
+    const { content } = data
+
+    const workflowConfig = JSON.parse(atob(content))
   }
 })
