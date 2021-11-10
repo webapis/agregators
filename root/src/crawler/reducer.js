@@ -150,12 +150,14 @@ export default (state, action) => {
     case actionTypes.CREATE_NEW_WORKSPACE:
       return { ...state, workspaceEditor: { workspaceName: "", description: "", accessLevel: "" } }
     case actionTypes.WORKSPACE_TAB_CHANGED:
-  
+
       return { ...state, workspaceList: { ...state.workspaceList, selectedWorkspaceTab: action.payload } }
     case actionTypes.WORKSPACE_USER_INPUT_CHANGED:
       return { ...state, workspaceUsers: { ...state.workspaceUsers, ...action.payload } }
     case actionTypes.WORKSPACES_COUNTED:
       return { ...state, workspaceList: { ...state.workspaceList, ...action.payload } }
+    case actionTypes.WORKFLOW_CONFIG_FETCHED:
+      return { ...state, workflowEditor: { ...state.workflowEditor, workflowConfig: action.payload } }
     default:
 
       return state;
@@ -231,7 +233,8 @@ export const actionTypes = {
   WORKFLOW_SELECTED: 'WORKFLOW_SELECTED',
   WORKSPACE_TAB_CHANGED: 'WORKSPACE_TAB_CHANGED',
   WORKSPACE_USER_INPUT_CHANGED: 'WORKSPACE_USER_INPUT_CHANGED',
-  WORKSPACES_COUNTED: 'WORKSPACES_COUNTED'
+  WORKSPACES_COUNTED: 'WORKSPACES_COUNTED',
+  WORKFLOW_CONFIG_FETCHED: 'WORKFLOW_CONFIG_FETCHED'
 
 
 };

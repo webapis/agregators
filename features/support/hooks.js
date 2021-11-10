@@ -23,6 +23,11 @@ BeforeAll(async function () {
 
 global.browser = await puppeteer.launch(launchOptions);
 global.page = await global.browser.newPage()
+await global.page.setViewport({
+  width: 1200,
+  height: 1250,
+  deviceScaleFactor: 1,
+});
 global.page.goto('http://localhost:3000')
   // perform some shared setup
 });

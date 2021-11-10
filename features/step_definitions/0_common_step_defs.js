@@ -6,7 +6,7 @@ Given('user clicks to button with {string} selector',{ timeout: 15000 }, async f
     await global.page.waitForSelector(id)
     await global.page.click(id)
 //   if(id==="#add-workflow-btn"){
-//    debugger;
+//    
 //   }
     
 })
@@ -21,14 +21,14 @@ Given('user types {string} to input with {string} selector',{ timeout: 15000 }, 
         await global.page.type(id, value)
     }
 // if(id==='#taskname'){
-//     debugger;
+//     
 // }
     
 
 })
 Given('user focuses on component with {string} selector',{ timeout: 15000 }, async function (id) {
     if(id==='#repoDataList'){
-        debugger;
+        
     }
         
        await global.page.waitForSelector(id)
@@ -40,9 +40,10 @@ Given('user focuses on component with {string} selector',{ timeout: 15000 }, asy
 Given('component with {string} selector is visible to user', { timeout: 15000 }, async function (id) {
     
     await global.page.waitForSelector(id)
-    // if(id==="#tasks a[name='Task 1']"){
-    //     debugger;
-    // }
+
+    if(id==="#repobranches" || id==="#repos"){
+        
+    }
     
 
 })
@@ -57,11 +58,21 @@ Then('page is navigated to {string} url',{ timeout: 15000 }, async function (url
     assert.equal(actualUrl, url)
 })
 
-Given('user selects {string} from {string} select tag',async function(value,id){
-   
-    await global.page.select(`select${id}`,value)
-    if(id==='#repobranches'){
-        debugger;
-    }
+Given('user selects {string} from {string} select tag',{timeout: 15000 },async function(value,id){
     
+    await global.page.waitFor(2000);
+    
+    await global.page.select(`select${id}`,value)
+   
+  
+    
+})
+
+Given('component with {string} id includes {string} textcontent', async function(id,value){
+debugger;
+await global.page.waitFor(2000);
+    const matchesTextCotnent = await global.page.evaluate((_id,_value) => document.querySelector(_id).textContent.includes(_value),id,value)
+    debugger;
+    assert.equal(matchesTextCotnent, true)
+  debugger;
 })
