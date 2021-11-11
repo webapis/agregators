@@ -6,7 +6,6 @@
     "@actions/core": "1.2.6",
     "@actions/github": "4.0.0",
     "@netlify/esbuild-darwin-64": "^0.13.6",
-    "@rollup/plugin-replace": "2.4.1",
     "blob": "^0.1.0",
     "directory-tree": "2.2.9",
     "dotenv": "8.2.0",
@@ -15,18 +14,13 @@
     "fs-extra": "9.1.0",
     "jsdom": "16.5.1",
     "make-dir": "3.1.0",
-    "mocha": "8.3.0",
-    "node-blob": "0.0.2",
     "node-fetch": "2.6.1"
   },
   "devDependencies": {
     "@cucumber/cucumber": "^7.0.0",
-    "axios": "^0.24.0",
     "cross-env": "7.0.2",
-    "json2xls": "^0.1.2",
     "node-watch": "0.7.1",
-    "puppeteer": "^7.1.0",
-    "node-fetch": "2.6.1"
+    "puppeteer": "^7.1.0"
   },
   "scripts": {
     "dataCollector": "SERVER=LOCAL NEXT_TASK=page_collection ALL=FALSE node page-collector/server.js",
