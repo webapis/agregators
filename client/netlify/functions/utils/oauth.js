@@ -1,4 +1,4 @@
-export const config = {
+module.exports = {
     /* values set in terminal session or in netlify environment variables */
 
     gh_client_secret:process.env.gh_client_secret,
