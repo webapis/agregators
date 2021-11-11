@@ -1,6 +1,6 @@
 const config = require('./utils/oauth')
 const {gh_client_secret,gh_client_id}=config
-const {signInWithIdp,fetchGithubAccessToken}=require(`${process.cwd()}/root/utils/github`)
+const {signInWithIdp,fetchGithubAccessToken}=require('../../../root/utils/github')
 exports.handler = async(event, context) => {
 
     const code = event.queryStringParameters.code
