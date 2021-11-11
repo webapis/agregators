@@ -1,4 +1,4 @@
-const fetch = require('node-fetch')
+const fetch = require(`${process.cwd()}/node_modules/node-fetch/lib/index.js`)
 const jsdom = require("jsdom");
 const { URL } = require('url')
 const { JSDOM } = jsdom;
