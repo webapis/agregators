@@ -21,14 +21,14 @@ customElements.define('home-component', class extends HTMLElement {
         } else {
             this.innerHTML = `<div>
             
-            <home-card title="Sign in" page-link="/login.html?authed=false" link-id="signin"></home-card>
+            <home-card title="Sign in" page-link="/.netlify/functions/auth" link-id="signin"></home-card>
             </div>`
         }
 
     }
 })
 
-
+//     <home-card title="Sign in" page-link="/login.html?authed=false" link-id="signin"></home-card>
 customElements.define('home-card', class extends HTMLElement {
     constructor() {
         super()
