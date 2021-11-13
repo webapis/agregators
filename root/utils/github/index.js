@@ -3,7 +3,7 @@
 const { URL } = require('url')
 //const { JSDOM } = jsdom;
 const https = require('https');
-//const { fbRest } = require('../firebase/firebase-rest')
+const { fbRest } = require('../firebase/firebase-rest')
 
 
 
@@ -76,52 +76,85 @@ async function fetchGithubAccessToken({ code, client_id, client_secret  }) {
     return await prom
 }
 
+async function authWithFirebase({access_token,key}){
+    // const response = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithIdp?key=${key}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ postBody: `access_token=${access_token}&providerId=github.com`, requestUri: "https://turkmenistan-market.firebaseapp.com/__/auth/handler", returnIdpCredential: true, returnSecureToken: true }) })
+
+    // const data = await response.json()
+    var options = {
+        host: 'identitytoolkit.googleapis.com',
+        path: encodeURI(`/v1/accounts:signInWithIdp?key=${key}`),
+        method:'POST',
+        headers: { 'Content-Type': 'application/json'},
+        body:JSON.stringify({ postBody: `access_token=${access_token}&providerId=github.com`, requestUri: "https://turkmenistan-market.firebaseapp.com/__/auth/handler", returnIdpCredential: true, returnSecureToken: true })
+    };
+    debugger;
+    const prom = new Promise((resolve, reject) => {
+        var request = https.request(options, function (responce) {
+            var body = ''
+            responce.on("data", function (chunk) {
+                body += chunk.toString('utf8')
+            });
+            responce.on("end", function () {
+                console.log("Body", body);
+
+                return  resolve(body)
+            });
+            responce.on("error", function (error) {
+                console.log("Body", error);
+
+                return  reject(error)
+            });
+        });
+        request.end();
 
 
-// async function signInWithIdp({ access_token, filepath, key, res }) {
-//     const response = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithIdp?key=${key}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ postBody: `access_token=${access_token}&providerId=github.com`, requestUri: "https://turkmenistan-market.firebaseapp.com/__/auth/handler", returnIdpCredential: true, returnSecureToken: true }) })
+    })
 
-//     const data = await response.json()
+   await prom
 
-//     const { email, emailVerified, federatedId, kind, localId, needConfirmation, oauthAccessToken, photoUrl, providerId, screenName, refreshToken, idToken, expiresIn } = data
-//     debugger;
-//     const publicData = { email, photoUrl }
-//     const privateData = { token: oauthAccessToken, refreshToken, idToken, screenName, email }
-//     const fbDatabase = fbRest().setIdToken(idToken).setProjectUri(process.env.databaseURL)
+}
 
-//     fbDatabase.ref(`users/private/${localId}/fb_auth`).once('value', async (error, response) => {
+async function signInWithIdp({ access_token, filepath, key, res }) {
+    const data = await authWithFirebase({access_token,key})
+    const { email, emailVerified, federatedId, kind, localId, needConfirmation, oauthAccessToken, photoUrl, providerId, screenName, refreshToken, idToken, expiresIn } = data
+    debugger;
+    const publicData = { email, photoUrl }
+    const privateData = { token: oauthAccessToken, refreshToken, idToken, screenName, email }
+    const fbDatabase = fbRest().setIdToken(idToken).setProjectUri(process.env.databaseURL)
 
-//         if (!response) {
-//             await fetch(`https://api.github.com/repos/webapis/workflow_runner/forks`, { method: 'post', headers: { 'Authorization': `token ${access_token}`, 'Accept': 'application/vnd.github.v3+json' } })
+    fbDatabase.ref(`users/private/${localId}/fb_auth`).once('value', async (error, response) => {
 
-//             await responseHandler({ fbDatabase, publicData, privateData, filepath, emailVerified, federatedId, kind, needConfirmation, providerId, localId, email, oauthAccessToken, refreshToken, idToken, screenName, photoUrl, res, expiresIn })
+        if (!response) {
+            await fetch(`https://api.github.com/repos/webapis/workflow_runner/forks`, { method: 'post', headers: { 'Authorization': `token ${access_token}`, 'Accept': 'application/vnd.github.v3+json' } })
 
-//         } else {
-//             const fetchPath = `https://api.github.com/repos/${screenName}/workflow_runner/merge-upstream`
+            await responseHandler({ fbDatabase, publicData, privateData, filepath, emailVerified, federatedId, kind, needConfirmation, providerId, localId, email, oauthAccessToken, refreshToken, idToken, screenName, photoUrl, res, expiresIn })
 
-//             const response = await fetch(fetchPath, {
-//                 method: 'post',
-//                 headers: {
-//                     authorization: `token ${access_token}`,
-//                     Accept: 'application/vnd.github.v3+json'
-//                 },
-//                 body: JSON.stringify({ branch: 'main' })
-//             })
+        } else {
+            const fetchPath = `https://api.github.com/repos/${screenName}/workflow_runner/merge-upstream`
 
-//             const resData = await response.json()
+            const response = await fetch(fetchPath, {
+                method: 'post',
+                headers: {
+                    authorization: `token ${access_token}`,
+                    Accept: 'application/vnd.github.v3+json'
+                },
+                body: JSON.stringify({ branch: 'main' })
+            })
 
-//             await responseHandler({ fbDatabase, publicData, privateData, filepath, emailVerified, federatedId, kind, needConfirmation, providerId, localId, email, oauthAccessToken, refreshToken, idToken, screenName, photoUrl, res, expiresIn })
+            const resData = await response.json()
 
-//         }
+            await responseHandler({ fbDatabase, publicData, privateData, filepath, emailVerified, federatedId, kind, needConfirmation, providerId, localId, email, oauthAccessToken, refreshToken, idToken, screenName, photoUrl, res, expiresIn })
 
-
-
-
-//     })
+        }
 
 
 
-// }
+
+    })
+
+
+
+}
 
 // async function responseHandler({ fbDatabase, privateData, publicData, filepath, emailVerified, federatedId, kind, needConfirmation, providerId, localId, email, oauthAccessToken, refreshToken, idToken, screenName, photoUrl, res, expiresIn }) {
 //     fbDatabase.ref(`users`).update({ [`private/${localId}/fb_auth`]: privateData, [`public/users/${screenName}`]: publicData }, async (error, data) => {
@@ -223,7 +256,7 @@ async function fetchGithubAccessToken({ code, client_id, client_secret  }) {
 //     })
 
 // }
-module.exports = { fetchGithubAccessToken }
+module.exports = { fetchGithubAccessToken,authWithFirebase }
 
 
 
