@@ -4,7 +4,7 @@ const config =require('./utils/oauth')
 
 exports.handler = async function(event, context) {
     // your server-side functionality
-    const authorizationURI = await fetchGithubAuthCode()
+ //   const authorizationURI = await fetchGithubAuthCode()
 console.log('authorizationURI....',authorizationURI)
 return  {
   statusCode: 302,
@@ -12,7 +12,7 @@ return  {
     Location:  encodeURI(`https://github.com/login/oauth/authorize?client_id=${process.env.gh_client_id}&redirect_uri=${process.env.redirectUrl}&scope=repo public_repo workflow user&state='test_state'&allow_signup=true`),
     'Cache-Control': 'no-cache' // Disable caching of this response
   },
-  body:authorizationURI
+  body:''
 }
 
 
