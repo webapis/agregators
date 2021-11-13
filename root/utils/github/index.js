@@ -111,7 +111,7 @@ async function authWithFirebase({access_token,key}){
 
     })
 
-   await prom
+  return await prom
 
 }
 
