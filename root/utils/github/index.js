@@ -7,11 +7,48 @@ const https = require('https');
 
 
 
-function fetchGithubAuthCode() {
-    //  const url = `https://github.com/login/oauth/authorize?client_id=${client_id}&redirect_uri=${redirectUrl}&scope=repo public_repo workflow user&state=${state}&allow_signup=true`
+// function fetchGithubAuthCode() {
+//     //  const url = `https://github.com/login/oauth/authorize?client_id=${client_id}&redirect_uri=${redirectUrl}&scope=repo public_repo workflow user&state=${state}&allow_signup=true`
+//     var options = {
+//         host: 'github.com',
+//         path: encodeURI(`/login/oauth/authorize?client_id=${process.env.gh_client_id}&redirect_uri=${process.env.redirectUrl}&scope=repo public_repo workflow user&state='test_state'&allow_signup=true`),
+//     };
+//     debugger;
+//     const prom = new Promise((resolve, reject) => {
+//         var request = https.request(options, function (responce) {
+//             var body = ''
+//             responce.on("data", function (chunk) {
+//                 body += chunk.toString('utf8')
+//             });
+//             responce.on("end", function () {
+//                 console.log("Body", body);
+
+//                 return resolve(body)
+//             });
+//             responce.on("error", function (error) {
+//                 console.log("Body", error);
+
+//                 return reject(body)
+//             });
+//         });
+//         request.end();
+
+
+//     })
+
+//     return prom
+// }
+
+ function fetchGithubAccessToken({ code, client_id, client_secret,  }) {
+
+    //const response = await fetch(`https://github.com/login/oauth/access_token?client_id=${client_id}&client_secret=${client_secret}&code=${code}`, { method: 'post', headers: { 'Accept': 'application/json' } })
+
+  
     var options = {
         host: 'github.com',
-        path: encodeURI(`/login/oauth/authorize?client_id=${process.env.gh_client_id}&redirect_uri=${process.env.redirectUrl}&scope=repo public_repo workflow user&state='test_state'&allow_signup=true`),
+        path: encodeURI(`/login/oauth/access_token?client_id=${client_id}&client_secret=${client_secret}&code=${code}`),
+        method:'POST',
+        headers: { 'Accept': 'application/json' } 
     };
     debugger;
     const prom = new Promise((resolve, reject) => {
@@ -28,7 +65,7 @@ function fetchGithubAuthCode() {
             responce.on("error", function (error) {
                 console.log("Body", error);
 
-                return reject(body)
+                return reject(error)
             });
         });
         request.end();
@@ -38,14 +75,6 @@ function fetchGithubAuthCode() {
 
     return prom
 }
-
-// async function fetchGithubAccessToken({ code, client_id, client_secret, res, req }) {
-
-//     const response = await fetch(`https://github.com/login/oauth/access_token?client_id=${client_id}&client_secret=${client_secret}&code=${code}`, { method: 'post', headers: { 'Accept': 'application/json' } })
-
-//     const data = await response.json()
-//     return data
-// }
 
 
 
@@ -194,7 +223,7 @@ function fetchGithubAuthCode() {
 //     })
 
 // }
-module.exports = { fetchGithubAuthCode }
+module.exports = { fetchGithubAccessToken }
 
 
 
