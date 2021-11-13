@@ -39,7 +39,7 @@ const https = require('https');
 //     return prom
 // }
 
- function fetchGithubAccessToken({ code, client_id, client_secret,  }) {
+async function fetchGithubAccessToken({ code, client_id, client_secret  }) {
 
     //const response = await fetch(`https://github.com/login/oauth/access_token?client_id=${client_id}&client_secret=${client_secret}&code=${code}`, { method: 'post', headers: { 'Accept': 'application/json' } })
 
