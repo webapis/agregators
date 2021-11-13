@@ -1,5 +1,5 @@
 const config =require('./utils/oauth')
- const {fetchGithubAuthCode}=require('../../../root/utils/github')
+
 //const {gh_client_id,gh_redirectUrl,state}=config
 
 exports.handler = async function(event, context) {
