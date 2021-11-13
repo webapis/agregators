@@ -322,6 +322,7 @@ const prom = new Promise((resolve, reject) => {
           body += chunk.toString('utf8')
       });
       responce.on("end", function () {
+        const conv =JSON.parse(body)
           console.log("Body", body);
 debugger;
           return  resolve(body)
@@ -332,6 +333,6 @@ debugger;
           return  reject(error)
       });
   });
-  request.write(JSON.stringify({ postBody: `access_token=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&providerId=github.com`, requestUri: "https://turkmenistan-market.firebaseapp.com/__/auth/handler", returnIdpCredential: true, returnSecureToken: true }))
+  request.write(JSON.stringify({ postBody: `access_token=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&providerId=github.com`, requestUri: "https://turkmenistan-market.firebaseapp.com/__/auth/handler", returnIdpCredential: true, returnSecureToken: true }))
   request.end()
 })
