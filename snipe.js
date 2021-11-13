@@ -206,14 +206,103 @@ const fetch = require('node-fetch')
 //     debugger;
 // })
 
-const fbDatabase = fbRest().setIdToken(process.env.idToken).setProjectUri('https://turkmenistan-market.firebaseio.com').ref('workflows')//.orderByKey().equalTo('allan')
-debugger
-fbDatabase.on('value',(error,e)=>{
-    debugger;
-    const {data,path}=JSON.parse(e.data)
-    debugger;
-    if(path!=='/'){
-        debugger;
-    }
-    debugger;
-})
+// const fbDatabase = fbRest().setIdToken(process.env.idToken).setProjectUri('https://turkmenistan-market.firebaseio.com').ref('workflows')//.orderByKey().equalTo('allan')
+// debugger
+// fbDatabase.on('value',(error,e)=>{
+//     debugger;
+//     const {data,path}=JSON.parse(e.data)
+//     debugger;
+//     if(path!=='/'){
+//         debugger;
+//     }
+//     debugger;
+// })
+var http = require('https');
+var fs =require('fs')
+//const response = await fetch(`https://github.com/login/oauth/access_token?client_id=${client_id}&client_secret=${client_secret}&code=${code}`, { method: 'post', headers: { 'Accept': 'application/json' } })
+// var options = {
+//   host: 'github.com',
+//   path: encodeURI(`login/oauth/authorize?client_id=${process.env.client_id}&redirect_uri=${process.env.redirectUrl}&scope=repo public_repo workflow user&state='test_state'&allow_signup=true`),
+//    method: 'POST',
+//    port:443,
+//   // headers: { 'Accept': 'application/json' } 
+//   headers: {
+//     'user-agent': 'node.js',
+//     "Accept": "application/vnd.github.v3+json", "authorization": `token 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`
+//   }
+// };
+// debugger
+// callback = function(response) {
+//   var str = ''
+//   response.on('data', function (chunk) {
+//     debugger;
+//     str += chunk;
+//   });
+
+//   response.on('end', function () {
+//     debugger;
+//     console.log(str);
+//     req.end();
+//   });
+//   response.on('error', function (error) {
+//     debugger;
+//     console.log(error);
+//   });
+// }
+
+// var req = http.request(options, callback);
+// req.end();
+
+
+
+// const https = require('https');
+
+// https.get(`https://github.com/login/oauth/authorize?client_id=${process.env.client_id}&redirect_uri=${process.env.redirectUrl}&scope=repo public_repo workflow user&state='test_state'&allow_signup=true`,
+// {  headers: {
+//      'user-agent': 'node.js',
+//     // "Accept": "application/vnd.github.v3+json", "authorization": `token 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`
+//     }}, res => {
+//   let data = [];
+//   // const headerDate = res.headers && res.headers.date ? res.headers.date : 'no response date';
+//   // console.log('Status Code:', res.statusCode);
+//   // console.log('Date in Response header:', headerDate);
+
+//   res.on('data', chunk => {
+//     data.push(chunk);
+//   });
+
+//   res.on('end', () => {
+//     console.log('Response ended: ',data);
+  
+//     // for(user of users) {
+//     //   console.log(`Got user with id: ${user.id}, name: ${user.name}`);
+//     // }
+//   });
+// }).on('error', err => {
+//   console.log('Error: ', err.message);
+// });
+
+const https = require('https');
+var options = {
+  host: 'github.com',
+  path:encodeURI(`/login/oauth/authorize?client_id=${process.env.gh_client_id}&redirect_uri=${process.env.redirectUrl}&scope=repo public_repo workflow user&state='test_state'&allow_signup=true`),
+  //method: 'get',
+ // port:443,
+  // headers:{
+  //  // 'Content-Type': 'application/json',
+  //  //   'user-agent': 'node.js',
+  //   //  "Accept": "application/vnd.github.v3+json", "authorization": `token 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`
+
+  // }
+};
+debugger;
+var request = https.request(options, function(responce){
+  var body = ''
+  responce.on("data", function(chunk){
+      body += chunk.toString('utf8')
+  });
+  responce.on("end", function(){
+      console.log("Body", body);
+  });
+});
+request.end();
