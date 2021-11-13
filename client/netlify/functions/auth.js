@@ -9,10 +9,10 @@ console.log('authorizationURI....',authorizationURI)
 return  {
   statusCode: 302,
   headers: {
-    Location: authorizationURI,
+    Location:  encodeURI(`/login/oauth/authorize?client_id=${process.env.gh_client_id}&redirect_uri=${process.env.redirectUrl}&scope=repo public_repo workflow user&state='test_state'&allow_signup=true`),
     'Cache-Control': 'no-cache' // Disable caching of this response
   },
-  body:''
+  body:authorizationURI
 }
 
 
