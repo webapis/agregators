@@ -5,7 +5,7 @@ const config =require('./utils/oauth')
 exports.handler = async function(event, context) {
     // your server-side functionality
  //   const authorizationURI = await fetchGithubAuthCode()
-console.log('authorizationURI....',authorizationURI)
+//console.log('authorizationURI....',authorizationURI)
 return  {
   statusCode: 302,
   headers: {
