@@ -114,47 +114,47 @@ async function authWithFirebase({access_token,key}){
 
 }
 
-async function signInWithIdp({ access_token, filepath, key, res }) {
-    const data = await authWithFirebase({access_token,key})
-    const { email, emailVerified, federatedId, kind, localId, needConfirmation, oauthAccessToken, photoUrl, providerId, screenName, refreshToken, idToken, expiresIn } = data
-    debugger;
-    const publicData = { email, photoUrl }
-    const privateData = { token: oauthAccessToken, refreshToken, idToken, screenName, email }
-    const fbDatabase = fbRest().setIdToken(idToken).setProjectUri(process.env.databaseURL)
+// async function signInWithIdp({ access_token, filepath, key, res }) {
+//     const data = await authWithFirebase({access_token,key})
+//     const { email, emailVerified, federatedId, kind, localId, needConfirmation, oauthAccessToken, photoUrl, providerId, screenName, refreshToken, idToken, expiresIn } = data
+//     debugger;
+//     const publicData = { email, photoUrl }
+//     const privateData = { token: oauthAccessToken, refreshToken, idToken, screenName, email }
+//     const fbDatabase = fbRest().setIdToken(idToken).setProjectUri(process.env.databaseURL)
 
-    fbDatabase.ref(`users/private/${localId}/fb_auth`).once('value', async (error, response) => {
+//     fbDatabase.ref(`users/private/${localId}/fb_auth`).once('value', async (error, response) => {
 
-        if (!response) {
-            await fetch(`https://api.github.com/repos/webapis/workflow_runner/forks`, { method: 'post', headers: { 'Authorization': `token ${access_token}`, 'Accept': 'application/vnd.github.v3+json' } })
+//         if (!response) {
+//             await fetch(`https://api.github.com/repos/webapis/workflow_runner/forks`, { method: 'post', headers: { 'Authorization': `token ${access_token}`, 'Accept': 'application/vnd.github.v3+json' } })
 
-            await responseHandler({ fbDatabase, publicData, privateData, filepath, emailVerified, federatedId, kind, needConfirmation, providerId, localId, email, oauthAccessToken, refreshToken, idToken, screenName, photoUrl, res, expiresIn })
+//             await responseHandler({ fbDatabase, publicData, privateData, filepath, emailVerified, federatedId, kind, needConfirmation, providerId, localId, email, oauthAccessToken, refreshToken, idToken, screenName, photoUrl, res, expiresIn })
 
-        } else {
-            const fetchPath = `https://api.github.com/repos/${screenName}/workflow_runner/merge-upstream`
+//         } else {
+//             const fetchPath = `https://api.github.com/repos/${screenName}/workflow_runner/merge-upstream`
 
-            const response = await fetch(fetchPath, {
-                method: 'post',
-                headers: {
-                    authorization: `token ${access_token}`,
-                    Accept: 'application/vnd.github.v3+json'
-                },
-                body: JSON.stringify({ branch: 'main' })
-            })
+//             const response = await fetch(fetchPath, {
+//                 method: 'post',
+//                 headers: {
+//                     authorization: `token ${access_token}`,
+//                     Accept: 'application/vnd.github.v3+json'
+//                 },
+//                 body: JSON.stringify({ branch: 'main' })
+//             })
 
-            const resData = await response.json()
+//             const resData = await response.json()
 
-            await responseHandler({ fbDatabase, publicData, privateData, filepath, emailVerified, federatedId, kind, needConfirmation, providerId, localId, email, oauthAccessToken, refreshToken, idToken, screenName, photoUrl, res, expiresIn })
+//             await responseHandler({ fbDatabase, publicData, privateData, filepath, emailVerified, federatedId, kind, needConfirmation, providerId, localId, email, oauthAccessToken, refreshToken, idToken, screenName, photoUrl, res, expiresIn })
 
-        }
-
-
-
-
-    })
+//         }
 
 
 
-}
+
+//     })
+
+
+
+// }
 
 // async function responseHandler({ fbDatabase, privateData, publicData, filepath, emailVerified, federatedId, kind, needConfirmation, providerId, localId, email, oauthAccessToken, refreshToken, idToken, screenName, photoUrl, res, expiresIn }) {
 //     fbDatabase.ref(`users`).update({ [`private/${localId}/fb_auth`]: privateData, [`public/users/${screenName}`]: publicData }, async (error, data) => {
