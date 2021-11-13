@@ -12,7 +12,7 @@ return  {
     Location: authorizationURI,
     'Cache-Control': 'no-cache' // Disable caching of this response
   },
-  body:''  // return body for local dev
+  body:''  
 }
 
 
