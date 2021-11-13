@@ -60,12 +60,12 @@ async function fetchGithubAccessToken({ code, client_id, client_secret  }) {
             responce.on("end", function () {
                 console.log("Body", body);
 
-                return resolve(body)
+                return  resolve(body)
             });
             responce.on("error", function (error) {
                 console.log("Body", error);
 
-                return reject(error)
+                return  reject(error)
             });
         });
         request.end();
@@ -73,7 +73,7 @@ async function fetchGithubAccessToken({ code, client_id, client_secret  }) {
 
     })
 
-    return prom
+    return await prom
 }
 
 
@@ -227,3 +227,4 @@ module.exports = { fetchGithubAccessToken }
 
 
 
+///
