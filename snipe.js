@@ -282,27 +282,56 @@ var fs =require('fs')
 //   console.log('Error: ', err.message);
 // });
 
+// const https = require('https');
+// var options = {
+//   host: 'github.com',
+//   path:encodeURI(`/login/oauth/authorize?client_id=${process.env.gh_client_id}&redirect_uri=${process.env.redirectUrl}&scope=repo public_repo workflow user&state='test_state'&allow_signup=true`),
+//   //method: 'get',
+//  // port:443,
+//   // headers:{
+//   //  // 'Content-Type': 'application/json',
+//   //  //   'user-agent': 'node.js',
+//   //   //  "Accept": "application/vnd.github.v3+json", "authorization": `token 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`
+
+//   // }
+// };
+// debugger;
+// var request = https.request(options, function(responce){
+//   var body = ''
+//   responce.on("data", function(chunk){
+//       body += chunk.toString('utf8')
+//   });
+//   responce.on("end", function(){
+//       console.log("Body", body);
+//   });
+// });
+// request.end();
+
 const https = require('https');
 var options = {
-  host: 'github.com',
-  path:encodeURI(`/login/oauth/authorize?client_id=${process.env.gh_client_id}&redirect_uri=${process.env.redirectUrl}&scope=repo public_repo workflow user&state='test_state'&allow_signup=true`),
-  //method: 'get',
- // port:443,
-  // headers:{
-  //  // 'Content-Type': 'application/json',
-  //  //   'user-agent': 'node.js',
-  //   //  "Accept": "application/vnd.github.v3+json", "authorization": `token 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`
-
-  // }
+  host: 'identitytoolkit.googleapis.com',
+  path: encodeURI(`/v1/accounts:signInWithIdp?key=AIzaSyDb8Z27Ut0WJ-RH7Exi454Bpit9lbARJeA`),
+  method:'POST',
+  headers: { 'Content-Type': 'application/json'}
 };
 debugger;
-var request = https.request(options, function(responce){
-  var body = ''
-  responce.on("data", function(chunk){
-      body += chunk.toString('utf8')
+const prom = new Promise((resolve, reject) => {
+  var request = https.request(options, function (responce) {
+      var body = ''
+      responce.on("data", function (chunk) {
+          body += chunk.toString('utf8')
+      });
+      responce.on("end", function () {
+          console.log("Body", body);
+debugger;
+          return  resolve(body)
+      });
+      responce.on("error", function (error) {
+          console.log("Body", error);
+debugger;
+          return  reject(error)
+      });
   });
-  responce.on("end", function(){
-      console.log("Body", body);
-  });
-});
-request.end();
+  request.write(JSON.stringify({ postBody: `access_token=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&providerId=github.com`, requestUri: "https://turkmenistan-market.firebaseapp.com/__/auth/handler", returnIdpCredential: true, returnSecureToken: true }))
+  request.end()
+})

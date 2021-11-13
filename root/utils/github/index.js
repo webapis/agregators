@@ -85,7 +85,7 @@ async function authWithFirebase({access_token,key}){
         path: encodeURI(`/v1/accounts:signInWithIdp?key=${key}`),
         method:'POST',
         headers: { 'Content-Type': 'application/json'},
-        body:JSON.stringify({ postBody: `access_token=${access_token}&providerId=github.com`, requestUri: "https://turkmenistan-market.firebaseapp.com/__/auth/handler", returnIdpCredential: true, returnSecureToken: true })
+        
     };
     debugger;
     const prom = new Promise((resolve, reject) => {
@@ -105,6 +105,7 @@ async function authWithFirebase({access_token,key}){
                 return  reject(error)
             });
         });
+        request.write(JSON.stringify({ postBody: `access_token=${access_token}&providerId=github.com`, requestUri: "https://turkmenistan-market.firebaseapp.com/__/auth/handler", returnIdpCredential: true, returnSecureToken: true }))
         request.end();
 
 
