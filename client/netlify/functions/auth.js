@@ -7,12 +7,12 @@ exports.handler = async function(event, context) {
     const authorizationURI = await fetchGithubAuthCode()
 console.log('authorizationURI....',authorizationURI)
 return  {
-  statusCode: 302,
+  statusCode: 200,
   headers: {
-    Location: authorizationURI,
+    //Location: authorizationURI,
     'Cache-Control': 'no-cache' // Disable caching of this response
   },
-  body: '' // return body for local dev
+  body:authorizationURI  // return body for local dev
 }
 
 
