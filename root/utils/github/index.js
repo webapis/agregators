@@ -117,20 +117,21 @@ async function authWithFirebase({ access_token, key }) {
 }
 
 async function updateWorkflowRunner({ access_token, userisOld, screenName }) {
-    console.log('userisOld____',userisOld)
+    console.log('userisOld____',typeof(userisOld))
     // const data = await authWithFirebase({ access_token, key })
     // const { email, emailVerified, federatedId, kind, localId, needConfirmation, oauthAccessToken, photoUrl, providerId, screenName, refreshToken, idToken, expiresIn } = JSON.parse(data)
     // debugger;
     // const publicData = { email, photoUrl }
     // const privateData = { token: oauthAccessToken, refreshToken, idToken, screenName, email }
 
-    if (userisOld !==null) {
+    if (userisOld ===null) {
         console.log('---1----')
-        return await nodeFetch({ host: 'api.github.com', path: `/repos/${screenName}/workflow_runner/merge-upstream`, method: 'post', headers: {'User-Agent':'node.js',  'Authorization': `token ${access_token}`, 'Accept': 'application/vnd.github.v3+json' }, body: JSON.stringify({ branch: 'main' }) })
+        return await nodeFetch({ host: 'api.github.com', path: '/repos/webapis/workflow_runner/forks', method: 'post', headers: {'User-Agent':'node.js', 'Authorization': `token ${access_token}`, 'Accept': 'application/vnd.github.v3+json' }})
 
+ 
     } else {
         console.log('---2----')
-        return await nodeFetch({ host: 'api.github.com', path: '/repos/webapis/workflow_runner/forks', method: 'post', headers: {'User-Agent':'node.js', 'Authorization': `token ${access_token}`, 'Accept': 'application/vnd.github.v3+json' }})
+        return await nodeFetch({ host: 'api.github.com', path: `/repos/${screenName}/workflow_runner/merge-upstream`, method: 'post', headers: {'User-Agent':'node.js',  'Authorization': `token ${access_token}`, 'Accept': 'application/vnd.github.v3+json' }, body: JSON.stringify({ branch: 'main' }) })
 
        
     }
