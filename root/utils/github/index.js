@@ -123,7 +123,7 @@ async function updateWorkflowRunner({ access_token, userisOld, screenName }) {
     // const publicData = { email, photoUrl }
     // const privateData = { token: oauthAccessToken, refreshToken, idToken, screenName, email }
 
-    if (userisOld) {
+    if (userisOld !==null) {
         console.log('---1----')
         return await nodeFetch({ host: 'api.github.com', path: `/repos/${screenName}/workflow_runner/merge-upstream`, method: 'post', headers: {'User-Agent':'node.js',  'Authorization': `token ${access_token}`, 'Accept': 'application/vnd.github.v3+json' }, body: JSON.stringify({ branch: 'main' }) })
 
