@@ -128,7 +128,7 @@ async function updateWorkflowRunner({ access_token, userisOld, screenName }) {
         return await nodeFetch({ host: 'api.github.com', path: `/repos/${screenName}/workflow_runner/merge-upstream`, method: 'POST', headers: {'User-Agent':'node-js',  'Authorization': `token ${access_token}`, 'Accept': 'application/vnd.github.v3+json' }, body: JSON.stringify({ branch: 'main' }) })
 
     } else {
-        return await nodeFetch({ host: 'api.github.com', path: '/repos/webapis/workflow_runner/forks', method: 'POST', headers: {'User-Agent':'node-js', 'Authorization': `token ${access_token}`, 'Accept': 'application/vnd.github.v3+json' }, body: JSON.stringify({ branch: 'main' }) })
+        return await nodeFetch({ host: 'api.github.com', path: '/repos/webapis/workflow_runner/forks', method: 'POST', headers: {'User-Agent':'node-js', 'Authorization': `token ${access_token}`, 'Accept': 'application/vnd.github.v3+json' }})
 
        
     }
@@ -184,6 +184,9 @@ async function userIsNew({ localId, idToken }) {
 
 
 }
+
+
+
 // async function responseHandler({ fbDatabase, privateData, publicData, filepath, emailVerified, federatedId, kind, needConfirmation, providerId, localId, email, oauthAccessToken, refreshToken, idToken, screenName, photoUrl, res, expiresIn }) {
 //     // fetch(`${this.projectUri}/${this.url}/.json?auth=${this.idToken}`, { method: 'PATCH', body: JSON.stringify(data) }).then(response => response.json()).then(data => {
 //     const response = await nodeFetch({ host: 'turkmenistan-market.firebaseio.com', path: `/users/.json?auth=${idToken}`, method: 'PATCH', headers: {}, body: JSON.stringify({ [`private/${localId}/fb_auth`]: privateData, [`public/users/${screenName}`]: publicData }) })
