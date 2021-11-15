@@ -1,5 +1,6 @@
 const fetch = require('node-fetch')
 const EventSource = require('eventsource')
+
 function fbRest() {
     this.url = ''
     this.idToken = '',
@@ -114,4 +115,45 @@ async function renewIdToken({ api_key, refresh_token }) {
     const data = await response.json()
     return data
 }
+
+
+
+async function nodeFetch({ host, path, method, headers, body }) {
+
+    var options = {
+        host,//: 'identitytoolkit.googleapis.com',
+        path,//: encodeURI(`/v1/accounts:signInWithIdp?key=${key}`),
+        method: method ? method : 'GET',
+        headers//: { 'Content-Type': 'application/json' },
+
+    };
+    debugger;
+    const prom = new Promise((resolve, reject) => {
+        var request = https.request(options, function (responce) {
+            var body = ''
+            responce.on("data", function (chunk) {
+                body += chunk.toString('utf8')
+            });
+            responce.on("end", function () {
+                console.log("Body", body);
+
+                return resolve(body)
+            });
+            responce.on("error", function (error) {
+                console.log("Body", error);
+
+                return reject(error)
+            });
+        });
+        body && request.write(body)
+        request.end();
+
+
+    })
+
+    return await prom
+}
+
+
+
 module.exports = { fbRest, renewIdToken }

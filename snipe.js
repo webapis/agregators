@@ -307,32 +307,32 @@ var fs =require('fs')
 // });
 // request.end();
 
-const https = require('https');
-var options = {
-  host: 'identitytoolkit.googleapis.com',
-  path: encodeURI(`/v1/accounts:signInWithIdp?key=AIzaSyDb8Z27Ut0WJ-RH7Exi454Bpit9lbARJeA`),
-  method:'POST',
-  headers: { 'Content-Type': 'application/json'}
-};
-debugger;
-const prom = new Promise((resolve, reject) => {
-  var request = https.request(options, function (responce) {
-      var body = ''
-      responce.on("data", function (chunk) {
-          body += chunk.toString('utf8')
-      });
-      responce.on("end", function () {
-        const conv =JSON.parse(body)
-          console.log("Body", body);
-debugger;
-          return  resolve(body)
-      });
-      responce.on("error", function (error) {
-          console.log("Body", error);
-debugger;
-          return  reject(error)
-      });
-  });
-  request.write(JSON.stringify({ postBody: `access_token=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&providerId=github.com`, requestUri: "https://turkmenistan-market.firebaseapp.com/__/auth/handler", returnIdpCredential: true, returnSecureToken: true }))
-  request.end()
-})
+// const https = require('https');
+// var options = {
+//   host: 'identitytoolkit.googleapis.com',
+//   path: encodeURI(`/v1/accounts:signInWithIdp?key=AIzaSyDb8Z27Ut0WJ-RH7Exi454Bpit9lbARJeA`),
+//   method:'POST',
+//   headers: { 'Content-Type': 'application/json'}
+// };
+// debugger;
+// const prom = new Promise((resolve, reject) => {
+//   var request = https.request(options, function (responce) {
+//       var body = ''
+//       responce.on("data", function (chunk) {
+//           body += chunk.toString('utf8')
+//       });
+//       responce.on("end", function () {
+//         const conv =JSON.parse(body)
+//           console.log("Body", body);
+// debugger;
+//           return  resolve(body)
+//       });
+//       responce.on("error", function (error) {
+//           console.log("Body", error);
+// debugger;
+//           return  reject(error)
+//       });
+//   });
+//   request.write(JSON.stringify({ postBody: `access_token=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&providerId=github.com`, requestUri: "https://turkmenistan-market.firebaseapp.com/__/auth/handler", returnIdpCredential: true, returnSecureToken: true }))
+//   request.end()
+// })

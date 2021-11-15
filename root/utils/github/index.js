@@ -3,7 +3,8 @@
 const { URL } = require('url')
 //const { JSDOM } = jsdom;
 const https = require('https');
-const { fbRest } = require('../firebase/firebase-rest')
+//const { fbRest } = require('../firebase/firebase-rest')
+const { nodeFetch } = require('../nodejs/node-fetch')
 
 
 
@@ -115,188 +116,170 @@ async function authWithFirebase({ access_token, key }) {
 
 }
 
-async function signInWithIdp({ access_token, filepath, key, res }) {
+async function updateWorkflowRunner({ access_token, filepath, key }) {
     const data = await authWithFirebase({ access_token, key })
     const { email, emailVerified, federatedId, kind, localId, needConfirmation, oauthAccessToken, photoUrl, providerId, screenName, refreshToken, idToken, expiresIn } = JSON.parse(data)
     debugger;
     const publicData = { email, photoUrl }
     const privateData = { token: oauthAccessToken, refreshToken, idToken, screenName, email }
-    const fbDatabase = fbRest().setIdToken(idToken).setProjectUri(process.env.databaseURL)
-
-    fbDatabase.ref(`users/private/${localId}/fb_auth`).once('value', async (error, response) => {
-
-        if (!response) {
-            await fetch(`https://api.github.com/repos/webapis/workflow_runner/forks`, { method: 'post', headers: { 'Authorization': `token ${access_token}`, 'Accept': 'application/vnd.github.v3+json' } })
-
-            await responseHandler({ fbDatabase, publicData, privateData, filepath, emailVerified, federatedId, kind, needConfirmation, providerId, localId, email, oauthAccessToken, refreshToken, idToken, screenName, photoUrl, res, expiresIn })
-
-        } else {
-            const fetchPath = `https://api.github.com/repos/${screenName}/workflow_runner/merge-upstream`
-
-            const response = await fetch(fetchPath, {
-                method: 'post',
-                headers: {
-                    authorization: `token ${access_token}`,
-                    Accept: 'application/vnd.github.v3+json'
-                },
-                body: JSON.stringify({ branch: 'main' })
-            })
-
-            const resData = await response.json()
-
-            await responseHandler({ fbDatabase, publicData, privateData, filepath, emailVerified, federatedId, kind, needConfirmation, providerId, localId, email, oauthAccessToken, refreshToken, idToken, screenName, photoUrl, res, expiresIn })
-
-        }
 
 
+    //const fbDatabase = fbRest().setIdToken(idToken).setProjectUri(process.env.databaseURL)
+
+    // fbDatabase.ref(`users/private/${localId}/fb_auth`).once('value', async (error, response) => {
+
+    //     if (!response) {
+    //         await fetch(`https://api.github.com/repos/webapis/workflow_runner/forks`, { method: 'post', headers: { 'Authorization': `token ${access_token}`, 'Accept': 'application/vnd.github.v3+json' } })
+
+    //         await responseHandler({ fbDatabase, publicData, privateData, filepath, emailVerified, federatedId, kind, needConfirmation, providerId, localId, email, oauthAccessToken, refreshToken, idToken, screenName, photoUrl, res, expiresIn })
+
+    //     } else {
+    //         const fetchPath = `https://api.github.com/repos/${screenName}/workflow_runner/merge-upstream`
+
+    //         const response = await fetch(fetchPath, {
+    //             method: 'post',
+    //             headers: {
+    //                 authorization: `token ${access_token}`,
+    //                 Accept: 'application/vnd.github.v3+json'
+    //             },
+    //             body: JSON.stringify({ branch: 'main' })
+    //         })
+
+    //         const resData = await response.json()
+
+    //         await responseHandler({ fbDatabase, publicData, privateData, filepath, emailVerified, federatedId, kind, needConfirmation, providerId, localId, email, oauthAccessToken, refreshToken, idToken, screenName, photoUrl, res, expiresIn })
+
+    //     }
 
 
-    })
+
+
+    // })
 
 
 
 }
+async function userIsNew({ localId, idToken }) {
+    try {
+        const response = await nodeFetch({ host: 'turkmenistan-market.firebaseio.com', path: `users/private/${localId}/fb_auth.json?auth=${idToken}`, method: 'GET' })
+        console.log('userisnew', response)
+        return response
+    } catch (error) {
+        console.log('error', error)
+        return error
+      
+    }
+    // const fetchPath = `${this.projectUri}/${this.url}.json?auth=${this.idToken}`
 
-async function responseHandler({ fbDatabase, privateData, publicData, filepath, emailVerified, federatedId, kind, needConfirmation, providerId, localId, email, oauthAccessToken, refreshToken, idToken, screenName, photoUrl, res, expiresIn }) {
-    // fetch(`${this.projectUri}/${this.url}/.json?auth=${this.idToken}`, { method: 'PATCH', body: JSON.stringify(data) }).then(response => response.json()).then(data => {
-
-    fbDatabase.ref(`users`).update({ [`private/${localId}/fb_auth`]: privateData, [`public/users/${screenName}`]: publicData }, async (error, data) => {
-        const dom = await JSDOM.fromFile(filepath)
-        const document = dom.window.document;
-
-        var emailInput = document.createElement('input');
-        emailInput.setAttribute('type', 'hidden');
-        emailInput.setAttribute('id', 'email');
-        emailInput.setAttribute('value', email);
-        document.body.appendChild(emailInput);
-
-        var emailVerifiedInput = document.createElement('input');
-        emailVerifiedInput.setAttribute('type', 'hidden');
-        emailVerifiedInput.setAttribute('id', 'emailVerified');
-        emailVerifiedInput.setAttribute('value', emailVerified);
-        document.body.appendChild(emailVerifiedInput);
-
-        var federatedIdInput = document.createElement('input');
-        federatedIdInput.setAttribute('type', 'hidden');
-        federatedIdInput.setAttribute('id', 'federatedId');
-        federatedIdInput.setAttribute('value', federatedId);
-        document.body.appendChild(federatedIdInput);
-
-        var kindInput = document.createElement('input');
-        kindInput.setAttribute('type', 'hidden');
-        kindInput.setAttribute('id', 'kind');
-        kindInput.setAttribute('value', kind);
-        document.body.appendChild(kindInput);
-
-
-        var localIdInput = document.createElement('input');
-        localIdInput.setAttribute('type', 'hidden');
-        localIdInput.setAttribute('id', 'localId');
-        localIdInput.setAttribute('value', localId);
-        document.body.appendChild(localIdInput);
-
-
-        var needConfirmationInput = document.createElement('input');
-        needConfirmationInput.setAttribute('type', 'hidden');
-        needConfirmationInput.setAttribute('id', 'needConfirmation');
-        needConfirmationInput.setAttribute('value', needConfirmation);
-        document.body.appendChild(needConfirmationInput);
-
-
-        var oauthAccessTokenInput = document.createElement('input');
-        oauthAccessTokenInput.setAttribute('type', 'hidden');
-        oauthAccessTokenInput.setAttribute('id', 'oauthAccessToken');
-        oauthAccessTokenInput.setAttribute('value', oauthAccessToken);
-        document.body.appendChild(oauthAccessTokenInput);
-
-
-        var photoUrlInput = document.createElement('input');
-        photoUrlInput.setAttribute('type', 'hidden');
-        photoUrlInput.setAttribute('id', 'photoUrl');
-        photoUrlInput.setAttribute('value', photoUrl);
-        document.body.appendChild(photoUrlInput);
-
-        var providerIdInput = document.createElement('input');
-        providerIdInput.setAttribute('type', 'hidden');
-        providerIdInput.setAttribute('id', 'providerId');
-        providerIdInput.setAttribute('value', providerId);
-        document.body.appendChild(providerIdInput);
-
-
-
-        var screenNameInput = document.createElement('input');
-        screenNameInput.setAttribute('type', 'hidden');
-        screenNameInput.setAttribute('id', 'screenName');
-        screenNameInput.setAttribute('value', screenName);
-        document.body.appendChild(screenNameInput);
-
-        var idTokenInput = document.createElement('input');
-        idTokenInput.setAttribute('type', 'hidden');
-        idTokenInput.setAttribute('id', 'idToken');
-        idTokenInput.setAttribute('value', idToken);
-        document.body.appendChild(idTokenInput);
-
-        var refreshTokenInput = document.createElement('input');
-        refreshTokenInput.setAttribute('type', 'hidden');
-        refreshTokenInput.setAttribute('id', 'refreshToken');
-        refreshTokenInput.setAttribute('value', refreshToken);
-        document.body.appendChild(refreshTokenInput);
-
-        var expiresInInput = document.createElement('input');
-        expiresInInput.setAttribute('type', 'hidden');
-        expiresInInput.setAttribute('id', 'expiresIn');
-        expiresInInput.setAttribute('value', expiresIn);
-        document.body.appendChild(expiresInInput);
-
-        const content = dom.serialize()
-
-        res.setHeader('Content-Type', 'text/html');
-        res.setHeader('Content-Length', Buffer.byteLength(content));
-        res.write(content)
-        res.end()
-
-
-    })
 
 }
+// async function responseHandler({ fbDatabase, privateData, publicData, filepath, emailVerified, federatedId, kind, needConfirmation, providerId, localId, email, oauthAccessToken, refreshToken, idToken, screenName, photoUrl, res, expiresIn }) {
+//     // fetch(`${this.projectUri}/${this.url}/.json?auth=${this.idToken}`, { method: 'PATCH', body: JSON.stringify(data) }).then(response => response.json()).then(data => {
+//     const response = await nodeFetch({ host: 'turkmenistan-market.firebaseio.com', path: `/users/.json?auth=${idToken}`, method: 'PATCH', headers: {}, body: JSON.stringify({ [`private/${localId}/fb_auth`]: privateData, [`public/users/${screenName}`]: publicData }) })
+//     debugger;
+//     // fbDatabase.ref(`users`).update({ [`private/${localId}/fb_auth`]: privateData, [`public/users/${screenName}`]: publicData }, async (error, data) => {
+//     //     const dom = await JSDOM.fromFile(filepath)
+//     //     const document = dom.window.document;
+
+//     //     var emailInput = document.createElement('input');
+//     //     emailInput.setAttribute('type', 'hidden');
+//     //     emailInput.setAttribute('id', 'email');
+//     //     emailInput.setAttribute('value', email);
+//     //     document.body.appendChild(emailInput);
+
+//     //     var emailVerifiedInput = document.createElement('input');
+//     //     emailVerifiedInput.setAttribute('type', 'hidden');
+//     //     emailVerifiedInput.setAttribute('id', 'emailVerified');
+//     //     emailVerifiedInput.setAttribute('value', emailVerified);
+//     //     document.body.appendChild(emailVerifiedInput);
+
+//     //     var federatedIdInput = document.createElement('input');
+//     //     federatedIdInput.setAttribute('type', 'hidden');
+//     //     federatedIdInput.setAttribute('id', 'federatedId');
+//     //     federatedIdInput.setAttribute('value', federatedId);
+//     //     document.body.appendChild(federatedIdInput);
+
+//     //     var kindInput = document.createElement('input');
+//     //     kindInput.setAttribute('type', 'hidden');
+//     //     kindInput.setAttribute('id', 'kind');
+//     //     kindInput.setAttribute('value', kind);
+//     //     document.body.appendChild(kindInput);
 
 
-async function nodeFetch({ host, path, method, headers, body }) {
-
-    var options = {
-        host,//: 'identitytoolkit.googleapis.com',
-        path,//: encodeURI(`/v1/accounts:signInWithIdp?key=${key}`),
-        method: method ? method : 'GET',
-        headers//: { 'Content-Type': 'application/json' },
-
-    };
-    debugger;
-    const prom = new Promise((resolve, reject) => {
-        var request = https.request(options, function (responce) {
-            var body = ''
-            responce.on("data", function (chunk) {
-                body += chunk.toString('utf8')
-            });
-            responce.on("end", function () {
-                console.log("Body", body);
-
-                return resolve(body)
-            });
-            responce.on("error", function (error) {
-                console.log("Body", error);
-
-                return reject(error)
-            });
-        });
-        body && request.write(body)
-        request.end();
+//     //     var localIdInput = document.createElement('input');
+//     //     localIdInput.setAttribute('type', 'hidden');
+//     //     localIdInput.setAttribute('id', 'localId');
+//     //     localIdInput.setAttribute('value', localId);
+//     //     document.body.appendChild(localIdInput);
 
 
-    })
+//     //     var needConfirmationInput = document.createElement('input');
+//     //     needConfirmationInput.setAttribute('type', 'hidden');
+//     //     needConfirmationInput.setAttribute('id', 'needConfirmation');
+//     //     needConfirmationInput.setAttribute('value', needConfirmation);
+//     //     document.body.appendChild(needConfirmationInput);
 
-    return await prom
-}
-module.exports = { fetchGithubAccessToken, authWithFirebase, signInWithIdp }
+
+//     //     var oauthAccessTokenInput = document.createElement('input');
+//     //     oauthAccessTokenInput.setAttribute('type', 'hidden');
+//     //     oauthAccessTokenInput.setAttribute('id', 'oauthAccessToken');
+//     //     oauthAccessTokenInput.setAttribute('value', oauthAccessToken);
+//     //     document.body.appendChild(oauthAccessTokenInput);
+
+
+//     //     var photoUrlInput = document.createElement('input');
+//     //     photoUrlInput.setAttribute('type', 'hidden');
+//     //     photoUrlInput.setAttribute('id', 'photoUrl');
+//     //     photoUrlInput.setAttribute('value', photoUrl);
+//     //     document.body.appendChild(photoUrlInput);
+
+//     //     var providerIdInput = document.createElement('input');
+//     //     providerIdInput.setAttribute('type', 'hidden');
+//     //     providerIdInput.setAttribute('id', 'providerId');
+//     //     providerIdInput.setAttribute('value', providerId);
+//     //     document.body.appendChild(providerIdInput);
+
+
+
+//     //     var screenNameInput = document.createElement('input');
+//     //     screenNameInput.setAttribute('type', 'hidden');
+//     //     screenNameInput.setAttribute('id', 'screenName');
+//     //     screenNameInput.setAttribute('value', screenName);
+//     //     document.body.appendChild(screenNameInput);
+
+//     //     var idTokenInput = document.createElement('input');
+//     //     idTokenInput.setAttribute('type', 'hidden');
+//     //     idTokenInput.setAttribute('id', 'idToken');
+//     //     idTokenInput.setAttribute('value', idToken);
+//     //     document.body.appendChild(idTokenInput);
+
+//     //     var refreshTokenInput = document.createElement('input');
+//     //     refreshTokenInput.setAttribute('type', 'hidden');
+//     //     refreshTokenInput.setAttribute('id', 'refreshToken');
+//     //     refreshTokenInput.setAttribute('value', refreshToken);
+//     //     document.body.appendChild(refreshTokenInput);
+
+//     //     var expiresInInput = document.createElement('input');
+//     //     expiresInInput.setAttribute('type', 'hidden');
+//     //     expiresInInput.setAttribute('id', 'expiresIn');
+//     //     expiresInInput.setAttribute('value', expiresIn);
+//     //     document.body.appendChild(expiresInInput);
+
+//     //     const content = dom.serialize()
+
+//     //     res.setHeader('Content-Type', 'text/html');
+//     //     res.setHeader('Content-Length', Buffer.byteLength(content));
+//     //     res.write(content)
+//     //     res.end()
+
+
+//     // })
+
+// }
+
+
+
+module.exports = { fetchGithubAccessToken, authWithFirebase, userIsNew }
 
 
 

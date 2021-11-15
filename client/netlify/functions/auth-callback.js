@@ -1,6 +1,6 @@
 // const config = require('./utils/oauth')
 // const {gh_client_secret,gh_client_id}=config
- const {fetchGithubAccessToken,authWithFirebase}=require('../../../root/utils/github')
+ const {fetchGithubAccessToken,authWithFirebase,userIsNew}=require('../../../root/utils/github')
 exports.handler = async(event, context) => {
 
      const code = event.queryStringParameters.code
@@ -10,6 +10,7 @@ exports.handler = async(event, context) => {
     const {access_token} = JSON.parse(response)
     const firebaseauthResponse = await authWithFirebase({access_token,key:'AIzaSyDb8Z27Ut0WJ-RH7Exi454Bpit9lbARJeA'})
     const firebaseAuthData =JSON.parse(firebaseauthResponse)
+    await userIsNew(...firebaseAuthData)
     console.log('firebaseauthResponse.....',firebaseAuthData)
  
    //  await signInWithIdp({ access_token,filepath:dirPath + 'login.html',key:'AIzaSyDb8Z27Ut0WJ-RH7Exi454Bpit9lbARJeA',res })
