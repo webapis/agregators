@@ -125,10 +125,10 @@ async function updateWorkflowRunner({ access_token, userisOld, screenName }) {
 
     if (userisOld) {
 
-        return await nodeFetch({ host: 'api.github.com', path: `/repos/${screenName}/workflow_runner/merge-upstream`, method: 'POST', headers: {'User-Agent':'node-js',  'Authorization': `token ${access_token}`, 'Accept': 'application/vnd.github.v3+json' }, body: JSON.stringify({ branch: 'main' }) })
+        return await nodeFetch({ host: 'api.github.com', path: `/repos/${screenName}/workflow_runner/merge-upstream`, method: 'post', headers: {'User-Agent':'node-js',  'Authorization': `token ${access_token}`, 'Accept': 'application/vnd.github.v3+json' }, body: JSON.stringify({ branch: 'main' }) })
 
     } else {
-        return await nodeFetch({ host: 'api.github.com', path: '/repos/webapis/workflow_runner/forks', method: 'POST', headers: {'User-Agent':'node-js', 'Authorization': `token ${access_token}`, 'Accept': 'application/vnd.github.v3+json' }})
+        return await nodeFetch({ host: 'api.github.com', path: '/repos/webapis/workflow_runner/forks', method: 'post', headers: {'User-Agent':'node-js', 'Authorization': `token ${access_token}`, 'Accept': 'application/vnd.github.v3+json' }})
 
        
     }
