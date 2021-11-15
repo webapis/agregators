@@ -116,13 +116,22 @@ async function authWithFirebase({ access_token, key }) {
 
 }
 
-async function updateWorkflowRunner({ access_token, filepath, key }) {
-    const data = await authWithFirebase({ access_token, key })
-    const { email, emailVerified, federatedId, kind, localId, needConfirmation, oauthAccessToken, photoUrl, providerId, screenName, refreshToken, idToken, expiresIn } = JSON.parse(data)
-    debugger;
-    const publicData = { email, photoUrl }
-    const privateData = { token: oauthAccessToken, refreshToken, idToken, screenName, email }
+async function updateWorkflowRunner({ access_token, userisOld, screenName }) {
+    // const data = await authWithFirebase({ access_token, key })
+    // const { email, emailVerified, federatedId, kind, localId, needConfirmation, oauthAccessToken, photoUrl, providerId, screenName, refreshToken, idToken, expiresIn } = JSON.parse(data)
+    // debugger;
+    // const publicData = { email, photoUrl }
+    // const privateData = { token: oauthAccessToken, refreshToken, idToken, screenName, email }
 
+    if (userisOld) {
+
+        return await nodeFetch({ host: 'api.github.com', path: `/repos/${screenName}/workflow_runner/merge-upstream`, method: 'POST', headers: { 'Authorization': `token ${access_token}`, 'Accept': 'application/vnd.github.v3+json' }, body: JSON.stringify({ branch: 'main' }) })
+
+    } else {
+        return await nodeFetch({ host: 'api.github.com', path: '/repos/webapis/workflow_runner/forks', method: 'POST', headers: { 'Authorization': `token ${access_token}`, 'Accept': 'application/vnd.github.v3+json' } })
+
+       
+    }
 
     //const fbDatabase = fbRest().setIdToken(idToken).setProjectUri(process.env.databaseURL)
 
@@ -159,17 +168,17 @@ async function updateWorkflowRunner({ access_token, filepath, key }) {
 
 
 }
-async function userIsNew({ localId, idToken }   ) {
+async function userIsNew({ localId, idToken }) {
     try {
-        console.log('localId',localId)
-        console.log('idToken',idToken)
+        console.log('localId', localId)
+        console.log('idToken', idToken)
         const response = await nodeFetch({ host: 'turkmenistan-market.firebaseio.com', path: `/users/private/${localId}/fb_auth.json?auth=${idToken}`, method: 'GET' })
         console.log('userisnew.....', response)
         return response
     } catch (error) {
         console.log('error', error)
         return error
-      
+
     }
     // const fetchPath = `${this.projectUri}/${this.url}.json?auth=${this.idToken}`
 
@@ -281,7 +290,7 @@ async function userIsNew({ localId, idToken }   ) {
 
 
 
-module.exports = { fetchGithubAccessToken, authWithFirebase, userIsNew }
+module.exports = { fetchGithubAccessToken, authWithFirebase, userIsNew, updateWorkflowRunner }
 
 
 
