@@ -117,6 +117,7 @@ async function authWithFirebase({ access_token, key }) {
 }
 
 async function updateWorkflowRunner({ access_token, userisOld, screenName }) {
+    console.log('userisOld____',userisOld)
     // const data = await authWithFirebase({ access_token, key })
     // const { email, emailVerified, federatedId, kind, localId, needConfirmation, oauthAccessToken, photoUrl, providerId, screenName, refreshToken, idToken, expiresIn } = JSON.parse(data)
     // debugger;
