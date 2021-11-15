@@ -1,6 +1,6 @@
 // const config = require('./utils/oauth')
 // const {gh_client_secret,gh_client_id}=config
-const { fetchGithubAccessToken, authWithFirebase, userIsNew,updateWorkflowRunner } = require('../../../root/utils/github')
+const { fetchGithubAccessToken, authWithFirebase ,updateUserCredentials} = require('../../../root/utils/github')
 exports.handler = async (event, context) => {
 
   const code = event.queryStringParameters.code
@@ -10,12 +10,12 @@ exports.handler = async (event, context) => {
   const { access_token } = JSON.parse(response)
   const firebaseauthResponse = await authWithFirebase({ access_token, key: 'AIzaSyDb8Z27Ut0WJ-RH7Exi454Bpit9lbARJeA' })
   const firebaseAuthData = JSON.parse(firebaseauthResponse)
-  const { localId, idToken,screenName } = firebaseAuthData
-  const userisOld = await userIsNew({ idToken, localId })
-  const updatewfRunner =await updateWorkflowRunner({userisOld,access_token,screenName,screenName})
-  console.log('userisOld.....!!!!!!!!', userisOld)
+  //const { localId, idToken,screenName } = firebaseAuthData
+
+  const updatedUserCred =await updateUserCredentials(firebaseAuthData)
+
   console.log('firebaseauthResponse.....', firebaseAuthData)
-  console.log('updatewfRunner/////',updatewfRunner)
+  console.log('updatedUserCred??????_________', updatedUserCred)
 
   //  await signInWithIdp({ access_token,filepath:dirPath + 'login.html',key:'AIzaSyDb8Z27Ut0WJ-RH7Exi454Bpit9lbARJeA',res })
   return { statusCode: 200, body: JSON.stringify({ greet: "hello ouath2", access_token, firebaseAuthData }) }
