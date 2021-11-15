@@ -11,7 +11,8 @@ exports.handler = async (event, context) => {
   const firebaseauthResponse = await authWithFirebase({ access_token, key: 'AIzaSyDb8Z27Ut0WJ-RH7Exi454Bpit9lbARJeA' })
   const firebaseAuthData = JSON.parse(firebaseauthResponse)
   const { localId, idToken } = firebaseAuthData
-  await userIsNew({ idToken, localId })
+  const userisOld = await userIsNew({ idToken, localId })
+  console.log('userisOld.....!!!!!!!!', userisOld)
   console.log('firebaseauthResponse.....', firebaseAuthData)
 
   //  await signInWithIdp({ access_token,filepath:dirPath + 'login.html',key:'AIzaSyDb8Z27Ut0WJ-RH7Exi454Bpit9lbARJeA',res })

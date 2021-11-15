@@ -164,7 +164,7 @@ async function userIsNew({ localId, idToken }   ) {
         console.log('localId',localId)
         console.log('idToken',idToken)
         const response = await nodeFetch({ host: 'turkmenistan-market.firebaseio.com', path: `/users/private/${localId}/fb_auth.json?auth=${idToken}`, method: 'GET' })
-        console.log('userisnew', response)
+        console.log('userisnew.....', response)
         return response
     } catch (error) {
         console.log('error', error)
