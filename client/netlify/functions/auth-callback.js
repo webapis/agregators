@@ -1,6 +1,6 @@
 // const config = require('./utils/oauth')
 // const {gh_client_secret,gh_client_id}=config
-const { fetchGithubAccessToken, authWithFirebase ,updateUserCredentials} = require('../../../root/utils/github')
+const { fetchGithubAccessToken, authWithFirebase, updateUserCredentials } = require('../../../root/utils/github')
 exports.handler = async (event, context) => {
 
   const code = event.queryStringParameters.code
@@ -10,15 +10,12 @@ exports.handler = async (event, context) => {
   const { access_token } = JSON.parse(response)
   const firebaseauthResponse = await authWithFirebase({ access_token, key: 'AIzaSyDb8Z27Ut0WJ-RH7Exi454Bpit9lbARJeA' })
   const firebaseAuthData = JSON.parse(firebaseauthResponse)
-  const { localId, idToken,screenName,federatedId,email,emailVerified,kind,needConfirmation,providerId,oauthAccessToken,photoUrl,refreshToken,expiresIn } = firebaseAuthData
+  const { localId, idToken, screenName, federatedId, email, emailVerified, kind, needConfirmation, providerId, oauthAccessToken, photoUrl, refreshToken, expiresIn } = firebaseAuthData
 
-  const updatedUserCred =await updateUserCredentials(firebaseAuthData)
+   await updateUserCredentials(firebaseAuthData)
 
-  console.log('firebaseauthResponse.....', firebaseAuthData)
-  console.log('updatedUserCred??????_________', updatedUserCred)
-
-  //  await signInWithIdp({ access_token,filepath:dirPath + 'login.html',key:'AIzaSyDb8Z27Ut0WJ-RH7Exi454Bpit9lbARJeA',res })
-  return { statusCode: 200, body: `<!DOCTYPE html>
+  return {
+    statusCode: 200, body: `<!DOCTYPE html>
   <html lang="en">
   
   <head>
@@ -33,11 +30,6 @@ exports.handler = async (event, context) => {
   
   <body>
      
-     
-   
-    
-     
-  
       <div class="container mt-1">
   
           <div class="breadcrumb flat">
