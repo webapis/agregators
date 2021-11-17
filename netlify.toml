@@ -1,7 +1,5 @@
 
 
-[dev]
-  publish = "client"
 
 
 [dev.https]
