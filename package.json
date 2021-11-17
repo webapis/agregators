@@ -5,7 +5,6 @@
   "dependencies": {
     "@actions/core": "1.2.6",
     "@actions/github": "4.0.0",
-    "@netlify/esbuild-darwin-64": "^0.13.6",
     "blob": "^0.1.0",
     "directory-tree": "2.2.9",
     "dotenv": "8.2.0",
