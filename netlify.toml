@@ -19,3 +19,6 @@ from ="api/fb-prod/*"
 to="https://turkmenistan-market.firebaseio.com/:splat"
 force = true
 status = 200
+
+[functions]
+  directory = "netlify/functions"
