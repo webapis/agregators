@@ -1,6 +1,4 @@
-[build]
 
-  publish = "client"
 
 [dev]
   publish = "client"
