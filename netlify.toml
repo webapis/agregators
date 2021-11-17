@@ -1,20 +1,21 @@
 
 
+[dev]
+publish = "client"
 
 
 [dev.https]
-  certFile = "cert.pem" # path to the certificate file
-  keyFile = "privatekey.pem" # path to the private key file
-
+    certFile = "cert.pem" # path to the certificate file
+    keyFile = "privatekey.pem" # path to the private key file
 [[redirects]]
-  from ="api/fb-dev/*"
-  to="http://localhost:9000/:splat"
-  force = true
+from ="api/fb-dev/*"
+to="http://localhost:9000/:splat"
+force = true
   status = 200
 
 
 [[redirects]]
-  from ="api/fb-prod/*"
-  to="https://turkmenistan-market.firebaseio.com/:splat"
-  force = true
-  status = 200
+from ="api/fb-prod/*"
+to="https://turkmenistan-market.firebaseio.com/:splat"
+force = true
+status = 200
