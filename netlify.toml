@@ -1,7 +1,10 @@
 
-
+[build]
+ base = "."
+ publish = "client"
 [dev]
 publish = "client"
+
 
 
 [dev.https]
