@@ -85,7 +85,7 @@ async function authWithFirebase({ access_token, key }) {
         host: 'identitytoolkit.googleapis.com',
         path: encodeURI(`/v1/accounts:signInWithIdp?key=${key}`),
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json','User-Agent':'node-js'},
 
     };
     debugger;

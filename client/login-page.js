@@ -22,7 +22,7 @@ customElements.define('login-page', class extends HTMLElement {
            
             window.location.replace('/')
             
-
+debugger;
         } else {
             debugger;
             const { auth: { email } } = window.pageStore.state

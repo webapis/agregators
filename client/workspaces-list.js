@@ -6,9 +6,12 @@ customElements.define('workspaces-list', class extends HTMLElement {
     async connectedCallback() {
         const resources = await import('./resources.js')
         await resources.default()
+        debugger;
         const { auth: { idToken, localId: uid }, workspaceList: { workspaces, selectedWorkspaceTab } } = window.pageStore.state
         this.uid = uid
+        debugger;
         this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
+        debugger;
         this.innerHTML = `  <signed-in-as></signed-in-as>
         <div class="container" id="container"></div>
         `
@@ -21,12 +24,12 @@ customElements.define('workspaces-list', class extends HTMLElement {
             workspacesRef = `public/workspaces`
 
         } else {
-            workspacesRef = `shared/${uid}/workspaces`
+            workspacesRef = `shared/${uid}/workspaces`  
 
         }
 
     
-
+debugger;
 
         this.FB_DATABASE.ref(workspacesRef).on('value', (error, ws) => {
 debugger;
@@ -48,7 +51,7 @@ debugger;
     }
 
     render({ workspaces }) {
- 
+ debugger;
         document.getElementById('container').innerHTML = ``
         document.getElementById('container').insertAdjacentHTML('beforeend', `
         <h5>Workspaces:</h5>
@@ -153,6 +156,7 @@ customElements.define('workspaces-tab', class extends HTMLElement {
         })
   
         this.FB_DATABASE.ref(`private/${uid}/workspaces`).on('value', (error, ws) => {
+            debugger;
             let totalPrivate=0
             let totalPublic=0
             let totalShared=0

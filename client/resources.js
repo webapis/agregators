@@ -12,7 +12,7 @@ export default async () => {
         loadedResources[1].initState,
         'page-store'
     );
-    window.projectUrl =window.location.hostname==='localhost'?'http://localhost:9000':'https://turkmenistan-market.firebaseio.com'
+    window.projectUrl =window.location.hostname==='localhost'?'api/fb-dev':'api/fb-prod'
 
     window.actionTypes = loadedResources[1].actionTypes;
 

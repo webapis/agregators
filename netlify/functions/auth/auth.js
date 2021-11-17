@@ -1,11 +1,13 @@
-const config =require('./utils/oauth')
+require('dotenv').config()
+
 
 //const {gh_client_id,gh_redirectUrl,state}=config
 
 exports.handler = async function(event, context) {
     // your server-side functionality
  //   const authorizationURI = await fetchGithubAuthCode()
-//console.log('authorizationURI....',authorizationURI)
+ 
+ console.log('gh_client_id....',process.env.gh_client_id)
 return  {
   statusCode: 302,
   headers: {

@@ -1,17 +1,20 @@
 // const config = require('./utils/oauth')
+require('dotenv').config()
 // const {gh_client_secret,gh_client_id}=config
 const { fetchGithubAccessToken, authWithFirebase, updateUserCredentials } = require('../../../root/utils/github')
 exports.handler = async (event, context) => {
-
+    console.log('gh_client_id....2',process.env.gh_client_id)
   const code = event.queryStringParameters.code
   // /* state helps mitigate CSRF attacks & Restore the previous state of your app */
   // const state = event.queryStringParameters.state
   const response = await fetchGithubAccessToken({ code: code, client_id: process.env.gh_client_id, client_secret: process.env.gh_client_secret })
   const { access_token } = JSON.parse(response)
+  console.log('access_token____',access_token)
   const firebaseauthResponse = await authWithFirebase({ access_token, key: 'AIzaSyDb8Z27Ut0WJ-RH7Exi454Bpit9lbARJeA' })
+  console.log('firebaseauthResponse____!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',firebaseauthResponse)
   const firebaseAuthData = JSON.parse(firebaseauthResponse)
   const { localId, idToken, screenName, federatedId, email, emailVerified, kind, needConfirmation, providerId, oauthAccessToken, photoUrl, refreshToken, expiresIn } = firebaseAuthData
-
+console.log('firebaseAuthData',firebaseAuthData)
    await updateUserCredentials(firebaseAuthData)
 
   return {
@@ -42,21 +45,21 @@ exports.handler = async (event, context) => {
       
       <login-page class="row"></login-page>
   </div>
-  <input type="hidden" id="federatedId" value=${federatedId}/>
-  <input type="hidden" id="email" value=${email}/>
-  <input type="hidden" id="emailVerified" value=${emailVerified}/>
-  <input type="hidden" id="kind" value=${kind}/>
-  <input type="hidden" id="localId" value=${localId}/>
-  <input type="hidden" id="needConfirmation" value=${needConfirmation}/>
-  <input type="hidden" id="oauthAccessToken" value=${oauthAccessToken}/>
-  <input type="hidden" id="photoUrl" value=${photoUrl}/>
-  <input type="hidden" id="providerId" value=${providerId}/>
-  <input type="hidden" id="screenName" value=${screenName}/>
-  <input type="hidden" id="idToken" value=${idToken}/>
-  <input type="hidden" id="refreshToken" value=${refreshToken}/>
-  <input type="hidden" id="expiresIn" value=${expiresIn}/>
+  <input type="hidden" id="federatedId" value="${federatedId}"/>
+  <input type="hidden" id="email" value="${email}"/>
+  <input type="hidden" id="emailVerified" value="${emailVerified}"/>
+  <input type="hidden" id="kind" value="${kind}"/>
+  <input type="hidden" id="localId" value="${localId}"/>
+  <input type="hidden" id="needConfirmation" value="${needConfirmation}"/>
+  <input type="hidden" id="oauthAccessToken" value="${oauthAccessToken}"/>
+  <input type="hidden" id="photoUrl" value="${photoUrl}"/>
+  <input type="hidden" id="providerId" value="${providerId}"/>
+  <input type="hidden" id="screenName" value="${screenName}"/>
+  <input type="hidden" id="idToken" value="${idToken}"/>
+  <input type="hidden" id="refreshToken" value="${refreshToken}"/>
+  <input type="hidden" id="expiresIn" value="${expiresIn}"/>
 
-      <script src="https://workflow-runner.netlify.app/login-page.js"></script>
+      <script src="${process.env.host}/login-page.js"></script>
    
   </body>
   

@@ -217,7 +217,7 @@ const fetch = require('node-fetch')
 //     }
 //     debugger;
 // })
-var http = require('https');
+var https = require('https');
 var fs =require('fs')
 //const response = await fetch(`https://github.com/login/oauth/access_token?client_id=${client_id}&client_secret=${client_secret}&code=${code}`, { method: 'post', headers: { 'Accept': 'application/json' } })
 // var options = {
@@ -335,4 +335,37 @@ var fs =require('fs')
 //   });
 //   request.write(JSON.stringify({ postBody: `access_token=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&providerId=github.com`, requestUri: "https://turkmenistan-market.firebaseapp.com/__/auth/handler", returnIdpCredential: true, returnSecureToken: true }))
 //   request.end()
+// })
+
+// const access_token='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/'
+// const key='AIzaSyDb8Z27Ut0WJ-RH7Exi454Bpit9lbARJeA'
+// var options = {
+//     host: 'identitytoolkit.googleapis.com',
+//     path: encodeURI(`/v1/accounts:signInWithIdp?key=${key}`),
+//     method: 'POST',
+//     headers: { 'Content-Type': 'application/json','User-Agent':'node-js'},
+
+// };
+// debugger;
+// const prom = new Promise((resolve, reject) => {
+//     var request = https.request(options, function (responce) {
+//         var body = ''
+//         responce.on("data", function (chunk) {
+//             body += chunk.toString('utf8')
+//         });
+//         responce.on("end", function () {
+//             console.log("Body", body);
+// debugger;
+//             return resolve(body)
+//         });
+//         responce.on("error", function (error) {
+//             console.log("Body", error);
+// debugger;
+//             return reject(error)
+//         });
+//     });
+//     request.write(JSON.stringify({ postBody: `access_token=${access_token}&providerId=github.com`, requestUri: "https://turkmenistan-market.firebaseapp.com/__/auth/handler", returnIdpCredential: true, returnSecureToken: true }))
+//     request.end();
+
+
 // })

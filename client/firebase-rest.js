@@ -10,6 +10,7 @@ function firebase() {
     return {
         setIdToken: function (idToken) {
             this.idToken = idToken
+            debugger;
             return this
         },
         setProjectUri: function (projectUri) {
@@ -50,18 +51,31 @@ function firebase() {
                 return this
             })
         },
+        get: async function (data, cb) {
+            await updateIdToken()
+            fetch(`${this.projectUri}/${this.url}/.json?auth=${this.idToken}`, { method: 'GET', body: JSON.stringify(data) }).then(response => response.json()).then(data => {
+                debugger;
+                cb && cb(null,data)
+            }).catch(error => {
+                debugger;
+                cb && cb(error,null)
+                return this
+            })
+        },
         on: async function (event, cb) {
+            debugger;
             await updateIdToken()
             switch (event) {
                 case "value":
                     const fetchPath = `${this.projectUri}/${this.url}.json?auth=${this.idToken}`
-                    
+                        debugger;
                     var childaddedEvent = new EventSource(fetchPath, {});
                     childaddedEvent.onerror = function (error) {
                        
                         cb(error, null)
                     };
                     childaddedEvent.addEventListener('put', function (e) {
+                        debugger;
                         const response =JSON.parse(e.data)
                  
                         cb(null, response)

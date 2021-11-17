@@ -28,7 +28,7 @@ await global.page.setViewport({
   height: 1250,
   deviceScaleFactor: 1,
 });
-global.page.goto('http://localhost:3000')
+global.page.goto('https://localhost:8888')
   // perform some shared setup
 });
 
