@@ -12,7 +12,7 @@ export default async () => {
         loadedResources[1].initState,
         'page-store'
     );
-    window.projectUrl =window.location.hostname==='localhost'?'api/fb-dev':'api/fb-prod'
+    window.projectUrl =window.location.hostname==='localhost'?'api/fb-dev':'https://workflow-prod-799d4.firebaseapp.com'
 
     window.actionTypes = loadedResources[1].actionTypes;
 
