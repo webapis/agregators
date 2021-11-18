@@ -73,7 +73,7 @@ function firebase() {
                 case "value":
                     const fetchPath = `${this.projectUri}/${this.url}.json?auth=${this.idToken}`
                         debugger;
-                    var childaddedEvent = new EventSource(fetchPath, {});
+                    var childaddedEvent = new EventSource(fetchPath, {headers:{"Access-Control-Allow-Origin":"*"}});
                     childaddedEvent.onerror = function (error) {
                        
                         cb(error, null)
