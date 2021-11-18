@@ -13,7 +13,7 @@ export default async () => {
         'page-store'
     );
     window.projectUrl =window.location.hostname==='localhost'?'/api/fb-dev':'/api/fb-prod'
-
+    window.webapikey=window.location.hostname==='localhost'?'AIzaSyDb8Z27Ut0WJ-RH7Exi454Bpit9lbARJeA':'AIzaSyCM7LDPIq6eelnMH_A8SARtIBDT5Zi5tK8'
     window.actionTypes = loadedResources[1].actionTypes;
 
     

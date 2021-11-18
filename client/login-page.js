@@ -18,7 +18,7 @@ customElements.define('login-page', class extends HTMLElement {
             const localId = document.getElementById('localId').value
             const expiresIn = document.getElementById('expiresIn').value
             this.uid = localId
-            window.pageStore.dispatch({ type: window.actionTypes.AUTH_SUCCESS, payload: { auth: { email, token, screenName, photoUrl, refreshToken, idToken, localId, api_key: 'AIzaSyDb8Z27Ut0WJ-RH7Exi454Bpit9lbARJeA', timestamp: Date.now() + 3600000,expiresIn } } })
+            window.pageStore.dispatch({ type: window.actionTypes.AUTH_SUCCESS, payload: { auth: { email, token, screenName, photoUrl, refreshToken, idToken, localId, api_key: window.webapikey, timestamp: Date.now() + 3600000,expiresIn } } })
            
             window.location.replace('/')
             
