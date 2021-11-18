@@ -58,6 +58,7 @@ function firebase() {
         get: async function (cb) {
             await updateIdToken()
                const fetchUrl =this.url ==='/'? `${this.projectUri}/.json?auth=${this.idToken}`: `${this.projectUri}/${this.url}.json?auth=${this.idToken}`
+               debugger;
             fetch(fetchUrl, { method: 'GET'}).then(response => response.json()).then(data => {
                 debugger;
                 cb && cb(null,data)
