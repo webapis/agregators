@@ -19,7 +19,7 @@ function firebase() {
         },
         ref: function (url) {
             this.url = url
-            return this
+            return  this.url==='/'? '': this
         },
         set: async function (data, cb) {
             await updateIdToken()
