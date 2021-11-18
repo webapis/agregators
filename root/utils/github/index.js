@@ -106,7 +106,7 @@ async function authWithFirebase({ access_token, key }) {
                 return reject(error)
             });
         });
-        request.write(JSON.stringify({ postBody: `access_token=${access_token}&providerId=github.com`, requestUri: "https://turkmenistan-market.firebaseapp.com/__/auth/handler", returnIdpCredential: true, returnSecureToken: true }))
+        request.write(JSON.stringify({ postBody: `access_token=${access_token}&providerId=github.com`, requestUri: process.env.requestUri, returnIdpCredential: true, returnSecureToken: true }))
         request.end();
 
 
