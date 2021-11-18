@@ -55,9 +55,9 @@ function firebase() {
                 return this
             })
         },
-        get: async function (data, cb) {
+        get: async function (cb) {
             await updateIdToken()
-            fetch(`${this.projectUri}/${this.url}/.json?auth=${this.idToken}`, { method: 'GET', body: JSON.stringify(data) }).then(response => response.json()).then(data => {
+            fetch(`${this.projectUri}/${this.url}/.json?auth=${this.idToken}`, { method: 'GET'}).then(response => response.json()).then(data => {
                 debugger;
                 cb && cb(null,data)
             }).catch(error => {

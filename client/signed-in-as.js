@@ -11,7 +11,7 @@ customElements.define('signed-in-as',
             this.uid = uid
             this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
             if(!document.getElementById('profile')){
-                this.FB_DATABASE.ref(`invitations/${screenName}/workspaces`).on('value',(error,response)=>{
+                this.FB_DATABASE.ref(`invitations/${screenName}/workspaces`).get((error,response)=>{
                     const data=response && response.data &&  Object.keys(response.data)
                
                     const auth = window.pageStore.state.auth
