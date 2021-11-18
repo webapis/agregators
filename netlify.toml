@@ -19,7 +19,7 @@ force = true
 
 [[redirects]]
 from ="api/fb-prod/*"
-to="https://turkmenistan-market.firebaseio.com/:splat"
+to="https://workflow-prod-799d4.firebaseapp.com/:splat"
 force = true
 status = 200
 
