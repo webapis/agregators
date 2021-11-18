@@ -21,9 +21,6 @@ force = true
 
 
 
-[[headers]]
-for ="*"
-  [headers.values]
-    Access-Control-Allow-Origin="*"
+
 [functions]
   directory = "netlify/functions"
