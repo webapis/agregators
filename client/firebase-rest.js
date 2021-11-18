@@ -57,7 +57,8 @@ function firebase() {
         },
         get: async function (cb) {
             await updateIdToken()
-            fetch(`${this.projectUri}/${this.url}/.json?auth=${this.idToken}`, { method: 'GET'}).then(response => response.json()).then(data => {
+               const fetchUrl =this.url ==='/'? `${this.projectUri}/.json?auth=${this.idToken}`: `${this.projectUri}/${this.url}.json?auth=${this.idToken}`
+            fetch(fetchUrl, { method: 'GET'}).then(response => response.json()).then(data => {
                 debugger;
                 cb && cb(null,data)
             }).catch(error => {
@@ -71,9 +72,9 @@ function firebase() {
             await updateIdToken()
             switch (event) {
                 case "value":
-                    const fetchPath = `${this.projectUri}/${this.url}.json?auth=${this.idToken}`
+                    const fetchUrl =this.url ==='/'? `${this.projectUri}/.json?auth=${this.idToken}`: `${this.projectUri}/${this.url}.json?auth=${this.idToken}`
                         debugger;
-                    var childaddedEvent = new EventSource(fetchPath, {});
+                    var childaddedEvent = new EventSource(fetchUrl, {});
                     childaddedEvent.onerror = function (error) {
                        
                         cb(error, null)
