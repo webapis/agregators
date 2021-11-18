@@ -22,8 +22,10 @@ force = true
   from ="/api/fb-prod/*"
   to="https://workflow-prod-799d4.firebaseapp.com/:splat"
 
-  [redirects.headers]
-  Access-Control-Allow-Origin="https://workflow-prod-799d4.firebaseapp.com"
 
+
+[[headers]]
+for ="/api/fb-prod/*"
+Access-Control-Allow-Origin="https://workflow-prod-799d4.firebaseapp.com"
 [functions]
   directory = "netlify/functions"
