@@ -19,7 +19,7 @@ function firebase() {
         },
         ref: function (url) {
             this.url = url
-            return  this.url==='/'? '': this
+            return   this
         },
         set: async function (data, cb) {
             await updateIdToken()
@@ -33,7 +33,8 @@ function firebase() {
         },
         update: async function (data, cb) {
             await updateIdToken()
-            const fetchUrl=`${this.projectUri}/${this.url}.json?auth=${this.idToken}`
+            const fetchUrl =this.url ==='/'? `${this.projectUri}/.json?auth=${this.idToken}`: `${this.projectUri}/${this.url}.json?auth=${this.idToken}`
+        
             debugger;
 
             fetch(fetchUrl, { method: 'PATCH', body: JSON.stringify(data) }).then(response => response.json()).then(data => {
