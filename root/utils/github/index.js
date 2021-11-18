@@ -192,7 +192,7 @@ async function updateUserCredentials({ token: oauthAccessToken, refreshToken, id
     try {
         const publicData = { email, photoUrl }
         const privateData = { token: oauthAccessToken, refreshToken, idToken, screenName, email }
-        const response = await nodeFetch({ host: 'turkmenistan-market.firebaseio.com', path: `/users/.json?auth=${idToken}`, method: 'PATCH', headers: {}, body: JSON.stringify({ [`private/${localId}/fb_auth`]: privateData, [`public/users/${screenName}`]: publicData }) })
+        const response = await nodeFetch({ host: process.env.databaseHost, path: `/users/.json?auth=${idToken}`, method: 'PATCH', headers: {}, body: JSON.stringify({ [`private/${localId}/fb_auth`]: privateData, [`public/users/${screenName}`]: publicData }) })
 
         return response
     } catch (error) {
