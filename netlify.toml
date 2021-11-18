@@ -18,7 +18,9 @@ force = true
   status = 200
 
 
-
+[[redirects]]
+  from ="/api/fb-prod/*"
+  to="https://workflow-prod-799d4.firebaseapp.com/:splat"
 
 
 
