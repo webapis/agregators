@@ -26,6 +26,7 @@ force = true
 
 [[headers]]
 for ="/api/fb-prod/*"
-Access-Control-Allow-Origin="https://workflow-prod-799d4.firebaseapp.com"
+  [headers.values]
+    Access-Control-Allow-Origin="https://workflow-prod-799d4.firebaseapp.com"
 [functions]
   directory = "netlify/functions"
