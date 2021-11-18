@@ -10,6 +10,9 @@ publish = "client"
 [dev.https]
     certFile = "cert.pem" # path to the certificate file
     keyFile = "privatekey.pem" # path to the private key file
+
+[redirects.headers]
+Access-Control-Allow-Origin=https://workflow-prod-799d4.firebaseapp.com
 [[redirects]]
 from ="/api/fb-dev/*"
 to="http://localhost:9000/:splat"
@@ -20,6 +23,8 @@ force = true
 [[redirects]]
 from ="/api/fb-prod/*"
 to="https://workflow-prod-799d4.firebaseapp.com/:splat"
+
+
 
 [functions]
   directory = "netlify/functions"
