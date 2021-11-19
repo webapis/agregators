@@ -57,8 +57,8 @@
     "snipe": "node snipe.js",
     "start": "node --inspect=9090 root/index.js",
     "local:start": "SERVER=LOCAL_SERVER node root/index.js",
-    "fb:emulator": "ttab npm run -t 'Firebase emulator' firebase emulators:start",
-    "netlifyDev": "ttab npm run -t 'Netlify dev' netlify dev",
+    "fb:emulator": "ttab -t 'fb' npm run firebase emulators:start",
+    "netlifyDev": "ttab -t 'nt' npm run netlify dev",
     "crawler": "SERVER=LOCAL_SERVER  node page-collector/server.js",
     "testCucumber": "./node_modules/.bin/cucumber-js",
     "bddTest":"run-s fb:emulator netlifyDev testCucumber"
