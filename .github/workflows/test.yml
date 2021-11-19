@@ -3,7 +3,7 @@ on:
   push:
 
 jobs:
-  aggregator:
+  bdd:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -30,3 +30,5 @@ jobs:
         run: 'npm install -g firebase-tools'
       - name: Start firebase emulator
         run: 'npm run fb:emulator'
+      - name: Start netlify dev
+        run: 'npm run netlify dev'
