@@ -27,7 +27,7 @@ jobs:
       - name: Install gnome-terminal
         run:  sudo apt-get install gnome-terminal
       - name: export DISPLAY
-        run: export DISPLAY=:0.0
+        run: export DISPLAY=:1
       - name: Install project dependencies
         run: 'npm install'
       - name: Install netlify
