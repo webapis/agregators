@@ -36,7 +36,7 @@ jobs:
         run: 'npm install -g firebase-tools'
       - name: Run bdd test
         run: | 
-            'npm run fb:emulator' &
-            'npm run netlifyDev' &
+            'firebase emulators:start' &
+            'netlify dev' &
              sleep 10 &&
-            'npm run testCucumber' 
+            './node_modules/.bin/cucumber-js' 
