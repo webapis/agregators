@@ -24,6 +24,8 @@ jobs:
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
             ${{ runner.os }}-
+      - name: Install project dependencies
+        run: 'npm install'
       - name: Install netlify
         run: 'npm install netlify-cli --save-dev'
       - name: Install firebase cli
