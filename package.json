@@ -58,7 +58,7 @@
     "fb:emulator": "firebase emulators:start",
     "netlifyDev":"netlify dev",
     "crawler": "SERVER=LOCAL_SERVER  node page-collector/server.js",
-    "testCucumber": "./node_modules/.bin/cucumber-js",
+    "testCucumber": "./node_modules/.bin/cucumber-js"
   },
   "nodemonConfig": {
     "ignore": [
