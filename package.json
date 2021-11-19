@@ -19,7 +19,9 @@
     "@cucumber/cucumber": "^7.0.0",
     "cross-env": "7.0.2",
     "node-watch": "0.7.1",
-    "puppeteer": "^7.1.0"
+    "npm-run-all": "^4.1.5",
+    "puppeteer": "^7.1.0",
+    "ttab": "^0.7.2"
   },
   "scripts": {
     "dataCollector": "SERVER=LOCAL NEXT_TASK=page_collection ALL=FALSE node page-collector/server.js",
@@ -55,10 +57,11 @@
     "snipe": "node snipe.js",
     "start": "node --inspect=9090 root/index.js",
     "local:start": "SERVER=LOCAL_SERVER node root/index.js",
-    "fb:emulator": "firebase emulators:start",
-    "netlifyDev":"netlify dev",
+    "fb:emulator": "ttab npm run -t 'Firebase emulator' firebase emulators:start",
+    "netlifyDev": "ttab npm run -t 'Netlify dev' netlify dev",
     "crawler": "SERVER=LOCAL_SERVER  node page-collector/server.js",
-    "testCucumber": "./node_modules/.bin/cucumber-js"
+    "testCucumber": "./node_modules/.bin/cucumber-js",
+    "bddTest":"run-s fb:emulator netlifyDev testCucumber"
   },
   "nodemonConfig": {
     "ignore": [
