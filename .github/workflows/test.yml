@@ -24,11 +24,13 @@ jobs:
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
             ${{ runner.os }}-
+      - name: Install gnome-terminal
+        run:  apt-get install gnome-terminal
       - name: Install project dependencies
         run: 'npm install'
       - name: Install netlify
         run: 'npm install netlify-cli --save-dev'
       - name: Install firebase cli
         run: 'npm install -g firebase-tools'
-      - name: Install firebase cli
+      - name: Run bdd test
         run: 'npm run bddTest'
