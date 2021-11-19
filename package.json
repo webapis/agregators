@@ -57,7 +57,8 @@
     "local:start": "SERVER=LOCAL_SERVER node root/index.js",
     "fb:emulator": "firebase emulators:start",
     "crawler": "SERVER=LOCAL_SERVER  node page-collector/server.js",
-    "testCucumber": "./node_modules/.bin/cucumber-js"
+    "testCucumber": "./node_modules/.bin/cucumber-js",
+    "netlifyDev":""
   },
   "nodemonConfig": {
     "ignore": [
