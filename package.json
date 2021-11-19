@@ -57,13 +57,12 @@
     "snipe": "node snipe.js",
     "start": "node --inspect=9090 root/index.js",
     "local:start": "SERVER=LOCAL_SERVER node root/index.js",
-    "fb:emulator": "ttab -t 'fb' npm run firebase emulators:start",
-    "netlifyDev": "ttab -t 'netl' npm run netlify dev",
+    "fb:emulator": "firebase emulators:start",
+    "netlifyDev": "netlify dev",
     "crawler": "SERVER=LOCAL_SERVER  node page-collector/server.js",
-    "testCucumber": "ttab -t 'cuc' npm run ./node_modules/.bin/cucumber-js",
-    "bddTest": "run-s one two",
-    "one":"ttab -t  echo 'hello from one'",
-    "two":"ttab -t  echo 'hello from two'"
+    "testCucumber": "./node_modules/.bin/cucumber-js",
+    "bddTest": "run-s one two"
+
   },
   "nodemonConfig": {
     "ignore": [
