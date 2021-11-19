@@ -26,4 +26,3 @@ jobs:
             ${{ runner.os }}-
       - name: Install dependencies
         run: 'npm install netlify-cli --save-dev'
-      - name: test
