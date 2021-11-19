@@ -61,7 +61,7 @@
     "netlifyDev": "ttab -t 'netl' npm run netlify dev",
     "crawler": "SERVER=LOCAL_SERVER  node page-collector/server.js",
     "testCucumber": "ttab -t 'cuc' npm run ./node_modules/.bin/cucumber-js",
-    "bddTest": "run-s fb:emulator netlifyDev testCucumber"
+    "bddTest": "run-s netlifyDev testCucumber"
   },
   "nodemonConfig": {
     "ignore": [
