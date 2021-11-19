@@ -25,7 +25,7 @@ jobs:
             ${{ runner.os }}-build-
             ${{ runner.os }}-
       - name: Install gnome-terminal
-        run:  apt-get install gnome-terminal
+        run:  sudo apt-get install gnome-terminal
       - name: Install project dependencies
         run: 'npm install'
       - name: Install netlify
