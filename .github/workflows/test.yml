@@ -31,8 +31,4 @@ jobs:
       - name: Install firebase cli
         run: 'npm install -g firebase-tools'
       - name: Run bdd test
-        run: | 
-            'firebase emulators:start' &
-            'netlify dev' &
-             sleep 10 &&
-            './node_modules/.bin/cucumber-js' 
+        run: npm run bddTest
