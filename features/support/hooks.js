@@ -1,7 +1,8 @@
-const { Before, After,BeforeAll,AfterAll } = require('@cucumber/cucumber');
+const { Before, After, BeforeAll, AfterAll } = require('@cucumber/cucumber');
 const puppeteer = require("puppeteer");
 
-const launchOptions = { timeout:0,
+const launchOptions = {
+  timeout: 0,
   headless: process.env.headless,
   // executablePath:
   //   process.env.MACHINE === "mac"
@@ -12,7 +13,7 @@ const launchOptions = { timeout:0,
     //    "--no-sandbox",
     //    "--disable-setuid-sandbox",
     // `--window-position=1200,0`,
-     `--window-size=1200,1250`,
+    `--window-size=1200,1250`,
     "--allow-insecure-localhost",
     // "--user-data-dir=/tmp/foo",
     "--ignore-certificate-errors",
@@ -21,21 +22,21 @@ const launchOptions = { timeout:0,
 };
 BeforeAll(async function () {
 
-global.browser = await puppeteer.launch(launchOptions);
-global.page = await global.browser.newPage()
-await global.page.setViewport({
-  width: 1200,
-  height: 1250,
-  deviceScaleFactor: 1,
-});
-global.page.goto('https://localhost:8888')
+  global.browser = await puppeteer.launch(launchOptions);
+  global.page = await global.browser.newPage()
+  await global.page.setViewport({
+    width: 1200,
+    height: 1250,
+    deviceScaleFactor: 1,
+  });
+  global.page.goto('https://localhost:8888')
   // perform some shared setup
 });
 
-// AfterAll(async function(){
-//   debugger;
-//   await   global.browser.close()
-// })
+AfterAll(async function () {
+  debugger;
+  process.exit(0)
+})
 
 // Before({tags:'@signin'},async function (){
 //   await global.page.waitForSelector('home-card > div > a')
