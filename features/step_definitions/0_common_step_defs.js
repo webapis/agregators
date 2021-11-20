@@ -38,9 +38,9 @@ Given('user focuses on component with {string} selector',{ timeout: 15000 }, asy
 
 })
 Given('component with {string} selector is visible to user', { timeout: 15000 }, async function (id) {
-    
+    debugger;
     await global.page.waitForSelector(id)
-
+debugger;
     if(id==="#repobranches" || id==="#repos"){
         
     }

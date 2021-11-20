@@ -1,9 +1,11 @@
 const { Before, After, BeforeAll, AfterAll } = require('@cucumber/cucumber');
 const puppeteer = require("puppeteer");
+console.log('process.env.headless.....', (/true/i).test(process.env.headless))
+debugger;
 
 const launchOptions = {
   timeout: 0,
-  headless: process.env.headless,
+  headless: (/true/i).test(process.env.headless),
   // executablePath:
   //   process.env.MACHINE === "mac"
   //     ? "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
@@ -21,7 +23,7 @@ const launchOptions = {
   ] //,devtools: true
 };
 BeforeAll(async function () {
-
+try {
   global.browser = await puppeteer.launch(launchOptions);
   global.page = await global.browser.newPage()
   await global.page.setViewport({
@@ -31,11 +33,15 @@ BeforeAll(async function () {
   });
   global.page.goto('https://localhost:8888')
   // perform some shared setup
+} catch (error) {
+  console.log('error',error)
+}
+
 });
 
 AfterAll(async function () {
   debugger;
-  process.exit(0)
+
 })
 
 // Before({tags:'@signin'},async function (){
