@@ -61,7 +61,9 @@
     "netlifyDev": "netlify dev",
     "crawler": "SERVER=LOCAL_SERVER  node page-collector/server.js",
     "testCucumber": "./node_modules/.bin/cucumber-js",
-    "bddTest": "run-s one two"
+    "bddTest": "(netlify dev) & (firebase emulators:start) & (sleep 30 && npm run testCucumber)",
+    "one":"echo 'hello from one '",
+    "two":"echo 'hello from two '"
 
   },
   "nodemonConfig": {
