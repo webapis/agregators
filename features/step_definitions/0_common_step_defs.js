@@ -18,7 +18,7 @@ Given('user types {string} to input with {string} selector', { timeout: 15000 },
 
     await global.page.waitForSelector(id)
     if (value === "password") {
-        await global.page.type(id, process.env.githubpass)
+        await global.page.type(id, process.env.githubpass ? process.env.githubpass:secrets.GITHUBPASS )
     } else {
         await global.page.type(id, value)
     }
