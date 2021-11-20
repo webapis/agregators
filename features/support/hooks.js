@@ -2,7 +2,7 @@ const { Before, After,BeforeAll,AfterAll } = require('@cucumber/cucumber');
 const puppeteer = require("puppeteer");
 
 const launchOptions = { timeout:0,
-  headless: false,
+  headless: process.env.headless,
   // executablePath:
   //   process.env.MACHINE === "mac"
   //     ? "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"

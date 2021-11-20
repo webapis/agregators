@@ -1,7 +1,8 @@
 name: bdd
 on:
   push:
-
+env:
+  headless: true
 jobs:
   bdd:
     runs-on: ubuntu-latest
