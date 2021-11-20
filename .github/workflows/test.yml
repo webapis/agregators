@@ -11,6 +11,8 @@ env:
   host: https://localhost:8888
   redirectUrl: https://localhost:8888/.netlify/functions/auth-callback
   databaseHost: turkmenistan-market.firebaseio.com
+  GITHUBPASS:  ${{secrets.GITHUBPASS}}
+  GH_CLIENT_SECRET:  ${{secrets.GH_CLIENT_SECRET}}
 jobs:
   bdd:
     runs-on: ubuntu-latest
