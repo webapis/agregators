@@ -7,7 +7,8 @@ exports.handler = async (event, context) => {
   const code = event.queryStringParameters.code
   // /* state helps mitigate CSRF attacks & Restore the previous state of your app */
   // const state = event.queryStringParameters.state
-  const response = await fetchGithubAccessToken({ code: code, client_id: process.env.gh_client_id, client_secret: process.env.gh_client_secret })
+  const client_secret = process.env.gh_client_secret?  process.env.gh_client_secret :secrets.GH_CLIENT_SECRET
+  const response = await fetchGithubAccessToken({ code: code, client_id: process.env.gh_client_id, client_secret })
   const { access_token } = JSON.parse(response)
   console.log('access_token____',access_token)
   const firebaseauthResponse = await authWithFirebase({ access_token, key: process.env.webapikey })
