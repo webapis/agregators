@@ -9,7 +9,7 @@ module.exports.nodeFetch=async function ({ host, path, method, headers, body }) 
         headers//: { 'Content-Type': 'application/json' },
 
     };
-    debugger;
+ 
     const prom = new Promise((resolve, reject) => {
         var request = https.request(options, function (responce) {
             var body = ''

@@ -51,7 +51,7 @@ async function fetchGithubAccessToken({ code, client_id, client_secret }) {
         method: 'POST',
         headers: { 'Accept': 'application/json' }
     };
-    debugger;
+
     const prom = new Promise((resolve, reject) => {
         var request = https.request(options, function (responce) {
             var body = ''
@@ -88,7 +88,7 @@ async function authWithFirebase({ access_token, key }) {
         headers: { 'Content-Type': 'application/json','User-Agent':'node-js'},
 
     };
-    debugger;
+
     const prom = new Promise((resolve, reject) => {
         var request = https.request(options, function (responce) {
             var body = ''

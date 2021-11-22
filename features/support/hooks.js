@@ -1,7 +1,7 @@
 const { Before, After, BeforeAll, AfterAll } = require('@cucumber/cucumber');
 const puppeteer = require("puppeteer");
 console.log('process.env.headless.....', (/true/i).test(process.env.headless))
-debugger;
+
 
 const launchOptions = {
   timeout: 0,
@@ -22,7 +22,7 @@ const launchOptions = {
     "--unsafely-treat-insecure-origin-as-secure=https://localhost:3000"
   ] //,devtools: true
 };
-BeforeAll(async function () {
+BeforeAll({timeout:15000},async function () {
 try {
   global.browser = await puppeteer.launch(launchOptions);
   global.page = await global.browser.newPage()
