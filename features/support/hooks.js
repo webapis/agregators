@@ -22,25 +22,26 @@ const launchOptions = {
     "--unsafely-treat-insecure-origin-as-secure=https://localhost:3000"
   ] //,devtools: true
 };
-BeforeAll({timeout:15000},async function () {
-try {
-  global.browser = await puppeteer.launch(launchOptions);
-  global.page = await global.browser.newPage()
-  await global.page.setViewport({
-    width: 1200,
-    height: 1250,
-    deviceScaleFactor: 1,
-  });
-  global.page.goto('https://localhost:8888')
-  // perform some shared setup
-} catch (error) {
-  console.log('error',error)
-}
+BeforeAll({ timeout: 15000 }, async function () {
+  try {
+    global.browser = await puppeteer.launch(launchOptions);
+    global.page = await global.browser.newPage()
+    await global.page.setViewport({
+      width: 1200,
+      height: 1250,
+      deviceScaleFactor: 1,
+    });
+    global.page.goto('https://localhost:8888')
+    // perform some shared setup
+  } catch (error) {
+    console.log('error', error)
+  }
 
 });
 
 AfterAll(async function () {
   debugger;
+  process.exit(0)
 
 })
 
