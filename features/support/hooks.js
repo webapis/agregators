@@ -6,6 +6,7 @@ console.log('process.env.headless.....', (/true/i).test(process.env.headless))
 const launchOptions = {
   timeout: 0,
   headless: (/true/i).test(process.env.headless),
+
   // executablePath:
   //   process.env.MACHINE === "mac"
   //     ? "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
@@ -26,11 +27,16 @@ BeforeAll({ timeout: 15000 }, async function () {
   try {
     global.browser = await puppeteer.launch(launchOptions);
     global.page = await global.browser.newPage()
-    await global.page.setViewport({
-      width: 1200,
-      height: 1250,
-      deviceScaleFactor: 1,
-    });
+    await global.page.setUserAgent(
+      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.125 Safari/537.36'
+    )
+    const tablet = puppeteer.devices['iPad landscape']
+    await global.page.emulate(tablet)
+    // await global.page.setViewport({
+    //   width: 1200,
+    //   height: 1250,
+    //   deviceScaleFactor: 1,
+    // });
     global.page.goto('https://localhost:8888')
     // perform some shared setup
   } catch (error) {
