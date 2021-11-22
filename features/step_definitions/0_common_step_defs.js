@@ -6,6 +6,7 @@ Given('user clicks to button with {string} selector {int}', { timeout: 15000 }, 
         await global.page.waitForSelector(id)
         await global.page.click(id)
         await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-success-${id}.png` });
+        console.log('user clicked.......')
         debugger;
     } catch (error) {
         await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-error-${id}.png` });
@@ -25,7 +26,7 @@ Given('user types {string} to input with {string} selector {int}', { timeout: 15
             await global.page.type(id, value)
             await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-success-${id}.png` });
         }
-
+        console.log('user typed.......')
     } catch (error) {
         await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-error-${id}.png` });
     }
@@ -48,6 +49,7 @@ Given('button with {string} selector is enabled {int}', { timeout: 15000 }, asyn
         debugger;
         await global.page.waitForSelector(`button${id}:not([disabled])`);
         await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-success-${id}.png` });
+        console.log('button enabled.......')
         debugger;
     } catch (error) {
         await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-error-${id}.png` });
@@ -78,6 +80,7 @@ Given('component with {string} selector is visible to user {int}', { timeout: 15
         if (id === "#js-oauth-authorize-btn") {
             debugger;
         }
+        console.log('component is visible.......')
     } catch (error) {
         debugger;
         await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-error-${id}.png` });
