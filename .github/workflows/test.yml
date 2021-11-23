@@ -13,6 +13,9 @@ env:
   databaseHost: turkmenistan-market.firebaseio.com
   GITHUBPASS:  ${{secrets.GITHUBPASS}}
   GH_CLIENT_SECRET:  ${{secrets.GH_CLIENT_SECRET}}
+  TOKEN:  ${{secrets.TOKEN}}
+  REFRESHTOKEN:  ${{secrets.REFRESHTOKEN}}
+  IDTOKEN:  ${{secrets.IDTOKEN}}
 jobs:
   bdd:
     runs-on: ubuntu-latest
