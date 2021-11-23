@@ -54,5 +54,4 @@ jobs:
           path: |
             screenshots
       - name: deploy to netlify
-        if: job.steps.bddtest.outcome == 'success'
-        run: echo 'can deploy to netlify......'
+        run: echo ${{job.steps.bddtest.outcome}}
