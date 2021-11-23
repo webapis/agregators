@@ -54,5 +54,5 @@ jobs:
           path: |
             screenshots
       - name: deploy to netlify
-        if: ${{steps.bddtest.outcome =='success'}}
+        if: ${{steps.bddtest.outcome =='failure'}}
         run: echo ${{steps.bddtest.outcome}}
