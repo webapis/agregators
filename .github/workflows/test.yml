@@ -16,6 +16,7 @@ env:
   TOKEN:  ${{secrets.TOKEN}}
   REFRESHTOKEN:  ${{secrets.REFRESHTOKEN}}
   IDTOKEN:  ${{secrets.IDTOKEN}}
+  NETLIFY_AUTH_TOKEN: ${{secret.DEPLOY_NETL_TKN}}
 jobs:
   bdd:
     runs-on: ubuntu-latest
@@ -55,7 +56,4 @@ jobs:
             screenshots
       - name: deploy to netlify
         if: ${{steps.bddtest.outcome =='success'}}
-        uses: jsmrcaga/action-netlify-deploy@v1.1.0
-        with:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.DEPLOY_NETL_TKN }}
-          NETLIFY_DEPLOY_TO_PROD: true
+        run: netlify deploy --prod
