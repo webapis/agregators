@@ -27,6 +27,7 @@ const launchOptions = {
 };
 BeforeAll({ timeout: 15000 }, async function () {
   try {
+   
     global.browser = await puppeteer.launch(launchOptions);
     global.page = await global.browser.newPage()
     //await global.page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.125 Safari/537.36')

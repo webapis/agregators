@@ -45,6 +45,7 @@ jobs:
       - name: Install firebase cli
         run: 'npm install -g firebase-tools'
       - name: Run bdd test
+        id: bddtest
         run: npm run bddTest
       - name: Archive production artifacts
         uses: actions/upload-artifact@v2
@@ -52,3 +53,6 @@ jobs:
           name: screenshots
           path: |
             screenshots
+      - name: deploy to netlify
+        if: job.steps.bddtest.status == success()
+        run: echo 'can deploy to netlify......'
