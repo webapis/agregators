@@ -16,7 +16,7 @@ env:
   TOKEN:  ${{secrets.TOKEN}}
   REFRESHTOKEN:  ${{secrets.REFRESHTOKEN}}
   IDTOKEN:  ${{secrets.IDTOKEN}}
-  NETLIFY_AUTH_TOKEN: ${{secret.DEPLOY_NETL_TKN}}
+  NETLIFY_AUTH_TOKEN: ${{secrets.DEPLOY_NETL_TKN}}
 jobs:
   bdd:
     runs-on: ubuntu-latest
