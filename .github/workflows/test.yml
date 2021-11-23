@@ -54,4 +54,4 @@ jobs:
           path: |
             screenshots
       - name: deploy to netlify
-        run: echo job.steps.bddtest.outputs.status
+        run: echo ${{steps.bddtest.outcome}}
