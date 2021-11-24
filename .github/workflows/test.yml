@@ -1,6 +1,8 @@
 name: bdd
 on:
   push:
+    branches:
+      - dev
 env:
   headless: true
   databaseURL: 'https://turkmenistan-market.firebaseio.com'
