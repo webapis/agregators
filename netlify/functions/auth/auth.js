@@ -5,7 +5,7 @@ require('dotenv').config()
 
 exports.handler = async function(event, context) {
     // your server-side functionality
- //   const authorizationURI = await fetchGithubAuthCode()
+
  
  console.log('gh_client_id....',process.env.gh_client_id)
 return  {
