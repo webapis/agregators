@@ -7,6 +7,7 @@ Given('user clicks to button with {string} selector {int}', { timeout: 15000 }, 
         await global.page.click(id)
         await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-success-${id}.png` });
         console.log(`${order}_success_|_user clicked.......`, id)
+        process.exit(1)
         debugger;
     } catch (error) {
         await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-error-${id}.png` });
