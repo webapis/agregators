@@ -1,6 +1,8 @@
 name: bdd
 on:
   push:
+    branches:
+      - dev
 env:
   headless: true
   databaseURL: 'https://turkmenistan-market.firebaseio.com'
@@ -57,4 +59,4 @@ jobs:
             screenshots
       - name: deploy to netlify
         if: ${{steps.bddtest.outcome =='success'}}
-        run: netlify deploy --prod
+        run: echo 'success...'
