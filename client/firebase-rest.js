@@ -10,7 +10,7 @@ function firebase() {
     return {
         setIdToken: function (idToken) {
             this.idToken = idToken
-            debugger;
+            
             return this
         },
         setProjectUri: function (projectUri) {
@@ -35,10 +35,10 @@ function firebase() {
             await updateIdToken()
             const fetchUrl =this.url ==='/'? `${this.projectUri}/.json?auth=${this.idToken}`: `${this.projectUri}/${this.url}.json?auth=${this.idToken}`
         
-            debugger;
+            
 
             fetch(fetchUrl, { method: 'PATCH', body: JSON.stringify(data) }).then(response => response.json()).then(data => {
-                debugger;
+                
                 cb && cb(null,data)
             }).catch(error => {
                 cb && cb(error,null)
@@ -58,30 +58,30 @@ function firebase() {
         get: async function (cb) {
             await updateIdToken()
                const fetchUrl =this.url ==='/'? `${this.projectUri}/.json?auth=${this.idToken}`: `${this.projectUri}/${this.url}.json?auth=${this.idToken}`
-               debugger;
+               
             fetch(fetchUrl, { method: 'GET'}).then(response => response.json()).then(data => {
-                debugger;
+                
                 cb && cb(null,data)
             }).catch(error => {
-                debugger;
+                
                 cb && cb(error,null)
                 return this
             })
         },
         on: async function (event, cb) {
-            debugger;
+            
             await updateIdToken()
             switch (event) {
                 case "value":
                     const fetchUrl =this.url ==='/'? `${this.projectUri}/.json?auth=${this.idToken}`: `${this.projectUri}/${this.url}.json?auth=${this.idToken}`
-                        debugger;
+                        
                     var childaddedEvent = new EventSource(fetchUrl, {});
                     childaddedEvent.onerror = function (error) {
                        
                         cb(error, null)
                     };
                     childaddedEvent.addEventListener('put', function (e) {
-                        debugger;
+                        
                         const response =JSON.parse(e.data)
                  
                         cb(null, response)
