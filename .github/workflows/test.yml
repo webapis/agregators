@@ -59,4 +59,4 @@ jobs:
             screenshots
       - name: deploy to netlify
         if: ${{steps.bddtest.outcome =='success'}}
-        run: netlify deploy --prod
+        run: echo 'success...'
