@@ -1,4 +1,4 @@
-require('dotenv').config()
+//require('dotenv').config()
 
 
 //const {gh_client_id,gh_redirectUrl,state}=config
