@@ -1,2 +1,4 @@
 
+/google-auth/ /.netlify/functions/google-auth
+/google-auth-callback/ /.netlify/functions/google-auth-callback
 /*  https://workflow-prod-799d4.firebaseapp.com/:splat 200

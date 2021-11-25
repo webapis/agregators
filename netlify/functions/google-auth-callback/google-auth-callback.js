@@ -1,30 +1,48 @@
 
+const { exchangeGoogleAuthorizationCode, updateUsersWorkspaceGoogleAuthState } = require('../../../root/utils/oauth2/server/server.oauth2')
+
+const client_id = process.env.client_id
+const client_secret = process.env.CLIENT_SECRET
+const redirect_uri = process.env.redirectUri
 exports.handler = async (event, context) => {
 
-    return {
-        statusCode: 200,
-        body: JSON.stringify(event)
-    }
+    const { code, state } = event.queryStringParameters
+    // return {
+    //     statusCode: 200,
+    //     body: JSON.stringify(event)
+    // }
+    const authdata = await exchangeGoogleAuthorizationCode({ client_id, client_secret, code, redirect_uri })
+    debugger;
+    await updateUsersWorkspaceGoogleAuthState({ ...authdata, state })
+    const { access_token, refresh_token, scope } = authdata
 
+    debugger;
+    // return {
+    //     statusCode: 200,
+    //     body: JSON.stringify(authdata)
+    // }
     return {
         statusCode: 200, body: `<!DOCTYPE html>
-  <html lang="en">
-  
-  <head>
-      <meta charset="UTF-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Home</title>
-      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet"
-      integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
-      <link href="https://workflow-runner.netlify.app/ws-dashboard/breadcrumb.css" rel="stylesheet">
-  </head>
-  
-  <body>
-  
-   
-  </body>
-  
-  </html>` }
+      <html lang="en">
+
+      <head>
+          <meta charset="UTF-8">
+          <meta http-equiv="X-UA-Compatible" content="IE=edge">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Google Authentication</title>
+     
+        
+      </head>
+
+      <body>
+      Google Authentication redirecting...
+      <input type="hidden" id="access_token" value="${access_token}"/>
+      <input type="hidden" id="refresh_token" value="${refresh_token}"/>
+      <input type="hidden" id="scope" value="${scope}"/>
+      <google-oauth-page></google-oauth-page>
+      <script src="${process.env.host}/google-oauth-page.js"></script>
+      </body>
+
+      </html>` }
 
 }

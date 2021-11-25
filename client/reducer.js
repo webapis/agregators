@@ -143,7 +143,7 @@ export default (state, action) => {
     case actionTypes.GOOGLE_SCOPES:
       return { ...state, workspaceTasks: { ...state.workspaceTasks, googleScopes: action.payload } }
     case actionTypes.GOOGLE_AUTH_SUCCESS:
-      return { ...state, auth: { ...state.auth, googleToken: action.payload } }
+      return { ...state, auth: { ...state.auth, googleOauth: action.payload } }
     case actionTypes.WORKFLOW_SELECTED:
       return { ...state, taskWorkflows: { ...state.taskWorkflows, workflowSelected: { ...action.payload } } }
 
