@@ -370,14 +370,22 @@ const fetch = require('node-fetch')
 
 // })
 
-const { encrypt, decrypt } = require('./root/utils/nodejs/cryptos')
+ const { encrypt, decrypt } = require('./root/utils/nodejs/cryptos2')
 const fs = require('fs')
 const data = fs.readFileSync(`${process.cwd()}/mock-data/firebaseAuthData.json`, 'utf8')
 debugger;
-const result = encrypt(data)
-console.log('encrypted result', result)
-debugger;
+// const result = encrypt(data)
+// console.log('encrypted result', result)
+// debugger;
 
-const decryptedResult = decrypt(result)
+// const decryptedResult = decrypt(result)
 
-console.log('decryptedResult', decryptedResult)
+// console.log('decryptedResult', decryptedResult)
+const plain = Buffer.from(data);
+
+const encrypted = encrypt(plain);
+console.log('Encrypted:', encrypted.toString());
+
+const decrypted = decrypt(encrypted);
+console.log('Decrypted:', decrypted.toString());
+

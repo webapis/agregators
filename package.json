@@ -64,10 +64,11 @@
     "bddlocalTest": "(/Users/personalcomputer/.npm-global/lib/node_modules/netlify-cli/bin/run dev) & (firebase emulators:start) & (sleep 40 && npm run testCucumber)",
     "netlifyLocalDev": "/Users/personalcomputer/.npm-global/lib/node_modules/netlify-cli/bin/run dev",
     "two": "echo 'hello from two '",
-    "cryptos": "echo 'files encrypted'"
+    "encryptData": "node encryptData.js",
+    "decryptData": "node decryptData.js"
   },
   "pre-commit": [
-    "cryptos"
+    "encryptData"
   ],
   "nodemonConfig": {
     "ignore": [
