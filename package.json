@@ -18,11 +18,9 @@
   "devDependencies": {
     "@cucumber/cucumber": "^7.0.0",
     "cross-env": "7.0.2",
-    "husky": "^7.0.0",
     "node-watch": "0.7.1",
-    "npm-run-all": "^4.1.5",
-    "puppeteer": "^7.1.0",
-    "ttab": "^0.7.2"
+    "pre-commit": "^1.2.2",
+    "puppeteer": "^7.1.0"
   },
   "scripts": {
     "dataCollector": "SERVER=LOCAL NEXT_TASK=page_collection ALL=FALSE node page-collector/server.js",
@@ -43,7 +41,7 @@
     "taskSequelizer": "ALL=TRUE node page-collector/server.js",
     "serve": "NODE_ENV=dev projectName=moda node page-serve/server.js",
     "storybook": "NODE_ENV=storybook rollup -c -w",
-    "test": "mocha test/**/*.test.js",
+    "testd": "mocha test/**/*.test.js",
     "prerender:test": "mocha page-prerender/test",
     "pageCollector:test": "NODE_ENV=test mocha page-collector/test/**/*.test.js",
     "test:utils:promiseConcurrency": "mocha utils/promise-concurrency/test",
@@ -66,11 +64,11 @@
     "bddlocalTest": "(/Users/personalcomputer/.npm-global/lib/node_modules/netlify-cli/bin/run dev) & (firebase emulators:start) & (sleep 40 && npm run testCucumber)",
     "netlifyLocalDev": "/Users/personalcomputer/.npm-global/lib/node_modules/netlify-cli/bin/run dev",
     "two": "echo 'hello from two '",
-    "prepare": "husky install"
+    "cryptos": "echo 'files encrypted'"
   },
-  "husky": {
-    "pre-commit": "echo 'hello from hsk'"
-  },
+  "pre-commit": [
+    "cryptos"
+  ],
   "nodemonConfig": {
     "ignore": [
       "test/*",
