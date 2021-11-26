@@ -152,3 +152,15 @@ Given('component with {string} id includes {string} textcontent {int}', async fu
     debugger;
 })
 
+Given('user navigates to ${string} ${int}', async function (url, order) {
+    try {
+        await global.page.goto(url)
+        debugger;
+        await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-success-${url}.png` });
+        console.log(`${order}_success_|_user navigates to.......${url}`)
+      
+    } catch (error) {
+        console.log(`${order}_error_|_user navigates to.......${url}`)
+        process.exit(1)
+    }
+})

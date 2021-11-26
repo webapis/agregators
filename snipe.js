@@ -2,7 +2,7 @@ process.env.SERVER = 'LOCAL_SERVER'
 require('dotenv').config()
 const fetch = require('node-fetch')
 //const { firebaseApp, fbDatabase } = require('./utils/firebase/firebaseInit')
- const { fbRest } = require('./root/utils/firebase/firebase-rest')
+//  const { fbRest } = require('./root/utils/firebase/firebase-rest')
 
 
 // function refreshCustomToken() {
@@ -168,7 +168,7 @@ const fetch = require('node-fetch')
 //     }).catch(error => {
 //         debugger;
 //     })
-    
+
 // fetch(`https://api.github.com/applications/8aa21614dc0136a7a44b/token`, {method:'POST',headers: { Accept: "application/vnd.github.v3+json", Authorization: `Basic ${Buffer.from(unescape(encodeURIComponent('webapis' + ':' + 'Dragonfly1977!')), 'utf-8')}`,body:JSON.stringify({access_token:'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'})}}).then(response=> response.json()).then(data=>{
 //     debugger;
 // }).catch(error=>{
@@ -217,8 +217,8 @@ const fetch = require('node-fetch')
 //     }
 //     debugger;
 // })
-var https = require('https');
-var fs =require('fs')
+// var https = require('https');
+// var fs = require('fs')
 //const response = await fetch(`https://github.com/login/oauth/access_token?client_id=${client_id}&client_secret=${client_secret}&code=${code}`, { method: 'post', headers: { 'Accept': 'application/json' } })
 // var options = {
 //   host: 'github.com',
@@ -273,7 +273,7 @@ var fs =require('fs')
 
 //   res.on('end', () => {
 //     console.log('Response ended: ',data);
-  
+
 //     // for(user of users) {
 //     //   console.log(`Got user with id: ${user.id}, name: ${user.name}`);
 //     // }
@@ -370,5 +370,14 @@ var fs =require('fs')
 
 // })
 
-
+const { encrypt, decrypt } = require('./root/utils/nodejs/cryptos')
+const fs = require('fs')
+const data = fs.readFileSync(`${process.cwd()}/mock-data/firebaseAuthData.json`, 'utf8')
 debugger;
+const result = encrypt(data)
+console.log('encrypted result', result)
+debugger;
+
+const decryptedResult = decrypt(result)
+
+console.log('decryptedResult', decryptedResult)

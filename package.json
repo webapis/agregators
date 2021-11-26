@@ -11,6 +11,7 @@
     "eventsource": "^1.1.0",
     "form-data": "^4.0.0",
     "fs-extra": "9.1.0",
+    "husky": "^7.0.4",
     "jsdom": "16.5.1",
     "make-dir": "3.1.0",
     "node-fetch": "2.6.1"
@@ -63,9 +64,11 @@
     "testCucumber": "./node_modules/.bin/cucumber-js",
     "bddTest": "(netlify dev) & (firebase emulators:start) & (sleep 30 && npm run testCucumber)",
     "bddlocalTest": "(/Users/personalcomputer/.npm-global/lib/node_modules/netlify-cli/bin/run dev) & (firebase emulators:start) & (sleep 40 && npm run testCucumber)",
-    "netlifyLocalDev":"/Users/personalcomputer/.npm-global/lib/node_modules/netlify-cli/bin/run dev",
-    "two":"echo 'hello from two '"
-
+    "netlifyLocalDev": "/Users/personalcomputer/.npm-global/lib/node_modules/netlify-cli/bin/run dev",
+    "two": "echo 'hello from two '"
+  },
+  "husky": {
+    "pre-commit": "echo \"[Husky] pre-commit\""
   },
   "nodemonConfig": {
     "ignore": [
