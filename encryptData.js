@@ -8,24 +8,32 @@ debugger;
 
 let files =[]
 const dirpath=`${process.cwd()}/mock-data`
-debugger;
-walkSync(dirpath, function (filepath) {
 
-    files.push(filepath)
-debugger;
+walkSync(dirpath, function (filepath) {
+    if (path.extname(filepath) === '.json') {
+        files.push(filepath)
+    }
+    
+
 })
-debugger;
+
+
 for (let filepath of files) {
-    const batchName = path.basename(filepath, '.json');
-debugger;
+
+
     const data = fs.readFileSync(filepath);
-    debugger;
+   
     const encryptedData =encrypt(data)
-    debugger;
+ 
     fs.writeFileSync(`${filepath}.B64`,encryptedData,{encoding:'base64'})
-debugger;
+
 }
 
-
-
-
+// encrypt .env
+const envFilePath =`${process.cwd()}/.env`
+const data = fs.readFileSync(envFilePath);
+debugger;
+const encryptedData =encrypt(data)
+debugger;
+fs.writeFileSync(`${envFilePath}.B64`,encryptedData,{encoding:'base64'})
+debugger;

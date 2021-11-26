@@ -6,7 +6,7 @@ const { walkSync } = require('./root/utils/nodejs/walkSync');
 debugger;
 // const data = fs.readFileSync(`${process.cwd()}/mock-data/firebaseAuthData.json`, 'utf8')
 
-let files = []
+let files = [`${process.cwd()}/.env.B64`]
 const dirpath = `${process.cwd()}/mock-data`
 debugger;
 walkSync(dirpath, function (filepath) {
