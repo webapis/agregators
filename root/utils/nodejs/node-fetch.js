@@ -1,14 +1,17 @@
 
 const https = require('https');
-module.exports.nodeFetch = async function ({ host, path, method, headers, body, port, ssh = true }) {
-    const https = ssh ? require('https') : require('http')
-    debugger;
+module.exports.nodeFetch = async function ({ host, path, method, headers, body, port, ssh = 'true' }) {
+    const parsedPort = port && parseInt(port)
+    const parseSsh = ssh ==='true'
+   
+    const https = parseSsh ? require('https') : require('http')
+
     var options = {
         host,//: 'identitytoolkit.googleapis.com',
         path,//: encodeURI(`/v1/accounts:signInWithIdp?key=${key}`),
         method: method ? method : 'GET',
         headers,//: { 'Content-Type': 'application/json' },
-        port
+        port: parsedPort
 
     };
 

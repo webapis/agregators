@@ -10,7 +10,7 @@ customElements.define('login-page', class extends HTMLElement {
         if (document.getElementById('email')) {
             debugger;
             const email = document.getElementById('email').value
-            const token = document.getElementById('oauthAccessToken').value
+            const token = document.getElementById('token').value
             const screenName = document.getElementById('screenName').value
             const photoUrl = document.getElementById('photoUrl').value
             const refreshToken = document.getElementById('refreshToken').value

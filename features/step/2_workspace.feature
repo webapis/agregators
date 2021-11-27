@@ -1,5 +1,5 @@
 Feature: Workspace
-
+@workspace
 Scenario: User creates private workspace
   Given user clicks to button with "#workspace" selector 1
   And user clicks to button with "#create-workspace-btn" selector 2

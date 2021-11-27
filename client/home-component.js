@@ -22,7 +22,7 @@ customElements.define('home-component', class extends HTMLElement {
             this.innerHTML = `<div>
             
             <home-card title="Sign in" page-link="/.netlify/functions/auth" link-id="signin"></home-card>
-            <home-card title="Hello" page-link="/.netlify/functions/hello" link-id="hello"></home-card>
+            
             </div>`
         }
 

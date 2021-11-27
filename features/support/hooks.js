@@ -1,7 +1,10 @@
 require('dotenv').config()
+
 const { Before, After, BeforeAll, AfterAll } = require('@cucumber/cucumber');
 const puppeteer = require("puppeteer");
-const localStorageState = require('./localStorageState.json')
+const fs = require('fs')
+
+const makeDir = require('make-dir')
 console.log('process.env.headless.....', (/true/i).test(process.env.headless))
 
 
@@ -27,30 +30,24 @@ const launchOptions = {
 };
 BeforeAll({ timeout: 15000 }, async function () {
   try {
-   
-    global.browser = await puppeteer.launch(launchOptions);
-    global.page = await global.browser.newPage()
-    //await global.page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.125 Safari/537.36')
-    // const tablet = puppeteer.devices['iPad landscape']
-    // await global.page.emulate(tablet)
+    const screenshotsFolderPath = `${process.cwd()}/screenshots`
+    if (fs.existsSync(screenshotsFolderPath)) {
 
+      fs.rmSync(screenshotsFolderPath, { recursive: true, force: true });
+      await makeDir.sync(screenshotsFolderPath)
 
-    await global.page.setViewport({
-      width: 1200,
-      height: 1250,
-      deviceScaleFactor: 1,
-    });
+    } else {
+      await makeDir.sync(screenshotsFolderPath)
+    }
 
+    //initialize firebase
 
-    await global.page.goto('https://localhost:8888')
-
-
-    await global.page.evaluate((_localStorageState) => {
-
-      window.localStorage.setItem("page-store", JSON.stringify(_localStorageState))
-
-    }, { ...localStorageState, auth: { ...localStorageState.auth, token: process.env.TOKEN, refreshToken: process.env.REFRESHTOKEN, idToken: process.env.IDTOKEN } })
+    
     debugger;
+    //Initialize puppetteer
+    global.browser = await puppeteer.launch(launchOptions);
+
+
 
     // perform some shared setup
   } catch (error) {
@@ -58,7 +55,46 @@ BeforeAll({ timeout: 15000 }, async function () {
   }
 
 });
+Before({ tags: '@auth or @workspace' }, async function () {
+  debugger;
+  global.page = await global.browser.newPage()
 
+  await global.page.setViewport({
+    width: 1200,
+    height: 1250,
+    deviceScaleFactor: 1,
+  });
+
+  await global.page.goto('https://localhost:8888')
+
+
+})
+
+After({ tags: '@auth or @workspace' }, async function () {
+  debugger;
+  await global.page.close()
+})
+
+Before({ tags: '@auth' }, async function () {
+  //SET INITIAL LOCAL STORAGE STATE HERE
+
+  const pageStoreInitState = require('../../mock-data/pageStore-InitState.json')
+  await global.page.evaluate((_localStorageState) => {
+
+    window.localStorage.setItem("page-store", JSON.stringify(_localStorageState))
+
+  }, pageStoreInitState)
+})
+Before({ tags: '@workspace' }, async function () {
+  //SET INITIAL LOCAL STORAGE STATE HERE
+
+  const pageStoreInitState = require('../../mock-data/pageStore-authenticatedState.json')
+  await global.page.evaluate((_localStorageState) => {
+
+    window.localStorage.setItem("page-store", JSON.stringify(_localStorageState))
+
+  }, pageStoreInitState)
+})
 AfterAll(async function () {
   debugger;
   process.exit(0)

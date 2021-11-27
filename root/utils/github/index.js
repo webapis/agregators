@@ -131,7 +131,7 @@ async function updateWorkflowRunner({ access_token, userisOld, screenName }) {
 
     } else {
         console.log('---2----')
-        return await nodeFetch({ host: 'api.github.com', path: `/repos/${screenName}/workflow_runner/merge-upstream`, method: 'post', headers: { 'User-Agent': 'node.js', 'Authorization': `token ${access_token}`, 'Accept': 'application/vnd.github.v3+json' }, body: JSON.stringify({ branch: 'main' }) })
+        return await nodeFetch({ host: 'api.github.com', path: `/repos/${screenName}/workflow_runner/merge-upstream`, method: 'post', headers: { 'User-Agent': 'node.js', 'Authorization': `token ${access_token}`, 'Accept': 'application/vnd.github.v3+json' }, body: JSON.stringify({ branch: 'main' })  })
 
 
     }
@@ -192,10 +192,12 @@ async function updateUserCredentials({ token: oauthAccessToken, refreshToken, id
     try {
         const publicData = { email, photoUrl }
         const privateData = { token: oauthAccessToken, refreshToken, idToken, screenName, email }
-        const response = await nodeFetch({ host: process.env.databaseHost, path: `/users/.json?auth=${idToken}`, method: 'PATCH', headers: {}, body: JSON.stringify({ [`private/${localId}/fb_auth`]: privateData, [`public/users/${screenName}`]: publicData }) })
+        debugger;
+        const response = await nodeFetch({ host: process.env.databaseHost, path: `/users/.json?auth=${idToken}`, method: 'PATCH', headers: {}, body: JSON.stringify({ [`private/${localId}/fb_auth`]: privateData, [`public/users/${screenName}`]: publicData }),port:process.env.dbPort,ssh:process.env.dbSsh })
 
         return response
     } catch (error) {
+        debugger;
         console.log('error', error)
         return error
     }
