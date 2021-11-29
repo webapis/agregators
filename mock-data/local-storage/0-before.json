@@ -1,0 +1,69 @@
+{
+    "auth": null,
+    "projectName": "",
+    "description": "",
+    "projectNames": [],
+    "selectedDashboard": "",
+    "selectedProjectName": "",
+    "companyName": "",
+    "dashboardTab": "main-tab",
+    "navAfterAuth": "home",
+    "emailToEdit": {
+        "key": "",
+        "email": ""
+    },
+    "error": null,
+    "loading": false,
+    "emaillist": [],
+    "googleServiceScopes": "https://www.googleapis.com/auth/userinfo.email",
+    "githubServiceScopes": "",
+    "startScrapingClicked": false,
+    "runId": 0,
+    "completeTime": 0,
+    "selectedProjectTab": "project-workflows",
+    "workflowEditor": {
+        "workflowName": "",
+        "workflowDescription": "",
+        "ownersRepos": [],
+        "selectedRepo": "",
+        "isPrivate": "",
+        "selectedBranch": "",
+        "tokenFPR": ""
+    },
+    "workflowList": {
+        "workflowTab": "private-workflows",
+        "workflows": []
+    },
+    "workspaceList": {
+        "workspaces": [],
+        "selectedWorkspaceTab": "private-tab"
+    },
+    "workspaceDashboard": {
+        "selectedTab": "workflows-tab",
+        "selectedWfContainerTab": "collection-tab",
+        "containers": [],
+        "selectedContainer": "",
+        "selectedWfContainerEditorTab": "workflows-tab"
+    },
+    "workspace": {
+        "workspaceSelected": ""
+    },
+    "containerName": {
+        "name": ""
+    },
+    "wfContainer": {
+        "selectedContainer": ""
+    },
+    "workflowTree": {
+        "workflowPath": ""
+    },
+    "workspaceEditor": {
+        "workspaceName": "",
+        "description": "",
+        "accessLevel": ""
+    },
+    "workspaceUsers": {
+        "username": "",
+        "role": ""
+    }
+}

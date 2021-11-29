@@ -6,14 +6,14 @@ require('dotenv').config()
 exports.handler = async function (event, context) {
   // your server-side functionality
 
-  if (process.env.BDD_TEST === 'TRUE') {
-    const firebaseAuthData = require('../../../mock-data/firebaseAuthData.json')
-    const {template} = require('../utils/loginPageTemplate')
-    return {
-      statusCode: 200, body: template(firebaseAuthData)
-    }
+  // if (process.env.BDD_TEST === 'TRUE') {
+  //   const firebaseAuthData = require('../../../mock-data/firebaseAuthData.json')
+  //   const {template} = require('../utils/loginPageTemplate')
+  //   return {
+  //     statusCode: 200, body: template(firebaseAuthData)
+  //   }
 
-  } else {
+  // } else {
 
     console.log('gh_client_id....', process.env.gh_client_id)
     return {
@@ -25,8 +25,7 @@ exports.handler = async function (event, context) {
       body: ''
     }
 
-  }
-
+ // }
 
 
 }

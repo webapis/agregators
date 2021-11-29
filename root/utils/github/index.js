@@ -59,7 +59,7 @@ async function fetchGithubAccessToken({ code, client_id, client_secret }) {
                 body += chunk.toString('utf8')
             });
             responce.on("end", function () {
-                console.log("Body", body);
+                //console.log("Body", body);
 
                 return resolve(body)
             });
@@ -96,7 +96,7 @@ async function authWithFirebase({ access_token, key }) {
                 body += chunk.toString('utf8')
             });
             responce.on("end", function () {
-                console.log("Body", body);
+              //  console.log("Body", body);
 
                 return resolve(body)
             });

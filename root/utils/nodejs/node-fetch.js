@@ -22,13 +22,13 @@ module.exports.nodeFetch = async function ({ host, path, method, headers, body, 
                 body += chunk.toString('utf8')
             });
             responce.on("end", function () {
-                console.log("Body", body);
-                debugger;
+             //   console.log("Body", body);
+                
                 return resolve(body)
             });
             responce.on("error", function (error) {
-                console.log("Body", error);
-                debugger;
+                console.log("Node fetch error", error);
+                
                 return reject(error)
             });
         });
