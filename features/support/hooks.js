@@ -190,7 +190,7 @@ const authState =JSON.parse(data)
 
     return updatedState
 
-  } else {
+  } else {  
 
     return require(`${process.cwd()}/mock-data/local-storage/0_authentication-after.json`)
   }
