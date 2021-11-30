@@ -1,1 +1,81 @@
-{"auth":{"email":"coder.gihub@gmail.com","token":"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","screenName":"codergihub","photoUrl":"https://avatars.githubusercontent.com/u/90454461?v=4","refreshToken":"AFxQ4_pCPPc3P62ugB7Mcx0jO8V23XC6JDeB_eln8mlabJlTV1ooU7AWOwr-6nP4MVSR5g9s_-AVncB65s7qyQug9OExuvj2nmTI5Xqopk61oJKR5oHkE5Q7aWRFiwzHPhfS02KGHTScYwpmkMy0HM3S0QVCXv3lR-pPzROpFTQaI8hNT6AMN0wDVPyh-h049lhnk-3AjUr9csM5xX1fi-LONARC7AXmRdRv0sAm8a2GWFPhpjUUVEmKj6HCRLNGQBTNKckqyzcR8_6ZAoEsQr_NLAKHmjHpexzVtKwYun16pBC88LHYuSfSaQ7qFkMGPSbx0r9hneYVBBFDKFz_tE6oYTthdfbXhg","idToken":"eyJhbGciOiJSUzI1NiIsImtpZCI6IjgwNTg1Zjk5MjExMmZmODgxMTEzOTlhMzY5NzU2MTc1YWExYjRjZjkiLCJ0eXAiOiJKV1QifQ.eyJwaWN0dXJlIjoiaHR0cHM6Ly9hdmF0YXJzLmdpdGh1YnVzZXJjb250ZW50LmNvbS91LzkwNDU0NDYxP3Y9NCIsImlzcyI6Imh0dHBzOi8vc2VjdXJldG9rZW4uZ29vZ2xlLmNvbS90dXJrbWVuaXN0YW4tbWFya2V0IiwiYXVkIjoidHVya21lbmlzdGFuLW1hcmtldCIsImF1dGhfdGltZSI6MTYzODI3MjM1MiwidXNlcl9pZCI6Ikw4ZlpSbDVaYlpXbFZJMmtRakl2NldRbENwWjIiLCJzdWIiOiJMOGZaUmw1WmJaV2xWSTJrUWpJdjZXUWxDcFoyIiwiaWF0IjoxNjM4MjcyNTQyLCJleHAiOjE2MzgyNzYxNDIsImVtYWlsIjoiY29kZXIuZ2lodWJAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImdpdGh1Yi5jb20iOlsiOTA0NTQ0NjEiXSwiZW1haWwiOlsiY29kZXIuZ2lodWJAZ21haWwuY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoiZ2l0aHViLmNvbSJ9fQ.hCysyeKLLtxXgmanVrQeLlWLMIgzm64rpMVcan_C4mPyJGUmK3EETG771Jcrk2N9KodGPlaKsJGJ2bk0GGkatRrkLBtH3gNW8wwxeyxO9gJMsBVTjo1BLPXaviWGew-UvduK0_o_liruR9OjOevpYk7RuDoG-kGlCNjWyOFXoBH5D7krD2XC61XGPC3ATvZxEXovgaNNMVO0hqVck0KihrT-hyx0SiCiTnl6eDDtZdE7wQQ3wHR41-UaD5A_1UA84HDZZhWgU3PCS1ewoncEbbGwLwOkCHvqFUYeR-u0ozB3y6CWc3sawqKP6MwH0hzz5UOyiHYdaffxuVEAENwSbQ","localId":"L8fZRl5ZbZWlVI2kQjIv6WQlCpZ2","api_key":"AIzaSyDb8Z27Ut0WJ-RH7Exi454Bpit9lbARJeA","timestamp":1638272542523,"expiresIn":"3600"},"projectName":"","description":"","projectNames":[],"selectedDashboard":"","selectedProjectName":"","companyName":"","dashboardTab":"main-tab","navAfterAuth":"home","emailToEdit":{"key":"","email":""},"error":null,"loading":false,"emaillist":[],"googleServiceScopes":"https://www.googleapis.com/auth/userinfo.email","githubServiceScopes":"","startScrapingClicked":false,"runId":0,"completeTime":0,"selectedProjectTab":"project-workflows","workflowEditor":{"workflowName":"","workflowDescription":"","ownersRepos":[],"selectedRepo":"","isPrivate":"","selectedBranch":"","tokenFPR":""},"workflowList":{"workflowTab":"private-workflows","workflows":[]},"workspaceList":{"workspaces":[],"selectedWorkspaceTab":"private-tab"},"workspaceDashboard":{"selectedTab":"workflows-tab","selectedWfContainerTab":"collection-tab","containers":[],"selectedContainer":"","selectedWfContainerEditorTab":"workflows-tab"},"workspace":{"workspaceSelected":""},"containerName":{"name":""},"wfContainer":{"selectedContainer":""},"workflowTree":{"workflowPath":""},"workspaceEditor":{"workspaceName":"","description":"","accessLevel":""},"workspaceUsers":{"username":"","role":""},"lastVisitedUrl":"https://localhost:8888/"}
+{
+    "auth": {
+        "email": "coder.gihub@gmail.com",
+        "token": "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",
+        "screenName": "codergihub",
+        "photoUrl": "https://avatars.githubusercontent.com/u/90454461?v=4",
+        "refreshToken": "AFxQ4_pCPPc3P62ugB7Mcx0jO8V23XC6JDeB_eln8mlabJlTV1ooU7AWOwr-6nP4MVSR5g9s_-AVncB65s7qyQug9OExuvj2nmTI5Xqopk61oJKR5oHkE5Q7aWRFiwzHPhfS02KGHTScYwpmkMy0HM3S0QVCXv3lR-pPzROpFTQaI8hNT6AMN0wDVPyh-h049lhnk-3AjUr9csM5xX1fi-LONARC7AXmRdRv0sAm8a2GWFPhpjUUVEmKj6HCRLNGQBTNKckqyzcR8_6ZAoEsQr_NLAKHmjHpexzVtKwYun16pBC88LHYuSfSaQ7qFkMGPSbx0r9hneYVBBFDKFz_tE6oYTthdfbXhg",
+        "idToken": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjgwNTg1Zjk5MjExMmZmODgxMTEzOTlhMzY5NzU2MTc1YWExYjRjZjkiLCJ0eXAiOiJKV1QifQ.eyJwaWN0dXJlIjoiaHR0cHM6Ly9hdmF0YXJzLmdpdGh1YnVzZXJjb250ZW50LmNvbS91LzkwNDU0NDYxP3Y9NCIsImlzcyI6Imh0dHBzOi8vc2VjdXJldG9rZW4uZ29vZ2xlLmNvbS90dXJrbWVuaXN0YW4tbWFya2V0IiwiYXVkIjoidHVya21lbmlzdGFuLW1hcmtldCIsImF1dGhfdGltZSI6MTYzODI3MjM1MiwidXNlcl9pZCI6Ikw4ZlpSbDVaYlpXbFZJMmtRakl2NldRbENwWjIiLCJzdWIiOiJMOGZaUmw1WmJaV2xWSTJrUWpJdjZXUWxDcFoyIiwiaWF0IjoxNjM4MjcyNTQyLCJleHAiOjE2MzgyNzYxNDIsImVtYWlsIjoiY29kZXIuZ2lodWJAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImdpdGh1Yi5jb20iOlsiOTA0NTQ0NjEiXSwiZW1haWwiOlsiY29kZXIuZ2lodWJAZ21haWwuY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoiZ2l0aHViLmNvbSJ9fQ.hCysyeKLLtxXgmanVrQeLlWLMIgzm64rpMVcan_C4mPyJGUmK3EETG771Jcrk2N9KodGPlaKsJGJ2bk0GGkatRrkLBtH3gNW8wwxeyxO9gJMsBVTjo1BLPXaviWGew-UvduK0_o_liruR9OjOevpYk7RuDoG-kGlCNjWyOFXoBH5D7krD2XC61XGPC3ATvZxEXovgaNNMVO0hqVck0KihrT-hyx0SiCiTnl6eDDtZdE7wQQ3wHR41-UaD5A_1UA84HDZZhWgU3PCS1ewoncEbbGwLwOkCHvqFUYeR-u0ozB3y6CWc3sawqKP6MwH0hzz5UOyiHYdaffxuVEAENwSbQ",
+        "localId": "L8fZRl5ZbZWlVI2kQjIv6WQlCpZ2",
+        "api_key": "AIzaSyDb8Z27Ut0WJ-RH7Exi454Bpit9lbARJeA",
+        "timestamp": 1638272542523,
+        "expiresIn": "3600"
+    },
+    "projectName": "",
+    "description": "",
+    "projectNames": [],
+    "selectedDashboard": "",
+    "selectedProjectName": "",
+    "companyName": "",
+    "dashboardTab": "main-tab",
+    "navAfterAuth": "home",
+    "emailToEdit": {
+        "key": "",
+        "email": ""
+    },
+    "error": null,
+    "loading": false,
+    "emaillist": [],
+    "googleServiceScopes": "https://www.googleapis.com/auth/userinfo.email",
+    "githubServiceScopes": "",
+    "startScrapingClicked": false,
+    "runId": 0,
+    "completeTime": 0,
+    "selectedProjectTab": "project-workflows",
+    "workflowEditor": {
+        "workflowName": "",
+        "workflowDescription": "",
+        "ownersRepos": [],
+        "selectedRepo": "",
+        "isPrivate": "",
+        "selectedBranch": "",
+        "tokenFPR": ""
+    },
+    "workflowList": {
+        "workflowTab": "private-workflows",
+        "workflows": []
+    },
+    "workspaceList": {
+        "workspaces": [],
+        "selectedWorkspaceTab": "private-tab"
+    },
+    "workspaceDashboard": {
+        "selectedTab": "workflows-tab",
+        "selectedWfContainerTab": "collection-tab",
+        "containers": [],
+        "selectedContainer": "",
+        "selectedWfContainerEditorTab": "workflows-tab"
+    },
+    "workspace": {
+        "workspaceSelected": ""
+    },
+    "containerName": {
+        "name": ""
+    },
+    "wfContainer": {
+        "selectedContainer": ""
+    },
+    "workflowTree": {
+        "workflowPath": ""
+    },
+    "workspaceEditor": {
+        "workspaceName": "",
+        "description": "",
+        "accessLevel": ""
+    },
+    "workspaceUsers": {
+        "username": "",
+        "role": ""
+    },
+    "lastVisitedUrl": "https://localhost:8888/"
+}

@@ -76,7 +76,7 @@ Before({ timeout: 15000 }, async function (scenario) {
     if (order === 0) {
       //load backend data from file
       const backEndBefore = fs.readFileSync(`${process.cwd()}/mock-data/back-end/${name}-before.json`, { encoding: 'utf-8' })
-
+    
       // upload backend data
       await nodeFetch({ host: process.env.databaseHost, path: `/.json?auth=${idToken}`, method: 'PUT', body: JSON.stringify(backEndBefore), headers: {}, port: process.env.dbPort, ssh: process.env.dbSsh })
       //load data for local storage
@@ -174,8 +174,9 @@ AfterAll(async function (error, result) {
 
 async function updateIdToken() {
 
-  const authState = JSON.parse(fs.readFileSync(`${process.cwd()}/mock-data/local-storage/0-after.json`, { encoding: 'utf-8' }))
-
+  const data = fs.readFileSync(`${process.cwd()}/mock-data/local-storage/0-after.json`, { encoding: 'utf-8' })
+  console.log('data___________',data)
+const authState =JSON.parse(data)
   //  if (Date.now() > authState.timestamp) {
   if (true) {
 
