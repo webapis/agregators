@@ -65,18 +65,18 @@ Before({ timeout: 15000 }, async function (scenario) {
       height: 1250,
       deviceScaleFactor: 1,
     });
-
+    console.log('CRPKY', process.env.CRPKY)
     await global.page.goto('https://localhost:8888')
     const { pickle: { name } } = scenario
     const authData = await updateIdToken()
-    const {auth:{ idToken} } = authData
+    const { auth: { idToken } } = authData
 
     const order = parseInt(name)
 
     if (order === 0) {
       //load backend data from file
       const backEndBefore = fs.readFileSync(`${process.cwd()}/mock-data/back-end/${name}-before.json`, { encoding: 'utf-8' })
-    
+
       // upload backend data
       await nodeFetch({ host: process.env.databaseHost, path: `/.json?auth=${idToken}`, method: 'PUT', body: JSON.stringify(backEndBefore), headers: {}, port: process.env.dbPort, ssh: process.env.dbSsh })
       //load data for local storage
@@ -93,10 +93,10 @@ Before({ timeout: 15000 }, async function (scenario) {
       const backEndBefore = fs.readFileSync(`${process.cwd()}/mock-data/back-end/${(order - 1).toString()}-after.json`, { encoding: 'utf-8' })
 
       // upload backend data
-      const response =await nodeFetch({ host: process.env.databaseHost, path: `/.json?auth=${idToken}`, method: 'PUT', body: backEndBefore, headers: {}, port: process.env.dbPort, ssh: process.env.dbSsh })
-      console.log(' upload backend data',response)
+      const response = await nodeFetch({ host: process.env.databaseHost, path: `/.json?auth=${idToken}`, method: 'PUT', body: backEndBefore, headers: {}, port: process.env.dbPort, ssh: process.env.dbSsh })
+      console.log(' upload backend data', response)
       //load data for local storage
-debugger;
+      debugger;
       const localStorageBefore = fs.readFileSync(`${process.cwd()}/mock-data/local-storage/${(order - 1).toString()}-after.json`, { encoding: 'utf-8' })
 
       const { lastVisitedUrl } = JSON.parse(localStorageBefore)
@@ -106,7 +106,7 @@ debugger;
         window.localStorage.setItem("page-store", _localStorageBefore)
       }, localStorageBefore)
       await global.page.goto(lastVisitedUrl)
-debugger;
+      debugger;
     }
   } catch (error) {
     debugger;
@@ -175,8 +175,8 @@ AfterAll(async function (error, result) {
 async function updateIdToken() {
 
   const data = fs.readFileSync(`${process.cwd()}/mock-data/local-storage/0-after.json`, { encoding: 'utf-8' })
-  console.log('data___________',data)
-const authState =JSON.parse(data)
+  console.log('data___________', data)
+  const authState = JSON.parse(data)
   //  if (Date.now() > authState.timestamp) {
   if (true) {
 
@@ -190,7 +190,7 @@ const authState =JSON.parse(data)
 
     return updatedState
 
-  } else {  
+  } else {
 
     return require(`${process.cwd()}/mock-data/local-storage/0_authentication-after.json`)
   }
