@@ -22,6 +22,8 @@ env:
   IDTOKEN:  ${{secrets.IDTOKEN}}
   NETLIFY_AUTH_TOKEN: ${{secrets.DEPLOY_NETL_TKN}}
   NETLIFY_SITE_ID: ${{secrets.NETLIFY_SITE_ID}}
+  CRPKY: ${{secrets.CRPKY}}
+  
 jobs:
   bdd:
     runs-on: ubuntu-latest

@@ -1,7 +1,7 @@
 
 const crypto = require('crypto');
 const algorithm = 'aes-256-ctr';
-let key = process.env.crpky;
+let key = process.env.CRPKY;
 key = crypto.createHash('sha256').update(String(key)).digest('base64').substr(0, 32);
 
 const encrypt = (buffer) => {
