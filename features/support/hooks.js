@@ -51,6 +51,7 @@ BeforeAll({ timeout: 15000 }, async function () {
   } catch (error) {
 
     console.log('error', error)
+    throw error
   }
 
 });
@@ -93,6 +94,7 @@ Before({ timeout: 15000 }, async function (scenario) {
 
       // upload backend data
       const response =await nodeFetch({ host: process.env.databaseHost, path: `/.json?auth=${idToken}`, method: 'PUT', body: backEndBefore, headers: {}, port: process.env.dbPort, ssh: process.env.dbSsh })
+      console.log(' upload backend data',response)
       //load data for local storage
 debugger;
       const localStorageBefore = fs.readFileSync(`${process.cwd()}/mock-data/local-storage/${(order - 1).toString()}-after.json`, { encoding: 'utf-8' })
@@ -108,6 +110,8 @@ debugger;
     }
   } catch (error) {
     debugger;
+    console.log('error', error)
+    throw error
   }
 
 
