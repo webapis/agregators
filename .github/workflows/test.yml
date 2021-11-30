@@ -50,7 +50,7 @@ jobs:
         run: 'npm install netlify-cli --save-dev'
       - name: Install firebase cli
         run: 'npm install -g firebase-tools'
-      -name: Decript data
+      - name: Decript data
         run: 'npm run decryptData'
       - name: Run bdd test
         id: bddtest
