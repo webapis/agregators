@@ -56,7 +56,7 @@ customElements.define('workflow-configuration', class extends HTMLElement {
                 const updateServerWorkflowConfig ={[`server/workspaces/${workspaceName}/tasks/${taskId}/workflows/${workflowKey}/workflowConfig/vars`]:update}
                 const updateClientWorkflowConfig ={[`workspaces/${workspaceName}/workflowConfigs/tasks/${taskId}/workflows/${workflowKey}/vars`]:update}
                 this.FB_DATABASE.ref('/').update({...updateServerWorkflowConfig,...updateClientWorkflowConfig},(error,data)=>{
-                    window.history.go(-1)
+                    window.location.replace('/task-workflows.html')
                     debugger;
                 })
                 debugger;
