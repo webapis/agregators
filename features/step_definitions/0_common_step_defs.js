@@ -17,7 +17,7 @@ Given('user clicks to button with {string} selector {int}', { timeout: 15000 }, 
         debugger;
         await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-error-${id}.png` });
         log&&    console.log(`${order}_failed_|_user clicked.......`, id)
-        process.exit(1)
+       // process.exit(1)
     }
 
 
@@ -50,7 +50,7 @@ Given('user types {string} to input with {string} selector {int}', { timeout: 15
         debugger;
         await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-error-${id}.png` });
         log&&   console.log(`${order}_failed_|_user types .......${value}`, id)
-        process.exit(1)
+      //  process.exit(1)
     }
 
 
@@ -80,7 +80,7 @@ Given('button with {string} selector is enabled {int}', { timeout: 15000 }, asyn
         debugger;
         await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-error-${id}.png` });
         log&&   console.log(`${order}_failed_|_button enabled .......`, id)
-        process.exit(1)
+       // process.exit(1)
     }
 
 })
@@ -100,7 +100,7 @@ Given('user focuses on component with {string} selector {int}', { timeout: 15000
         debugger;
         await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-error-${id}.png` });
         log&&    console.log(`${order}_failed_|_user focused on .......`, id)
-        process.exit(1)
+      //  process.exit(1)
     }
 
 
@@ -123,7 +123,7 @@ Given('component with {string} selector is visible to user {int}', { timeout: 15
         await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-error-${id}.png` });
         log&&    console.log(`${order}_failed_|_component is visible .......`, id)
         debugger;
-        process.exit(1)
+      //  process.exit(1)
     }
 
 
@@ -151,7 +151,7 @@ Then('page is navigated to {string} url {int}', { timeout: 15000 }, async functi
         debugger;
         await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-error-nav.png` });
         log&&    console.log(`${order}_falied_|_page is navigated to .......${url}`)
-        process.exit(1)
+       // process.exit(1)
     }
 
 })
@@ -172,7 +172,7 @@ Given('user selects {string} from {string} select tag {int}', { timeout: 15000 }
         debugger;
         await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-error-${id}.png` });
         log&&     console.log(`${order}_failed_|_user selects.......${value}`, id)
-        process.exit(1)
+       // process.exit(1)
     }
 
 
