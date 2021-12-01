@@ -183,7 +183,7 @@ async function updateIdToken() {
 
   const authState = JSON.parse(data)
   //  if (Date.now() > authState.timestamp) {
-  if (true) {
+  if (authState.auth.timestamp) {
 
     const refreshData = await renewIdToken(authState.auth)
     const { id_token } = refreshData
@@ -197,7 +197,7 @@ async function updateIdToken() {
 
   } else {
 
-    return require(`${process.cwd()}/mock-data/local-storage/0_authentication-after.json`)
+    return require(`${process.cwd()}/mock-data/local-storage/0-after.json`)
   }
 
 

@@ -5,14 +5,14 @@ on:
       - master
 env:
   headless: true
-  databaseURL: 'https://turkmenistan-market.firebaseio.com'
+  databaseURL: http://localhost:9000
   client_id: 117708549296-uij0mup1c3biok6ifaupa2951vtvf418.apps.googleusercontent.com
   webapikey: AIzaSyDb8Z27Ut0WJ-RH7Exi454Bpit9lbARJeA
   requestUri: https://turkmenistan-market.firebaseapp.com/__/auth/handler
   gh_client_id: 9cbffc6392ae35c84962
   host: https://localhost:8888
   redirectUrl: https://localhost:8888/.netlify/functions/auth-callback
-  databaseHost: turkmenistan-market.firebaseio.com
+  databaseHost: localhost
   dbPort: 9000
   dbSsh: false
   GITHUBPASS:  ${{secrets.GITHUBPASS}}
