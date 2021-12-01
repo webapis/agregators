@@ -93,6 +93,8 @@ console.log('backEndBefore_0',backEndBefore)
       //load backend data from file
       const backEndBefore = fs.readFileSync(`${process.cwd()}/mock-data/back-end/${(order - 1).toString()}-after.json`, { encoding: 'utf-8' })
       console.log('backEndBefore_1',backEndBefore)
+      console.log('process.env.dbPort__',process.env.dbPort)
+      console.log('process.env.dbSsh__',process.env.dbSsh)
       // upload backend data
       const response = await nodeFetch({ host: process.env.databaseHost, path: `/.json?auth=${idToken}`, method: 'PUT', body: backEndBefore, headers: {}, port: process.env.dbPort, ssh: process.env.dbSsh })
       console.log('uploadBackend_1',response)
