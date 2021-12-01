@@ -29,5 +29,6 @@ turkmenistan-market-firebase-adminsdk-d0s1d-7289a84f0e.json
 .netlify
 *.png
 
-mock-data/*.json
-!mock-data/local-storage/*.B64
+
+mock-data/local-storage/*.json
+mock-data/back-end/*.json
