@@ -76,12 +76,13 @@ Before({ timeout: 15000 }, async function (scenario) {
     if (order === 0) {
       //load backend data from file
       const backEndBefore = fs.readFileSync(`${process.cwd()}/mock-data/back-end/${name}-before.json`, { encoding: 'utf-8' })
-
+console.log('backEndBefore_0',backEndBefore)
       // upload backend data
-      await nodeFetch({ host: process.env.databaseHost, path: `/.json?auth=${idToken}`, method: 'PUT', body: JSON.stringify(backEndBefore), headers: {}, port: process.env.dbPort, ssh: process.env.dbSsh })
+   const uploadBackend=   await nodeFetch({ host: process.env.databaseHost, path: `/.json?auth=${idToken}`, method: 'PUT', body: JSON.stringify(backEndBefore), headers: {}, port: process.env.dbPort, ssh: process.env.dbSsh })
+   console.log('uploadBackend_0',uploadBackend)
       //load data for local storage
       const localStorageBefore = fs.readFileSync(`${process.cwd()}/mock-data/local-storage/${name}-before.json`, { encoding: 'utf-8' })
-
+      console.log('localStorageBefore_0',localStorageBefore)
       // update local storage
       await global.page.evaluate((_localStorageBefore) => {
         window.localStorage.setItem("page-store", _localStorageBefore)
@@ -91,21 +92,23 @@ Before({ timeout: 15000 }, async function (scenario) {
 
       //load backend data from file
       const backEndBefore = fs.readFileSync(`${process.cwd()}/mock-data/back-end/${(order - 1).toString()}-after.json`, { encoding: 'utf-8' })
-
+      console.log('backEndBefore_1',backEndBefore)
       // upload backend data
       const response = await nodeFetch({ host: process.env.databaseHost, path: `/.json?auth=${idToken}`, method: 'PUT', body: backEndBefore, headers: {}, port: process.env.dbPort, ssh: process.env.dbSsh })
-      console.log(' upload backend data', response)
+      console.log('uploadBackend_1',response)
       //load data for local storage
       debugger;
       const localStorageBefore = fs.readFileSync(`${process.cwd()}/mock-data/local-storage/${(order - 1).toString()}-after.json`, { encoding: 'utf-8' })
-
+      console.log('localStorageBefore_1',localStorageBefore)
       const { lastVisitedUrl } = JSON.parse(localStorageBefore)
+      console.log('lastVisitedUrl_1',lastVisitedUrl)
       debugger;
       // update local storage
       await global.page.evaluate((_localStorageBefore) => {
         window.localStorage.setItem("page-store", _localStorageBefore)
       }, localStorageBefore)
       await global.page.goto(lastVisitedUrl)
+      console.log('goto',lastVisitedUrl)
       debugger;
     }
   } catch (error) {
@@ -175,7 +178,7 @@ AfterAll(async function (error, result) {
 async function updateIdToken() {
 
   const data = fs.readFileSync(`${process.cwd()}/mock-data/local-storage/0-after.json`, { encoding: 'utf-8' })
-  console.log('data___________', data)
+
   const authState = JSON.parse(data)
   //  if (Date.now() > authState.timestamp) {
   if (true) {
