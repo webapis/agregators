@@ -1,5 +1,5 @@
 
-const https = require('https');
+
 module.exports.nodeFetch = async function ({ host, path, method, headers, body, port, ssh = 'true' }) {
     const parsedPort = port && parseInt(port)
     const parseSsh = ssh ==='true'
@@ -7,10 +7,10 @@ module.exports.nodeFetch = async function ({ host, path, method, headers, body, 
     const https = parseSsh ? require('https') : require('http')
 
     var options = {
-        host,//: 'identitytoolkit.googleapis.com',
-        path,//: encodeURI(`/v1/accounts:signInWithIdp?key=${key}`),
+        host,
+        path,
         method: method ? method : 'GET',
-        headers,//: { 'Content-Type': 'application/json' },
+        headers,
         port: parsedPort
 
     };
@@ -22,7 +22,7 @@ module.exports.nodeFetch = async function ({ host, path, method, headers, body, 
                 body += chunk.toString('utf8')
             });
             responce.on("end", function () {
-               console.log("Body_11", body);
+        
                 
                 return resolve(body)
             });
