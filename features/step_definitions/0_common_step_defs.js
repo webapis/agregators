@@ -2,7 +2,7 @@ require('dotenv').config()
 const assert = require('assert');
 const { Given, When, Then } = require('@cucumber/cucumber');
 const artifact = require('@actions/artifact');
-const artifactClient = artifact.create()
+
 const debuggedOrder=416
 const log =true
 const rootDirectory = `.` // Also possible to use __dirname
@@ -17,10 +17,13 @@ Given('user clicks to button with {string} selector {int}', { timeout: 15000 }, 
         await global.page.waitForSelector(id)
         await global.page.click(id)
         await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-success-${id}.png` });
-        const artifactName =`${order}-success-${id}.png`
-        const files =[`screenshots/${order}-success-${id}.png`]
-        console.log('process.env.gh_action......',process.env.gh_action)
+  
+     
         if(process.env.gh_action==='true'){
+            const artifactName =`${order}-success-${id}.png`
+            const files =[`screenshots/${order}-success-${id}.png`]
+            console.log('process.env.gh_action......',process.env.gh_action)
+            const artifactClient = artifact.create()
             const uploadResponse = await artifactClient.uploadArtifact(artifactName, files, rootDirectory, options)
             console.log('uploadResponse',uploadResponse)
         }
