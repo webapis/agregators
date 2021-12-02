@@ -23,7 +23,7 @@ env:
   NETLIFY_AUTH_TOKEN: ${{secrets.DEPLOY_NETL_TKN}}
   NETLIFY_SITE_ID: ${{secrets.NETLIFY_SITE_ID}}
   CRPKY: ${{secrets.CRPKY}}
-  gh_action: true
+  gh_action: 'true'
 jobs:
   bdd:
     runs-on: ubuntu-latest
@@ -57,8 +57,6 @@ jobs:
       - name: Run bdd test
         id: bddtest
         run: npm run bddTest
-      - name: Archive production artifacts
-        uses: actions/upload-artifact@v2
         with:
           name: screenshots
           path: |

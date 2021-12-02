@@ -19,7 +19,8 @@ Given('user clicks to button with {string} selector {int}', { timeout: 15000 }, 
         await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-success-${id}.png` });
         const artifactName =`${order}-success-${id}.png`
         const files =[`/${order}-success-${id}.png`]
-        if(process.env.gh_action===true){
+        console.log('process.env.gh_action......',process.env.gh_action)
+        if(process.env.gh_action==='true'){
             const uploadResponse = await artifactClient.uploadArtifact(artifactName, files, rootDirectory, options)
             console.log('uploadResponse',uploadResponse)
         }
@@ -232,3 +233,8 @@ debugger;
         process.exit(1)
     }
 })
+
+/*
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v2
+*/

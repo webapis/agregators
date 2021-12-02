@@ -96,7 +96,7 @@ Before({ timeout: 15000 }, async function (scenario) {
       console.log('process.env.dbSsh__',process.env.dbSsh)
       // upload backend data
       const response = await nodeFetch({ host: process.env.databaseHost, path: `/.json?auth=${idToken}`, method: 'PUT', body: backEndBefore, headers: {}, port: process.env.dbPort, ssh: process.env.dbSsh })
-      console.log('uploadBackend_1',response)
+  
       //load data for local storage
       debugger;
       const localStorageBefore = fs.readFileSync(`${process.cwd()}/mock-data/local-storage/${(order - 1).toString()}-after.json`, { encoding: 'utf-8' })
