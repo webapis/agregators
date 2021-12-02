@@ -76,13 +76,13 @@ Before({ timeout: 15000 }, async function (scenario) {
     if (order === 0) {
       //load backend data from file
       const backEndBefore = fs.readFileSync(`${process.cwd()}/mock-data/back-end/${name}-before.json`, { encoding: 'utf-8' })
-console.log('backEndBefore_0',backEndBefore)
+
       // upload backend data
    const uploadBackend=   await nodeFetch({ host: process.env.databaseHost, path: `/.json?auth=${idToken}`, method: 'PUT', body: JSON.stringify(backEndBefore), headers: {}, port: process.env.dbPort, ssh: process.env.dbSsh })
-   console.log('uploadBackend_0',uploadBackend)
+ 
       //load data for local storage
       const localStorageBefore = fs.readFileSync(`${process.cwd()}/mock-data/local-storage/${name}-before.json`, { encoding: 'utf-8' })
-      console.log('localStorageBefore_0',localStorageBefore)
+    
       // update local storage
       await global.page.evaluate((_localStorageBefore) => {
         window.localStorage.setItem("page-store", _localStorageBefore)
@@ -92,7 +92,7 @@ console.log('backEndBefore_0',backEndBefore)
 
       //load backend data from file
       const backEndBefore = fs.readFileSync(`${process.cwd()}/mock-data/back-end/${(order - 1).toString()}-after.json`, { encoding: 'utf-8' })
-      console.log('backEndBefore_1',backEndBefore)
+      
       console.log('process.env.dbPort__',process.env.dbPort)
       console.log('process.env.dbSsh__',process.env.dbSsh)
       // upload backend data
@@ -101,16 +101,16 @@ console.log('backEndBefore_0',backEndBefore)
       //load data for local storage
       debugger;
       const localStorageBefore = fs.readFileSync(`${process.cwd()}/mock-data/local-storage/${(order - 1).toString()}-after.json`, { encoding: 'utf-8' })
-      console.log('localStorageBefore_1',localStorageBefore)
+  
       const { lastVisitedUrl } = JSON.parse(localStorageBefore)
-      console.log('lastVisitedUrl_1',lastVisitedUrl)
+    
       debugger;
       // update local storage
       await global.page.evaluate((_localStorageBefore) => {
         window.localStorage.setItem("page-store", _localStorageBefore)
       }, localStorageBefore)
       await global.page.goto(lastVisitedUrl)
-      console.log('goto',lastVisitedUrl)
+   
       debugger;
     }
   } catch (error) {
@@ -155,14 +155,7 @@ After({ timeout: 15000 }, async function (scenario) {
 })
 
 Before({ tags: '@workspace' }, async function () {
-  //SET INITIAL LOCAL STORAGE STATE HERE
 
-  // const pageStoreInitState = fs.readFileSync(`${process.cwd()}/mock-data/firebaseAuthData.json`, { encoding: 'utf-8' })
-  // await global.page.evaluate((_localStorageState) => {
-
-  //   window.localStorage.setItem("page-store", JSON.stringify(_localStorageState))
-
-  // }, pageStoreInitState)
 })
 AfterAll(async function (error, result) {
 
@@ -171,10 +164,7 @@ AfterAll(async function (error, result) {
 
 })
 
-// Before({tags:'@signin'},async function (){
-//   await global.page.waitForSelector('home-card > div > a')
-//   await global.page.click('home-card > div > a')
-// })
+
 
 
 async function updateIdToken() {
@@ -182,7 +172,7 @@ async function updateIdToken() {
   const data = fs.readFileSync(`${process.cwd()}/mock-data/local-storage/0-after.json`, { encoding: 'utf-8' })
 
   const authState = JSON.parse(data)
-  //  if (Date.now() > authState.timestamp) {
+
   if (authState.auth.timestamp) {
 
     const refreshData = await renewIdToken(authState.auth)
@@ -190,7 +180,7 @@ async function updateIdToken() {
 
     const updatedState = { ...authState, auth: { ...authState.auth, idToken: id_token, timestamp: Date.now() } }
 
-    // const authState = require('../../mock-data/firebaseAuthData.json')
+
     fs.writeFileSync(`${process.cwd()}/mock-data/local-storage/0-after.json`, JSON.stringify(updatedState), { encoding: 'utf-8' })
 
     return updatedState
@@ -206,7 +196,7 @@ async function updateIdToken() {
 async function renewIdToken({ api_key, refreshToken }) {
 
   const resp = await nodeFetch({ host: 'securetoken.googleapis.com', path: `/v1/token?key=${api_key}`, method: 'post', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: `grant_type=refresh_token&refresh_token=${refreshToken}` })
-  ///const response = await fetch(`https://securetoken.googleapis.com/v1/token?key=${api_key}`, { method: 'post', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: `grant_type=refresh_token&refresh_token=${refreshToken}` })
+
   const data = JSON.parse(resp)
 
   return data
