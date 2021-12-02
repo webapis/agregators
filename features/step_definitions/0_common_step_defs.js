@@ -3,38 +3,38 @@ const assert = require('assert');
 const { Given, When, Then } = require('@cucumber/cucumber');
 const artifact = require('@actions/artifact');
 
-const debuggedOrder=416
-const log =true
+const debuggedOrder = 416
+const log = true
 const rootDirectory = `.` // Also possible to use __dirname
 const options = {
     continueOnError: false
 }
 Given('user clicks to button with {string} selector {int}', { timeout: 15000 }, async function (id, order) {
     try {
-        if (order ===debuggedOrder) {
+        if (order === debuggedOrder) {
             debugger;
         }
         await global.page.waitForSelector(id)
         await global.page.click(id)
         await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-success-${id}.png` });
-  
-     
-        if(process.env.gh_action==='true'){
-            const artifactName =`${order}-success-${id}.png`
-            const files =[`screenshots/${order}-success-${id}.png`]
-            console.log('process.env.gh_action......',process.env.gh_action)
-            const artifactClient = artifact.create()
-            const uploadResponse = await artifactClient.uploadArtifact(artifactName, files, rootDirectory, options)
-            console.log('uploadResponse',uploadResponse)
-        }
-   
-        log&&   console.log(`${order}_success_|_user clicked.......`, id)
+
+
+        // if(process.env.gh_action==='true'){
+        //     const artifactName =`${order}-success-${id}.png`
+        //     const files =[`screenshots/${order}-success-${id}.png`]
+        //     console.log('process.env.gh_action......',process.env.gh_action)
+        //     const artifactClient = artifact.create()
+        //     const uploadResponse = await artifactClient.uploadArtifact(artifactName, files, rootDirectory, options)
+        //     console.log('uploadResponse',uploadResponse)
+        // }
+
+        log && console.log(`${order}_success_|_user clicked.......`, id)
 
     } catch (error) {
         debugger;
         await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-error-${id}.png` });
-        log&&    console.log(`${order}_failed_|_user clicked.......`, error)
-       process.exit(1)
+        log && console.log(`${order}_failed_|_user clicked.......`, error)
+        process.exit(1)
     }
 
 
@@ -44,10 +44,10 @@ Given('user clicks to button with {string} selector {int}', { timeout: 15000 }, 
 Given('user types {string} to input with {string} selector {int}', { timeout: 15000 }, async function (value, id, order) {
     try {
 
-        if (order ===debuggedOrder) {
+        if (order === debuggedOrder) {
             debugger;
         }
-      
+
         await global.page.waitForSelector(id)
 
 
@@ -55,19 +55,19 @@ Given('user types {string} to input with {string} selector {int}', { timeout: 15
 
             await global.page.type(id, process.env.githubpass ? process.env.githubpass : process.env.GITHUBPASS)
             await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-success-${id}.png` });
-            log&&     console.log(`${order}_success_|_user types.......password`, id)
+            log && console.log(`${order}_success_|_user types.......password`, id)
         } else {
 
             await global.page.type(id, value)
             await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-success-${id}.png` });
-            log&&    console.log(`${order}_success_|_user types.......${value}`, id)
+            log && console.log(`${order}_success_|_user types.......${value}`, id)
         }
 
     } catch (error) {
         debugger;
         await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-error-${id}.png` });
-        log&&   console.log(`${order}_failed_|_user types .......${value}`, id)
-      //  process.exit(1)
+        log && console.log(`${order}_failed_|_user types .......${value}`, error)
+        process.exit(1)
     }
 
 
@@ -77,10 +77,10 @@ Given('user types {string} to input with {string} selector {int}', { timeout: 15
 Given('button with {string} selector is enabled {int}', { timeout: 15000 }, async function (id, order) {
 
     try {
-        if (order ===debuggedOrder) {
+        if (order === debuggedOrder) {
             debugger;
         }
-       
+
         const rect = await global.page.evaluate((selector) => {
             const element = document.querySelector(selector);
             if (!element) return null;
@@ -91,33 +91,33 @@ Given('button with {string} selector is enabled {int}', { timeout: 15000 }, asyn
 
         await global.page.waitForSelector(`button${id}:not([disabled])`);
         await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-success-${id}.png` });
-        log&&   console.log(`${order}_success_|_button enabled .......`, id)
+        log && console.log(`${order}_success_|_button enabled .......`, id)
 
     } catch (error) {
         debugger;
         await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-error-${id}.png` });
-        log&&   console.log(`${order}_failed_|_button enabled .......`, id)
-       // process.exit(1)
+        log && console.log(`${order}_failed_|_button enabled .......`, error)
+        process.exit(1)
     }
 
 })
 Given('user focuses on component with {string} selector {int}', { timeout: 15000 }, async function (id, order) {
     try {
 
-        if (order ===debuggedOrder) {
+        if (order === debuggedOrder) {
             debugger;
         }
-       
+
         await global.page.waitForSelector(id)
         await global.page.focus(id)
         await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-success-${id}.png` });
-        log&&     console.log(`${order}_success_|_user focused on .......`, id)
+        log && console.log(`${order}_success_|_user focused on .......`, id)
 
     } catch (error) {
         debugger;
         await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-error-${id}.png` });
-        log&&    console.log(`${order}_failed_|_user focused on .......`, id)
-      //  process.exit(1)
+        log && console.log(`${order}_failed_|_user focused on .......`, error)
+        process.exit(1)
     }
 
 
@@ -127,20 +127,20 @@ Given('user focuses on component with {string} selector {int}', { timeout: 15000
 })
 Given('component with {string} selector is visible to user {int}', { timeout: 15000 }, async function (id, order) {
     try {
-        if (order ===debuggedOrder) {
+        if (order === debuggedOrder) {
             debugger;
         }
-     
+
         await global.page.waitForSelector(id)
         await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-success-${id}.png` });
 
-        log&&   console.log(`${order}_success_|_component is visible .......`, id)
+        log && console.log(`${order}_success_|_component is visible .......`, id)
     } catch (error) {
 
         await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-error-${id}.png` });
-        log&&    console.log(`${order}_failed_|_component is visible .......`, id)
+        log && console.log(`${order}_failed_|_component is visible .......`, error)
         debugger;
-      //  process.exit(1)
+        process.exit(1)
     }
 
 
@@ -155,20 +155,20 @@ Then('page is navigated to {string} url {int}', { timeout: 15000 }, async functi
 
     try {
 
-        if (order ===debuggedOrder) {
+        if (order === debuggedOrder) {
             debugger;
         }
         const pageUrl = await global.page.evaluate(() => window.location.href)
         const actualUrl = pageUrl.substring(0, pageUrl.indexOf(url) + url.length)
         await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-success-nav.png` });
         assert.equal(actualUrl, url)
-        log&&     console.log(`${order}_success_|_page is navigated to .......${url}`)
+        log && console.log(`${order}_success_|_page is navigated to .......${url}`)
 
     } catch (error) {
         debugger;
         await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-error-nav.png` });
-        log&&    console.log(`${order}_falied_|_page is navigated to .......${url}`)
-       // process.exit(1)
+        log && console.log(`${order}_falied_|_page is navigated to .......${url}`, error)
+        process.exit(1)
     }
 
 })
@@ -176,20 +176,20 @@ Then('page is navigated to {string} url {int}', { timeout: 15000 }, async functi
 Given('user selects {string} from {string} select tag {int}', { timeout: 15000 }, async function (value, id, order) {
     try {
 
-        if (order ===debuggedOrder) {
+        if (order === debuggedOrder) {
             debugger;
         }
         await global.page.waitFor(2000);
 
         await global.page.select(`select${id}`, value)
         await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-success-${id}.png` });
-        log&&     console.log(`${order}_success_|_user selects.......${value}`, id)
+        log && console.log(`${order}_success_|_user selects.......${value}`, id)
 
     } catch (error) {
         debugger;
         await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-error-${id}.png` });
-        log&&     console.log(`${order}_failed_|_user selects.......${value}`, id)
-       // process.exit(1)
+        log && console.log(`${order}_failed_|_user selects.......${value}`, error)
+        process.exit(1)
     }
 
 
@@ -199,7 +199,7 @@ Given('user selects {string} from {string} select tag {int}', { timeout: 15000 }
 
 Given('component with {string} id includes {string} textcontent {int}', async function (id, value, order) {
     try {
-        if (order ===debuggedOrder) {
+        if (order === debuggedOrder) {
             debugger;
         }
         await global.page.waitFor(2000);
@@ -207,11 +207,11 @@ Given('component with {string} id includes {string} textcontent {int}', async fu
         await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-success-${id}.png` });
 
         assert.equal(matchesTextCotnent, true)
-        log&&    console.log(`${order}_success_|_component includes text content.......${value}`, id)
+        log && console.log(`${order}_success_|_component includes text content.......${value}`, id)
     } catch (error) {
         debugger;
         await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-error-${id}.png` });
-        log&&    console.log(`${order}_error_|_component includes text content.......${value}`, id)
+        log && console.log(`${order}_error_|_component includes text content.......${value}`, error)
         process.exit(1)
     }
 
@@ -221,18 +221,18 @@ Given('component with {string} id includes {string} textcontent {int}', async fu
 Given('user navigates to ${string} ${int}', async function (url, order) {
     try {
 
-        if (order ===debuggedOrder) {
+        if (order === debuggedOrder) {
             debugger;
         }
 
         await global.page.goto(url)
 
         await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-success-${url}.png` });
-        log&&    console.log(`${order}_success_|_user navigates to.......${url}`)
+        log && console.log(`${order}_success_|_user navigates to.......${url}`)
 
     } catch (error) {
-debugger;
-        log&&     console.log(`${order}_error_|_user navigates to.......${url}`)
+        debugger;
+        log && console.log(`${order}_error_|_user navigates to.......${url}`,error)
         process.exit(1)
     }
 })
