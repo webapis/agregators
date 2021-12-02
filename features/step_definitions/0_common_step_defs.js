@@ -1,8 +1,14 @@
 require('dotenv').config()
 const assert = require('assert');
 const { Given, When, Then } = require('@cucumber/cucumber');
+const artifact = require('@actions/artifact');
+const artifactClient = artifact.create()
 const debuggedOrder=416
 const log =true
+const rootDirectory = `${process.cwd()}/screenshots` // Also possible to use __dirname
+const options = {
+    continueOnError: false
+}
 Given('user clicks to button with {string} selector {int}', { timeout: 15000 }, async function (id, order) {
     try {
         if (order ===debuggedOrder) {
@@ -11,13 +17,20 @@ Given('user clicks to button with {string} selector {int}', { timeout: 15000 }, 
         await global.page.waitForSelector(id)
         await global.page.click(id)
         await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-success-${id}.png` });
+        const artifactName =`${order}-success-${id}.png`
+        const files =[`/${order}-success-${id}.png`]
+        if(process.env.gh_action===true){
+            const uploadResponse = await artifactClient.uploadArtifact(artifactName, files, rootDirectory, options)
+            console.log('uploadResponse',uploadResponse)
+        }
+   
         log&&   console.log(`${order}_success_|_user clicked.......`, id)
 
     } catch (error) {
         debugger;
         await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-error-${id}.png` });
         log&&    console.log(`${order}_failed_|_user clicked.......`, id)
-       // process.exit(1)
+       process.exit(1)
     }
 
 

@@ -7,7 +7,6 @@ const { nodeFetch } = require('../../root/utils/nodejs/node-fetch')
 const makeDir = require('make-dir')
 console.log('process.env.headless.....', (/true/i).test(process.env.headless))
 
-
 const launchOptions = {
   timeout: 0,
   headless: (/true/i).test(process.env.headless),
