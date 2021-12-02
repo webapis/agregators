@@ -237,4 +237,8 @@ debugger;
 /*
       - name: Archive production artifacts
         uses: actions/upload-artifact@v2
+                with:
+          name: screenshots
+          path: |
+            screenshots
 */
