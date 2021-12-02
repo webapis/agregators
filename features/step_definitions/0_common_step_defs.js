@@ -30,7 +30,7 @@ Given('user clicks to button with {string} selector {int}', { timeout: 15000 }, 
     } catch (error) {
         debugger;
         await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-error-${id}.png` });
-        log&&    console.log(`${order}_failed_|_user clicked.......`, id)
+        log&&    console.log(`${order}_failed_|_user clicked.......`, error)
        process.exit(1)
     }
 
