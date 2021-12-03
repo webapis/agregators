@@ -1,14 +1,11 @@
 require('dotenv').config()
 const assert = require('assert');
 const { Given, When, Then } = require('@cucumber/cucumber');
-const artifact = require('@actions/artifact');
+
 
 const debuggedOrder = 416
 const log = true
-const rootDirectory = `.` // Also possible to use __dirname
-const options = {
-    continueOnError: false
-}
+
 Given('user clicks to button with {string} selector {int}', { timeout: 15000 }, async function (id, order) {
     try {
         if (order === debuggedOrder) {

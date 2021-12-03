@@ -4,10 +4,11 @@ customElements.define('workspaces-list', class extends HTMLElement {
     }
 
     async connectedCallback() {
+        this.innerHTML=`loading...`
         const resources = await import('./resources.js')
         await resources.default()
         debugger;
-        const { auth: { idToken, localId: uid }, workspaceList: { workspaces, selectedWorkspaceTab } } = window.pageStore.state
+        const { auth: { idToken, localId: uid }, workspaceList: {  selectedWorkspaceTab } } = window.pageStore.state
         this.uid = uid
         debugger;
         this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
@@ -31,10 +32,10 @@ customElements.define('workspaces-list', class extends HTMLElement {
     
 debugger;
 
-        this.FB_DATABASE.ref(workspacesRef).on('value', (error, ws) => {
+        this.FB_DATABASE.ref(workspacesRef).get( (error, ws) => {
 debugger;
-            if (ws && ws.data) {
-                const workspaces = Object.entries(ws.data)
+            if (ws) {
+                const workspaces = Object.entries(ws)
 
 
 
@@ -155,31 +156,31 @@ customElements.define('workspaces-tab', class extends HTMLElement {
             this.render({ selectedWorkspaceTab,totalPrivate ,totalPublic,totalShared })
         })
   
-        this.FB_DATABASE.ref(`private/${uid}/workspaces`).on('value', (error, ws) => {
+        this.FB_DATABASE.ref(`private/${uid}/workspaces`).get((error, ws) => {
             debugger;
             let totalPrivate=0
             let totalPublic=0
             let totalShared=0
             if (ws && ws.data) {
 
-                const workspaces =ws.data &&  Object.entries(ws.data)
+                const workspaces =ws &&  Object.entries(ws)
                 totalPrivate=workspaces.length
                
 
             }
 
-            this.FB_DATABASE.ref(`public/workspaces`).on('value', (error, ws) => {
+            this.FB_DATABASE.ref(`public/workspaces`).get( (error, ws) => {
 
                 if (ws.data) {
-                    const workspaces =ws.data &&  Object.entries(ws.data)
+                    const workspaces =ws &&  Object.entries(ws)
                   
                     totalPublic=workspaces.length
 
                 }
-                this.FB_DATABASE.ref(`shared/user/${uid}/workspaces`).on('value', (error, ws) => {
+                this.FB_DATABASE.ref(`shared/user/${uid}/workspaces`).get( (error, ws) => {
 
-                    if (ws.data) {
-                        const workspaces = ws.data && Object.entries(ws.data)
+                    if (ws) {
+                        const workspaces = ws.data && Object.entries(ws)
                         totalShared=workspaces.length
                      
 
@@ -198,12 +199,12 @@ customElements.define('workspaces-tab', class extends HTMLElement {
 
     }
 
-    render({ selectedWorkspaceTab,totalPrivate ,totalPublic,totalShared  }) {
+    render({ selectedWorkspaceTab,totalPrivate=0 ,totalPublic=0,totalShared=0  }) {
 
 
         this.innerHTML = `<ul class="nav nav-tabs justify-content-end">
         <li class="nav-item">
-          <a class="nav-link ${selectedWorkspaceTab === 'private-tab' && 'active'}" aria-current="page" href="/workspaces-list.html" id="private-tab">Private(${totalPrivate})</a>
+          <a class="nav-link ${selectedWorkspaceTab === 'private-tab' && 'active'}" aria-current="page" href="/workspaces-list.html" id="private-tab">Private(${totalPrivate })</a>
         </li>
         <li class="nav-item">
           <a class="nav-link ${selectedWorkspaceTab === 'public-tab' && 'active'}" href="/workspaces-list.html" id="public-tab">Public(${totalPublic})</a>

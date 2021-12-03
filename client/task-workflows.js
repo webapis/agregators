@@ -1,8 +1,11 @@
 customElements.define('task-workflows', class extends HTMLElement {
     constructor() {
         super()
+       
     }
     async connectedCallback() {
+        this.innerHTML ==`loading...`
+        debugger;
         const resources = await import('./resources.js')
         await resources.default()
 
@@ -22,10 +25,11 @@ customElements.define('task-workflows', class extends HTMLElement {
             <h5>Task workflows:</h5>
             <div id="workflows" class="list-group"></div>
             `
-
-        this.FB_DATABASE.ref(`workspaces/${workspaceName}/workflowInitials/tasks/${taskId}/workflows`).on('value', (error, result) => {
+       
+        this.FB_DATABASE.ref(`workspaces/${workspaceName}/workflowInitials/tasks/${taskId}/workflows`).get((error, result) => {
             debugger;
-            const workflows =result.data && Object.entries(result.data)
+            const workflows =result && Object.entries(result)
+            debugger;
             workflows&&  workflows.forEach(wf => {
                 debugger;
                 const workflowKey =wf[0]
@@ -47,5 +51,10 @@ customElements.define('task-workflows', class extends HTMLElement {
         
             debugger;
         })
+    }
+
+    render(){
+
+        
     }
 })

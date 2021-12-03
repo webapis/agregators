@@ -67,28 +67,15 @@ Before({ timeout: 15000 }, async function (scenario) {
     console.log('CRPKY', process.env.CRPKY)
     await global.page.goto('https://localhost:8888')
     const { pickle: { name } } = scenario
-    const authData = await updateIdToken()
-    const { auth: { idToken } } = authData
+   
 
     const order = parseInt(name)
 
-    if (order === 0) {
-      //load backend data from file
-      const backEndBefore = fs.readFileSync(`${process.cwd()}/mock-data/back-end/${name}-before.json`, { encoding: 'utf-8' })
+    if (order > 0) {
 
-      // upload backend data
-   const uploadBackend=   await nodeFetch({ host: process.env.databaseHost, path: `/.json?auth=${idToken}`, method: 'PUT', body: JSON.stringify(backEndBefore), headers: {}, port: process.env.dbPort, ssh: process.env.dbSsh })
- 
-      //load data for local storage
-      const localStorageBefore = fs.readFileSync(`${process.cwd()}/mock-data/local-storage/${name}-before.json`, { encoding: 'utf-8' })
-    
-      // update local storage
-      await global.page.evaluate((_localStorageBefore) => {
-        window.localStorage.setItem("page-store", _localStorageBefore)
-      }, localStorageBefore)
-      await global.page.reload()
-    } else {
-
+  
+      const authData = await updateIdToken()
+      const { auth: { idToken } } = authData
       //load backend data from file
       const backEndBefore = fs.readFileSync(`${process.cwd()}/mock-data/back-end/${(order - 1).toString()}-after.json`, { encoding: 'utf-8' })
       
@@ -123,6 +110,9 @@ Before({ timeout: 15000 }, async function (scenario) {
 })
 
 After({ timeout: 15000 }, async function (scenario) {
+debugger;
+try {
+  
 
   const { pickle: { name } } = scenario
 
@@ -147,7 +137,11 @@ After({ timeout: 15000 }, async function (scenario) {
   fs.writeFileSync(`${process.cwd()}/mock-data/local-storage/${name}-after.json`, JSON.stringify(localStorageState), { encoding: 'utf-8' })
   await global.page.close()
 
-
+} catch (error) {
+  debugger;
+  console.log('error', error)
+  throw error
+}
 
 
 
@@ -171,9 +165,9 @@ async function updateIdToken() {
   const data = fs.readFileSync(`${process.cwd()}/mock-data/local-storage/0-after.json`, { encoding: 'utf-8' })
 
   const authState = JSON.parse(data)
-
-  if (authState.auth.timestamp) {
-
+debugger;
+  if (authState.auth && (authState.auth.timestamp <=Date.now())) {
+debugger;
     const refreshData = await renewIdToken(authState.auth)
     const { id_token } = refreshData
 
@@ -193,7 +187,7 @@ async function updateIdToken() {
 }
 
 async function renewIdToken({ api_key, refreshToken }) {
-
+debugger;
   const resp = await nodeFetch({ host: 'securetoken.googleapis.com', path: `/v1/token?key=${api_key}`, method: 'post', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: `grant_type=refresh_token&refresh_token=${refreshToken}` })
 
   const data = JSON.parse(resp)

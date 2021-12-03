@@ -4,6 +4,7 @@ customElements.define('workflow-configuration', class extends HTMLElement {
     }
 
     async connectedCallback() {
+        this.innerHTML=`loading...`
         const resources = await import('./resources.js')
         await resources.default()
 
@@ -22,9 +23,9 @@ customElements.define('workflow-configuration', class extends HTMLElement {
         </div>
         <div id="var-container" class="row"></div>`
 
-        this.FB_DATABASE.ref(`workspaces/${workspaceName}/workflowConfigs/tasks/${taskId}/workflows/${workflowKey}/vars`).on('value', (error, result) => {
+        this.FB_DATABASE.ref(`workspaces/${workspaceName}/workflowConfigs/tasks/${taskId}/workflows/${workflowKey}/vars`).get((error, result) => {
             
-            const vars = Object.entries(result.data)
+            const vars = Object.entries(result)
             debugger;
             vars.forEach(v => {
                 const varName = v[0]

@@ -6,6 +6,7 @@ customElements.define('workspace-tasks', class extends HTMLElement {
     }
 
     async connectedCallback() {
+        this.innerHTML=`loading...`
         const resources = await import('./resources.js')
         await resources.default()
 
@@ -30,9 +31,9 @@ customElements.define('workspace-tasks', class extends HTMLElement {
         `
 
 
-        this.FB_DATABASE.ref(`workspaces/${workspaceName}/tasks`).on('value', (error, result) => {
+        this.FB_DATABASE.ref(`workspaces/${workspaceName}/tasks`).get((error, result) => {
             debugger;
-            const tasks = result.data && Object.entries(result.data)
+            const tasks = result && Object.entries(result)
 
 
             tasks.forEach(task => {

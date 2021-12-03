@@ -4,6 +4,7 @@ customElements.define('workspace-editor', class extends HTMLElement {
     }
 
     async connectedCallback() {
+        this.innerHTML =`loading...`
         const resources = await import('./resources.js')
         await resources.default()
         const { auth: { idToken, localId: uid }, workspaceEditor } = window.pageStore.state
@@ -13,6 +14,7 @@ customElements.define('workspace-editor', class extends HTMLElement {
     }
 
     render({ workspaceEditor }) {
+       
         const { workspaceName, accessLevel, description } = workspaceEditor
         this.innerHTML = `
        <signed-in-as></signed-in-as>

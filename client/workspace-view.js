@@ -4,6 +4,7 @@ customElements.define('workspace-view', class extends HTMLElement{
     }
 
    async connectedCallback(){
+    this.innerHTML=`loading...`
         const resources = await import('./resources.js')
         await resources.default()
 

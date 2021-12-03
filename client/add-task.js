@@ -4,6 +4,7 @@ customElements.define('add-task', class extends HTMLElement {
     }
 
     async connectedCallback() {
+        this.innerHTML=`loading...`
         const resources = await import('./resources.js')
         await resources.default()
 
@@ -15,7 +16,7 @@ customElements.define('add-task', class extends HTMLElement {
     <signed-in-as></signed-in-as>
         <div>Add Task
         <input class="form-control" placeholder=" Task name" id="taskname"/>
-        <input class="form-control" placeholder=" Task Order" id="taskorder" type="number"/>
+    
         <button class="btn btn-primary" id="save-task-btn">Save Task</button>
         </div>`
 
@@ -23,13 +24,13 @@ customElements.define('add-task', class extends HTMLElement {
             e.preventDefault()
             const { workspace: { workspaceSelected: { title: workspaceName } } } = window.pageStore.state
             const taskName = document.getElementById('taskname').value
-            const taskorder = document.getElementById('taskorder').value
+        
             const taskId = Date.now()
-            const updateServerWorkSpace = { [`server/workspaces/${workspaceName}/tasks/${taskId}`]: { taskName, taskorder } }
+            const updateServerWorkSpace = { [`server/workspaces/${workspaceName}/tasks/${taskId}`]: { taskName } }
             const updateClientWorkSpace = {
                 [`workspaces/${workspaceName}/tasks/${taskId}`]: {
-                    taskName,
-                    taskorder
+                    taskName
+                  
                 }
             }
             this.FB_DATABASE.ref('/').update({
