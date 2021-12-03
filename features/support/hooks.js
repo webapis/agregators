@@ -118,7 +118,7 @@ After({ timeout: 15000 }, async function (scenario) {
 
     const authData = await updateIdToken()
     const { auth: { idToken } } = authData
-console.log('authData_3',authData)
+
     //fetch backend data
     const backendData = await nodeFetch({ host: process.env.databaseHost, path: `/.json?auth=${idToken}`, method: 'GET', headers: {}, port: process.env.dbPort, ssh: process.env.dbSsh })
     const backendAfter = JSON.parse(backendData)
@@ -151,7 +151,7 @@ Before({ tags: '@workspace' }, async function () {
 
 })
 AfterAll(async function (error, result) {
-
+console.log('after all',error)
   await global.browser.close();
   process.exit(0)
 
@@ -170,7 +170,7 @@ async function updateIdToken() {
 
     const refreshData = await renewIdToken(authState.auth)
     const { id_token } = refreshData
-      console.log('refreshData',refreshData)
+   
     const updatedState = { ...authState, auth: { ...authState.auth, idToken: id_token, timestamp: Date.now() } }
 
 
