@@ -23,10 +23,8 @@ customElements.define('workspaces-list', class extends HTMLElement {
         }
         else if (selectedWorkspaceTab === 'public-tab') {
             workspacesRef = `public/workspaces`
-
         } else {
             workspacesRef = `shared/${uid}/workspaces`  
-
         }
 
     
@@ -36,18 +34,12 @@ debugger;
 debugger;
             if (ws) {
                 const workspaces = Object.entries(ws)
-
-
-
                 this.render({ workspaces })
             } else {
                 debugger;
                 this.render({ workspaces: [] })
             }
-
         })
-      
-
 
     }
 

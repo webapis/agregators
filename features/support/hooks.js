@@ -85,22 +85,22 @@ Before({ timeout: 15000 }, async function (scenario) {
       const response = await nodeFetch({ host: process.env.databaseHost, path: `/.json?auth=${idToken}`, method: 'PUT', body: backEndBefore, headers: {}, port: process.env.dbPort, ssh: process.env.dbSsh })
   
       //load data for local storage
-      debugger;
+      
       const localStorageBefore = fs.readFileSync(`${process.cwd()}/mock-data/local-storage/${(order - 1).toString()}-after.json`, { encoding: 'utf-8' })
   
       const { lastVisitedUrl } = JSON.parse(localStorageBefore)
     
-      debugger;
+      
       // update local storage
       await global.page.evaluate((_localStorageBefore) => {
         window.localStorage.setItem("page-store", _localStorageBefore)
       }, localStorageBefore)
       await global.page.goto(lastVisitedUrl)
    
-      debugger;
+      
     }
   } catch (error) {
-    debugger;
+    
     console.log('error', error)
     throw error
   }
@@ -110,7 +110,7 @@ Before({ timeout: 15000 }, async function (scenario) {
 })
 
 After({ timeout: 15000 }, async function (scenario) {
-debugger;
+
 try {
   
 
@@ -132,13 +132,13 @@ try {
   })
   const lastVisitedUrl = await global.page.url()
   const localStorageState = { ...JSON.parse(localStorageAfter), lastVisitedUrl }
-  debugger;
+  
   //save local storage data to file
   fs.writeFileSync(`${process.cwd()}/mock-data/local-storage/${name}-after.json`, JSON.stringify(localStorageState), { encoding: 'utf-8' })
   await global.page.close()
 
 } catch (error) {
-  debugger;
+  
   console.log('error', error)
   throw error
 }
@@ -165,9 +165,9 @@ async function updateIdToken() {
   const data = fs.readFileSync(`${process.cwd()}/mock-data/local-storage/0-after.json`, { encoding: 'utf-8' })
 
   const authState = JSON.parse(data)
-debugger;
+
   if (authState.auth && (authState.auth.timestamp <=Date.now())) {
-debugger;
+
     const refreshData = await renewIdToken(authState.auth)
     const { id_token } = refreshData
 
@@ -187,7 +187,7 @@ debugger;
 }
 
 async function renewIdToken({ api_key, refreshToken }) {
-debugger;
+
   const resp = await nodeFetch({ host: 'securetoken.googleapis.com', path: `/v1/token?key=${api_key}`, method: 'post', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: `grant_type=refresh_token&refresh_token=${refreshToken}` })
 
   const data = JSON.parse(resp)

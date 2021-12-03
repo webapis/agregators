@@ -3,7 +3,7 @@ const assert = require('assert');
 const { Given, When, Then } = require('@cucumber/cucumber');
 
 
-const debuggedOrder = 416
+const debuggedOrder = 409
 const log = true
 
 Given('user clicks to button with {string} selector {int}', { timeout: 15000 }, async function (id, order) {
@@ -199,7 +199,7 @@ Given('component with {string} id includes {string} textcontent {int}', async fu
         if (order === debuggedOrder) {
             debugger;
         }
-        await global.page.waitFor(2000);
+        await global.page.waitForSelector(id, { visible: true });
         const matchesTextCotnent = await global.page.evaluate((_id, _value) => document.querySelector(_id).textContent.includes(_value), id, value)
         await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-success-${id}.png` });
 
@@ -229,7 +229,7 @@ Given('user navigates to ${string} ${int}', async function (url, order) {
 
     } catch (error) {
         debugger;
-        log && console.log(`${order}_error_|_user navigates to.......${url}`,error)
+        log && console.log(`${order}_error_|_user navigates to.......${url}`, error)
         process.exit(1)
     }
 })
