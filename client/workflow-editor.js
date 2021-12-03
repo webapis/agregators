@@ -44,6 +44,7 @@ customElements.define('workflow-editor', class extends HTMLElement {
   <label for="tokenFPR" class="form-label">Token For private repo</label>
   <input class="form-control input" id="tokenFPR" name="tokenFPR" value="${token}">
 </div>`: ""}
+
       <div class="mb-3">
         <label for="workflowDescriptionTextarea" class="form-label">Workflow description</label>
         <textarea class="form-control input" id="workflowDescriptionTextarea" name="workflowDescription" rows="3">${workflowDescription}</textarea>
@@ -277,7 +278,8 @@ window.pageStore.subscribe(window.actionTypes.WORKFLOW_CONFIG_FETCHED,state=>{
   render({workflowConfig}){
     this.innerHTML=   `  <div class="mb-3">
     <label for="workflowConfigFile" class="form-label">Workflow Config</label>
-    <textarea class="form-control input" id="workflowConfig" name="workflowConfig" rows="3" readonly>${JSON.stringify(workflowConfig)}</textarea>
+    ${workflowConfig &&  `<textarea class="form-control input" id="workflowConfig" name="workflowConfig" rows="3" readonly>${JSON.stringify(workflowConfig)}</textarea>`}
+   
   </div>` 
   }
 

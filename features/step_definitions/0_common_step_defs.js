@@ -201,6 +201,7 @@ Given('component with {string} id includes {string} textcontent {int}', async fu
             debugger;
         }
         await global.page.waitForSelector(id, { visible: true });
+        debugger;
         const matchesTextCotnent = await global.page.evaluate((_id, _value) => document.querySelector(_id).textContent.includes(_value), id, value)
       // await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-success-${id}.png` });
 
