@@ -118,7 +118,7 @@ After({ timeout: 15000 }, async function (scenario) {
 
     const authData = await updateIdToken()
     const { auth: { idToken } } = authData
-
+console.log('authData_3',authData)
     //fetch backend data
     const backendData = await nodeFetch({ host: process.env.databaseHost, path: `/.json?auth=${idToken}`, method: 'GET', headers: {}, port: process.env.dbPort, ssh: process.env.dbSsh })
     const backendAfter = JSON.parse(backendData)
@@ -170,7 +170,7 @@ async function updateIdToken() {
 
     const refreshData = await renewIdToken(authState.auth)
     const { id_token } = refreshData
-
+      console.log('refreshData',refreshData)
     const updatedState = { ...authState, auth: { ...authState.auth, idToken: id_token, timestamp: Date.now() } }
 
 
@@ -179,7 +179,7 @@ async function updateIdToken() {
     return updatedState
 
   } else {
-
+    console.log('old auth',authState.auth )
     return require(`${process.cwd()}/mock-data/local-storage/0-after.json`)
   }
 
@@ -191,6 +191,6 @@ async function renewIdToken({ api_key, refreshToken }) {
   const resp = await nodeFetch({ host: 'securetoken.googleapis.com', path: `/v1/token?key=${api_key}`, method: 'post', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: `grant_type=refresh_token&refresh_token=${refreshToken}` })
 
   const data = JSON.parse(resp)
-
+  console.log('renewIdToken',data)
   return data
 }
