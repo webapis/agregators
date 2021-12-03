@@ -11,8 +11,8 @@ customElements.define('signed-in-as',
             this.uid = uid
             this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
             if(!document.getElementById('profile')){
-                this.FB_DATABASE.ref(`invitations/${screenName}/workspaces`).on('value',(error,response)=>{
-                    const data=response && response.data &&  Object.keys(response.data)
+                this.FB_DATABASE.ref(`invitations/${screenName}/workspaces`).get((error,response)=>{
+                    const data=response && response &&  Object.keys(response)
                
                     const auth = window.pageStore.state.auth
                     document.getElementById('top-bar').insertAdjacentHTML('beforeend', `
