@@ -163,7 +163,7 @@ customElements.define('workspaces-tab', class extends HTMLElement {
 
             this.FB_DATABASE.ref(`public/workspaces`).get( (error, ws) => {
 
-                if (ws.data) {
+                if (ws) {
                     const workspaces =ws &&  Object.entries(ws)
                   
                     totalPublic=workspaces.length
@@ -172,7 +172,7 @@ customElements.define('workspaces-tab', class extends HTMLElement {
                 this.FB_DATABASE.ref(`shared/user/${uid}/workspaces`).get( (error, ws) => {
 
                     if (ws) {
-                        const workspaces = ws.data && Object.entries(ws)
+                        const workspaces = ws && Object.entries(ws)
                         totalShared=workspaces.length
                      
 

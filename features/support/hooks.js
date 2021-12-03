@@ -151,6 +151,7 @@ Before({ tags: '@workspace' }, async function () {
 
 })
 AfterAll(async function (error, result) {
+  debugger;
 console.log('after all',error)
   await global.browser.close();
   process.exit(0)
@@ -191,6 +192,6 @@ async function renewIdToken({ api_key, refreshToken }) {
   const resp = await nodeFetch({ host: 'securetoken.googleapis.com', path: `/v1/token?key=${api_key}`, method: 'post', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: `grant_type=refresh_token&refresh_token=${refreshToken}` })
 
   const data = JSON.parse(resp)
-  console.log('renewIdToken',data)
+
   return data
 }

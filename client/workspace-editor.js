@@ -4,7 +4,7 @@ customElements.define('workspace-editor', class extends HTMLElement {
     }
 
     async connectedCallback() {
-        this.innerHTML = `loading...`
+        this.innerHTML =`loading...`
         const resources = await import('./resources.js')
         await resources.default()
         const { auth: { idToken, localId: uid }, workspaceEditor } = window.pageStore.state
@@ -14,7 +14,7 @@ customElements.define('workspace-editor', class extends HTMLElement {
     }
 
     render({ workspaceEditor }) {
-
+       
         const { workspaceName, accessLevel, description } = workspaceEditor
         this.innerHTML = `
        <signed-in-as></signed-in-as>
@@ -36,11 +36,11 @@ customElements.define('workspace-editor', class extends HTMLElement {
         <option value="private"  ${accessLevel === "private" && 'selected'}>private</option>
       
       </select>
-    </div>${description && `  <div class="col-12">
-    <label for="description" >Description:</label>
-    <textarea class="form-control" id="description" rows="3" name="description">${description}</textarea>
-</div>`}
-     
+    </div>
+       <div class="col-12">
+            <label for="description" >Description:</label>
+            <textarea class="form-control" id="description" rows="3" name="description">${description}</textarea>
+        </div>
         <div class="col-auto">
         <button  class="btn btn-primary mb-3" id="save-ws-name-btn">Save</button>
         </div>
@@ -55,6 +55,8 @@ customElements.define('workspace-editor', class extends HTMLElement {
                 const { value, name } = e.target
                 window.pageStore.dispatch({ type: window.actionTypes.WORKSPACE_EDITOR_INPUT_CHANGED, payload: { [name]: value } })
             })
+
+
         })
 
         document.getElementById('accessLevel').addEventListener('change', (e) => {
@@ -63,25 +65,28 @@ customElements.define('workspace-editor', class extends HTMLElement {
             debugger;
         })
 
+
+
         document.getElementById('save-ws-name-btn').addEventListener('click', (e) => {
             e.preventDefault()
             const { workspaceEditor: { workspaceName, description, accessLevel }, auth: { screenName, localId } } = window.pageStore.state
-
+            
             let update = {}
             if (accessLevel === "private") {
                 debugger;
-                update = { [`private/${localId}/workspaces/${workspaceName}`]: { owner: screenName, description, accessLevel } }
+                update = {[`private/${localId}/workspaces/${workspaceName}`]: { owner:screenName, description, accessLevel } }
             } else {
                 debugger;
-                update = { [`public/workspaces/${workspaceName}`]: { owner: screenName, description, accessLevel } }
+                update = { [`public/workspaces/${workspaceName}`]: { owner:screenName, description, accessLevel } }
             }
 
+        
             debugger;
             this.FB_DATABASE.ref('/').update(update, (error, data) => {
                 debugger;
                 window.location.replace('/workspaces-list.html')
             })
-
+            
         })
     }
 })
