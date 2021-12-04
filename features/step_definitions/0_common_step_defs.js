@@ -3,7 +3,7 @@ const assert = require('assert');
 const { Given, When, Then } = require('@cucumber/cucumber');
 
 
-const debuggedOrder = 410
+const debuggedOrder = 220
 const log = true
 
 Given('user clicks to button with {string} selector {int}', { timeout: 15000 }, async function (id, order) {

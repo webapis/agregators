@@ -90,7 +90,7 @@ customElements.define('workspaces-list', class extends HTMLElement {
 
         document.getElementById('ws-container').innerHTML = ``
 
-        workspaces && workspaces.forEach(ws => {
+        workspaces.forEach(ws => {
             const title = ws[0]
             const { accessLevel, description, owner } = ws[1]
 
@@ -168,17 +168,17 @@ customElements.define('workspaces-tab', class extends HTMLElement {
 
     connectedCallback() {
         const { auth: { idToken, localId: uid },workspaceList: { selectedWorkspaceTab, totalPrivate, totalPublic, totalShared }  } = window.pageStore.state
-        this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
+      
 
     
         this.render({ selectedWorkspaceTab, totalPrivate, totalPublic, totalShared })
 
 
-        window.pageStore.subscribe(window.actionTypes.WORKSPACES_COUNTED, state => {
-            const { workspaceList: { selectedWorkspaceTab, totalPrivate, totalPublic, totalShared } } = state
+        // window.pageStore.subscribe(window.actionTypes.WORKSPACES_COUNTED, state => {
+        //     const { workspaceList: { selectedWorkspaceTab, totalPrivate, totalPublic, totalShared } } = state
 
-            this.render({ selectedWorkspaceTab, totalPrivate, totalPublic, totalShared })
-        })
+        //     this.render({ selectedWorkspaceTab, totalPrivate, totalPublic, totalShared })
+        // })
 
     }
 
