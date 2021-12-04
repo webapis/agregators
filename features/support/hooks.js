@@ -153,8 +153,14 @@ Before({ tags: '@workspace' }, async function () {
 AfterAll(async function (error, result) {
   debugger;
 console.log('global.success______',   global.success)
+
   await global.browser.close();
-  process.exit(0)
+  if(global.success===51){
+    process.exit(0)
+  } else{
+    process.exit(1)
+  }
+ 
 
 })
 
