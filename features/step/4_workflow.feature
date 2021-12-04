@@ -13,8 +13,8 @@ Scenario: 4
     And user selects "books" from "#repos" select tag 406
     And component with "#repobranches" selector is visible to user 407
     And user selects "main" from "#repobranches" select tag 408
-    And component with "#workflowConfig" id includes "google" textcontent 409
-    And user types "local_wf_bdd_desc" to input with "#workflowDescriptionTextarea" selector 410
+    And user types "local_wf_bdd_desc" to input with "#workflowDescriptionTextarea" selector 409
+    And button with "#save-workflow-btn" selector is enabled 410
     When user clicks to button with "#save-workflow-btn" selector 411
     Then component with "#workflows" selector is visible to user 412
 

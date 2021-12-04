@@ -83,8 +83,11 @@ customElements.define('workspace-editor', class extends HTMLElement {
         
             debugger;
             this.FB_DATABASE.ref('/').update(update, (error, data) => {
+                if(data){
+                    window.location.replace('/workspaces-list.html')
+                }
                 debugger;
-                window.location.replace('/workspaces-list.html')
+                
             })
             
         })

@@ -32,18 +32,27 @@ function firebase() {
 
         },
         update: async function (data, cb) {
-            await updateIdToken()
-            const fetchUrl =this.url ==='/'? `${this.projectUri}/.json?auth=${this.idToken}`: `${this.projectUri}/${this.url}.json?auth=${this.idToken}`
-        
-            
-
-            fetch(fetchUrl, { method: 'PATCH', body: JSON.stringify(data) }).then(response => response.json()).then(data => {
+            try {
+                await updateIdToken()
+                const fetchUrl =this.url ==='/'? `${this.projectUri}/.json?auth=${this.idToken}`: `${this.projectUri}/${this.url}.json?auth=${this.idToken}`
                 
-                cb && cb(null,data)
-            }).catch(error => {
-                cb && cb(error,null)
-                return this
-            })
+                const updateResponse = await fetch(fetchUrl, { method: 'PATCH', body: JSON.stringify(data) })
+                const updateJsonData = await updateResponse.json()
+                const error =updateJsonData['error']
+                if(error){
+                    debugger;
+                    window.pageStore.dispatch({ type: window.actionTypes.CLIENT_ERROR, payload: error })
+                    cb && cb(error,null)  
+                } else{
+                    cb && cb(null,updateJsonData)
+                }
+     
+            } catch (error) {
+                const {message}=error
+                window.pageStore.dispatch({ type: window.actionTypes.CLIENT_ERROR, payload: message })
+            }
+          
+         
         },
         push: async function (data, cb) {
             await updateIdToken()
@@ -56,17 +65,29 @@ function firebase() {
             })
         },
         get: async function (cb) {
-            await updateIdToken()
-               const fetchUrl =this.url ==='/'? `${this.projectUri}/.json?auth=${this.idToken}`: `${this.projectUri}/${this.url}.json?auth=${this.idToken}`
-               
-            fetch(fetchUrl, { method: 'GET'}).then(response => response.json()).then(data => {
-                
-                cb && cb(null,data)
-            }).catch(error => {
-                
-                cb && cb(error,null)
-                return this
-            })
+            try {
+                await updateIdToken()
+                const fetchUrl =this.url ==='/'? `${this.projectUri}/.json?auth=${this.idToken}`: `${this.projectUri}/${this.url}.json?auth=${this.idToken}`
+              const getResponse =await   fetch(fetchUrl, { method: 'GET'})
+              const getJsonData =await getResponse.json()
+ 
+                 debugger;
+                 const error =getJsonData&&  getJsonData['error']
+                 debugger;
+                 if(error){
+                     debugger;
+                     window.pageStore.dispatch({ type: window.actionTypes.CLIENT_ERROR, payload: error })
+                     cb && cb(error,null) 
+                     debugger;
+                 } else{
+                     debugger;
+                     cb && cb(null,getJsonData)
+                 }
+            } catch (error) {
+               const {message}=error
+                window.pageStore.dispatch({ type: window.actionTypes.CLIENT_ERROR, payload: message })
+                cb && cb(error,null) 
+            }
         },
         on: async function (event, cb) {
             

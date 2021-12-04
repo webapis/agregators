@@ -6,6 +6,7 @@ customElements.define('workspace-tasks', class extends HTMLElement {
     }
 
     async connectedCallback() {
+    
         this.innerHTML=`loading...`
         const resources = await import('./resources.js')
         await resources.default()
@@ -33,25 +34,31 @@ customElements.define('workspace-tasks', class extends HTMLElement {
 
         this.FB_DATABASE.ref(`workspaces/${workspaceName}/tasks`).get((error, result) => {
             debugger;
-            const tasks = result && Object.entries(result)
-
-
-            tasks.forEach(task => {
+            if(result){
                 debugger;
-                const taskId = task[0]
-                const taskName = task[1]['taskName']
-                document.getElementById('tasks').insertAdjacentHTML('beforeend', ` <a href="/task-workflows.html" class="list-group-item list-group-item-action" id="${taskId}" name="${taskName}">${taskName}</a>`)
-            })
-            Array.from(document.getElementsByClassName('list-group-item')).forEach(element => {
-                element.addEventListener('click', e => {
-                    e.preventDefault()
-                    const { id, name } = e.target
-                    debugger;
-                    window.pageStore.dispatch({ type: window.actionTypes.TASK_SELECTED, payload: { id, taskName: name } })
-                    window.location.replace('./task-workflows.html')
+                const tasks = result && Object.entries(result)
+    
+
+                tasks &&     tasks.forEach(task => {
+              
+                    const taskId = task[0]
+                    const taskName = task[1]['taskName']
+                    document.getElementById('tasks').insertAdjacentHTML('beforeend', ` <a href="/task-workflows.html" class="list-group-item list-group-item-action" id="${taskId}" name="${taskName}">${taskName}</a>`)
                 })
-            })
-            debugger;
+                Array.from(document.getElementsByClassName('list-group-item')).forEach(element => {
+                    element.addEventListener('click', e => {
+                        e.preventDefault()
+                        const { id, name } = e.target
+                        debugger;
+                        window.pageStore.dispatch({ type: window.actionTypes.TASK_SELECTED, payload: { id, taskName: name } })
+                        window.location.replace('./task-workflows.html')
+                    })
+                })
+            } else{
+                document.getElementById('tasks').insertAdjacentHTML('beforeend', ` 0 Tasks found`)
+            }
+       
+         
         })
         document.getElementById('run-tasks-btn').addEventListener('click', async (e) => {
             e.preventDefault()

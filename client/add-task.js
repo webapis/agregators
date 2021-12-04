@@ -37,8 +37,12 @@ customElements.define('add-task', class extends HTMLElement {
                 ...updateServerWorkSpace,
                 ...updateClientWorkSpace
             }, (error, data) => {
+                debugger;
+                if(data){
+                    window.location.replace('/workspace-tasks.html')
+                }
                 debugger;   
-                window.location.replace('/workspace-tasks.html')
+            
             })
         })
     }

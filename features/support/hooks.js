@@ -152,7 +152,7 @@ Before({ tags: '@workspace' }, async function () {
 })
 AfterAll(async function (error, result) {
   debugger;
-console.log('after all',error)
+
   await global.browser.close();
   process.exit(0)
 
@@ -180,7 +180,7 @@ async function updateIdToken() {
     return updatedState
 
   } else {
-    console.log('old auth',authState.auth )
+    console.log('old auth')
     return require(`${process.cwd()}/mock-data/local-storage/0-after.json`)
   }
 

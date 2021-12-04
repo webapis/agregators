@@ -4,6 +4,11 @@ customElements.define('workspaces-list', class extends HTMLElement {
     }
 
     async connectedCallback() {
+        window.onerror = (errorMessage) => {
+            debugger;
+            window.pageStore.dispatch({ type: window.actionTypes.CLIENT_ERROR, payload: errorMessage })
+            debugger;
+        }
         this.innerHTML=`loading...`
         const resources = await import('./resources.js')
         await resources.default()

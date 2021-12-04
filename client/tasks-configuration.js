@@ -9,10 +9,7 @@ customElements.define('tasks-configuration', class extends HTMLElement {
         if (document.getElementById('token')) {
             debugger;
 
-            const token = document.getElementById('token').value
-
-
-         //   window.pageStore.dispatch({ type: window.actionTypes.GOOGLE_AUTH_SUCCESS, payload: token })
+       
             debugger;
             this.render()
         } else {
@@ -51,6 +48,7 @@ customElements.define('tasks-configuration', class extends HTMLElement {
 
         //Collect google apis scopes remove dublicate scopes
         this.FB_DATABASE.ref(`workspaces/${workspaceName}/workflowConfigs/tasks`).on('value', (error, result) => {
+            if(result){
             debugger;
             const tasks = Object.values(result.data)
             const configs = []
@@ -61,15 +59,10 @@ customElements.define('tasks-configuration', class extends HTMLElement {
                 debugger;
                 workflows.forEach(workflowConfig => {
 
-                    debugger;
-
                     configs.push(workflowConfig)
                 })
 
-
             })
-
-
 
             const gmailScopes = configs.reduce((prev, curr, i) => {
                 if (i === 0) {
@@ -86,6 +79,7 @@ customElements.define('tasks-configuration', class extends HTMLElement {
             }).join(' ')
             debugger;
             window.pageStore.dispatch({ type: window.actionTypes.GOOGLE_SCOPES, payload: withoutDublicate })
+        }
         })
     }
 })

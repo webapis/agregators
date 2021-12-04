@@ -6,21 +6,18 @@ export const initState = stateFromLS
     projectName: '',
     description: '',
     projectNames: [],
-    // currentPage: 'home',
+
     selectedDashboard: '',
-    // projects: [{ projectName: 'projectOne' }, { projectName: 'projectTwo' }, { projectName: 'projectTrhee' }],
+
     selectedProjectName: '',
     companyName: '',
     dashboardTab: 'main-tab',
     navAfterAuth: 'home',
-    // emailService: '',
-    // databaseService: '',
-    // exportService: '',
-    // scheduleService: '',
+
     emailToEdit: { key: '', email: '' },
     error: null,
     loading: false,
-    //  settingsServiceTab: 'email-tab',
+
     emaillist: [],
     googleServiceScopes: 'https://www.googleapis.com/auth/userinfo.email',
     githubServiceScopes: '',
@@ -28,7 +25,7 @@ export const initState = stateFromLS
     runId: 0,
     completeTime: 0,
     selectedProjectTab: 'project-workflows',
-    workflowEditor: { workflowName: '', workflowDescription: '', ownersRepos: [], selectedRepo: '', isPrivate: '', selectedBranch: '', workflowName: '', tokenFPR: '' },
+    workflowEditor: { workflowName: '', workflowDescription: '', ownersRepos: [], selectedRepo: '', isPrivate: '', selectedBranch: '', workflowConfig: '', tokenFPR: '', loading: false, configLoading: false },
     workflowList: { workflowTab: 'private-workflows', workflows: [] },
     workspaceList: { workspaces: [], selectedWorkspaceTab: 'private-tab' },
     workspaceDashboard: { selectedTab: 'workflows-tab', selectedWfContainerTab: 'collection-tab', containers: [], selectedContainer: '', selectedWfContainerEditorTab: 'workflows-tab' },
@@ -37,7 +34,8 @@ export const initState = stateFromLS
     wfContainer: { selectedContainer: '' },
     workflowTree: { workflowPath: '' },
     workspaceEditor: { workspaceName: "", description: "", accessLevel: "" },
-    workspaceUsers: { username: "", role: "" }
+    workspaceUsers: { username: "", role: "" },
+    clientError: ''
   };
 
 export default (state, action) => {
@@ -105,7 +103,7 @@ export default (state, action) => {
     case actionTypes.USER_REPOS_FETCHED:
       return { ...state, workflowEditor: { ...state.workflowEditor, ownersRepos: action.payload } }
     case actionTypes.REPOS_BRANCHES_FETCHED:
-      return { ...state, workflowEditor: { ...state.workflowEditor, repoBranches: action.payload } }
+      return { ...state, workflowEditor: { ...state.workflowEditor, repoBranches: action.payload, loading: false } }
     case actionTypes.REPO_SELECTED:
 
       return { ...state, workflowEditor: { ...state.workflowEditor, isPrivate: action.payload.isPrivate, selectedRepo: action.payload.selectedRepo, workflowName: `${state.auth.screenName}_${action.payload.selectedRepo}_${state.workflowEditor.selectedBranch}` } }
@@ -157,7 +155,17 @@ export default (state, action) => {
     case actionTypes.WORKSPACES_COUNTED:
       return { ...state, workspaceList: { ...state.workspaceList, ...action.payload } }
     case actionTypes.WORKFLOW_CONFIG_FETCHED:
-      return { ...state, workflowEditor: { ...state.workflowEditor, workflowConfig: action.payload } }
+      return { ...state, workflowEditor: { ...state.workflowEditor, workflowConfig: action.payload, configLoading: false } }
+    case actionTypes.WORKFLOW_CONFIG_PENDING:
+      return { ...state, workflowEditor: { ...state.workflowEditor, configLoading: true } }
+    case actionTypes.CLIENT_ERROR:
+      return { ...state, clientError: action.payload }
+    case actionTypes.CLEAR_ERROR_DISPLAY:
+      return { ...state, clientError: '' }
+    case actionTypes.CLOSE_WORKFLOW_EDITOR:
+      return { ...state, workflowEditor: { workflowName: '', workflowDescription: '', ownersRepos: [], selectedRepo: '', isPrivate: '', selectedBranch: '', workflowConfig: '', tokenFPR: '', loading: false, configLoading: false } }
+    case actionTypes.REPOS_BRANCHES_PENDING:
+      return { ...state, workflowEditor: { ...state.workflowEditor, loading: true } }
     default:
 
       return state;
@@ -208,6 +216,7 @@ export const actionTypes = {
   WORKFLOW_TAB_CHANGED: 'WORKFLOW_TAB_CHANGED',
   USER_REPOS_FETCHED: 'USER_REPOS_FETCHED',
   REPOS_BRANCHES_FETCHED: 'REPOS_BRANCHES_FETCHED',
+  REPOS_BRANCHES_PENDING: 'REPOS_BRANCHES_PENDING',
   REPO_SELECTED: 'REPO_SELECTED',
   BRANCH_SELECTED: 'BRANCH_SELECTED',
   TOKEN_FPR_CHANGED: 'TOKEN_FPR_CHANGED',
@@ -234,7 +243,12 @@ export const actionTypes = {
   WORKSPACE_TAB_CHANGED: 'WORKSPACE_TAB_CHANGED',
   WORKSPACE_USER_INPUT_CHANGED: 'WORKSPACE_USER_INPUT_CHANGED',
   WORKSPACES_COUNTED: 'WORKSPACES_COUNTED',
-  WORKFLOW_CONFIG_FETCHED: 'WORKFLOW_CONFIG_FETCHED'
+  WORKFLOW_CONFIG_FETCHED: 'WORKFLOW_CONFIG_FETCHED',
+  WORKFLOW_CONFIG_PENDING: 'WORKFLOW_CONFIG_PENDING',
+  CLIENT_ERROR: 'CLIENT_ERROR',
+  CLEAR_ERROR_DISPLAY: 'CLEAR_ERROR_DISPLAY',
+
+  CLOSE_WORKFLOW_EDITOR: 'CLOSE_WORKFLOW_EDITOR'
 
 
 };

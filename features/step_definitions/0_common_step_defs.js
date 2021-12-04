@@ -3,7 +3,7 @@ const assert = require('assert');
 const { Given, When, Then } = require('@cucumber/cucumber');
 
 
-const debuggedOrder = 409
+const debuggedOrder = 410
 const log = true
 
 Given('user clicks to button with {string} selector {int}', { timeout: 15000 }, async function (id, order) {
@@ -88,6 +88,7 @@ Given('button with {string} selector is enabled {int}', { timeout: 15000 }, asyn
         await global.page.mouse.click(rect.x, rect.y, { clickCount: 2, delay: 1000 });
 
         await global.page.waitForSelector(`button${id}:not([disabled])`);
+        debugger;
       //  await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-success-${id}.png` });
         log && console.log(`${order}_success_|_button enabled .......`, id)
 
