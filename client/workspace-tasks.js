@@ -28,7 +28,7 @@ customElements.define('workspace-tasks', class extends HTMLElement {
         </div>
         </div>
         <p>Tasks:</p>
-        <div id="tasks" class="list-group"></div>
+        <div id="tasks" class="list-group">Loading...</div>
         `
 
 
@@ -43,6 +43,7 @@ customElements.define('workspace-tasks', class extends HTMLElement {
               
                     const taskId = task[0]
                     const taskName = task[1]['taskName']
+                    document.getElementById('tasks').innerHTML=''
                     document.getElementById('tasks').insertAdjacentHTML('beforeend', ` <a href="/task-workflows.html" class="list-group-item list-group-item-action" id="${taskId}" name="${taskName}">${taskName}</a>`)
                 })
                 Array.from(document.getElementsByClassName('list-group-item')).forEach(element => {
@@ -55,7 +56,8 @@ customElements.define('workspace-tasks', class extends HTMLElement {
                     })
                 })
             } else{
-                document.getElementById('tasks').insertAdjacentHTML('beforeend', ` 0 Tasks found`)
+                document.getElementById('tasks').innerHTML='0 Tasks found'
+             
             }
        
          
