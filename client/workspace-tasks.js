@@ -72,7 +72,7 @@ customElements.define('workspace-tasks', class extends HTMLElement {
     }
 
     loadTasks({workspaceName}){
-        document.getElementById('container').innerHTML=`<task-runner-command></task-runner-command> <configure-tasks></configure-tasks>`
+        document.getElementById('container').innerHTML=` <a class="btn btn-secondary m-1" href="/add-task.html" id="add-task-btn">Add Task</a><task-runner-command></task-runner-command> <configure-tasks></configure-tasks>`
         const taskElement =document.createElement('div')
         document.getElementById('container').appendChild(taskElement)
         this.FB_DATABASE.ref(`workspaces/${workspaceName}/tasks`).get((error, result) => {
