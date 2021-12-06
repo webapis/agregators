@@ -24,4 +24,10 @@ User creates workspace task
     When user clicks to button with "#save-task-btn" selector 408
     Then component with "#tasks a[name='Task 1']" selector is visible to user 409
 
+
+Scenario: 5
+User enables google oauth for task workflows
+
+
+    
     
