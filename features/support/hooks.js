@@ -20,12 +20,13 @@ const launchOptions = {
     //  "--no-sandbox",
     //   "--disable-setuid-sandbox",
     // `--window-position=1200,0`,
+    "--disable-web-security",
     `--window-size=1200,1250`,
     "--allow-insecure-localhost",
     //  "--user-data-dir=/tmp/foo",
     "--ignore-certificate-errors",
     "--unsafely-treat-insecure-origin-as-secure=https://localhost:8888"
-  ] //,devtools: true
+  ]// ,devtools: true
 };
 BeforeAll({ timeout: 15000 }, async function () {
   try {
@@ -135,6 +136,7 @@ After({ timeout: 15000 }, async function (scenario) {
 
     //save local storage data to file
     fs.writeFileSync(`${process.cwd()}/mock-data/local-storage/${name}-after.json`, JSON.stringify(localStorageState), { encoding: 'utf-8' })
+    debugger;
     await global.page.close()
 
   } catch (error) {
@@ -155,7 +157,7 @@ AfterAll(async function (error, result) {
 console.log('global.success______',   global.success)
 
   await global.browser.close();
-  if(global.success===51){
+  if(global.success===57){
     process.exit(0)
   } else{
     process.exit(1)

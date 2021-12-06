@@ -27,7 +27,8 @@ customElements.define('workspace-tasks', class extends HTMLElement {
         //check if runner is previously forked
         const wfRunnerBranchUrl = `https://api.github.com/repos/${screenName}/workflow_runner/branches/main`
         const responseDeleteABranch = await fetch(wfRunnerBranchUrl, { headers: { Accept: "application/vnd.github.v3+json", authorization: `token ${token}` } })
-        
+        console.log('responseDeleteABranch',responseDeleteABranch)
+        debugger;
         const forked = responseDeleteABranch.ok
         debugger;
         if(forked){
@@ -181,7 +182,8 @@ customElements.define('fork-workflow-runner-btn', class extends HTMLElement {
 
         document.getElementById('fork-runner-btn').addEventListener('click', async () => {
             try {
-                await fetch(`https://api.github.com/repos/webapis/workflow_runner/forks`, { method: 'post', headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' } })
+             const forkResponse =   await fetch(`https://api.github.com/repos/webapis/workflow_runner/forks`, { method: 'post', headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' } })
+             debugger;
                 window.location.replace('/workspace-tasks.html')
             } catch (error) {
 
