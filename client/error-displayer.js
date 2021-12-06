@@ -23,7 +23,7 @@ customElements.define('error-displayer', class extends HTMLElement {
     render() {
 
         const { clientError } = window.pageStore.state
-        debugger;
+        
         if (clientError) {
             this.innerHTML = `<div class="alert alert-danger alert-dismissible fade show" role="alert">
             <strong>Error:</strong> ${clientError}

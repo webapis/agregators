@@ -47,10 +47,10 @@ customElements.define('tasks-configuration', class extends HTMLElement {
         })
 
         //Collect google apis scopes remove dublicate scopes
-        this.FB_DATABASE.ref(`workspaces/${workspaceName}/workflowConfigs/tasks`).on('value', (error, result) => {
+        this.FB_DATABASE.ref(`workspaces/${workspaceName}/workflowConfigs/tasks`).get((error, result) => {
             if(result){
             debugger;
-            const tasks = Object.values(result.data)
+            const tasks = Object.values(result)
             const configs = []
             debugger;
             tasks.forEach(task => {

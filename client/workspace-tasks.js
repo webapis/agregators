@@ -6,7 +6,11 @@ customElements.define('workspace-tasks', class extends HTMLElement {
     }
 
     async connectedCallback() {
-    
+        document.addEventListener('visibilitychange', function (event) {
+            if (!document.hidden && document.getElementById('enable-workflow-link')) {
+                location.reload()
+            } 
+        });
         this.innerHTML=`loading...`
         const resources = await import('./resources.js')
         await resources.default()
@@ -14,87 +18,115 @@ customElements.define('workspace-tasks', class extends HTMLElement {
         const { auth: { idToken, localId: uid, token, screenName }, workspace: { workspaceSelected: { title: workspaceName } } } = window.pageStore.state
         this.uid = uid
         this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
+
+        
         document.getElementById('ws-breadcrumb').innerText = `Workspace(${workspaceName})`
-        this.innerHTML = `
-        <signed-in-as></signed-in-as>
-        <div class="d-flex justify-content-between">
-      
-        <a class="btn btn-secondary" href="/add-task.html" id="add-task-btn">Add Task</a>
-        <div>
-        <fork-workflow-runner-btn></fork-workflow-runner-btn>
-        <enable-workflows></enable-workflows>
-        <configure-tasks></configure-tasks>
-        <a class="btn btn-secondary" href="#" id="run-tasks-btn">Run Tasks</a>
-        </div>
-        </div>
-        <p>Tasks:</p>
-        <div id="tasks" class="list-group">Loading...</div>
+        this.innerHTML=`   <signed-in-as></signed-in-as>
+        <div id="container">Loading...</div>
         `
+        //check if runner is previously forked
+        const wfRunnerBranchUrl = `https://api.github.com/repos/${screenName}/workflow_runner/branches/main`
+        const responseDeleteABranch = await fetch(wfRunnerBranchUrl, { headers: { Accept: "application/vnd.github.v3+json", authorization: `token ${token}` } })
+        
+        const forked = responseDeleteABranch.ok
+        debugger;
+        if(forked){
+            //upstream forked runner
+            const fetchPath = `https://api.github.com/repos/${screenName}/workflow_runner/merge-upstream`
 
-
-        this.FB_DATABASE.ref(`workspaces/${workspaceName}/tasks`).get((error, result) => {
+            await fetch(fetchPath, {
+                method: 'post',
+                headers: {
+                    authorization: `token ${token}`,
+                    Accept: 'application/vnd.github.v3+json'
+                },
+                body: JSON.stringify({ branch: 'main' })
+            })
+            // check if runner's workflow is enabled
+            const workflowUrl = `https://api.github.com/repos/${screenName}/workflow_runner/actions/workflows/aggregate.yml`
+            const workflowState = await fetch(workflowUrl, { headers: { Accept: "application/vnd.github.v3+json", authorization: `token ${token}` } })
             debugger;
+         
+            if(workflowState.status===200){
+
+                this.loadTasks({workspaceName})
+                //display workspace tasks
+
+              
+
+            } else{
+                //enable runners workflow
+                this.loadEnableWorkflow()
+            }
+        } else{
+            
+         debugger;
+            //fork runner
+            this.loadForkRunner()
+
+            
+        }
+
+
+
+    }
+
+    loadTasks({workspaceName}){
+        document.getElementById('container').innerHTML=`<task-runner-command></task-runner-command> <configure-tasks></configure-tasks>`
+        const taskElement =document.createElement('div')
+        document.getElementById('container').appendChild(taskElement)
+        this.FB_DATABASE.ref(`workspaces/${workspaceName}/tasks`).get((error, result) => {
+            
             if(result){
-                debugger;
+                
                 const tasks = result && Object.entries(result)
     
-
+          
                 tasks &&     tasks.forEach(task => {
-              
+                  
+                    taskElement.id='tasks'
                     const taskId = task[0]
                     const taskName = task[1]['taskName']
-                    document.getElementById('tasks').innerHTML=''
-                    document.getElementById('tasks').insertAdjacentHTML('beforeend', ` <a href="/task-workflows.html" class="list-group-item list-group-item-action" id="${taskId}" name="${taskName}">${taskName}</a>`)
+                    taskElement.innerHTML=''
+                    taskElement.insertAdjacentHTML('beforeend', ` <a href="/task-workflows.html" class="list-group-item list-group-item-action" id="${taskId}" name="${taskName}">${taskName}</a>`)
                 })
                 Array.from(document.getElementsByClassName('list-group-item')).forEach(element => {
                     element.addEventListener('click', e => {
                         e.preventDefault()
                         const { id, name } = e.target
-                        debugger;
+                        
                         window.pageStore.dispatch({ type: window.actionTypes.TASK_SELECTED, payload: { id, taskName: name } })
                         window.location.replace('./task-workflows.html')
                     })
                 })
             } else{
-                document.getElementById('tasks').innerHTML='0 Tasks found'
-             
+          
+                taskElement
+                .innerHTML='0 Tasks found'
+                
             }
        
          
         })
-        document.getElementById('run-tasks-btn').addEventListener('click', async (e) => {
-            e.preventDefault()
-
-            const { auth: { token, screenName: owner, idToken, email, localId, refreshToken }, workspace: { workspaceSelected: { title } } } = window.pageStore.state
-            const projectUrl = window.projectUrl
-            //const selectedContainer=title
-            const parameters = `${token}--xxx--${owner}--xxx--${idToken}--xxx--${email}--xxx--${localId}--xxx--${refreshToken}--xxx--${'selectedContainer'}--xxx--${projectUrl}--xxx--${title}`
-            debugger;
-            const body = JSON.stringify({ ref: 'main', inputs: { projectName: title, parameters } })
-            if (title === 'local_test') {
-                debugger;
-                await fetch('http://localhost:3001', { body, method: 'post' })
-            } else {
-                debugger;
-                await triggerAction({ gh_action_url: `https://api.github.com/repos/${owner}/workflow_runner/actions/workflows/aggregate.yml/dispatches`, ticket: token, body })
-            }
-            debugger;
-
-
-
-            debugger;
-        })
-
 
     }
 
+    loadEnableWorkflow(){
+        document.getElementById('container').innerHTML=``
+        document.getElementById('container').insertAdjacentHTML('afterbegin',`<enable-workflows></enable-workflows>`)
+    }
+
+    loadForkRunner(){
+        document.getElementById('container').innerHTML=``
+        document.getElementById('container').insertAdjacentHTML('afterbegin',`  <fork-workflow-runner-btn></fork-workflow-runner-btn>`)
+    }
 
 })
 
 
 
 async function triggerAction({ ticket, body, gh_action_url }) {
-    debugger;
+    
 
     try {
         const response = await fetch(gh_action_url, {
@@ -107,7 +139,7 @@ async function triggerAction({ ticket, body, gh_action_url }) {
         })
         const data = await response.json()
     } catch (error) {
-        debugger;
+        
     }
 
 }
@@ -135,37 +167,29 @@ customElements.define('fork-workflow-runner-btn', class extends HTMLElement {
     }
 
     async connectedCallback() {
-        const { auth: { token, screenName } } = window.pageStore.state
-        const wfRunnerBranchUrl = `https://api.github.com/repos/${screenName}/workflow_runner/branches/main`
-        debugger;
+        const { auth: { token } } = window.pageStore.state
+  
 
-        const responseDeleteABranch = await fetch(wfRunnerBranchUrl, { headers: { Accept: "application/vnd.github.v3+json", authorization: `token ${token}` } })
-        debugger;
-        const forked = responseDeleteABranch.ok
-
-        this.render({ forked, token })
-        if (forked) {
-            const fetchPath = `https://api.github.com/repos/${screenName}/workflow_runner/merge-upstream`
-
-            const response = await fetch(fetchPath, {
-                method: 'post',
-                headers: {
-                    authorization: `token ${token}`,
-                    Accept: 'application/vnd.github.v3+json'
-                },
-                body: JSON.stringify({ branch: 'main' })
-            })
-
-        }
+        this.render({ token })
+       
+        
     }
 
-    render({ forked, token }) {
-   debugger;
-        this.innerHTML = `<button class="btn btn-secondary" ${forked && 'disabled'} id="fork-runner-btn">Fork runner</button>`
+    render({ token }) {
+   
+        this.innerHTML = `<button class="btn btn-secondary"  id="fork-runner-btn">Fork runner</button>`
 
         document.getElementById('fork-runner-btn').addEventListener('click', async () => {
-            await fetch(`https://api.github.com/repos/webapis/workflow_runner/forks`, { method: 'post', headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' } })
-            debugger;
+            try {
+                await fetch(`https://api.github.com/repos/webapis/workflow_runner/forks`, { method: 'post', headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' } })
+                window.location.replace('/workspace-tasks.html')
+            } catch (error) {
+
+
+                
+            }
+       
+            
         })
     }
 })
@@ -177,6 +201,39 @@ customElements.define('enable-workflows', class extends HTMLElement{
 
     connectedCallback(){
         const { auth: { screenName } } = window.pageStore.state
-        this.innerHTML=`<a href="https://github.com/${screenName}/workflow_runner/actions"  target="_blank">Enable Workflows</a>`
+        this.innerHTML=`<a href="https://github.com/${screenName}/workflow_runner/actions"  target="_blank" id="enable-workflow-link">Enable Workflows</a>`
+    }
+})
+
+customElements.define('task-runner-command',class extends HTMLElement{
+    constructor(){
+        super()
+    }
+
+    connectedCallback(){
+        this.innerHTML=`<a class="btn btn-secondary" href="#" id="run-tasks-btn">Run Tasks</a>`
+
+               document.getElementById('run-tasks-btn').addEventListener('click', async (e) => {
+            e.preventDefault()
+
+            const { auth: { token, screenName: owner, idToken, email, localId, refreshToken }, workspace: { workspaceSelected: { title } } } = window.pageStore.state
+            const projectUrl = window.projectUrl
+            //const selectedContainer=title
+            const parameters = `${token}--xxx--${owner}--xxx--${idToken}--xxx--${email}--xxx--${localId}--xxx--${refreshToken}--xxx--${'selectedContainer'}--xxx--${projectUrl}--xxx--${title}`
+            
+            const body = JSON.stringify({ ref: 'main', inputs: { projectName: title, parameters } })
+            if (title === 'local_test') {
+                
+                await fetch('http://localhost:3001', { body, method: 'post' })
+            } else {
+                
+                await triggerAction({ gh_action_url: `https://api.github.com/repos/${owner}/workflow_runner/actions/workflows/aggregate.yml/dispatches`, ticket: token, body })
+            }
+            
+
+
+
+            
+        })
     }
 })

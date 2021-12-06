@@ -40,7 +40,7 @@ function firebase() {
                 const updateJsonData = await updateResponse.json()
                 const error =updateJsonData['error']
                 if(error){
-                    debugger;
+                    
                     window.pageStore.dispatch({ type: window.actionTypes.CLIENT_ERROR, payload: error })
                     cb && cb(error,null)  
                 } else{
@@ -71,16 +71,16 @@ function firebase() {
               const getResponse =await   fetch(fetchUrl, { method: 'GET'})
               const getJsonData =await getResponse.json()
  
-                 debugger;
+                 
                  const error =getJsonData&&  getJsonData['error']
-                 debugger;
+                 
                  if(error){
                      debugger;
                      window.pageStore.dispatch({ type: window.actionTypes.CLIENT_ERROR, payload: error })
                      cb && cb(error,null) 
-                     debugger;
+                     
                  } else{
-                     debugger;
+                     
                      cb && cb(null,getJsonData)
                  }
             } catch (error) {
