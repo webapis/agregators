@@ -198,16 +198,28 @@ customElements.define('workspaces-tab', class extends HTMLElement {
        
       </ul>`
 
-        Array.from(document.getElementsByClassName('nav-link')).forEach(element => {
+      document.getElementById('private-tab').addEventListener('click',(e)=>{
+        e.preventDefault()
+        const { id } = e.target
 
-            element.addEventListener('click', (e) => {
-                e.preventDefault()
-                const { id } = e.target
+        window.pageStore.dispatch({ type: window.actionTypes.WORKSPACE_TAB_CHANGED, payload: id })
+        window.location.replace('/workspaces-list.html')
+      })
 
-                window.pageStore.dispatch({ type: window.actionTypes.WORKSPACE_TAB_CHANGED, payload: id })
-                window.location.replace('/workspaces-list.html')
+      document.getElementById('public-tab').addEventListener('click',(e)=>{
+        e.preventDefault()
+        const { id } = e.target
 
-            })
-        })
+        window.pageStore.dispatch({ type: window.actionTypes.WORKSPACE_TAB_CHANGED, payload: id })
+        window.location.replace('/workspaces-list.html')
+      })
+
+      document.getElementById('shared-tab').addEventListener('click',(e)=>{
+        e.preventDefault()
+        const { id } = e.target
+
+        window.pageStore.dispatch({ type: window.actionTypes.WORKSPACE_TAB_CHANGED, payload: id })
+        window.location.replace('/workspaces-list.html')
+      })
     }
 })
