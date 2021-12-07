@@ -3,7 +3,7 @@ const assert = require('assert');
 const { Given, When, Then } = require('@cucumber/cucumber');
 
 
-const debuggedOrder = 409
+const debuggedOrder = 707
 const log = true
 global.success = 0
 Given('user clicks to button with {string} selector {int}', { timeout: 15000 }, async function (id, order) {
@@ -133,6 +133,9 @@ Given('component with {string} selector is visible to user {int}', { timeout: 15
 
         await global.page.waitForSelector(id)
         //  await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-success-${id}.png` });
+        if (order === debuggedOrder) {
+            debugger;
+        }
 
         log && console.log(`${order}_success_|_component is visible .......`, id)
         if (order === debuggedOrder) {
@@ -227,7 +230,32 @@ Given('component with {string} id includes {string} textcontent {int}', { timeou
 
 
 
+Given('button with {string} selector is disabled {int}', { timeout: 15000 }, async function (id, order) {
 
+    try {
+        if (order === debuggedOrder) {
+            debugger;
+        }
+
+
+        await global.page.waitForSelector(id);
+        const isDisabled = await page.$eval(id,(el)=> el.disabled);
+        assert.equal(isDisabled, true)
+        debugger;
+        if (order === debuggedOrder) {
+            debugger;
+        }
+        //  await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-success-${id}.png` });
+        log && console.log(`${order}_success_|_button disabled .......`, id)
+        global.success++
+    } catch (error) {
+        debugger;
+        //   await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-error-${id}.png` });
+        // log && console.log(`${order}_failed_|_button enabled .......`, error)
+        throw error
+    }
+
+})
 
 /*
       - name: Archive production artifacts

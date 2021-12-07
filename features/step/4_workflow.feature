@@ -1,3 +1,4 @@
+
 @workflow
 Feature: Workflow
 
@@ -28,3 +29,17 @@ Scenario: 6
     And user types "https://books.toscrape.com" to input with "#PAGE_URL" selector 603
     When user clicks to button with "#save-vars-btn" selector 604
     Then component with "#workflows" selector is visible to user 605
+
+
+Scenario: 7
+After creating task workflows user must enable google oauth for task workflows
+if one is requred by workflow
+    Given user navigated to tasks-configuration.html page 701
+    And component with "#google-auth-btn" selector is visible to user 702
+    And button with "#google-auth-btn" selector is enabled 703
+    And user clicks to button with "#google-auth-btn" selector 704
+    And component with "#google-auth-btn" selector is visible to user 705
+    When user clicks to button with "#google-auth-btn" selector 706
+    Then component with "#google-auth-btn" selector is visible to user 707
+    And button with "#google-auth-btn" selector is disabled 708
+    

@@ -11,7 +11,14 @@ exports.handler = async (event, context) => {
     //     statusCode: 200,
     //     body: JSON.stringify(event)
     // }
-    const authdata = await exchangeGoogleAuthorizationCode({ client_id, client_secret, code, redirect_uri })
+
+    let authdata =null
+    if(state){
+        authdata = await exchangeGoogleAuthorizationCode({ client_id, client_secret, code, redirect_uri })
+    } else{
+        authdata= require(`${process.cwd()}/mock-data/serverless/exchangeGoogleAuthorizationCode.json`)
+    }
+   
     debugger;
     await updateUsersWorkspaceGoogleAuthState({ ...authdata, state })
     const { access_token, refresh_token, scope } = authdata

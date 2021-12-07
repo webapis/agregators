@@ -3,13 +3,13 @@ customElements.define('tasks-configuration', class extends HTMLElement {
         super()
     }
     async connectedCallback() {
-
+        this.innerHTML = `Loading...`
         const resources = await import('./resources.js')
         await resources.default()
         if (document.getElementById('token')) {
             debugger;
 
-       
+
             debugger;
             this.render()
         } else {
@@ -48,38 +48,38 @@ customElements.define('tasks-configuration', class extends HTMLElement {
 
         //Collect google apis scopes remove dublicate scopes
         this.FB_DATABASE.ref(`workspaces/${workspaceName}/workflowConfigs/tasks`).get((error, result) => {
-            if(result){
-            debugger;
-            const tasks = Object.values(result)
-            const configs = []
-            debugger;
-            tasks.forEach(task => {
-                const workflows = Object.values(task.workflows);
-
+            if (result) {
                 debugger;
-                workflows.forEach(workflowConfig => {
+                const tasks = Object.values(result)
+                const configs = []
+                debugger;
+                tasks.forEach(task => {
+                    const workflows = Object.values(task.workflows);
 
-                    configs.push(workflowConfig)
+                    debugger;
+                    workflows.forEach(workflowConfig => {
+
+                        configs.push(workflowConfig)
+                    })
+
                 })
 
-            })
-
-            const gmailScopes = configs.reduce((prev, curr, i) => {
-                if (i === 0) {
-                    const { scope } = curr['auth']['google']
-                    return scope
-                }
-                else {
-                    const { scope } = curr['auth']['google']
-                    return prev.concat(` ` + scope)
-                }
-            }, {})
-            const withoutDublicate = gmailScopes.split(' ').filter(function (item, pos, self) {
-                return self.indexOf(item) == pos
-            }).join(' ')
-            debugger;
-            window.pageStore.dispatch({ type: window.actionTypes.GOOGLE_SCOPES, payload: withoutDublicate })
-        }
+                const gmailScopes = configs.reduce((prev, curr, i) => {
+                    if (i === 0) {
+                        const { scope } = curr['auth']['google']
+                        return scope
+                    }
+                    else {
+                        const { scope } = curr['auth']['google']
+                        return prev.concat(` ` + scope)
+                    }
+                }, {})
+                const withoutDublicate = gmailScopes.split(' ').filter(function (item, pos, self) {
+                    return self.indexOf(item) == pos
+                }).join(' ')
+                debugger;
+                window.pageStore.dispatch({ type: window.actionTypes.GOOGLE_SCOPES, payload: withoutDublicate })
+            }
         })
     }
 })
