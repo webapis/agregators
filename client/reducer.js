@@ -35,7 +35,8 @@ export const initState = stateFromLS
     workflowTree: { workflowPath: '' },
     workspaceEditor: { workspaceName: "", description: "", accessLevel: "" },
     workspaceUsers: { username: "", role: "" },
-    clientError: ''
+    clientError: '',
+    taskRunner:{}
   };
 
 export default (state, action) => {
@@ -166,6 +167,8 @@ export default (state, action) => {
       return { ...state, workflowEditor: { workflowName: '', workflowDescription: '', ownersRepos: [], selectedRepo: '', isPrivate: '', selectedBranch: '', workflowConfig: '', tokenFPR: '', loading: false, configLoading: false } }
     case actionTypes.REPOS_BRANCHES_PENDING:
       return { ...state, workflowEditor: { ...state.workflowEditor, loading: true } }
+    case actionTypes.RUNNER_STARTED:
+      return { ...state, taskRunner: {...state.taskRunner, [action.payload.workspace]: {runState:action.payload.runState }} }
     default:
 
       return state;
@@ -248,7 +251,7 @@ export const actionTypes = {
   CLIENT_ERROR: 'CLIENT_ERROR',
   CLEAR_ERROR_DISPLAY: 'CLEAR_ERROR_DISPLAY',
 
-  CLOSE_WORKFLOW_EDITOR: 'CLOSE_WORKFLOW_EDITOR'
-
+  CLOSE_WORKFLOW_EDITOR: 'CLOSE_WORKFLOW_EDITOR',
+  RUNNER_STARTED: "RUNNER_STARTED"
 
 };

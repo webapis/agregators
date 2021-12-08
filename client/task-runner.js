@@ -24,7 +24,7 @@ customElements.define('task-runner', class extends HTMLElement {
         <run-result></run-result>
         </div>
         `
-      
+
 
     }
 })
@@ -69,15 +69,41 @@ customElements.define('task-runner-command', class extends HTMLElement {
         super()
     }
 
-    connectedCallback() {
-        this.innerHTML = `<a class="btn btn-outline-dark" href="#" id="run-tasks-btn">Run</a>`
+   async connectedCallback() {
+        debugger;
+        const resources = await import('./resources.js')
+        await resources.default()
+        const { workspace: { workspaceSelected: { title: workspaceName } } } = window.pageStore.state
+        const state =window.pageStore.state
+       // const { taskRunner: { [workspaceName]: { runState } } } = window.pageStore.state
+        if(state.taskRunner && state.taskRunner[workspaceName] && state.taskRunner[workspaceName].runState){
+            this.render({ runState: state.taskRunner[workspaceName].runState })
+        } else{
+            this.render({ runState:undefined})
+        }
+      
+
+        window.pageStore.subscribe(window.actionTypes.RUNNER_STARTED, state => {
+            const { workspace: { workspaceSelected: { title: workspaceName } } } = state
+            debugger;
+            const { taskRunner: { [workspaceName]: { runState } } } = state
+            debugger;
+            this.render({ runState })
+        })
+
+    }
+
+    render({ runState }) {
+        this.innerHTML = `<a class="btn btn-outline-dark" href="#" id="run-tasks-btn">${runState ?`<div class="spinner-border spinner-border-sm" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>`: 'Run'}</a>`
 
         document.getElementById('run-tasks-btn').addEventListener('click', async (e) => {
 
 
-            const { auth: { token, screenName: owner, idToken, email, localId, refreshToken }, workspace: { workspaceSelected: { title:workspaceName } } } = window.pageStore.state
+            const { auth: { token, screenName: owner, idToken, email, localId, refreshToken }, workspace: { workspaceSelected: { title: workspaceName } } } = window.pageStore.state
             const projectUrl = window.projectUrl
-           
+
             this.uid = localId
             this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
             let update = {}
@@ -88,13 +114,14 @@ customElements.define('task-runner-command', class extends HTMLElement {
 
 
             debugger;
-            this.FB_DATABASE.ref('/').update(update, async(error, data) => {
+            this.FB_DATABASE.ref('/').update(update, async (error, data) => {
                 if (data) {
+                    window.pageStore.dispatch({ type: window.actionTypes.RUNNER_STARTED, payload: { workspace: workspaceName, runState: 1 } })
                     debugger;
                     const parameters = `${token}--xxx--${owner}--xxx--${idToken}--xxx--${email}--xxx--${localId}--xxx--${refreshToken}--xxx--${'selectedContainer'}--xxx--${projectUrl}--xxx--${workspaceName}--xxx--${runid}`
 
                     const body = JSON.stringify({ ref: 'main', inputs: { projectName: workspaceName, parameters } })
-                    if (title === 'local_ws_bdd') {
+                    if (workspaceName === 'local_ws_bdd') {
                         debugger;
                         await fetch('http://localhost:3001', { body, method: 'post' })
                     } else {
