@@ -168,7 +168,7 @@ export default (state, action) => {
     case actionTypes.REPOS_BRANCHES_PENDING:
       return { ...state, workflowEditor: { ...state.workflowEditor, loading: true } }
     case actionTypes.RUNNER_STARTED:
-      return { ...state, taskRunner: {...state.taskRunner, [action.payload.workspace]: {runState:action.payload.runState }} }
+      return { ...state, taskRunner: {...state.taskRunner, [action.payload.workspace]: {runState:action.payload.runState,runid:action.payload.runid }} }
     default:
 
       return state;

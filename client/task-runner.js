@@ -73,30 +73,36 @@ customElements.define('task-runner-command', class extends HTMLElement {
         debugger;
         const resources = await import('./resources.js')
         await resources.default()
-        const { workspace: { workspaceSelected: { title: workspaceName } } } = window.pageStore.state
+        const { workspace: { workspaceSelected: { title: workspaceName } }, auth: {  idToken,  localId} } = window.pageStore.state
         const state =window.pageStore.state
-       // const { taskRunner: { [workspaceName]: { runState } } } = window.pageStore.state
+        this.uid = localId
+        this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
+      
         if(state.taskRunner && state.taskRunner[workspaceName] && state.taskRunner[workspaceName].runState){
+
             this.render({ runState: state.taskRunner[workspaceName].runState })
+debugger;
+            
         } else{
-            this.render({ runState:undefined})
+            this.render({ runState:undefined,runid:undefined})
         }
       
 
         window.pageStore.subscribe(window.actionTypes.RUNNER_STARTED, state => {
             const { workspace: { workspaceSelected: { title: workspaceName } } } = state
             debugger;
-            const { taskRunner: { [workspaceName]: { runState } } } = state
+            const { taskRunner: { [workspaceName]: { runState,runid } } } = state
             debugger;
-            this.render({ runState })
+            this.render({ runState,runid })
         })
 
     }
 
-    render({ runState }) {
-        this.innerHTML = `<a class="btn btn-outline-dark" href="#" id="run-tasks-btn">${runState ?`<div class="spinner-border spinner-border-sm" role="status">
+    render({ runState,runid }) {
+        debugger;
+        this.innerHTML = `<a class="btn btn-outline-dark" href="#" id="run-tasks-btn">${(runState===undefined || runState===2) ? 'Run':`<div class="spinner-border spinner-border-sm" role="status">
         <span class="visually-hidden">Loading...</span>
-      </div>`: 'Run'}</a>`
+      </div>`}</a>`
 
         document.getElementById('run-tasks-btn').addEventListener('click', async (e) => {
 
@@ -104,8 +110,7 @@ customElements.define('task-runner-command', class extends HTMLElement {
             const { auth: { token, screenName: owner, idToken, email, localId, refreshToken }, workspace: { workspaceSelected: { title: workspaceName } } } = window.pageStore.state
             const projectUrl = window.projectUrl
 
-            this.uid = localId
-            this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
+     
             let update = {}
             let runid = Date.now()
             debugger;
@@ -116,7 +121,7 @@ customElements.define('task-runner-command', class extends HTMLElement {
             debugger;
             this.FB_DATABASE.ref('/').update(update, async (error, data) => {
                 if (data) {
-                    window.pageStore.dispatch({ type: window.actionTypes.RUNNER_STARTED, payload: { workspace: workspaceName, runState: 1 } })
+                    window.pageStore.dispatch({ type: window.actionTypes.RUNNER_STARTED, payload: { workspace: workspaceName, runState: 1,runid } })
                     debugger;
                     const parameters = `${token}--xxx--${owner}--xxx--${idToken}--xxx--${email}--xxx--${localId}--xxx--${refreshToken}--xxx--${'selectedContainer'}--xxx--${projectUrl}--xxx--${workspaceName}--xxx--${runid}`
 
@@ -137,5 +142,20 @@ customElements.define('task-runner-command', class extends HTMLElement {
 
 
         })
+
+        if(runid){
+            const {  workspace: { workspaceSelected: { title: workspaceName } } } = window.pageStore.state
+            debugger;
+            this.FB_DATABASE.ref(`runs/workspaces/${workspaceName}/${runid}`).on('value',(error,response)=>{
+                debugger;
+        
+                debugger;
+                if(response &&response.data){
+                    debugger;
+                    const {data:{runState}}=response
+                    window.pageStore.dispatch({ type: window.actionTypes.RUNNER_STARTED, payload: { workspace: workspaceName, runState,runid } })
+                }
+            })
+        }
     }
 })
