@@ -24,21 +24,19 @@ customElements.define('task-runner', class extends HTMLElement {
         <run-result></run-result>
         </div>
         `
-        document.getElementById('run-btn').addEventListener('click',e=>{
-            debugger;
-        })
-       
+      
+
     }
 })
 
 
-customElements.define('run-result', class extends HTMLElement{
-    constructor(){
+customElements.define('run-result', class extends HTMLElement {
+    constructor() {
         super()
     }
 
-    connectedCallback(){
-        this.innerHTML=`<table class="table">
+    connectedCallback() {
+        this.innerHTML = `<table class="table">
         <thead>
           <tr>
             <th scope="col">#</th>
@@ -66,32 +64,51 @@ customElements.define('run-result', class extends HTMLElement{
 
 
 
-customElements.define('task-runner-command',class extends HTMLElement{
-    constructor(){
+customElements.define('task-runner-command', class extends HTMLElement {
+    constructor() {
         super()
     }
 
-    connectedCallback(){
-        this.innerHTML=`<a class="btn btn-outline-dark" href="#" id="run-tasks-btn">Run</a>`
+    connectedCallback() {
+        this.innerHTML = `<a class="btn btn-outline-dark" href="#" id="run-tasks-btn">Run</a>`
 
-               document.getElementById('run-tasks-btn').addEventListener('click', async (e) => {
-     
+        document.getElementById('run-tasks-btn').addEventListener('click', async (e) => {
 
-            const { auth: { token, screenName: owner, idToken, email, localId, refreshToken }, workspace: { workspaceSelected: { title } } } = window.pageStore.state
+
+            const { auth: { token, screenName: owner, idToken, email, localId, refreshToken }, workspace: { workspaceSelected: { title:workspaceName } } } = window.pageStore.state
             const projectUrl = window.projectUrl
-          
-            const parameters = `${token}--xxx--${owner}--xxx--${idToken}--xxx--${email}--xxx--${localId}--xxx--${refreshToken}--xxx--${'selectedContainer'}--xxx--${projectUrl}--xxx--${title}`
-            
-            const body = JSON.stringify({ ref: 'main', inputs: { projectName: title, parameters } })
-            if (title === 'local_ws_bdd') {
+           
+            this.uid = localId
+            this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
+            let update = {}
+            let runid = Date.now()
+            debugger;
+            update = { [`runs/workspaces/${workspaceName}/${runid}`]: { runState: 1 } }
+
+
+
+            debugger;
+            this.FB_DATABASE.ref('/').update(update, async(error, data) => {
+                if (data) {
+                    debugger;
+                    const parameters = `${token}--xxx--${owner}--xxx--${idToken}--xxx--${email}--xxx--${localId}--xxx--${refreshToken}--xxx--${'selectedContainer'}--xxx--${projectUrl}--xxx--${workspaceName}--xxx--${runid}`
+
+                    const body = JSON.stringify({ ref: 'main', inputs: { projectName: workspaceName, parameters } })
+                    if (title === 'local_ws_bdd') {
+                        debugger;
+                        await fetch('http://localhost:3001', { body, method: 'post' })
+                    } else {
+
+                        await triggerAction({ gh_action_url: `https://api.github.com/repos/${owner}/workflow_runner/actions/workflows/aggregate.yml/dispatches`, ticket: token, body })
+                    }
+                }
                 debugger;
-                await fetch('http://localhost:3001', { body, method: 'post' })
-            } else {
-                
-                await triggerAction({ gh_action_url: `https://api.github.com/repos/${owner}/workflow_runner/actions/workflows/aggregate.yml/dispatches`, ticket: token, body })
-            }
-            
-            
+
+            })
+
+
+
+
         })
     }
 })
