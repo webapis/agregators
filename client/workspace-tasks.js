@@ -73,7 +73,7 @@ customElements.define('workspace-tasks', class extends HTMLElement {
     }
 
     loadTasks({workspaceName}){
-        document.getElementById('container').innerHTML=` <a class="btn btn-secondary m-1" href="/add-task.html" id="add-task-btn">Add Task</a><task-runner-command></task-runner-command> <configure-tasks></configure-tasks>`
+        document.getElementById('container').innerHTML=` <a class="btn btn-secondary m-1" href="/add-task.html" id="add-task-btn">Add Task</a> <configure-tasks></configure-tasks>`
         const taskElement =document.createElement('div')
         document.getElementById('container').appendChild(taskElement)
         this.FB_DATABASE.ref(`workspaces/${workspaceName}/tasks`).get((error, result) => {
@@ -207,35 +207,3 @@ customElements.define('enable-workflows', class extends HTMLElement{
     }
 })
 
-customElements.define('task-runner-command',class extends HTMLElement{
-    constructor(){
-        super()
-    }
-
-    connectedCallback(){
-        this.innerHTML=`<a class="btn btn-secondary" href="#" id="run-tasks-btn">Run Tasks</a>`
-
-               document.getElementById('run-tasks-btn').addEventListener('click', async (e) => {
-            e.preventDefault()
-
-            const { auth: { token, screenName: owner, idToken, email, localId, refreshToken }, workspace: { workspaceSelected: { title } } } = window.pageStore.state
-            const projectUrl = window.projectUrl
-            //const selectedContainer=title
-            const parameters = `${token}--xxx--${owner}--xxx--${idToken}--xxx--${email}--xxx--${localId}--xxx--${refreshToken}--xxx--${'selectedContainer'}--xxx--${projectUrl}--xxx--${title}`
-            
-            const body = JSON.stringify({ ref: 'main', inputs: { projectName: title, parameters } })
-            if (title === 'local_test') {
-                
-                await fetch('http://localhost:3001', { body, method: 'post' })
-            } else {
-                
-                await triggerAction({ gh_action_url: `https://api.github.com/repos/${owner}/workflow_runner/actions/workflows/aggregate.yml/dispatches`, ticket: token, body })
-            }
-            
-
-
-
-            
-        })
-    }
-})

@@ -26,11 +26,12 @@ customElements.define('workflow-configuration', class extends HTMLElement {
         this.FB_DATABASE.ref(`workspaces/${workspaceName}/workflowConfigs/tasks/${taskId}/workflows/${workflowKey}/vars`).get((error, result) => {
             if(result){
                 const vars = Object.entries(result)
+                document.getElementById('var-container').innerHTML=''
                 debugger;
                 vars.forEach(v => {
                     const varName = v[0]
                     const varValue = v[1]
-                    document.getElementById('var-container').innerHTML=''
+               
                     document.getElementById('var-container').insertAdjacentHTML('beforeend', ` <div class="mb-3 row">
                   <label for="${varName}" class="col-sm-2 col-form-label">${varName}</label>
                   <div class="col-sm-10">

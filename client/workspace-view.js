@@ -18,9 +18,10 @@ customElements.define('workspace-view', class extends HTMLElement{
         <h5 class="text-muted text-uppercase mx-2">${title}</h5>
         </div>
         <div class="row">
-        <workspace-card title="Tasks" page-link="./workspace-tasks.html" link-id="tasks-card"></workspace-card>
+        <workspace-card title="Tasks Configuration" page-link="./workspace-tasks.html" link-id="tasks-card"></workspace-card>
    
         <workspace-card title="Users" page-link="./workspace-users.html" link-id="users-card"></workspace-card>
+        <workspace-card title="Task Runner" page-link="./task-runner.html" link-id="task-runner-card"></workspace-card>
         </div>`
     }
 })

@@ -11,7 +11,7 @@ Scenario: 5
     And component with "#add-workflow-btn" selector is visible to user 503
     And user clicks to button with "#add-workflow-btn" selector 504
     And component with "#repos" selector is visible to user 505
-    And user selects "books" from "#repos" select tag 506
+    And user selects "workflow_a_a" from "#repos" select tag 506
     And component with "#repobranches" selector is visible to user 507
     And user selects "main" from "#repobranches" select tag 508
     And user types "local_wf_bdd_desc" to input with "#workflowDescriptionTextarea" selector 509
@@ -24,11 +24,13 @@ Scenario: 6
 
  User updates workflow vars
 
-    Given user clicks to button with "#codergihub_books_main-workflow-config-btn" selector 601
+    Given user clicks to button with "#codergihub_workflow_a_a_main-workflow-config-btn" selector 601
     And component with "#PAGE_URL" selector is visible to user 602
-    And user types "https://books.toscrape.com" to input with "#PAGE_URL" selector 603
-    When user clicks to button with "#save-vars-btn" selector 604
-    Then component with "#workflows" selector is visible to user 605
+    And user types "https://defacto.com" to input with "#PAGE_URL" selector 604
+     And user types "MALE" to input with "#GENDER" selector 605
+      And user types "SHIRT" to input with "#PRODUCT_CATEGORY" selector 606
+    When user clicks to button with "#save-vars-btn" selector 607
+    Then component with "#workflows" selector is visible to user 608
 
 
 Scenario: 7
