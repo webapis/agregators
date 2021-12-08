@@ -9,7 +9,7 @@ customElements.define('workspace-editor', class extends HTMLElement {
         await resources.default()
         const { auth: { idToken, localId: uid }, workspaceEditor } = window.pageStore.state
         this.uid = uid
-        this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
+        window.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
         this.render({ workspaceEditor })
     }
 
@@ -82,7 +82,7 @@ customElements.define('workspace-editor', class extends HTMLElement {
 
         
             debugger;
-            this.FB_DATABASE.ref('/').update(update, (error, data) => {
+            window.FB_DATABASE.ref('/').update(update, (error, data) => {
                 if(data){
                     window.location.replace('/workspaces-list.html')
                 }

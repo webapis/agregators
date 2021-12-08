@@ -9,7 +9,7 @@ customElements.define('invitations-list', class extends HTMLElement {
     debugger;
     const { auth: { idToken, localId: uid, screenName }, workspace: { workspaceSelected } } = window.pageStore.state
     this.uid = uid
-    this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
+    window.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
 
     this.innerHTML = `<div>Invitations to join workspace
         <signed-in-as></signed-in-as>
@@ -30,7 +30,7 @@ customElements.define('invitations-list', class extends HTMLElement {
   </tbody>
 </table>
         </div>`
-    this.FB_DATABASE.ref(`invitations/${screenName}/workspaces`).on('value', (error, response) => {
+    window.FB_DATABASE.ref(`invitations/${screenName}/workspaces`).on('value', (error, response) => {
 
       const invitations = Object.entries(response.data)
 
@@ -58,7 +58,7 @@ debugger;
           const updateInvitations = { [`invitations/${screenName}/workspaces/${workspaceName}/state`]: 'joined' } 
           const updateSharedWorkspaces = { [`shared_workspaces/user/${inviterId}/workspaces/${workspaceName}/users/${screenName}/state`]: 'joined',[`shared_workspaces/user/${inviterId}/workspaces/${workspaceName}/users/${screenName}/uid`]: uid }
           const updateShared = { [`shared/user/${uid}/workspaces/${workspaceName}`]: { owner: inviter, accessLevel: 'shared',description } }
-          this.FB_DATABASE.ref(`/`).update({ ...updateInvitations, ...updateSharedWorkspaces, ...updateShared }, (error, data) => {
+          window.FB_DATABASE.ref(`/`).update({ ...updateInvitations, ...updateSharedWorkspaces, ...updateShared }, (error, data) => {
 
             debugger;
 

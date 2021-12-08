@@ -13,7 +13,7 @@ customElements.define('runner-settings', class extends HTMLElement{
       
      
         this.uid = uid
-        this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri('https://turkmenistan-market.firebaseio.com')
+        window.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri('https://turkmenistan-market.firebaseio.com')
         this.render({ workspaceSelected,selectedContainer })
         
     }
@@ -27,7 +27,7 @@ customElements.define('runner-settings', class extends HTMLElement{
         `
 
         document.getElementById('containers').innerHTML = `Loading...`
-        this.FB_DATABASE.ref(`workspaces/${workspaceSelected}/containers/${selectedContainer}/workflows`).on('value', (error, response) => {
+        window.FB_DATABASE.ref(`workspaces/${workspaceSelected}/containers/${selectedContainer}/workflows`).on('value', (error, response) => {
             const workflows = Object.keys(response.data)
             document.getElementById('containers').innerHTML = ``
             debugger;

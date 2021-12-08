@@ -17,7 +17,7 @@ customElements.define('workspace-tasks', class extends HTMLElement {
 
         const { auth: { idToken, localId: uid, token, screenName }, workspace: { workspaceSelected: { title: workspaceName } } } = window.pageStore.state
         this.uid = uid
-        this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
+        window.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
 
         
         document.getElementById('ws-breadcrumb').innerText = `Workspace(${workspaceName})`
@@ -76,7 +76,7 @@ customElements.define('workspace-tasks', class extends HTMLElement {
         document.getElementById('container').innerHTML=` <a class="btn btn-secondary m-1" href="/add-task.html" id="add-task-btn">Add Task</a> <configure-tasks></configure-tasks>`
         const taskElement =document.createElement('div')
         document.getElementById('container').appendChild(taskElement)
-        this.FB_DATABASE.ref(`workspaces/${workspaceName}/tasks`).get((error, result) => {
+        window.FB_DATABASE.ref(`workspaces/${workspaceName}/tasks`).get((error, result) => {
             
             if(result){
                 

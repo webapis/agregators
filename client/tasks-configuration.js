@@ -22,7 +22,7 @@ customElements.define('tasks-configuration', class extends HTMLElement {
     render() {
         const { auth: { idToken, localId: uid, googleOauth }, workspace: { workspaceSelected: { title: workspaceName } } } = window.pageStore.state
         this.uid = uid
-        this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
+        window.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
         document.getElementById('ws-breadcrumb').innerText = `Workspace(${workspaceName})`
         this.innerHTML = `
      
@@ -47,7 +47,7 @@ customElements.define('tasks-configuration', class extends HTMLElement {
         })
 
         //Collect google apis scopes remove dublicate scopes
-        this.FB_DATABASE.ref(`workspaces/${workspaceName}/workflowConfigs/tasks`).get((error, result) => {
+        window.FB_DATABASE.ref(`workspaces/${workspaceName}/workflowConfigs/tasks`).get((error, result) => {
             if (result) {
                 debugger;
                 const tasks = Object.values(result)

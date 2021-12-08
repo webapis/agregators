@@ -13,7 +13,7 @@ customElements.define('workflow-editor', class extends HTMLElement {
     document.getElementById('ws-breadcrumb').innerText = `Workspace(${workspaceName})`
     this.uid = uid
 
-    this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
+    window.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
 
     //fetch users repos
     const response = await fetch('https://api.github.com/user/repos', { method: 'get', headers: { Accept: "application/vnd.github.v3+json", authorization: `token ${token}` } })
@@ -340,7 +340,7 @@ customElements.define('save-workflow-btn', class extends HTMLElement {
     const {workflowEditor,auth: { idToken, localId: uid }, } = window.pageStore.state
     this.uid = uid
 
-    this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
+    window.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
     this.render(workflowEditor)
     window.pageStore.subscribe(window.actionTypes.USER_REPOS_FETCHED, state => {
       const { workflowEditor } = state
@@ -376,7 +376,7 @@ customElements.define('save-workflow-btn', class extends HTMLElement {
       const upadteworkflowConfigs = { [`workspaces/${workspaceName}/workflowConfigs/tasks/${taskId}/workflows/${workflowId}`]: { ...workflowConfig } }
       const updateServer = { [`server/workspaces/${workspaceName}/tasks/${taskId}/workflows/${workflowId}`]: { workflowDescription, selectedRepo, isPrivate, selectedBranch, tokenFPR, screenName, workflowOrder, workflowName, workflowConfig } }
 
-      this.FB_DATABASE.ref(`/`).update({ ...workflowInitials, ...workflowProps, ...upadteworkflowConfigs, ...updateServer }, (error, data) => {
+      window.FB_DATABASE.ref(`/`).update({ ...workflowInitials, ...workflowProps, ...upadteworkflowConfigs, ...updateServer }, (error, data) => {
         if (data) {
           debugger;
           window.pageStore.dispatch({ type: window.actionTypes.WORKFLOW_UPDATED })

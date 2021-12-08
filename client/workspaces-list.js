@@ -12,10 +12,10 @@ customElements.define('workspaces-list', class extends HTMLElement {
         const { auth: { idToken, localId: uid }, workspaceList: { selectedWorkspaceTab } } = window.pageStore.state
         this.uid = uid
         debugger;
-        this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
+        window.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
         debugger;
         //count private
-        this.FB_DATABASE.ref(`private/${uid}/workspaces`).get((error, ws) => {
+        window.FB_DATABASE.ref(`private/${uid}/workspaces`).get((error, ws) => {
             debugger;
             if (ws && ws) {
                 const workspaces = ws && Object.entries(ws)
@@ -24,7 +24,7 @@ customElements.define('workspaces-list', class extends HTMLElement {
             }
         })
         //count public
-        this.FB_DATABASE.ref(`public/workspaces`).get((error, ws) => {
+        window.FB_DATABASE.ref(`public/workspaces`).get((error, ws) => {
             if (ws) {
                 const workspaces = ws && Object.entries(ws)
                 let totalPublic = workspaces.length
@@ -32,7 +32,7 @@ customElements.define('workspaces-list', class extends HTMLElement {
             }
         })
         //count shared
-        this.FB_DATABASE.ref(`shared/user/${uid}/workspaces`).get((error, ws) => {
+        window.FB_DATABASE.ref(`shared/user/${uid}/workspaces`).get((error, ws) => {
 
             if (ws) {
 
@@ -65,7 +65,7 @@ customElements.define('workspaces-list', class extends HTMLElement {
 
         debugger;
         this.render({ workspaces: [] })
-        this.FB_DATABASE.ref(workspacesRef).get((error, ws) => {
+        window.FB_DATABASE.ref(workspacesRef).get((error, ws) => {
             debugger;
             if (ws) {
                 const workspaces = Object.entries(ws)

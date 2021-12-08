@@ -7,10 +7,13 @@ customElements.define('workspace-view', class extends HTMLElement{
     this.innerHTML=`loading...`
         const resources = await import('./resources.js')
         await resources.default()
-
-        const {workspace:{workspaceSelected:{title}}}=window.pageStore.state
+        const { auth: { idToken, localId: uid },workspace:{workspaceSelected:{title}}} = window.pageStore.state
+        this.uid = uid
+        window.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
+     
 
         document.getElementById('ws-breadcrumb').innerText=`Workspace(${title})`
+
         this.innerHTML=`
         <signed-in-as></signed-in-as>
         <div class="d-flex">

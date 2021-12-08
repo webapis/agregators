@@ -9,7 +9,7 @@ customElements.define('container-runners', class extends HTMLElement{
 
         const { workspace: { workspaceSelected }, auth: { idToken, localId: uid } } = window.pageStore.state
         this.uid = uid
-        this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
+        window.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
         this.render({ workspaceSelected })
      
     }
@@ -23,7 +23,7 @@ customElements.define('container-runners', class extends HTMLElement{
         <div id="containers" class="row"></div>
         </div>`
         document.getElementById('containers').innerHTML = `Loading...`
-        this.FB_DATABASE.ref(`workspaces/${workspaceSelected}/containers`).on('value', (error, response) => {
+        window.FB_DATABASE.ref(`workspaces/${workspaceSelected}/containers`).on('value', (error, response) => {
             const containers = Object.keys(response.data)
             document.getElementById('containers').innerHTML = ``
             debugger;

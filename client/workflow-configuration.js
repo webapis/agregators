@@ -15,7 +15,7 @@ customElements.define('workflow-configuration', class extends HTMLElement {
         document.getElementById('task-breadcrumb').innerText = `Task(${taskName})`
         document.getElementById('workflow-breadcrumb').innerText = `Configuration(${workflowName})`
         this.uid = uid
-        this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
+        window.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
         this.innerHTML = `
         <signed-in-as></signed-in-as>
         <div>
@@ -23,7 +23,7 @@ customElements.define('workflow-configuration', class extends HTMLElement {
         </div>
         <div id="var-container" class="row">Loading..</div>`
 
-        this.FB_DATABASE.ref(`workspaces/${workspaceName}/workflowConfigs/tasks/${taskId}/workflows/${workflowKey}/vars`).get((error, result) => {
+        window.FB_DATABASE.ref(`workspaces/${workspaceName}/workflowConfigs/tasks/${taskId}/workflows/${workflowKey}/vars`).get((error, result) => {
             if(result){
                 const vars = Object.entries(result)
                 document.getElementById('var-container').innerHTML=''
@@ -58,7 +58,7 @@ customElements.define('workflow-configuration', class extends HTMLElement {
                     })
                     const updateServerWorkflowConfig ={[`server/workspaces/${workspaceName}/tasks/${taskId}/workflows/${workflowKey}/workflowConfig/vars`]:update}
                     const updateClientWorkflowConfig ={[`workspaces/${workspaceName}/workflowConfigs/tasks/${taskId}/workflows/${workflowKey}/vars`]:update}
-                    this.FB_DATABASE.ref('/').update({...updateServerWorkflowConfig,...updateClientWorkflowConfig},(error,data)=>{
+                    window.FB_DATABASE.ref('/').update({...updateServerWorkflowConfig,...updateClientWorkflowConfig},(error,data)=>{
                         window.location.replace('/task-workflows.html')
                         debugger;
                     })

@@ -9,7 +9,7 @@ customElements.define('container-name',class extends HTMLElement{
         await resources.default()
         const { auth: { idToken, localId: uid },workspace:{workspaceSelected},containerName:{name}} = window.pageStore.state
         this.uid = uid
-        this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
+        window.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
         document.getElementById('ws-breadcrumb').innerText=`workspace(${workspaceSelected})`
         this.innerHTML=`<div>
         <h5>New Container:</h5>
@@ -37,7 +37,7 @@ customElements.define('container-name',class extends HTMLElement{
            
             const { workspace: { workspaceSelected }, auth: { screenName }, containerName:{name}} = window.pageStore.state
 
-            this.FB_DATABASE.ref(`workspaces/${workspaceSelected}/containers/${name}`).set({ owner: screenName }, (error, data) => {
+            window.FB_DATABASE.ref(`workspaces/${workspaceSelected}/containers/${name}`).set({ owner: screenName }, (error, data) => {
                 if(!error){
                     debugger;
                     window.pageStore.dispatch({type:window.actionTypes.CONTAINER_NAME_SAVED})

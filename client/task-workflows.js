@@ -14,7 +14,7 @@ customElements.define('task-workflows', class extends HTMLElement {
         document.getElementById('task-breadcrumb').innerText = `Task(${taskName})`
         document.getElementById('ws-breadcrumb').innerText = `Workspace(${workspaceName})`
         this.uid = uid
-        this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
+        window.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
         this.innerHTML =
         
             `
@@ -26,7 +26,7 @@ customElements.define('task-workflows', class extends HTMLElement {
             <div id="workflows" class="list-group">Loading...</div>
             `
        
-        this.FB_DATABASE.ref(`workspaces/${workspaceName}/workflowInitials/tasks/${taskId}/workflows`).get((error, result) => {
+        window.FB_DATABASE.ref(`workspaces/${workspaceName}/workflowInitials/tasks/${taskId}/workflows`).get((error, result) => {
             if(result){
                 debugger;
                 const workflows =result && Object.entries(result)

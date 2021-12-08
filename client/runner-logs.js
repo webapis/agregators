@@ -11,7 +11,7 @@ customElements.define('runner-logs', class extends HTMLElement {
         document.getElementById('ws-breadcrumb').innerText = `Workspace(${workspaceSelected})`
         document.getElementById('wf-runner-breadcrumb').innerText = `Runner logs (${selectedContainer})`
         this.uid = uid
-        this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri('https://turkmenistan-market.firebaseio.com')
+        window.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri('https://turkmenistan-market.firebaseio.com')
         this.render({ workspaceSelected, selectedContainer })
 
     }
@@ -23,7 +23,7 @@ customElements.define('runner-logs', class extends HTMLElement {
         </div>
         `
         document.getElementById('containers').innerHTML = `Loading...`
-        this.FB_DATABASE.ref(`workspaces/${workspaceSelected}/containers/${selectedContainer}/workflows`).on('value', (error, response) => {
+        window.FB_DATABASE.ref(`workspaces/${workspaceSelected}/containers/${selectedContainer}/workflows`).on('value', (error, response) => {
             const workflows = Object.keys(response.data)
             document.getElementById('containers').innerHTML = ``
             debugger;

@@ -168,6 +168,7 @@ export default (state, action) => {
     case actionTypes.REPOS_BRANCHES_PENDING:
       return { ...state, workflowEditor: { ...state.workflowEditor, loading: true } }
     case actionTypes.RUNNER_STARTED:
+    case actionTypes.RUNNER_COMPLETE:
       return { ...state, taskRunner: {...state.taskRunner, [action.payload.workspace]: {runState:action.payload.runState,runid:action.payload.runid }} }
     default:
 
@@ -252,6 +253,7 @@ export const actionTypes = {
   CLEAR_ERROR_DISPLAY: 'CLEAR_ERROR_DISPLAY',
 
   CLOSE_WORKFLOW_EDITOR: 'CLOSE_WORKFLOW_EDITOR',
-  RUNNER_STARTED: "RUNNER_STARTED"
+  RUNNER_STARTED: "RUNNER_STARTED",
+  RUNNER_COMPLETE:"RUNNER_COMPLETE"
 
 };

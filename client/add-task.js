@@ -10,7 +10,7 @@ customElements.define('add-task', class extends HTMLElement {
 
         const { auth: { idToken, localId: uid }, workspace: { workspaceSelected: { title: workspaceName } } } = window.pageStore.state
         this.uid = uid
-        this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
+        window.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
         document.getElementById('ws-breadcrumb').innerText = `Workspace(${workspaceName})`
         this.innerHTML = `
     <signed-in-as></signed-in-as>
@@ -33,7 +33,7 @@ customElements.define('add-task', class extends HTMLElement {
                   
                 }
             }
-            this.FB_DATABASE.ref('/').update({
+            window.FB_DATABASE.ref('/').update({
                 ...updateServerWorkSpace,
                 ...updateClientWorkSpace
             }, (error, data) => {

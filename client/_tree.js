@@ -121,9 +121,9 @@ customElements.define('workflow-tree', class extends HTMLElement {
     document.getElementById('ws-breadcrumb').innerText = `Workspace(${workspaceSelected})`
     document.getElementById('workflow-tree-breadcrumb').innerText = `Container(${selectedContainer})`
     this.uid = uid
-    this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri('https://turkmenistan-market.firebaseio.com')
+    window.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri('https://turkmenistan-market.firebaseio.com')
 
-    this.FB_DATABASE.ref(`workspaces/${workspaceSelected}/containers/${selectedContainer}`).on('value', (error, response) => {
+    window.FB_DATABASE.ref(`workspaces/${workspaceSelected}/containers/${selectedContainer}`).on('value', (error, response) => {
 
       if (response.data) {
         
@@ -244,7 +244,7 @@ customElements.define('container-element', class extends HTMLElement {
 
     const { workspace: { workspaceSelected }, wfContainer: { selectedContainer }, auth: { idToken, localId: uid } } = window.pageStore.state
     this.uid = uid
-    this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri('https://turkmenistan-market.firebaseio.com')
+    window.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri('https://turkmenistan-market.firebaseio.com')
     
     const containerName = this.getAttribute('container-name')
 

@@ -8,7 +8,7 @@ customElements.define('wf-container-editor', class extends HTMLElement {
         const { auth: { idToken, localId: uid }, workspaceDashboard: { selectedContainer } } = window.pageStore.state
 
         this.uid = uid
-        this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri('https://turkmenistan-market.firebaseio.com')
+        window.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri('https://turkmenistan-market.firebaseio.com')
         this.render({selectedContainer})
 
         window.pageStore.subscribe(window.actionTypes.CONTAINER_NAME_SAVED, state=>{
@@ -46,7 +46,7 @@ customElements.define('wf-container-editor', class extends HTMLElement {
         document.getElementById('save-container-name-btn').addEventListener('click', (e) => {
             const { workspaceList: { workspaceSelected }, auth: { screenName }, workspaceDashboard: { containerName } } = window.pageStore.state
 
-            this.FB_DATABASE.ref(`workspaces/${workspaceSelected}/containers/${containerName}`).set({ owner: screenName }, (error, data) => {
+            window.FB_DATABASE.ref(`workspaces/${workspaceSelected}/containers/${containerName}`).set({ owner: screenName }, (error, data) => {
                 if(!error){
                     window.pageStore.dispatch({type:window.actionTypes.CONTAINER_NAME_SAVED,payload:containerName})
                 }
