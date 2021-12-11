@@ -21,7 +21,7 @@ customElements.define('workspace-tasks', class extends HTMLElement {
 
         
         document.getElementById('ws-breadcrumb').innerText = `Workspace(${workspaceName})`
-        this.innerHTML=`   <signed-in-as></signed-in-as>
+        this.innerHTML=`  
         <div id="container">Loading...</div>
         `
         //check if runner is previously forked

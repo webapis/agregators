@@ -13,7 +13,7 @@ customElements.define('workspace-users', class extends HTMLElement {
     document.getElementById('ws-breadcrumb').innerText = `Workspace(${workspaceName})`
 
     this.innerHTML = `
-        <signed-in-as></signed-in-as>
+       
         <div>
         <h5>Workspace Users:</h5>
     

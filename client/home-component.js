@@ -20,7 +20,7 @@ customElements.define('home-component', class extends HTMLElement {
                 this.uid = uid
                 window.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
                 this.innerHTML = `<div>
-               <signed-in-as></signed-in-as>
+            
                
                 <home-card title="Workspaces" page-link="/workspaces-list.html" link-id="workspace"></home-card>
            

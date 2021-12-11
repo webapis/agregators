@@ -169,6 +169,7 @@ export default (state, action) => {
       return { ...state, workflowEditor: { ...state.workflowEditor, loading: true } }
     case actionTypes.RUNNER_STARTED:
     case actionTypes.RUNNER_COMPLETE:
+      debugger;
       return { ...state, taskRunner: {...state.taskRunner, [action.payload.workspace]: {runState:action.payload.runState,runid:action.payload.runid }} }
     default:
 

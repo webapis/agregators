@@ -13,7 +13,7 @@ customElements.define('add-task', class extends HTMLElement {
         window.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
         document.getElementById('ws-breadcrumb').innerText = `Workspace(${workspaceName})`
         this.innerHTML = `
-    <signed-in-as></signed-in-as>
+
         <div>Add Task
         <input class="form-control" placeholder=" Task name" id="taskname"/>
     

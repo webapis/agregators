@@ -17,7 +17,7 @@ customElements.define('workflow-configuration', class extends HTMLElement {
         this.uid = uid
         window.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
         this.innerHTML = `
-        <signed-in-as></signed-in-as>
+      
         <div>
         <h5>Workflow Enviroment Valiables:</h5>
         </div>

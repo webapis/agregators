@@ -18,7 +18,7 @@ customElements.define('task-workflows', class extends HTMLElement {
         this.innerHTML =
         
             `
-            <signed-in-as></signed-in-as>
+           
             <div>
             <a class="btn btn-secondary" href="./workflow-editor.html" id="add-workflow-btn">Add workflow</a>
             </div>

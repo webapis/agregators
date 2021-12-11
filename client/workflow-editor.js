@@ -27,7 +27,7 @@ customElements.define('workflow-editor', class extends HTMLElement {
   render({ workflowDescription, token, isPrivate, workflowOrder, workflowConfig }) {
     debugger;
     this.innerHTML = `
-    <signed-in-as></signed-in-as>
+  
         <div >
         <h3>Workflow Editor:</h3>
         <div class="row">

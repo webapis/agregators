@@ -28,7 +28,7 @@ customElements.define('tasks-configuration', class extends HTMLElement {
      
         Tasks configuration
         <div id="configurations">
-        <signed-in-as></signed-in-as>
+        
         <button class="btn btn-secondary" id="google-auth-btn" ${googleOauth && "disabled"}>Google Authentication</button>
         </div>
         `

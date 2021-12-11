@@ -15,7 +15,7 @@ customElements.define('workspace-view', class extends HTMLElement{
         document.getElementById('ws-breadcrumb').innerText=`Workspace(${title})`
 
         this.innerHTML=`
-        <signed-in-as></signed-in-as>
+     
         <div class="d-flex">
         <h5>Workspace:</h5>
         <h5 class="text-muted text-uppercase mx-2">${title}</h5>

@@ -48,7 +48,7 @@ customElements.define('workspaces-list', class extends HTMLElement {
 
         })
 
-        this.innerHTML = `  <signed-in-as></signed-in-as>
+        this.innerHTML = `
         <div class="container" id="container"></div>
         `
 

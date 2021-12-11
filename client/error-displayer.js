@@ -5,8 +5,7 @@ customElements.define('error-displayer', class extends HTMLElement {
 
     async connectedCallback() {
         this.innerHTML = ``
-        const resources = await import('./resources.js')
-        await resources.default()
+
 
         this.render()
 
