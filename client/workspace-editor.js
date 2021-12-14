@@ -17,7 +17,7 @@ customElements.define('workspace-editor', class extends HTMLElement {
        
         const { workspaceName, accessLevel, description } = workspaceEditor
         this.innerHTML = `
-       <signed-in-as></signed-in-as>
+   
         <div class="container">
         <h3>New Workspace:</h3>
         <div class="row">

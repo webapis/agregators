@@ -3,9 +3,10 @@ function firebase() {
     this.url = ''
     this.idToken = '',
         this.projectUri = '',
-        this.orderByChildValue = '',
+        this.orderByValue = '',
         this.equalToValue = '',
-        this.limitToLastValue = 0
+        this.limitToLastValue = 0,
+        this.limitToFirstValue=0
 
     return {
         setIdToken: function (idToken) {
@@ -54,6 +55,7 @@ function firebase() {
           
          
         },
+        
         push: async function (data, cb) {
             await updateIdToken()
             fetch(`${this.projectUri}/${this.url}/.json?auth=${this.idToken}`, { method: 'POST', body: JSON.stringify(data) }).then(response => response.json()).then(data => {
@@ -68,6 +70,32 @@ function firebase() {
             try {
                 await updateIdToken()
                 const fetchUrl =this.url ==='/'? `${this.projectUri}/.json?auth=${this.idToken}`: `${this.projectUri}/${this.url}.json?auth=${this.idToken}`
+              const getResponse =await   fetch(fetchUrl, { method: 'GET'})
+              const getJsonData =await getResponse.json()
+ 
+                 
+                 const error =getJsonData&&  getJsonData['error']
+                 
+                 if(error){
+                     debugger;
+                     window.pageStore.dispatch({ type: window.actionTypes.CLIENT_ERROR, payload: error })
+                     cb && cb(error,null) 
+                     
+                 } else{
+                     
+                     cb && cb(null,getJsonData)
+                 }
+            } catch (error) {
+               const {message}=error
+                window.pageStore.dispatch({ type: window.actionTypes.CLIENT_ERROR, payload: message })
+                cb && cb(error,null) 
+            }
+        },
+        filter: async function (cb) {
+            try {
+                await updateIdToken()
+                const fetchUrl =this.url ==='/'? `${this.projectUri}/.json?auth=${this.idToken}`: `${this.projectUri}/${this.url}.json?auth=${this.idToken}&orderBy="${this.orderByValue}"&limitToFirst=${this.limitToFirstValue}`
+                debugger;
               const getResponse =await   fetch(fetchUrl, { method: 'GET'})
               const getJsonData =await getResponse.json()
  
@@ -127,8 +155,8 @@ function firebase() {
                 return this
             })
         },
-        orderByChild: function (orderByChildValue) {
-            this.orderByChildValue = orderByChildValue
+        orderBy: function (orderByValue) {
+            this.orderByValue = orderByValue
             return this
         },
         equalTo: function (equalToValue) {
@@ -137,6 +165,10 @@ function firebase() {
         },
         limitToLast: function (limitToLastValue) {
             this.limitToLastValue = limitToLastValue
+            return this
+        },
+        limitToFirst: function (limitToFirstValue) {
+            this.limitToFirstValue = limitToFirstValue
             return this
         },
     }
@@ -162,7 +194,7 @@ async function updateIdToken() {
 }
 
 window.renewIdToken = renewIdToken
-
+window.updateIdToken=updateIdToken
 window.firebase = firebase
 
 

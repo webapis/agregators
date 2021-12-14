@@ -126,7 +126,7 @@ customElements.define('run-result', class extends HTMLElement {
     super()
   }
 
-  connectedCallback() {
+  async connectedCallback() {
     this.innerHTML = `<table class="table">
         <thead>
           <tr>
@@ -143,23 +143,74 @@ customElements.define('run-result', class extends HTMLElement {
        
         </tbody>
       </table>`
-    const { workspace: { workspaceSelected: { title: workspaceName } } } = window.pageStore.state
-    window.FB_DATABASE.ref(`runs/workspaces/${workspaceName}`).get((error, result) => {
+    const { workspace: { workspaceSelected: { title: workspaceName } }, auth: { idToken } } = window.pageStore.state
+    // window.FB_DATABASE.orderBy(`${workspaceName}/end`).limitToFirst(5).ref(`runs/workspaces/${workspaceName}`).filter((error, result) => {
 
-      if (result) {
-        const runs = Object.entries(result)
-        runs.forEach((run) => {
+    //   if (result) {
+    //     const runs = Object.entries(result).sort((a, b) => {
+    //       const one =parseInt(a[0])
+    //       const two =parseInt(b[0])
+
+    //       debugger;
+
+    //       return two-one});
+    //     debugger;
+
+    //       debugger;
+    //       // window.FB_DATABASE.ref(`runs/workspaces/${workspaceName}/${key}`).on('value', (error, result) => {
+    //       //   if (result) {
+    //       //     const data = result.data
+    //       //     if (data.runState === 2 || data.runState === 3) {
+    //       //       debugger;
+    //       //       this.querySelectorAll(`#runid-${key} td`)[1].textContent = new Date(data.end).toLocaleDateString('en-US')
+    //       //       this.querySelectorAll(`#runid-${key} td`)[2].textContent = data.duration
+    //       //       this.querySelectorAll(`#runid-${key} td`)[3].innerHTML = data.runState === 2 ? `<span class="text-success">Ok</span>` : `<span class="text-danger">Error</span>`
+    //       //       debugger;
+    //       //     }
+    //       //   }
+    //       // })
+    //     })
+
+    //   }
+    // })
+
+    try {
+      await window.updateIdToken()
+      const fetchUrl = `${window.projectUrl}/runs/${workspaceName}.json?auth=${idToken}&orderBy="$key"&limitToLast=5`
+      const getResponse = await fetch(fetchUrl, { method: 'GET' })
+      const getJsonData = await getResponse.json()
+
+      debugger;
+      const error = getJsonData && getJsonData['error']
+
+      if (error) {
+        debugger;
+        window.pageStore.dispatch({ type: window.actionTypes.CLIENT_ERROR, payload: error })
+
+
+      } else {
+
+        const runs = Object.entries(getJsonData).sort((a, b) => {
+          const one = parseInt(a[0])
+          const two = parseInt(b[0])
+
+          debugger;
+
+          return two - one
+        });
+        debugger;
+        runs.forEach((run, i) => {
           const key = run[0]
           const value = run[1]
           const runState = value.runState
           const start = `${new Date(parseInt(key)).toLocaleDateString()} ${new Date(parseInt(key)).toLocaleTimeString()}`
-          const end = (runState === 2 || runState === 3) ? `${new Date(parseInt(value.end)).toLocaleDateString()} ${new Date(parseInt(key)).toLocaleTimeString()}`: `<span class="text-warning">Pending...</span>`
+          const end = (runState === 2 || runState === 3) ? `${new Date(parseInt(value.end)).toLocaleDateString()} ${new Date(parseInt(value.end)).toLocaleTimeString()}` : `<span class="text-warning">Pending...</span>`
           const duration = (runState === 2 || runState === 3) ? value.duration : `<span class="text-warning">Pending...</span>`
-        
+
           let runResult = runState === 1 ? '<div class="spinner-border spinner-border-sm text-warning" role="status"> <span class="visually-hidden">Loading...</span>' : runState === 2 ? `<span class="text-success">Ok</span>` : `<span class="text-danger">Error</span>`
 
           document.getElementById('body-container').insertAdjacentHTML('beforeend', `<tr id="runid-${key}">
-            <th scope="row">1</th>
+            <th scope="row">${i}</th>
             <td>${start}</td>
             <td>${end}</td>
             <td>${duration}</td>
@@ -167,32 +218,23 @@ customElements.define('run-result', class extends HTMLElement {
             <td><a href="#">Log</a></td>
 
           </tr>`)
-          debugger;
-          window.FB_DATABASE.ref(`runs/workspaces/${workspaceName}/${key}`).on('value', (error, result) => {
-            if (result) {
-              const data = result.data
-              if (data.runState === 2 || data.runState === 3) {
-                debugger;
-                this.querySelectorAll(`#runid-${runid} td`)[1].textContent = new Date(data.end).toLocaleDateString('en-US')
-                this.querySelectorAll(`#runid-${runid} td`)[2].textContent = data.duration
-                this.querySelectorAll(`#runid-${runid} td`)[3].innerHTML = data.runState === 2 ? `<span class="text-success">Ok</span>` : `<span class="text-danger">Error</span>`
-                debugger;
-              }
-            }
-          })
+
         })
-
       }
-    })
+    } catch (error) {
+      const { message } = error
+      debugger;
+      window.pageStore.dispatch({ type: window.actionTypes.CLIENT_ERROR, payload: message })
 
-
+    }
 
     window.pageStore.subscribe(window.actionTypes.RUNNER_STARTED, async state => {
 
       const { workspace: { workspaceSelected: { title: workspaceName } } } = state
       const { taskRunner: { [workspaceName]: { runState, runid } } } = state
-
-      const start =  `${new Date(parseInt(runid)).toLocaleDateString()} ${new Date(parseInt(runid)).toLocaleTimeString()}`
+      debugger;
+      const startDate = runid
+      const start = `${new Date(parseInt(startDate)).toLocaleDateString()} ${new Date(parseInt(startDate)).toLocaleTimeString()}`
       if (runid) {
         document.getElementById('body-container').insertAdjacentHTML('afterbegin', `<tr id="runid-${runid}">
             <th scope="row">1</th>
@@ -202,7 +244,7 @@ customElements.define('run-result', class extends HTMLElement {
             <td><div class="spinner-border spinner-border-sm text-warning" role="status"> <span class="visually-hidden">Loading...</span></td>
             <td><a href="#">Log</a></td>
           </tr>`)
-        window.FB_DATABASE.ref(`runs/workspaces/${workspaceName}/${runid}`).on('value', (error, result) => {
+        window.FB_DATABASE.ref(`runs/${workspaceName}/${runid}`).on('value', (error, result) => {
           if (result) {
             const data = result.data
             if (data.runState === 2 || data.runState === 3) {
@@ -317,11 +359,11 @@ customElements.define('runner-button', class extends HTMLElement {
       //3
       e.preventDefault()
 
-      const { workspace: { workspaceSelected: { title: workspaceName } } } = window.pageStore.state
+      const { workspace: { workspaceSelected: { title: workspaceName } }, auth: { idToken, localId: uid } } = window.pageStore.state
       let update = {}
       let runid = Date.now()
 
-      update = { [`runs/workspaces/${workspaceName}/${runid}`]: { runState: 1 } }
+      update = { [`runs/${workspaceName}/${runid}`]: { runState: 1, runid } }
 
       window.FB_DATABASE.ref('/').update(update, async (error, data) => {
         //4
@@ -332,6 +374,10 @@ customElements.define('runner-button', class extends HTMLElement {
 
         }
       })
+
+
+
+
 
 
     })
