@@ -36,7 +36,7 @@ export const initState = stateFromLS
     workspaceEditor: { workspaceName: "", description: "", accessLevel: "" },
     workspaceUsers: { username: "", role: "" },
     clientError: '',
-    taskRunner:{}
+    taskRunner: {}
   };
 
 export default (state, action) => {
@@ -170,7 +170,11 @@ export default (state, action) => {
     case actionTypes.RUNNER_STARTED:
     case actionTypes.RUNNER_COMPLETE:
       debugger;
-      return { ...state, taskRunner: {...state.taskRunner, [action.payload.workspace]: {runState:action.payload.runState,runid:action.payload.runid }} }
+      return { ...state, taskRunner: { ...state.taskRunner, [action.payload.workspace]: { runState: action.payload.runState, runid: action.payload.runid } } }
+    case actionTypes.RUNS_FETCHED:
+      return { ...state, taskRunner: { ...state.taskRunner, runs: action.payload } }
+    case actionTypes.NEXT_RUNS_FETCHED:
+      return { ...state, taskRunner: { ...state.taskRunner, runs: [...state.taskRunner.runs, ...action.payload] } }
     default:
 
       return state;
@@ -255,6 +259,8 @@ export const actionTypes = {
 
   CLOSE_WORKFLOW_EDITOR: 'CLOSE_WORKFLOW_EDITOR',
   RUNNER_STARTED: "RUNNER_STARTED",
-  RUNNER_COMPLETE:"RUNNER_COMPLETE"
+  RUNNER_COMPLETE: "RUNNER_COMPLETE",
+  RUNS_FETCHED: "RUNS_FETCHED",
+  NEXT_RUNS_FETCHED: "NEXT_RUNS_FETCHED"
 
 };
