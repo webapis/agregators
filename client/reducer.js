@@ -36,7 +36,7 @@ export const initState = stateFromLS
     workspaceEditor: { workspaceName: "", description: "", accessLevel: "" },
     workspaceUsers: { username: "", role: "" },
     clientError: '',
-    taskRunner: {}
+    taskRunner: { running: false }
   };
 
 export default (state, action) => {
@@ -83,7 +83,7 @@ export default (state, action) => {
     case actionTypes.START_SCRAPING_CLICKED:
       return { ...state, startScrapingClicked: true, runId: Date.now(), completeTime: 0 }
     case actionTypes.RUN_COMPLETE:
-      debugger;
+      
       return { ...state, startScrapingClicked: false, completeTime: action.payload }
     case actionTypes.SET_GH_TKN:
       debugger
@@ -91,7 +91,7 @@ export default (state, action) => {
     case actionTypes.ID_TOKEN_UPDATED:
       return { ...state, auth: { ...state.auth, ...action.payload, timestamp: Date.now() + 3600000 } }
     case actionTypes.PROJECT_SELECTED:
-      debugger;
+      
       return { ...state, ...action.payload }
     case actionTypes.GITHUB_INITIALIZATION_CHANGED:
       return { ...state, githubInitialization: { ...state.githubInitialization, ...action.payload } }
@@ -135,7 +135,7 @@ export default (state, action) => {
     case actionTypes.CONTAINER_NAME_SAVED:
       return { ...state, containerName: { name: '' } }
     case actionTypes.WORKFLOW_PATH_CHANGED:
-      debugger;
+      
       return { ...state, workflowTree: { workflowPath: action.payload } }
     case actionTypes.TASK_SELECTED:
       return { ...state, workspaceTasks: { ...state.workspaceTasks, taskSelected: { ...action.payload } } }
@@ -168,9 +168,10 @@ export default (state, action) => {
     case actionTypes.REPOS_BRANCHES_PENDING:
       return { ...state, workflowEditor: { ...state.workflowEditor, loading: true } }
     case actionTypes.RUNNER_STARTED:
+      return { ...state, taskRunner: { ...state.taskRunner, [action.payload.workspace]: { runState: action.payload.runState, runid: action.payload.runid, start: action.payload.start },running:true  }}
     case actionTypes.RUNNER_COMPLETE:
-      debugger;
-      return { ...state, taskRunner: { ...state.taskRunner, [action.payload.workspace]: {runState: action.payload.runState, runid: action.payload.runid,start:action.payload.start } } }
+      
+      return { ...state, taskRunner: { ...state.taskRunner ,running:false } }
     case actionTypes.RUNS_FETCHED:
       return { ...state, taskRunner: { ...state.taskRunner, runs: action.payload } }
     case actionTypes.NEXT_RUNS_FETCHED:

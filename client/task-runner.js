@@ -5,7 +5,7 @@ customElements.define('task-runner', class extends HTMLElement {
 
   async connectedCallback() {
     this.innerHTML == `loading...`;
-    window.runFetchComplete=false;
+    window.runFetchComplete = false;
 
     const resources = await import('./resources.js')
     await resources.default()
@@ -24,6 +24,8 @@ customElements.define('task-runner', class extends HTMLElement {
 
 
     // })
+
+
     window.pageStore.subscribe(window.actionTypes.RUNNER_STARTED, async state => {
 
       const { taskRunner: { [workspaceName]: { runState, runid, start } }, auth: { idToken, localId, token, screenName: owner, email, refreshToken } } = state
@@ -56,7 +58,7 @@ customElements.define('task-runner', class extends HTMLElement {
      
           <h5>Task runner for: <span class="text-muted text-uppercase"> ${workspaceName}</span></h5>
           <runner-button></runner-button>
-          <spinner-button></spinner-button>
+        
           <button class="btn btn-outline-danger" id="cancel-run-btn">Cancel</button>
          </div>
          <div class="container mt-2">
@@ -68,8 +70,6 @@ customElements.define('task-runner', class extends HTMLElement {
 
   }
 })
-
-
 
 
 customElements.define('run-result', class extends HTMLElement {
@@ -107,12 +107,12 @@ customElements.define('run-result', class extends HTMLElement {
     tableScroller.addEventListener('scroll', () => {
       if (tableScroller.offsetHeight + tableScroller.scrollTop >= tableScroller.scrollHeight) {
         console.log('scrolled to bottom')
-        if(window.runFetchComplete===false)
-        
-        this.fetchNextRuns()
+        if (window.runFetchComplete === false)
+
+          this.fetchNextRuns()
       }
     })
-  
+
     window.pageStore.subscribe(window.actionTypes.RUNNER_STARTED, async state => {
 
       const { workspace: { workspaceSelected: { title: workspaceName } } } = state
@@ -133,15 +133,16 @@ customElements.define('run-result', class extends HTMLElement {
           if (result) {
             const data = result.data
             if (data.runState === 2 || data.runState === 3) {
-              debugger;
+
               this.querySelectorAll(`#runid-${runid} div`)[2].textContent = `${new Date(data.end).toLocaleDateString()} ${new Date(data.end).toLocaleTimeString()}`
-              debugger;
+
               this.querySelectorAll(`#runid-${runid} div`)[3].textContent = data.duration;
-              debugger;
+
               this.querySelectorAll(`#runid-${runid} div`)[4].innerHTML = data.runState === 2 ? `<span class="text-success">Ok</span>` : `<span class="text-danger">Error</span>`
-            this.querySelector('#body-container >div').insertAdjacentHTML('beforeend',`  <div class="col"><a href="#">Log</a></div>`)     
-debugger;
+              this.querySelector('#body-container >div').insertAdjacentHTML('beforeend', `  <div class="col"><a href="#">Log</a></div>`)
+              window.pageStore.dispatch({ type: window.actionTypes.RUNNER_COMPLETE })
             }
+          
           }
         })
       }
@@ -176,8 +177,9 @@ debugger;
 
       const error = getJsonData && getJsonData['error']
 
-      if (error) {-
-        window.pageStore.dispatch({ type: window.actionTypes.CLIENT_ERROR, payload: error })
+      if (error) {
+        -
+          window.pageStore.dispatch({ type: window.actionTypes.CLIENT_ERROR, payload: error })
       } else {
         const runs = Object.entries(getJsonData).sort((a, b) => {
           const one = parseInt(a[0])
@@ -221,17 +223,17 @@ debugger;
 
   async fetchNextRuns() {
     const { workspace: { workspaceSelected: { title: workspaceName } }, auth: { idToken }, taskRunner: { runs } } = window.pageStore.state
-    const endAt = parseInt(runs[runs.length - 1][0])-1
+    const endAt = parseInt(runs[runs.length - 1][0]) - 1
     const runLength = await this.fetchRunLength()
     const startAt = runs.length + 10 >= runLength ? 1 : endAt - 10
 
-    ;
+      ;
     // const runid =parseInt(lastRun[0])
 
     try {
       if (startAt >= 1) {
-        if(startAt===1){
-          window.runFetchComplete=true
+        if (startAt === 1) {
+          window.runFetchComplete = true
         }
 
         await window.updateIdToken()
@@ -240,7 +242,7 @@ debugger;
         const getResponse = await fetch(fetchUrl, { method: 'GET' })
         const getJsonData = await getResponse.json()
 
-debugger;
+
         const error = getJsonData && getJsonData['error']
 
         if (error) {
@@ -306,33 +308,31 @@ debugger;
 
 
 
-
-
-
-customElements.define('spinner-button', class extends HTMLElement {
-  constructor() {
-    super()
-  }
-
-  connectedCallback() {
-    this.innerHTML = `<button class="btn btn-outline-dark" id="run-tasks-btn"><div class="spinner-border spinner-border-sm" role="status">
-        <span class="visually-hidden">Loading...</span>
-      </div></button>`
-  }
-})
-
 customElements.define('runner-button', class extends HTMLElement {
   constructor() {
     super()
   }
 
   connectedCallback() {
+    const { taskRunner: { running } } = window.pageStore.state
+    
+    this.render({ running })
 
-    this.render()
+    window.pageStore.subscribe(window.actionTypes.RUNNER_STARTED, state => {
+      const { taskRunner: { running } } = state
+      
+      this.render({ running })
+    })
+    window.pageStore.subscribe(window.actionTypes.RUNNER_COMPLETE, state => {
+      const { taskRunner: { running } } = state
+      debugger;
+      this.render({ running })
+    })
   }
 
-  render() {
-    this.innerHTML = `<button class="btn btn-outline-dark" id="run-tasks-btn">Run</button>`
+  render({ running }) {
+    debugger;
+    this.innerHTML = `<button class="btn btn-outline-dark" id="run-tasks-btn" ${running && 'disabled'}>${running ? 'Running...' : 'Run'}</button>`
 
     document.getElementById('run-tasks-btn').addEventListener('click', async (e) => {
       //3
