@@ -170,7 +170,7 @@ export default (state, action) => {
     case actionTypes.RUNNER_STARTED:
     case actionTypes.RUNNER_COMPLETE:
       debugger;
-      return { ...state, taskRunner: { ...state.taskRunner, [action.payload.workspace]: { runState: action.payload.runState, runid: action.payload.runid } } }
+      return { ...state, taskRunner: { ...state.taskRunner, [action.payload.workspace]: {runState: action.payload.runState, runid: action.payload.runid,start:action.payload.start } } }
     case actionTypes.RUNS_FETCHED:
       return { ...state, taskRunner: { ...state.taskRunner, runs: action.payload } }
     case actionTypes.NEXT_RUNS_FETCHED:

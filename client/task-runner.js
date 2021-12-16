@@ -4,7 +4,8 @@ customElements.define('task-runner', class extends HTMLElement {
   }
 
   async connectedCallback() {
-    this.innerHTML == `loading...`
+    this.innerHTML == `loading...`;
+    window.runFetchComplete=false;
 
     const resources = await import('./resources.js')
     await resources.default()
@@ -25,9 +26,9 @@ customElements.define('task-runner', class extends HTMLElement {
     // })
     window.pageStore.subscribe(window.actionTypes.RUNNER_STARTED, async state => {
 
-      const { taskRunner: { [workspaceName]: { runState, runid } }, auth: { idToken, localId, token, screenName: owner, email, refreshToken } } = state
+      const { taskRunner: { [workspaceName]: { runState, runid, start } }, auth: { idToken, localId, token, screenName: owner, email, refreshToken } } = state
 
-      const parameters = `${token}--xxx--${owner}--xxx--${idToken}--xxx--${email}--xxx--${localId}--xxx--${refreshToken}--xxx--${'selectedContainer'}--xxx--${window.projectUrl}--xxx--${workspaceName}--xxx--${runid}`
+      const parameters = `${token}--xxx--${owner}--xxx--${idToken}--xxx--${email}--xxx--${localId}--xxx--${refreshToken}--xxx--${'selectedContainer'}--xxx--${window.projectUrl}--xxx--${workspaceName}--xxx--${runid}--xxx--${start}`
 
       const body = JSON.stringify({ ref: 'main', inputs: { projectName: workspaceName, parameters } })
 
@@ -125,7 +126,7 @@ customElements.define('run-result', class extends HTMLElement {
   async connectedCallback() {
 
     this.innerHTML = `
- <div id="table-scroller" style="overflow-y: scroll; height:200px;  display:block">
+ <div id="table-scroller" style="overflow-y: scroll; height:400px;  display:block">
     <table class="table" class="bg-warning">
         <thead>
           <tr>
@@ -151,6 +152,8 @@ customElements.define('run-result', class extends HTMLElement {
     tableScroller.addEventListener('scroll', () => {
       if (tableScroller.offsetHeight + tableScroller.scrollTop >= tableScroller.scrollHeight) {
         console.log('scrolled to bottom')
+        if(window.runFetchComplete===false)
+        
         this.fetchNextRuns()
       }
     })
@@ -158,14 +161,14 @@ customElements.define('run-result', class extends HTMLElement {
     window.pageStore.subscribe(window.actionTypes.RUNNER_STARTED, async state => {
 
       const { workspace: { workspaceSelected: { title: workspaceName } } } = state
-      const { taskRunner: { [workspaceName]: { runState, runid } } } = state
+      const { taskRunner: { [workspaceName]: { runState, runid, start } } } = state
 
-      const startDate = runid
-      const start = `${new Date(parseInt(startDate)).toLocaleDateString()} ${new Date(parseInt(startDate)).toLocaleTimeString()}`
+      const startDate = `${new Date(parseInt(start)).toLocaleDateString()} ${new Date(parseInt(start)).toLocaleTimeString()}`
+
       if (runid) {
         document.getElementById('body-container').insertAdjacentHTML('afterbegin', `<tr id="runid-${runid}">
-              <th scope="row">1</th>
-              <td>${start}</td>
+              <th scope="row">${runid}</th>
+              <td>${startDate}</td>
               <td><span class="text-warning">Pending...</span></td>
               <td><span class="text-warning">Pending...</span></td>
               <td><div class="spinner-border spinner-border-sm text-warning" role="status"> <span class="visually-hidden">Loading...</span></td>
@@ -204,36 +207,29 @@ customElements.define('run-result', class extends HTMLElement {
 
     try {
       await window.updateIdToken()
-      const fetchUrl = `${window.projectUrl}/runs/${workspaceName}.json?auth=${idToken}&orderBy="$key"&limitToLast=10`
+      const runLength = await this.fetchRunLength()
+
+      const startAt = runLength - 10
+
+      const fetchUrl = `${window.projectUrl}/runs/${workspaceName}.json?auth=${idToken}&orderBy="$key"&startAt="${startAt}"&endAt="${runLength}"`
       const getResponse = await fetch(fetchUrl, { method: 'GET' })
       const getJsonData = await getResponse.json()
 
 
       const error = getJsonData && getJsonData['error']
 
-      if (error) {
-
+      if (error) {-
         window.pageStore.dispatch({ type: window.actionTypes.CLIENT_ERROR, payload: error })
-
-
       } else {
-
         const runs = Object.entries(getJsonData).sort((a, b) => {
           const one = parseInt(a[0])
           const two = parseInt(b[0])
-
-
-
           return two - one
         });
-
         window.pageStore.dispatch({ type: window.actionTypes.RUNS_FETCHED, payload: runs })
-
-
       }
     } catch (error) {
       const { message } = error
-
       window.pageStore.dispatch({ type: window.actionTypes.CLIENT_ERROR, payload: message })
 
     }
@@ -245,7 +241,8 @@ customElements.define('run-result', class extends HTMLElement {
       const key = run[0]
       const value = run[1]
       const runState = value.runState
-      const start = `${new Date(parseInt(key)).toLocaleDateString()} ${new Date(parseInt(key)).toLocaleTimeString()}`
+
+      const start = `${new Date(parseInt(value.start)).toLocaleDateString()} ${new Date(parseInt(value.start)).toLocaleTimeString()}`
       const end = (runState === 2 || runState === 3) ? `${new Date(parseInt(value.end)).toLocaleDateString()} ${new Date(parseInt(value.end)).toLocaleTimeString()}` : `<span class="text-warning">Pending...</span>`
       const duration = (runState === 2 || runState === 3) ? value.duration : `<span class="text-warning">Pending...</span>`
 
@@ -266,46 +263,85 @@ customElements.define('run-result', class extends HTMLElement {
 
   async fetchNextRuns() {
     const { workspace: { workspaceSelected: { title: workspaceName } }, auth: { idToken }, taskRunner: { runs } } = window.pageStore.state
-    const lastRun = runs[runs.length - 1]
-    const runid =parseInt(lastRun[0])
-    debugger;
+    const endAt = parseInt(runs[runs.length - 1][0])-1
+    const runLength = await this.fetchRunLength()
+    const startAt = runs.length + 10 >= runLength ? 1 : endAt - 10
+
+    ;
+    // const runid =parseInt(lastRun[0])
+
     try {
-      await window.updateIdToken()
-      const fetchUrl = `${window.projectUrl}/runs/${workspaceName}.json?auth=${idToken}&orderBy="$key"&startAt="${runid}"&limitToLast=10`
-      debugger;
-      const getResponse = await fetch(fetchUrl, { method: 'GET' })
-      const getJsonData = await getResponse.json()
+      if (startAt >= 1) {
+        if(startAt===1){
+          window.runFetchComplete=true
+        }
 
+        await window.updateIdToken()
+        const fetchUrl = `${window.projectUrl}/runs/${workspaceName}.json?auth=${idToken}&orderBy="$key"&startAt="${startAt}"&endAt="${endAt}"`
 
-      const error = getJsonData && getJsonData['error']
+        const getResponse = await fetch(fetchUrl, { method: 'GET' })
+        const getJsonData = await getResponse.json()
 
-      if (error) {
-
-        window.pageStore.dispatch({ type: window.actionTypes.CLIENT_ERROR, payload: error })
-
-
-      } else {
-
-        const runs = Object.entries(getJsonData).sort((a, b) => {
-          const one = parseInt(a[0])
-          const two = parseInt(b[0])
-
-
-
-          return two - one
-        });
 debugger;
-        window.pageStore.dispatch({ type: window.actionTypes.NEXT_RUNS_FETCHED, payload: runs })
-        this.displayRuns({runs})
+        const error = getJsonData && getJsonData['error']
 
+        if (error) {
+
+          window.pageStore.dispatch({ type: window.actionTypes.CLIENT_ERROR, payload: error })
+
+
+        } else {
+
+          const runs = Object.entries(getJsonData).sort((a, b) => {
+            const one = parseInt(a[0])
+            const two = parseInt(b[0])
+
+
+
+            return two - one
+          });
+
+          window.pageStore.dispatch({ type: window.actionTypes.NEXT_RUNS_FETCHED, payload: runs })
+          this.displayRuns({ runs })
+
+        }
       }
     } catch (error) {
       const { message } = error
-debugger;
+
       window.pageStore.dispatch({ type: window.actionTypes.CLIENT_ERROR, payload: message })
 
     }
   }//fetchNextRUns
+
+  async fetchRunLength() {
+    try {
+      const { workspace: { workspaceSelected: { title: workspaceName } }, auth: { idToken } } = window.pageStore.state
+
+      try {
+        await window.updateIdToken()
+        const fetchUrl = `${window.projectUrl}/runs/inc/${workspaceName}/incs.json?auth=${idToken}`
+        const getResponse = await fetch(fetchUrl, { method: 'GET' })
+        const getJsonData = await getResponse.json()
+
+
+        const error = getJsonData && getJsonData['error']
+
+        if (error) {
+          window.pageStore.dispatch({ type: window.actionTypes.CLIENT_ERROR, payload: error })
+        } else {
+
+          return getJsonData
+        }
+      } catch (error) {
+        const { message } = error
+        window.pageStore.dispatch({ type: window.actionTypes.CLIENT_ERROR, payload: message })
+
+      }
+    } catch (error) {
+
+    }
+  }
 
 })
 
@@ -409,47 +445,47 @@ customElements.define('runner-button', class extends HTMLElement {
 
       const { workspace: { workspaceSelected: { title: workspaceName } }, auth: { idToken, localId: uid } } = window.pageStore.state
       let update = {}
-     
+
 
 
       try {
         await window.updateIdToken()
-        const fetchUrl = `${window.projectUrl}/runs/incs.json?auth=${idToken}`
-        
-        const updateIncResponse = await fetch(fetchUrl, { method: 'PUT', body: JSON.stringify({'.sv': {'increment':100}}) })
+        const fetchUrl = `${window.projectUrl}/runs/inc/${workspaceName}/incs.json?auth=${idToken}`
+
+        const updateIncResponse = await fetch(fetchUrl, { method: 'PUT', body: JSON.stringify({ '.sv': { 'increment': 1 } }) })
         const incrementedNumber = await updateIncResponse.json()
-     debugger;
-        const error =incrementedNumber['error']
-        if(error){
-            
-            window.pageStore.dispatch({ type: window.actionTypes.CLIENT_ERROR, payload: error })
-          
-        } else{
+
+        const error = incrementedNumber['error']
+        if (error) {
+
+          window.pageStore.dispatch({ type: window.actionTypes.CLIENT_ERROR, payload: error })
+
+        } else {
           let runid = incrementedNumber
-          let start =Date.now()
+          let start = Date.now()
           update = { [`runs/${workspaceName}/${runid}`]: { runState: 1, start } }
-          debugger;
+
           window.FB_DATABASE.ref('/').update(update, async (error, data) => {
             //4
-  
+
             if (data) {
-    
-              window.pageStore.dispatch({ type: window.actionTypes.RUNNER_STARTED, payload: { workspace: workspaceName, runState: 1, runid:incrementedNumber,start } })
-    
+
+              window.pageStore.dispatch({ type: window.actionTypes.RUNNER_STARTED, payload: { workspace: workspaceName, runState: 1, runid: incrementedNumber, start } })
+
             }
           })
         }
 
-    } catch (error) {
-        const {message}=error
+      } catch (error) {
+        const { message } = error
         window.pageStore.dispatch({ type: window.actionTypes.CLIENT_ERROR, payload: message })
-    }
+      }
 
-    
 
-    
-     
-     
+
+
+
+
 
 
 
