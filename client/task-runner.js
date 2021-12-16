@@ -43,37 +43,10 @@ customElements.define('task-runner', class extends HTMLElement {
       }
 
     })
-    // window.pageStore.subscribe(window.actionTypes.RUNNER_STARTED, state => {
-    //     const { taskRunner: { [workspaceName]: { runState, runid } } } = state
-    //     
-    //     window.FB_DATABASE.ref(`runs/workspaces/${workspaceName}/${runid}`).on('value', (error, response) => {
-    //         //6
-
-
-    //         if (response && response.data) {
-
-    //             const { data: { runState } } = response
-    //             if (runState === 2) {
-
-    //                 window.pageStore.dispatch({ type: window.actionTypes.RUNNER_COMPLETE, payload: { workspace: workspaceName, runState, runid } })
-    //             }
-
-    //         }
-    //     })
-
-
-    // })
 
 
 
-    // window.pageStore.subscribe(window.actionTypes.RUNNER_COMPLETE, state => {
-    //     const { workspace: { workspaceSelected: { title: workspaceName } } } = state
 
-    //     const { taskRunner: { [workspaceName]: { runState, runid } } } = state
-
-    //     this.render({ runState, runid })
-
-    // })
 
     this.render({ workspaceName })
   }
@@ -97,25 +70,6 @@ customElements.define('task-runner', class extends HTMLElement {
 })
 
 
-// customElements.define('runs-pagination', class extends HTMLElement {
-//   constructor() {
-//     super()
-//   }
-//   connectedCallback() {
-//     this.innerHTML = `
-//     <nav aria-label="Page navigation example">
-//     <ul class="pagination">
-//       <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-//       <li class="page-item"><a class="page-link" href="#">1</a></li>
-//       <li class="page-item"><a class="page-link" href="#">2</a></li>
-//       <li class="page-item"><a class="page-link" href="#">3</a></li>
-
-//       <li class="page-item"><a class="page-link" href="#">Next</a></li>
-//     </ul>
-//     </nav>
-//     `
-//   }
-// })
 
 
 customElements.define('run-result', class extends HTMLElement {
@@ -126,23 +80,24 @@ customElements.define('run-result', class extends HTMLElement {
   async connectedCallback() {
 
     this.innerHTML = `
- <div id="table-scroller" style="overflow-y: scroll; height:400px;  display:block">
-    <table class="table" class="bg-warning">
-        <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">Start</th>
-            <th scope="col">End</th>
-            <th scope="col">Duration  </th>
-            <th scope="col">State</th>
-            <th scope="col">Log</th>
-          </tr>
+    <div class="container" class="bg-warning">
+        <div class="row">
+            <div scope="col" class="col-1 fw-bold">#</div>
+            <div scope="col" class="col fw-bold">Start</div>
+            <div scope="col" class="col fw-bold">End</div>
+            <div scope="col" class="col fw-bold">Duration</div>
+            <div scope="col" class="col fw-bold">State</div>
+            <div scope="col" class="col fw-bold">Log</div>
+        </div>
       
-        </thead>
-        <tbody id="body-container" >
+      </div>
+ <div id="table-scroller" style="overflow-y: scroll; height:400px;" class="container">
+  
+     
+        <div id="body-container" class="row">
        
-        </tbody>
-      </table>
+        </div>
+   
       </div>
       `
 
@@ -157,7 +112,7 @@ customElements.define('run-result', class extends HTMLElement {
         this.fetchNextRuns()
       }
     })
-
+  
     window.pageStore.subscribe(window.actionTypes.RUNNER_STARTED, async state => {
 
       const { workspace: { workspaceSelected: { title: workspaceName } } } = state
@@ -166,23 +121,26 @@ customElements.define('run-result', class extends HTMLElement {
       const startDate = `${new Date(parseInt(start)).toLocaleDateString()} ${new Date(parseInt(start)).toLocaleTimeString()}`
 
       if (runid) {
-        document.getElementById('body-container').insertAdjacentHTML('afterbegin', `<tr id="runid-${runid}">
-              <th scope="row">${runid}</th>
-              <td>${startDate}</td>
-              <td><span class="text-warning">Pending...</span></td>
-              <td><span class="text-warning">Pending...</span></td>
-              <td><div class="spinner-border spinner-border-sm text-warning" role="status"> <span class="visually-hidden">Loading...</span></td>
-              <td><a href="#">Log</a></td>
-            </tr>`)
+        document.getElementById('body-container').insertAdjacentHTML('afterbegin', `<div id="runid-${runid}"class="col-12 row py-2 border border-bottom-0">
+              <div scope="row" class="col-1">${runid}</div>
+              <div class="col">${startDate}</div>
+              <div class="col"><span class="text-warning">Pending...</span></div>
+              <div class="col"><span class="text-warning">Pending...</span></div>
+              <div class="col"><div class="spinner-border spinner-border-sm text-warning" role="status"> <span class="visually-hidden">Loading...</span></div>
+              <div class="col"></div>
+            </div>`)
         window.FB_DATABASE.ref(`runs/${workspaceName}/${runid}`).on('value', (error, result) => {
           if (result) {
             const data = result.data
             if (data.runState === 2 || data.runState === 3) {
-
-              this.querySelectorAll(`#runid-${runid} td`)[1].textContent = `${new Date(parseInt(data.end)).toLocaleDateString()} ${new Date(parseInt(data.end)).toLocaleTimeString()}`
-              this.querySelectorAll(`#runid-${runid} td`)[2].textContent = data.duration
-              this.querySelectorAll(`#runid-${runid} td`)[3].innerHTML = data.runState === 2 ? `<span class="text-success">Ok</span>` : `<span class="text-danger">Error</span>`
-
+              debugger;
+              this.querySelectorAll(`#runid-${runid} div`)[2].textContent = `${new Date(data.end).toLocaleDateString()} ${new Date(data.end).toLocaleTimeString()}`
+              debugger;
+              this.querySelectorAll(`#runid-${runid} div`)[3].textContent = data.duration;
+              debugger;
+              this.querySelectorAll(`#runid-${runid} div`)[4].innerHTML = data.runState === 2 ? `<span class="text-success">Ok</span>` : `<span class="text-danger">Error</span>`
+            this.querySelector('#body-container >div').insertAdjacentHTML('beforeend',`  <div class="col"><a href="#">Log</a></div>`)     
+debugger;
             }
           }
         })
@@ -248,15 +206,15 @@ customElements.define('run-result', class extends HTMLElement {
 
       let runResult = runState === 1 ? '<div class="spinner-border spinner-border-sm text-warning" role="status"> <span class="visually-hidden">Loading...</span>' : runState === 2 ? `<span class="text-success">Ok</span>` : `<span class="text-danger">Error</span>`
 
-      document.getElementById('body-container').insertAdjacentHTML('beforeend', `<tr id="runid-${key}">
-        <th scope="row">${key}</th>
-        <td>${start}</td>
-        <td>${end}</td>
-        <td>${duration}</td>
-        <td>${runResult}</td>
-        <td><a href="#">Log</a></td>
+      document.getElementById('body-container').insertAdjacentHTML('beforeend', `<div id="runid-${key}" class="col-12 row py-2 border border-bottom-0">
+        <div scope="row" class="col-1">${key}</div>
+        <div class="col">${start}</div>
+        <div class="col">${end}</div>
+        <div class="col">${duration}</div>
+        <div class="col">${runResult}</div>
+        <div class="col"><a href="#">Log</a></div>
 
-      </tr>`)
+      </div>`)
 
     })
   }//display runs
@@ -349,66 +307,6 @@ debugger;
 
 
 
-// customElements.define('task-runner-command', class extends HTMLElement {
-//     constructor() {
-//         super()
-//     }
-
-//     async connectedCallback() {
-
-//         const { workspace: { workspaceSelected: { title: workspaceName } }, auth: { idToken, localId } } = window.pageStore.state
-//         const state = window.pageStore.state
-//         this.uid = localId
-
-//         if (state.taskRunner && state.taskRunner[workspaceName] && state.taskRunner[workspaceName].runState) {
-
-//             this.render({ runState: state.taskRunner[workspaceName].runState })
-
-//         } else {
-//             //1
-
-//             this.render({ runState: undefined, runid: undefined })
-//         }
-
-
-
-
-//     }
-
-//     async render({ runState }) {
-//         const { workspace: { workspaceSelected: { title: workspaceName } } } = window.pageStore.state
-//         //2
-
-
-//         this.innerHTML = `<button class="btn btn-outline-dark" id="run-tasks-btn">${(runState === undefined || runState === 2) ? 'Run' : `<div class="spinner-border spinner-border-sm" role="status">
-//         <span class="visually-hidden">Loading...</span>
-//       </div>`}</button>`
-
-//         document.getElementById('run-tasks-btn').addEventListener('click', async (e) => {
-//             //3
-
-//             e.preventDefault()
-//             let update = {}
-//             let runid = Date.now()
-
-//             update = { [`runs/workspaces/${workspaceName}/${runid}`]: { runState: 1 } }
-
-//             window.FB_DATABASE.ref('/').update(update, async (error, data) => {
-//                 //4
-//                 
-//                 if (data) {
-//                     
-//                     window.pageStore.dispatch({ type: window.actionTypes.RUNNER_STARTED, payload: { workspace: workspaceName, runState: 1, runid } })
-
-//                 }
-//             })
-
-
-//         })
-
-
-//     }
-// })
 
 
 customElements.define('spinner-button', class extends HTMLElement {
@@ -429,10 +327,7 @@ customElements.define('runner-button', class extends HTMLElement {
   }
 
   connectedCallback() {
-    // const { auth: { idToken, localId: uid }, workspace: { workspaceSelected: { title: workspaceName } } } = window.pageStore.state
-    // this.uid = uid
 
-    //  window.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
     this.render()
   }
 
