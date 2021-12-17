@@ -34,7 +34,7 @@ customElements.define('task-runner', class extends HTMLElement {
 
       const body = JSON.stringify({ ref: 'main', inputs: { projectName: workspaceName, parameters } })
 
-      if (workspaceName === 'local_ws_bdd' ||'local_pub_ws_bdd') {
+      if (workspaceName === 'local_ws_bdd' ||workspaceName==='local_pub_ws_bdd') {
 
         const response = await fetch('http://localhost:3001', { body, method: 'post' })
 
