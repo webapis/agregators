@@ -15,8 +15,7 @@ Enable Github workflow
     And user clicks to button with "#enable-workflow-link" selector 309
     And user moves to page workspace-tasks.html tab 310
     And component with "#add-task-btn" selector is visible to user 311
-    And component with "#run-tasks-btn" selector is visible to user 312
-    And component with "#tasks-config-btn" selector is visible to user 313
+    And component with "#tasks-config-btn" selector is visible to user 312
 
 
 Scenario: 4

@@ -27,8 +27,8 @@ Scenario: 6
     Given user clicks to button with "#codergihub_workflow_a_a_main-workflow-config-btn" selector 601
     And component with "#PAGE_URL" selector is visible to user 602
     And user types "https://defacto.com" to input with "#PAGE_URL" selector 604
-     And user types "MALE" to input with "#GENDER" selector 605
-      And user types "SHIRT" to input with "#PRODUCT_CATEGORY" selector 606
+    And user types "MALE" to input with "#GENDER" selector 605
+    And user types "SHIRT" to input with "#PRODUCT_CATEGORY" selector 606
     When user clicks to button with "#save-vars-btn" selector 607
     Then component with "#workflows" selector is visible to user 608
 

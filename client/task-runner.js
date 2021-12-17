@@ -34,7 +34,7 @@ customElements.define('task-runner', class extends HTMLElement {
 
       const body = JSON.stringify({ ref: 'main', inputs: { projectName: workspaceName, parameters } })
 
-      if (workspaceName === 'local_ws_bdd') {
+      if (workspaceName === 'local_ws_bdd' ||'local_pub_ws_bdd') {
 
         const response = await fetch('http://localhost:3001', { body, method: 'post' })
 
@@ -133,7 +133,7 @@ customElements.define('run-result', class extends HTMLElement {
           if (result) {
             const data = result.data
             if (data.runState === 2 || data.runState === 3) {
-
+debugger;
               this.querySelectorAll(`#runid-${runid} div`)[2].textContent = `${new Date(data.end).toLocaleDateString()} ${new Date(data.end).toLocaleTimeString()}`
 
               this.querySelectorAll(`#runid-${runid} div`)[3].textContent = data.duration;
@@ -375,16 +375,6 @@ customElements.define('runner-button', class extends HTMLElement {
         const { message } = error
         window.pageStore.dispatch({ type: window.actionTypes.CLIENT_ERROR, payload: message })
       }
-
-
-
-
-
-
-
-
-
-
 
 
     })

@@ -3,13 +3,13 @@ const assert = require('assert');
 const { Given, When, Then } = require('@cucumber/cucumber');
 
 
-const debuggedOrder = 302
+const debuggedOrder = 311
 const log = true
 
 Given('user is on page workspace-tasks.html {int}', { timeout: 15000 }, async function (order) {
     try {
 
-debugger;
+
         await global.page.setRequestInterception(true);
         let counter = 0
         let countAgregate = 0
