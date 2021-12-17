@@ -12,4 +12,5 @@ User runs tasks successfully
     And component with "#run-tasks-btn" selector is visible to user 805
     When user clicks to button with "#run-tasks-btn" selector 806
     Then component with "#runid-1 > div:nth-child(4) > span" id includes "Pending..." textcontent 807
-    And component with "#runid-1 > div:nth-child(5) > span" id includes "Ok" textcontent 808
+    And wait for 5 seconds 808
+    And component with "#runid-1 > div:nth-child(5) > span" id includes "Ok" textcontent 809

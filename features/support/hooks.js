@@ -157,7 +157,7 @@ AfterAll(async function (error, result) {
 console.log('global.success______',   global.success)
 
   await global.browser.close();
-  if(global.success >=70){
+  if(global.success >=79){
     process.exit(0)
   } else{
     process.exit(1)

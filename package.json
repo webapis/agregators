@@ -23,13 +23,13 @@
     "node-watch": "0.7.1",
     "pre-commit": "1.2.2",
     "puppeteer": "7.1.0",
-    "workflow_runner": "^1.1.0"
+    "workflow_runner": "^1.4.0"
   },
   "scripts": {
     "snipe": "node snipe.js",
     "local:start": "SERVER=LOCAL_SERVER node root/index.js",
     "fb:emulator": "FIREBASE_DATABASE_EMULATOR_HOST='localhost:9000' firebase emulators:start",
-    "wfRunner":"node ./node_modules/workflow_runner/devServer.js",
+    "wfRunner": "node ./node_modules/workflow_runner/devServer.js",
     "netlifyDev": "netlify dev",
     "testCucumber:@auth": "./node_modules/.bin/cucumber-js --tags @auth",
     "testCucumber:@workspace": "./node_modules/.bin/cucumber-js --tags @workspace",
@@ -37,7 +37,7 @@
     "testCucumber:@workflow": "./node_modules/.bin/cucumber-js --tags @workflow",
     "testCucumber:@runner": "./node_modules/.bin/cucumber-js --tags @runner",
     "testCucumber": "./node_modules/.bin/cucumber-js --tags 'not @auth'",
-    "bddTest": "(netlify dev) & (firebase emulators:start) & (sleep 30 && npm run testCucumber)",
+    "bddTest": "(netlify dev) & (firebase emulators:start)& (node ./node_modules/workflow_runner/devServer.js) & (sleep 30 && npm run testCucumber)",
     "bddlocalTest": "(/Users/personalcomputer/.npm-global/lib/node_modules/netlify-cli/bin/run dev) & (firebase emulators:start) & (BDD_TEST=TRUE sleep 40 && npm run testCucumber)",
     "netlifyLocalDev": "BDD_TEST=FALSE /Users/personalcomputer/.npm-global/lib/node_modules/netlify-cli/bin/run dev",
     "netlifyLocalBDD": "BDD_TEST=TRUE /Users/personalcomputer/.npm-global/lib/node_modules/netlify-cli/bin/run dev",

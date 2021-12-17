@@ -95,7 +95,7 @@ Given('button with {string} selector is enabled {int}', { timeout: 15000 }, asyn
         if (order === debuggedOrder) {
             debugger;
         }
-   
+
         //  await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-success-${id}.png` });
         log && console.log(`${order}_success_|_button enabled .......`, id)
         global.success++
@@ -217,10 +217,10 @@ Given('component with {string} id includes {string} textcontent {int}', { timeou
             debugger;
         }
         await global.page.waitForSelector(id, { visible: true });
-      
+
         const matchesTextCotnent = await global.page.evaluate((_id, _value) => document.querySelector(_id).textContent.includes(_value), id, value)
         // await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-success-${id}.png` });
-debugger;
+        debugger;
         assert.equal(matchesTextCotnent, true)
         log && console.log(`${order}_success_|_component includes text content.......${value}`, id)
         global.success++
@@ -245,7 +245,7 @@ Given('button with {string} selector is disabled {int}', { timeout: 15000 }, asy
 
 
         await global.page.waitForSelector(id);
-        const isDisabled = await page.$eval(id,(el)=> el.disabled);
+        const isDisabled = await page.$eval(id, (el) => el.disabled);
         assert.equal(isDisabled, true)
         debugger;
         if (order === debuggedOrder) {
@@ -260,6 +260,20 @@ Given('button with {string} selector is disabled {int}', { timeout: 15000 }, asy
         // log && console.log(`${order}_failed_|_button enabled .......`, error)
         throw error
     }
+
+})
+
+
+Given('wait for {int} seconds {int}', { timeout: 15000 }, async function (seconds, order) {
+    try {
+        debugger;
+        await global.page.waitFor(seconds);
+        log && console.log(`${order}_success_|_wait for ${seconds}seconds .......`)
+        global.success++
+    } catch (error) {
+        throw error
+    }
+
 
 })
 
