@@ -17,13 +17,6 @@ customElements.define('task-runner', class extends HTMLElement {
     document.getElementById('ws-breadcrumb').innerText = `Workspace(${workspaceName})`
 
 
-    // window.pageStore.subscribe(window.actionTypes.RUNNER_STARTED, state => {
-    //     
-    //     const { taskRunner: { [workspaceName]: { runState, runid } } } = state
-    //     this.render({ workspaceName, runid })
-
-
-    // })
 
 
     window.pageStore.subscribe(window.actionTypes.RUNNER_STARTED, async state => {
@@ -139,7 +132,7 @@ debugger;
               this.querySelectorAll(`#runid-${runid} div`)[3].textContent = data.duration;
 
               this.querySelectorAll(`#runid-${runid} div`)[4].innerHTML = data.runState === 2 ? `<span class="text-success">Ok</span>` : `<span class="text-danger">Error</span>`
-              this.querySelector('#body-container >div').insertAdjacentHTML('beforeend', `  <div class="col"><a href="#">Log</a></div>`)
+              this.querySelector('#body-container >div').insertAdjacentHTML('beforeend', `  <div class="col"><a href="${data.html_url}">Log</a></div>`)
               window.pageStore.dispatch({ type: window.actionTypes.RUNNER_COMPLETE })
             }
           
@@ -178,7 +171,7 @@ debugger;
       const error = getJsonData && getJsonData['error']
 
       if (error) {
-        -
+        
           window.pageStore.dispatch({ type: window.actionTypes.CLIENT_ERROR, payload: error })
       } else {
         const runs = Object.entries(getJsonData).sort((a, b) => {
@@ -214,7 +207,7 @@ debugger;
         <div class="col">${end}</div>
         <div class="col">${duration}</div>
         <div class="col">${runResult}</div>
-        <div class="col"><a href="#">Log</a></div>
+        <div class="col"><a href="${value.html_url}">Log</a></div>
 
       </div>`)
 
