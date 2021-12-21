@@ -83,3 +83,44 @@ customElements.define('tasks-configuration', class extends HTMLElement {
         })
     }
 })
+
+
+
+// async function getWebConfigs() {
+//     try {
+//       const { auth: { token, screenName }, workflowEditor: { selectedRepo, selectedBranch } } = window.pageStore.state
+      
+//       if (selectedRepo && selectedBranch) {
+
+//         const element = document.getElementById('workflowConfig')
+//         if (element) {
+//           element.textContent = 'Loading....'
+//         }
+
+//         const response = await fetch(`https://api.github.com/repos/${screenName}/${selectedRepo}/contents/workflow.config.json?ref=${selectedBranch}`, { method: 'get', headers: { Accept: "application/vnd.github.v3+json", authorization: `token ${token}` } })
+//         if (response.status > 400) {
+//           const { message } = await response.json()
+//           window.pageStore.dispatch({ type: window.actionTypes.CLIENT_ERROR, payload: message })
+//         } else {
+//           const data = await response.json()
+//           const { content } = data
+//           const workflowConfig = JSON.parse(atob(content))
+//           window.pageStore.dispatch({ type: window.actionTypes.WORKFLOW_CONFIG_FETCHED, payload: workflowConfig })
+
+//         }
+
+
+
+//       }
+//     } catch (error) {
+
+//       const { message } = error
+//       window.pageStore.dispatch({ type: window.actionTypes.CLIENT_ERROR, payload: message })
+//     }
+
+
+
+
+
+
+//   }

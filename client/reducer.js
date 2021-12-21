@@ -36,7 +36,9 @@ export const initState = stateFromLS
     workspaceEditor: { workspaceName: "", description: "", accessLevel: "" },
     workspaceUsers: { username: "", role: "" },
     clientError: '',
-    taskRunner: { running: false }
+    taskRunner: { running: false },
+    googleAuthConfig: { scopes: '' },
+    varConfiguration: { selectedRepo:'', ownersRepos:[],varName:'',varInputType:'',varDefault:'' }
   };
 
 export default (state, action) => {
@@ -83,7 +85,7 @@ export default (state, action) => {
     case actionTypes.START_SCRAPING_CLICKED:
       return { ...state, startScrapingClicked: true, runId: Date.now(), completeTime: 0 }
     case actionTypes.RUN_COMPLETE:
-      
+
       return { ...state, startScrapingClicked: false, completeTime: action.payload }
     case actionTypes.SET_GH_TKN:
       debugger
@@ -91,7 +93,7 @@ export default (state, action) => {
     case actionTypes.ID_TOKEN_UPDATED:
       return { ...state, auth: { ...state.auth, ...action.payload, timestamp: Date.now() + 3600000 } }
     case actionTypes.PROJECT_SELECTED:
-      
+
       return { ...state, ...action.payload }
     case actionTypes.GITHUB_INITIALIZATION_CHANGED:
       return { ...state, githubInitialization: { ...state.githubInitialization, ...action.payload } }
@@ -135,7 +137,7 @@ export default (state, action) => {
     case actionTypes.CONTAINER_NAME_SAVED:
       return { ...state, containerName: { name: '' } }
     case actionTypes.WORKFLOW_PATH_CHANGED:
-      
+
       return { ...state, workflowTree: { workflowPath: action.payload } }
     case actionTypes.TASK_SELECTED:
       return { ...state, workspaceTasks: { ...state.workspaceTasks, taskSelected: { ...action.payload } } }
@@ -168,14 +170,30 @@ export default (state, action) => {
     case actionTypes.REPOS_BRANCHES_PENDING:
       return { ...state, workflowEditor: { ...state.workflowEditor, loading: true } }
     case actionTypes.RUNNER_STARTED:
-      return { ...state, taskRunner: { ...state.taskRunner, [action.payload.workspace]: { runState: action.payload.runState, runid: action.payload.runid, start: action.payload.start },running:true  }}
+      return { ...state, taskRunner: { ...state.taskRunner, [action.payload.workspace]: { runState: action.payload.runState, runid: action.payload.runid, start: action.payload.start }, running: true } }
     case actionTypes.RUNNER_COMPLETE:
-      
-      return { ...state, taskRunner: { ...state.taskRunner ,running:false } }
+
+      return { ...state, taskRunner: { ...state.taskRunner, running: false } }
     case actionTypes.RUNS_FETCHED:
       return { ...state, taskRunner: { ...state.taskRunner, runs: action.payload } }
     case actionTypes.NEXT_RUNS_FETCHED:
       return { ...state, taskRunner: { ...state.taskRunner, runs: [...state.taskRunner.runs, ...action.payload] } }
+    case actionTypes.GOOGLE_AUTH_SCOPE_CHANGED:
+      return { ...state, googleAuthConfig: { ...state.googleAuthConfig, scopes: action.payload } }
+    case actionTypes.VAR_REPO_SELECTED:
+      return {...state,varConfiguration:{...state.varConfiguration,selectedRepo:action.payload}}
+    case actionTypes.VAR_REPOS_FETCHED:
+      return {...state,varConfiguration:{...state.varConfiguration,ownersRepos:action.payload}}
+    case actionTypes.VAR_NAME_CHANGED:
+      return {...state,varConfiguration:{...state.varConfiguration,varName:action.payload}}
+    case actionTypes.VAR_TYPE_CHANGED:
+      return {...state,varConfiguration:{...state.varConfiguration,varInputType:action.payload}}
+      case actionTypes.VAR_DEFAULT_CHANGED:
+        return {...state,varConfiguration:{...state.varConfiguration,varDefault:action.payload}}
+      case actionTypes.VAR_ADDED:
+        return {...state,varConfiguration:{...state.varConfiguration,selectedRepo:'',varName:'',varInputType:'',varDefault:''}}
+      case actionTypes.VARS_FETCHED:
+        return {...state,varConfiguration:{...state.varConfiguration,vars:action.payload}}
     default:
 
       return state;
@@ -262,6 +280,15 @@ export const actionTypes = {
   RUNNER_STARTED: "RUNNER_STARTED",
   RUNNER_COMPLETE: "RUNNER_COMPLETE",
   RUNS_FETCHED: "RUNS_FETCHED",
-  NEXT_RUNS_FETCHED: "NEXT_RUNS_FETCHED"
+  NEXT_RUNS_FETCHED: "NEXT_RUNS_FETCHED",
+  GOOGLE_AUTH_SCOPE_CHANGED: "GOOGLE_AUTH_SCOPE_CHANGED",
+
+  VAR_REPO_SELECTED:'VAR_REPO_SELECTED',
+  VAR_REPOS_FETCHED:'VAR_REPOS_FETCHED',
+  VAR_NAME_CHANGED:'VAR_NAME_CHANGED',
+  VAR_TYPE_CHANGED:'VAR_TYPE_CHANGED',
+  VAR_DEFAULT_CHANGED:'VAR_DEFAULT_CHANGED',
+  VAR_ADDED:'VAR_ADDED',
+  VARS_FETCHED:'VARS_FETCHED'
 
 };

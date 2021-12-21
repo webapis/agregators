@@ -14,7 +14,7 @@ debugger;
             const refresh_token = document.getElementById('refresh_token').value
             const scope = document.getElementById('scope').value
             window.pageStore.dispatch({ type: window.actionTypes.GOOGLE_AUTH_SUCCESS, payload: { access_token, refresh_token, scope } })
-            window.location.replace('/tasks-configuration.html')
+            window.location.replace('/google-oauth-config.html')
         }
     }
 })

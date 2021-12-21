@@ -18,14 +18,14 @@ customElements.define('workflow-editor', class extends HTMLElement {
     //fetch users repos
     const response = await fetch('https://api.github.com/user/repos', { method: 'get', headers: { Accept: "application/vnd.github.v3+json", authorization: `token ${token}` } })
     const ownersRepos = await response.json()
-    debugger;
+    
     window.pageStore.dispatch({ type: window.actionTypes.USER_REPOS_FETCHED, payload: ownersRepos })
 
     this.render({ workflowDescription, workflowName, token: tokenFPR, isPrivate, workflowOrder, workflowConfig })
 
   }
   render({ workflowDescription, token, isPrivate, workflowOrder, workflowConfig }) {
-    debugger;
+    
     this.innerHTML = `
   
         <div >
@@ -79,7 +79,7 @@ customElements.define('workflow-editor', class extends HTMLElement {
       })
     })
 
-  
+
   }
 })
 
@@ -155,7 +155,7 @@ customElements.define('repo-branches', class extends HTMLElement {
       window.pageStore.dispatch({ type: window.actionTypes.REPOS_BRANCHES_PENDING })
       const response = await fetch(`https://api.github.com/repos/${screenName}/${selectedRepo}/branches`, { method: 'get', headers: { Accept: "application/vnd.github.v3+json", authorization: `token ${token}` } })
       const data = await response.json()
-      debugger;
+      
       this.render({ repoBranches: data, selectedBranch })
       window.pageStore.dispatch({ type: window.actionTypes.REPOS_BRANCHES_FETCHED, payload: data })
 
@@ -187,9 +187,12 @@ customElements.define('repo-branches', class extends HTMLElement {
 
     } else {
       const selector = document.getElementById('repobranches')
+      selector.innerHTML = `<option value="main">...Select branch</option>`
       repoBranches && repoBranches.forEach(branch => {
-        selector.innerHTML = `<option value="main">...Select branch</option>`
+        debugger;
+  
         selector.insertAdjacentHTML('beforeend', `<option ${selectedBranch === branch.name && 'selected'} value=${branch.name}>${branch.name}</option>`)
+     
       })
     }
 
@@ -206,7 +209,7 @@ customElements.define('repo-branches', class extends HTMLElement {
 
       if (e.inputType === undefined) {
         const { value } = e.target
-        debugger;
+        
         window.pageStore.dispatch({ type: window.actionTypes.BRANCH_SELECTED, payload: { branch: value } })
       }
 
@@ -231,7 +234,7 @@ customElements.define('workflow-name', class extends HTMLElement {
     })
 
     window.pageStore.subscribe(window.actionTypes.BRANCH_SELECTED, state => {
-      debugger;
+      
       const { workflowEditor: { workflowName } } = state
       this.render({ workflowName })
     })
@@ -258,18 +261,18 @@ customElements.define('workflow-config', class extends HTMLElement {
     this.render({ workflowConfig })
 
     window.pageStore.subscribe(window.actionTypes.REPO_SELECTED, async () => {
-      debugger;
+      
 
       await this.getWebConfigs()
     })
 
     window.pageStore.subscribe(window.actionTypes.BRANCH_SELECTED, async () => {
-      debugger;
+      
       await this.getWebConfigs()
 
     })
     window.pageStore.subscribe(window.actionTypes.WORKFLOW_CONFIG_FETCHED, state => {
-      debugger;
+      
       const { workflowEditor: { workflowConfig } } = state
 
       this.render({ workflowConfig })
@@ -281,7 +284,7 @@ customElements.define('workflow-config', class extends HTMLElement {
 
     this.innerHTML = `  <div class="mb-3">
       <label for="workflowConfigFile" class="form-label">Workflow Config</label>
-      ${`<textarea class="form-control input" id="workflowConfig" name="workflowConfig" rows="3" readonly>${workflowConfig ?JSON.stringify(workflowConfig):''}</textarea>`}
+      ${`<textarea class="form-control input" id="workflowConfig" name="workflowConfig" rows="3" readonly>${workflowConfig ? JSON.stringify(workflowConfig) : ''}</textarea>`}
      
     </div>`
 
@@ -292,7 +295,7 @@ customElements.define('workflow-config', class extends HTMLElement {
   async getWebConfigs() {
     try {
       const { auth: { token, screenName }, workflowEditor: { selectedRepo, selectedBranch } } = window.pageStore.state
-      debugger;
+      
       if (selectedRepo && selectedBranch) {
 
         const element = document.getElementById('workflowConfig')
@@ -336,8 +339,8 @@ customElements.define('save-workflow-btn', class extends HTMLElement {
   }
 
   connectedCallback() {
-    
-    const {workflowEditor,auth: { idToken, localId: uid }, } = window.pageStore.state
+
+    const { workflowEditor, auth: { idToken, localId: uid }, } = window.pageStore.state
     this.uid = uid
 
     window.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
@@ -365,12 +368,12 @@ customElements.define('save-workflow-btn', class extends HTMLElement {
     })
   }
 
-  render({ workflowName, workflowDescription, selectedRepo, selectedBranch, workflowConfig }) {
-    this.innerHTML = ` <button type="button" class="btn btn-secondary" id="save-workflow-btn" ${workflowName && workflowDescription && selectedRepo && selectedBranch && workflowConfig ? '':'disabled'}>Save Workflow</button>`
+  render({ workflowName, workflowDescription, selectedRepo, selectedBranch, workflowConfig,workflowKey }) {
+    this.innerHTML = ` <button type="button" class="btn btn-secondary" id="save-workflow-btn" ${workflowName && workflowDescription && selectedRepo && selectedBranch && workflowConfig ? '' : 'disabled'}>Save Workflow</button>`
     document.getElementById('save-workflow-btn').addEventListener('click', (e) => {
       const { workflowEditor: { workflowDescription, selectedRepo, isPrivate, selectedBranch, workflowName, tokenFPR, workflowOrder, workflowConfig }, auth: { screenName }, workspace: { workspaceSelected: { title: workspaceName } }, workspaceTasks: { taskSelected: { taskName, id: taskId } } } = window.pageStore.state
       // { workflowDescription, selectedRepo, isPrivate, selectedBranch, tokenFPR, screenName, workflowOrder, workflowName,workflowConfig }
-      const workflowId = Date.now()
+      const workflowId = workflowKey ? workflowKey: Date.now()
       const workflowInitials = { [`workspaces/${workspaceName}/workflowInitials/tasks/${taskId}/workflows/${workflowId}`]: { workflowDescription, workflowName } }
       const workflowProps = { [`workspaces/${workspaceName}/workflowProps/tasks/${taskId}/workflows/${workflowId}`]: { selectedRepo, isPrivate, selectedBranch, tokenFPR, screenName, workflowOrder } }
       const upadteworkflowConfigs = { [`workspaces/${workspaceName}/workflowConfigs/tasks/${taskId}/workflows/${workflowId}`]: { ...workflowConfig } }
@@ -378,7 +381,7 @@ customElements.define('save-workflow-btn', class extends HTMLElement {
 
       window.FB_DATABASE.ref(`/`).update({ ...workflowInitials, ...workflowProps, ...upadteworkflowConfigs, ...updateServer }, (error, data) => {
         if (data) {
-          debugger;
+          
           window.pageStore.dispatch({ type: window.actionTypes.WORKFLOW_UPDATED })
 
           window.location.replace('/task-workflows.html')
@@ -386,7 +389,7 @@ customElements.define('save-workflow-btn', class extends HTMLElement {
 
       })
     })
- 
+
   }
 
 })
