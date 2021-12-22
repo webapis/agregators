@@ -91,6 +91,32 @@ function firebase() {
                 cb && cb(error,null) 
             }
         },
+        remove: async function (cb) {
+            try {
+                await updateIdToken()
+                const fetchUrl =this.url ==='/'? `${this.projectUri}/.json?auth=${this.idToken}`: `${this.projectUri}/${this.url}.json?auth=${this.idToken}`
+              const getResponse =await   fetch(fetchUrl, { method: 'DELETE'})
+              const getJsonData =await getResponse.json()
+ 
+                 
+                 const error =getJsonData&&  getJsonData['error']
+                 
+                 if(error){
+                     debugger;
+                     window.pageStore.dispatch({ type: window.actionTypes.CLIENT_ERROR, payload: error })
+                     cb && cb(error,null) 
+                     
+                 } else{
+                     
+                     cb && cb(null,getJsonData)
+                 }
+            } catch (error) {
+               const {message}=error
+                window.pageStore.dispatch({ type: window.actionTypes.CLIENT_ERROR, payload: message })
+                cb && cb(error,null) 
+            }
+        },
+        
         filter: async function (cb) {
             try {
                 await updateIdToken()
