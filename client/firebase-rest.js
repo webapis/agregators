@@ -57,14 +57,25 @@ function firebase() {
         },
         
         push: async function (data, cb) {
-            await updateIdToken()
-            fetch(`${this.projectUri}/${this.url}/.json?auth=${this.idToken}`, { method: 'POST', body: JSON.stringify(data) }).then(response => response.json()).then(data => {
-              
-                cb && cb(null,data)
-            }).catch(error => {
-                cb && cb(error,null)
-                return this
-            })
+            try {
+                await updateIdToken()
+                const fetchUrl =this.url ==='/'? `${this.projectUri}/.json?auth=${this.idToken}`: `${this.projectUri}/${this.url}.json?auth=${this.idToken}`
+                
+                const updateResponse = await fetch(fetchUrl, { method: 'POST', body: JSON.stringify(data) })
+                const updateJsonData = await updateResponse.json()
+                const error =updateJsonData['error']
+                if(error){
+                    
+                    window.pageStore.dispatch({ type: window.actionTypes.CLIENT_ERROR, payload: error })
+                    cb && cb(error,null)  
+                } else{
+                    cb && cb(null,updateJsonData)
+                }
+     
+            } catch (error) {
+                const {message}=error
+                window.pageStore.dispatch({ type: window.actionTypes.CLIENT_ERROR, payload: message })
+            }
         },
         get: async function (cb) {
             try {

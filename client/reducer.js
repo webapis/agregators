@@ -38,7 +38,7 @@ export const initState = stateFromLS
     clientError: '',
     taskRunner: { running: false },
     googleAuthConfig: { scopes: '' },
-    varConfiguration: { selectedRepo: '', ownersRepos: [], varName: '', varInputType: '', varDefault: '', vars: [], editVar: false }
+    varConfiguration: { ownersRepos: [], vars: [], varEditor: { repoName: '', varName: '', inputType: '', defaultValue: '', editVar: false } }
   };
 
 export default (state, action) => {
@@ -181,41 +181,107 @@ export default (state, action) => {
     case actionTypes.GOOGLE_AUTH_SCOPE_CHANGED:
       return { ...state, googleAuthConfig: { ...state.googleAuthConfig, scopes: action.payload } }
     case actionTypes.VAR_REPO_SELECTED:
-      return { ...state, varConfiguration: { ...state.varConfiguration, selectedRepo: action.payload } }
+      return { ...state, varConfiguration: { ...state.varConfiguration, varEditor: { ...state.varConfiguration.varEditor, repoName: action.payload } } }
     case actionTypes.VAR_REPOS_FETCHED:
       return { ...state, varConfiguration: { ...state.varConfiguration, ownersRepos: action.payload } }
     case actionTypes.VAR_NAME_CHANGED:
-      return { ...state, varConfiguration: { ...state.varConfiguration, varName: action.payload } }
+      return { ...state, varConfiguration: { ...state.varConfiguration, varEditor: { ...state.varConfiguration.varEditor, varName: action.payload } } }
     case actionTypes.VAR_TYPE_CHANGED:
-      return { ...state, varConfiguration: { ...state.varConfiguration, varInputType: action.payload } }
+      return { ...state, varConfiguration: { ...state.varConfiguration, varEditor: { ...state.varConfiguration.varEditor, inputType: action.payload } } }
     case actionTypes.VAR_DEFAULT_CHANGED:
-      return { ...state, varConfiguration: { ...state.varConfiguration, varDefault: action.payload } }
+      return { ...state, varConfiguration: { ...state.varConfiguration, varEditor: { ...state.varConfiguration.varEditor, defaultValue: action.payload } } }
     case actionTypes.VAR_ADDED:
-      return { ...state, varConfiguration: { ...state.varConfiguration, selectedRepo: '', varName: '', varInputType: '', varDefault: '', vars: [...state.varConfiguration.vars, action.payload] } }
+      return {
+        ...state, varConfiguration: {
+          ...state.varConfiguration, varEditor: { varName: '', inputType: '', defaultValue: '', editVar: false, repoName: '' }, vars: state.varConfiguration.vars.map(v => {
+            const repoName = v[0]
+            if (repoName === action.payload.repoName) {
+              const repoVars = v[1]['vars']
+              const mappedObj = { ...repoVars, [action.payload.varKey]: { defaultValue: action.payload.defaultValue, inputType: action.payload.inputType, varName: action.payload.varName } }
+
+              const mappedArray = [repoName, { vars: mappedObj }]
+              debugger;
+              return mappedArray
+
+            } else {
+              return v
+            }
+          })
+        }
+      }
     case actionTypes.VARS_FETCHED:
       return { ...state, varConfiguration: { ...state.varConfiguration, vars: action.payload } }
     case actionTypes.EDIT_VAR_CLICKED:
       debugger;
-      return { ...state, varConfiguration: { ...state.varConfiguration, selectedRepo: action.payload.selectedRepo, varName: action.payload.varName, varInputType: action.payload.varInputType, varDefault: action.payload.varDefault, editVar: true } }
+      return { ...state, varConfiguration: { ...state.varConfiguration, varEditor: { ...action.payload, editVar: true } } }
     case actionTypes.VAR_UPDATED:
 
       return {
         ...state, varConfiguration: {
-          ...state.varConfiguration, selectedRepo: '', varName: '', varInputType: '', varDefault: '', editVar: false, vars: state.varConfiguration.vars.map(v => {
-            debugger;
-            if (v[0] === action.payload[0]) {
+          ...state.varConfiguration, varEditor: { varName: '', inputType: '', defaultValue: '', editVar: false, repoName: '' }, vars: state.varConfiguration.vars.map(v => {
+            const repoName = v[0]
+            if (repoName === action.payload.repoName) {
+              const repoVars = v[1]['vars']
+              let mappedObj = {}
+              for (let r in repoVars) {
+
+                if (r === action.payload.varKey) {
+                  debugger;
+                  mappedObj = { ...repoVars, [action.payload.varKey]: { defaultValue: action.payload.defaultValue, inputType: action.payload.inputType, varName: action.payload.varName } }
+                  break;
+                } else {
+                  mappedObj = { ...repoVars }
+                }
+              }
               debugger;
-              return action.payload
-            } else return v
+
+
+              const mappedArray = [repoName, { vars: mappedObj }]
+              debugger;
+              return mappedArray
+
+            } else {
+              return v
+            }
           })
         }
       }
-      case actionTypes.VAR_REMOVED:
+    case actionTypes.VAR_REMOVED:
 
-        return {
-          ...state, varConfiguration: {
-            ...state.varConfiguration, selectedRepo: '', varName: '', varInputType: '', varDefault: '', editVar: false, vars: state.varConfiguration.vars.filter(v => v[0] !== action.payload) }
+     
+      return {
+        ...state, varConfiguration: {
+          ...state.varConfiguration, varEditor: { varName: '', inputType: '', defaultValue: '', editVar: false, repoName: '' }, vars: state.varConfiguration.vars.map(v => {
+            const repoName = v[0]
+            if (repoName === action.payload.repoName) {
+              const repoVars = v[1]['vars']
+            
+              let mappedObj = {}
+              for (let r in repoVars) {
+
+                if (r === action.payload.varKey) {
+                  debugger;
+                  mappedObj = delete repoVars[action.payload.varKey]
+                  break;
+                } else {
+                  mappedObj = { ...repoVars }
+                }
+              }
+              debugger;
+
+
+              const mappedArray = [repoName, { vars: mappedObj }]
+              debugger;
+         
+         
+              return mappedArray
+
+            } else {
+              return v
+            }
+          })
         }
+      }
     default:
 
       return state;
@@ -314,6 +380,6 @@ export const actionTypes = {
   VARS_FETCHED: 'VARS_FETCHED',
   EDIT_VAR_CLICKED: 'EDIT_VAR_CLICKED',
   VAR_UPDATED: 'VAR_UPDATED',
-  VAR_REMOVED:'VAR_REMOVED'
+  VAR_REMOVED: 'VAR_REMOVED'
 
 };

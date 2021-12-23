@@ -15,50 +15,52 @@ customElements.define('vars-configuration', class extends HTMLElement {
         const ownersRepos = await response.json()
 
         window.pageStore.dispatch({ type: window.actionTypes.VAR_REPOS_FETCHED, payload: ownersRepos })
-        window.FB_DATABASE.ref(`server/workspaces/${workspaceName}/varsConfig/repos/`).get((error, result) => {
+        window.FB_DATABASE.ref(`server/workspaces/${workspaceName}/repoVars/repos`).get((error, result) => {
             if (result) {
                 const vars = Object.entries(result)
-             
-                
+                debugger;
+
                 window.pageStore.dispatch({ type: window.actionTypes.VARS_FETCHED, payload: vars })
             } else {
 
-                
+
                 window.pageStore.dispatch({ type: window.actionTypes.VARS_FETCHED, payload: [] })
             }
 
         })
         window.pageStore.subscribe(window.actionTypes.VAR_ADDED, state => {
-            const { auth: { token, idToken, localId: uid }, workspace: { workspaceSelected: { title: workspaceName } }, varConfiguration: { varName, varInputType, varDefault, vars, selectedRepo,editVar } } = state
-            this.render({ varName, varInputType, varDefault, vars, selectedRepo,editVar })
+            const { auth: { token, idToken, localId: uid }, workspace: { workspaceSelected: { title: workspaceName } }, varConfiguration: { varEditor, vars } } = state
+            this.render({ varEditor, vars })
         })
         window.pageStore.subscribe(window.actionTypes.VARS_FETCHED, state => {
-            const { auth: { token, idToken, localId: uid }, workspace: { workspaceSelected: { title: workspaceName } }, varConfiguration: { varName, varInputType, varDefault, vars, selectedRepo,editVar } } = state
-            this.render({ varName, varInputType, varDefault, vars, selectedRepo,editVar })
+            const { auth: { token, idToken, localId: uid }, workspace: { workspaceSelected: { title: workspaceName } }, varConfiguration: { varEditor, vars } } = state
+            this.render({ varEditor, vars })
         })
         window.pageStore.subscribe(window.actionTypes.EDIT_VAR_CLICKED, state => {
-            const { auth: { token, idToken, localId: uid }, workspace: { workspaceSelected: { title: workspaceName } }, varConfiguration: { varName, varInputType, varDefault, vars, selectedRepo,editVar } } = state
-            this.render({ varName, varInputType, varDefault, vars, selectedRepo,editVar })
+            const { auth: { token, idToken, localId: uid }, workspace: { workspaceSelected: { title: workspaceName } }, varConfiguration: { varEditor, vars } } = state
+            this.render({ varEditor, vars })
         })
         window.pageStore.subscribe(window.actionTypes.VAR_UPDATED, state => {
-            const { auth: { token, idToken, localId: uid }, workspace: { workspaceSelected: { title: workspaceName } }, varConfiguration: { varName, varInputType, varDefault, vars, selectedRepo,editVar } } = state
+            const { auth: { token, idToken, localId: uid }, workspace: { workspaceSelected: { title: workspaceName } }, varConfiguration: { varEditor, vars } } = state
             debugger;
-            this.render({ varName, varInputType, varDefault, vars, selectedRepo,editVar })
+            this.render({ varEditor, vars })
         })
         window.pageStore.subscribe(window.actionTypes.VAR_REMOVED, state => {
-            const { auth: { token, idToken, localId: uid }, workspace: { workspaceSelected: { title: workspaceName } }, varConfiguration: { varName, varInputType, varDefault, vars, selectedRepo,editVar } } = state
+            const { auth: { token, idToken, localId: uid }, workspace: { workspaceSelected: { title: workspaceName } }, varConfiguration: { varEditor, vars } } = state
             debugger;
-            this.render({ varName, varInputType, varDefault, vars, selectedRepo,editVar })
+            this.render({ varEditor, vars })
         })
     }
 
-    render({ varName, varInputType, varDefault, vars,editVar }) {
+    render({ varEditor, vars }) {
+        const { varName, inputType, defaultValue, editVar } = varEditor
+
         this.innerHTML = `Vars Configuration
         <table class="table">
   <thead>
     <tr>
       <th scope="col">#</th>
-      <th scope="col">Workflow</th>
+      <th scope="col">Repo Name </th>
       <th scope="col">Var Name</th>
       <th scope="col">Input Type</th>
       <th scope="col">Default Value</th>
@@ -71,13 +73,13 @@ customElements.define('vars-configuration', class extends HTMLElement {
     <th scope="col"><input class="form-control" type="text" placeholder="Enter var name" id="var-name-input" value="${varName}"/></th>
     <th scope="col">
     <select class="form-select" aria-label="Example select with button addon" id="input-type-selector">
-    <option  ${varInputType === '' && 'selected'}>Choose...</option>
-    <option value="text"  ${varInputType === 'text' && 'selected'}>Text</option>
-    <option value="list"  ${varInputType === 'list' && 'selected'}>List</option>
+    <option  ${inputType === '' && 'selected'}>Choose...</option>
+    <option value="text"  ${inputType === 'text' && 'selected'}>Text</option>
+    <option value="list"  ${inputType === 'list' && 'selected'}>List</option>
   
   </select>
     </th>
-    <th scope="col"><input class="form-control" type="text" placeholder="Enter Default Value" id="var-default-value" value="${varDefault}"/></th>
+    <th scope="col"><input class="form-control" type="text" placeholder="Enter Default Value" id="var-default-value" value="${defaultValue}"/></th>
     <th scope="col"><button class="btn btn-outline-secondary" id="add-var-btn" ${editVar && 'disabled'}>Add</button></th>
     <th scope="col"><button class="btn btn-outline-secondary" ${!editVar && 'disabled'} id="update-var-btn">Update</button></th>
   </tr>
@@ -90,44 +92,55 @@ customElements.define('vars-configuration', class extends HTMLElement {
         `
 
         document.getElementById(`update-var-btn`).addEventListener('click', (e) => {
-            
-               const {  workspace: { workspaceSelected: { title: workspaceName } }, varConfiguration: { varName, varInputType, varDefault, selectedRepo } } = window.pageStore.state
-               window.FB_DATABASE.ref(`server/workspaces/${workspaceName}/varsConfig/repos/${selectedRepo}`).update({ [varName]: { inputType: varInputType, defaultValue: varDefault } }, (error, result) => {
-                   
-              
-                   window.pageStore.dispatch({ type: window.actionTypes.VAR_UPDATED, payload: [`${selectedRepo}`, { ...result }] })
-               })
-             })
+
+            const {workspace: { workspaceSelected: { title: workspaceName } }, varConfiguration: { varEditor: { varName, inputType, defaultValue, repoName, varKey } } } = window.pageStore.state
+            window.FB_DATABASE.ref(`server/workspaces/${workspaceName}/repoVars/repos/${repoName}/vars/${varKey}`).update({ inputType, defaultValue, varName }, (error, result) => {
+                window.pageStore.dispatch({ type: window.actionTypes.VAR_UPDATED, payload: { varName, inputType, defaultValue, varKey, repoName } })
+            })
+        })
         if (vars.length > 0) {
             vars.forEach(v => {
+                debugger;
                 const repoName = v[0]
-                const props = Object.entries(v[1])
-                const varName = props[0][0]
-                const defaultValue = props[0][1]['defaultValue']
-                const inputType = props[0][1]['inputType']
-                
-                document.getElementById('var-table').insertAdjacentHTML('beforeend', `<tr id ="${repoName}-tr">
-                <th scope="row"></th>
-                <td>${repoName}</td>
-                <td>${varName}</td>
-                <td>${inputType}</td>
-                <td>${defaultValue}</td>
-                <td><button class="btn btn-outline-secondary" id="${repoName}-edit-btn">Edit</button></td>
-                <td><button class="btn btn-outline-secondary" id="${repoName}-remove-btn">Remove</button></td>
-              </tr>`)
-
-                document.getElementById(`${repoName}-edit-btn`).addEventListener('click', (e) => {
-                    window.pageStore.dispatch({ type: window.actionTypes.EDIT_VAR_CLICKED, payload: { selectedRepo: repoName, varDefault: defaultValue, varName, varInputType: inputType } })
-                })
-                document.getElementById(`${repoName}-remove-btn`).addEventListener('click', (e) => {
+                const props = Object.entries(v[1]['vars'])
+                props.forEach(prop => {
                     debugger;
-                    const {  workspace: { workspaceSelected: { title: workspaceName } }} = window.pageStore.state
-                    window.FB_DATABASE.ref(`server/workspaces/${workspaceName}/varsConfig/repos/${repoName}`).remove( (error, result) => {
-                
-                      debugger;
-                        window.pageStore.dispatch({ type: window.actionTypes.VAR_REMOVED, payload: repoName })
+                    const varKey = prop[0]
+                    const obj = prop[1]
+                    debugger;
+
+                    const defaultValue = obj['defaultValue']
+                    const inputType = obj['inputType']
+                    const varName = obj['varName']
+                    debugger;
+                    document.getElementById('var-table').insertAdjacentHTML('beforeend', `<tr id ="${varKey}-tr">
+                    <th scope="row"></th>
+                    <td>${repoName}</td>
+                    <td>${varName}</td>
+                    <td>${inputType}</td>
+                    <td>${defaultValue}</td>
+                    <td><button class="btn btn-outline-secondary" id="${varKey}-edit-btn">Edit</button></td>
+                    <td><button class="btn btn-outline-secondary" id="${varKey}-remove-btn">Remove</button></td>
+                  </tr>`)
+
+                    document.getElementById(`${varKey}-edit-btn`).addEventListener('click', (e) => {
+                        debugger;
+                        window.pageStore.dispatch({ type: window.actionTypes.EDIT_VAR_CLICKED, payload: { repoName, defaultValue, varName, inputType, varKey } })
                     })
+                    document.getElementById(`${varKey}-remove-btn`).addEventListener('click', (e) => {
+                        debugger;
+                        const { workspace: { workspaceSelected: { title: workspaceName } } } = window.pageStore.state
+                        debugger;
+                        window.FB_DATABASE.ref(`server/workspaces/${workspaceName}/varsConfig/repos/${repoName}/vars/${varKey}`).remove((error, result) => {
+
+                            debugger;
+                            window.pageStore.dispatch({ type: window.actionTypes.VAR_REMOVED, payload: { repoName, varKey } })
+                        })
+                    })
+
+
                 })
+
             })
         } else {
             document.getElementById('var-table').innerHTML = `No vars set`
@@ -150,19 +163,20 @@ customElements.define('vars-configuration', class extends HTMLElement {
         })
 
         document.getElementById('add-var-btn').addEventListener('click', (e) => {
-            const { auth: { token, idToken, localId: uid }, workspace: { workspaceSelected: { title: workspaceName } }, varConfiguration: { varName, varInputType, varDefault, selectedRepo } } = window.pageStore.state
-            window.FB_DATABASE.ref(`server/workspaces/${workspaceName}/varsConfig/repos/${selectedRepo}`).update({ [varName]: { inputType: varInputType, defaultValue: varDefault } }, (error, result) => {
-                
-                document.getElementById('var-table').insertAdjacentHTML('beforeend', `<tr id ="${selectedRepo}-tr">
+            const { workspace: { workspaceSelected: { title: workspaceName } }, varConfiguration: { varEditor: { varName, inputType, defaultValue, repoName } } } = window.pageStore.state
+            window.FB_DATABASE.ref(`server/workspaces/${workspaceName}/repoVars/repos/${repoName}/vars`).push({ varName, inputType, defaultValue }, (error, result) => {
+                const { name: varKey } = result
+                debugger;
+                document.getElementById('var-table').insertAdjacentHTML('beforeend', `<tr id ="${repoName}-tr">
                 <th scope="row"></th>
-                <td>${selectedRepo}</td>
+                <td>${repoName}</td>
                 <td>${varName}</td>
-                <td>${varInputType}</td>
-                <td>${varDefault}</td>
+                <td>${inputType}</td>
+                <td>${defaultValue}</td>
                 <td><button class="btn btn-outline-secondary">Edit</button></td>
                 <td><button class="btn btn-outline-secondary">Remove</button></td>
               </tr>`)
-                window.pageStore.dispatch({ type: window.actionTypes.VAR_ADDED, payload: [`${selectedRepo}`, { ...result }] })
+                window.pageStore.dispatch({ type: window.actionTypes.VAR_ADDED, payload: { varName, inputType, defaultValue, varKey, repoName } })
             })
         })
     }
@@ -175,7 +189,7 @@ customElements.define('github-repos', class extends HTMLElement {
         super()
     }
     async connectedCallback() {
-        const { varConfiguration: { selectedRepo, ownersRepos } } = window.pageStore.state
+        const { varConfiguration: { varEditor: { repoName }, ownersRepos } } = window.pageStore.state
 
 
         this.innerHTML = `
@@ -183,20 +197,20 @@ customElements.define('github-repos', class extends HTMLElement {
       <option value="default">...Select repository</option>
       </select>`
 
-        this.render({ ownersRepos, selectedRepo })
+        this.render({ ownersRepos, repoName })
 
         window.pageStore.subscribe(window.actionTypes.VAR_REPO_SELECTED, state => {
-            const { workflowEditor: { selectedRepo, ownersRepos } } = state
-            this.render({ ownersRepos, selectedRepo })
+            const { varConfiguration: { varEditor: { repoName }, ownersRepos } } = state
+            this.render({ ownersRepos, repoName })
         })
     }
-    async render({ ownersRepos, selectedRepo }) {
+    async render({ ownersRepos, repoName }) {
 
         const selector = document.getElementById('repos')
 
         ownersRepos && ownersRepos.forEach(repo => {
 
-            selector.insertAdjacentHTML('beforeend', `<option ${selectedRepo === repo.name && 'selected'} value=${repo.name}>${repo.name}</option>`)
+            selector.insertAdjacentHTML('beforeend', `<option ${repoName === repo.name && 'selected'} value=${repo.name}>${repo.name}</option>`)
         })
 
 
@@ -207,7 +221,7 @@ customElements.define('github-repos', class extends HTMLElement {
                 const { value } = e.target
                 const { workflowEditor: { ownersRepos } } = window.pageStore.state
                 const selectedRepository = ownersRepos.find(o => o.name === value)
-                
+
 
                 window.pageStore.dispatch({ type: window.actionTypes.VAR_REPO_SELECTED, payload: value })
             }

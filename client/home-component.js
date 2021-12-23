@@ -23,7 +23,7 @@ customElements.define('home-component', class extends HTMLElement {
             
                
                 <home-card title="Workspaces" page-link="/workspaces-list.html" link-id="workspace"></home-card>
-           
+               
                 </div>`
             } else {
                 this.innerHTML = `<div>
