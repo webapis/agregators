@@ -22,84 +22,62 @@ customElements.define('workflow-configuration', class extends HTMLElement {
         <h5>Workflow Enviroment Valiables:</h5>
         </div>
         <div id="var-container" class="row">Loading..</div>`
-        debugger;
+
 
         window.FB_DATABASE.ref(`server/workspaces/${workspaceName}/repoVars/repos/${repoName}/vars`).get((error, result) => {
             let mergedVarConfig = {}
-            debugger;
+
             const varConfig = Object.entries(result).reduce((prev, curr, i) => {
                 if (i === 0) {
-                    debugger;
-                    return { [curr[1]['varName']]: curr[1] }
+
+                    return { [curr[1]['varName']]: { ...curr[1], value: '' } }
                 }
                 else {
-                    debugger;
-                    return { ...prev, [curr[1]['varName']]: curr[1] }
+
+                    return { ...prev, [curr[1]['varName']]: { ...curr[1], value: '' } }
                 }
 
             }, {})
-            debugger;
+
             window.FB_DATABASE.ref(`server/workspaces/${workspaceName}/tasks/${taskId}/workflows/${workflowKey}/vars`).get((error, wfVars) => {
                 if (wfVars) {
                     mergedVarConfig = { ...varConfig, ...wfVars }
-                    debugger;
+
                 } else {
-                    debugger;
+
                     mergedVarConfig = varConfig
+                    this.render({ mergedVarConfig })
                 }
             })
-            debugger;
+
 
         })
-        // window.FB_DATABASE.ref(`workspaces/${workspaceName}/workflowConfigs/tasks/${taskId}/workflows/${workflowKey}/vars`).get((error, result) => {
-        //     if (result) {
-        //         const vars = Object.entries(result)
-        //         document.getElementById('var-container').innerHTML = ''
-        //         debugger;
-        //         vars.forEach(v => {
-        //             const varName = v[0]
-        //             const varValue = v[1]
-
-        //             document.getElementById('var-container').insertAdjacentHTML('beforeend', ` <div class="mb-3 row">
-        //           <label for="${varName}" class="col-sm-2 col-form-label">${varName}</label>
-        //           <div class="col-sm-10">
-        //             <input type="text" class="form-control" id="${varName}" value="${varValue}"/>
-        //           </div>
-        //         </div>`)
-
-        //         })
-
-        //         document.getElementById('var-container').insertAdjacentHTML('beforeend', `
-        //       <div class="col-12 d-flex justify-content-end pe-5">
-        //       <button class="btn btn-secondary mb-3" id="save-vars-btn">Save</button>
-
-        //     </div>`)
-
-        //         document.getElementById('save-vars-btn').addEventListener('click', (e) => {
-        //             e.preventDefault()
-        //             let update = {}
-        //             vars.forEach(v => {
-        //                 let inputId = v[0]
-
-        //                 update = { ...update, [inputId]: document.getElementById(inputId).value }
-
-        //             })
-        //             const updateServerWorkflowConfig = { [`server/workspaces/${workspaceName}/tasks/${taskId}/workflows/${workflowKey}/workflowConfig/vars`]: update }
-        //             const updateClientWorkflowConfig = { [`workspaces/${workspaceName}/workflowConfigs/tasks/${taskId}/workflows/${workflowKey}/vars`]: update }
-        //             window.FB_DATABASE.ref('/').update({ ...updateServerWorkflowConfig, ...updateClientWorkflowConfig }, (error, data) => {
-        //                 window.location.replace('/task-workflows.html')
-        //                 debugger;
-        //             })
-        //             debugger;
-        //         })
-        //     } else {
-        //         document.getElementById('var-container').innerHTML = '0 variables found'
-
-        //     }
 
 
-        // })
+    }
 
+    render({ mergedVarConfig }) {
+        document.getElementById('var-container').innerHTML = ''
+        for (let v in mergedVarConfig) {
+            const value = mergedVarConfig[v]['value']
+            const varName =mergedVarConfig[v]['varName']
+            document.getElementById('var-container').insertAdjacentHTML('beforeend', ` <div class="mb-3"><label for="${v}" class="form-label">${v}:</label><input type="text" value="${value}" placeholder="${v}" class="form-control m-1" id="${v}">  </div>`)
+            debugger;
+            document.getElementById(v).addEventListener('input', (e) => {
+                const { id, value } = e.target
+                window.pageStore.dispatch({ type: window.actionTypes.WORKFLOW_INPUT_CHANGED, payload: { id, value,varName } })
+                debugger;
 
+            })
+        }
+        document.getElementById('var-container').insertAdjacentHTML('beforeend', `  <div class="col-auto">
+        <button type="submit" class="btn btn-primary mb-3" id="save-wf-vars">Save</button>
+      </div>`
+      )
+      document.getElementById('save-wf-vars').addEventListener('click',(e)=>{
+        const { workspace: { workspaceSelected: { title: workspaceName } }, workspaceTasks: { taskSelected: {  id: taskId } }, taskWorkflows: { workflowSelected: {workflowKey },workflowConfiguration:{} } } = window.pageStore.state
+
+        window.FB_DATABASE.ref(`server/workspaces/${workspaceName}/tasks/${taskId}/workflows/${workflowKey}/vars`)
+      })
     }
 })

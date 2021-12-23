@@ -38,7 +38,8 @@ export const initState = stateFromLS
     clientError: '',
     taskRunner: { running: false },
     googleAuthConfig: { scopes: '' },
-    varConfiguration: { ownersRepos: [], vars: [], varEditor: { repoName: '', varName: '', inputType: '', defaultValue: '', editVar: false } }
+    varConfiguration: { ownersRepos: [], vars: [], varEditor: { repoName: '', varName: '', inputType: '', defaultValue: '', editVar: false } },
+    workflowConfiguration:{}
   };
 
 export default (state, action) => {
@@ -248,22 +249,22 @@ export default (state, action) => {
       }
     case actionTypes.VAR_REMOVED:
 
-     
+
       return {
         ...state, varConfiguration: {
           ...state.varConfiguration, varEditor: { varName: '', inputType: '', defaultValue: '', editVar: false, repoName: '' }, vars: state.varConfiguration.vars.map(v => {
             const repoName = v[0]
             if (repoName === action.payload.repoName) {
               const repoVars = v[1]['vars']
-            
+
               let mappedObj = {}
               for (let r in repoVars) {
 
                 if (r === action.payload.varKey) {
                   debugger;
                   delete repoVars[action.payload.varKey]
-                  mappedObj =repoVars
-                debugger;
+                  mappedObj = repoVars
+                  debugger;
                   break;
                 } else {
                   mappedObj = { ...repoVars }
@@ -274,8 +275,8 @@ export default (state, action) => {
 
               const mappedArray = [repoName, { vars: mappedObj }]
               debugger;
-         
-         
+
+
               return mappedArray
 
             } else {
@@ -284,6 +285,8 @@ export default (state, action) => {
           })
         }
       }
+    case actionTypes.WORKFLOW_INPUT_CHANGED:
+      return { ...state, workflowConfiguration: { ...state.workflowConfiguration, [action.payload.varName]: action.payload.value } }
     default:
 
       return state;
@@ -382,6 +385,7 @@ export const actionTypes = {
   VARS_FETCHED: 'VARS_FETCHED',
   EDIT_VAR_CLICKED: 'EDIT_VAR_CLICKED',
   VAR_UPDATED: 'VAR_UPDATED',
-  VAR_REMOVED: 'VAR_REMOVED'
+  VAR_REMOVED: 'VAR_REMOVED',
+  WORKFLOW_INPUT_CHANGED: 'WORKFLOW_INPUT_CHANGED'
 
 };
