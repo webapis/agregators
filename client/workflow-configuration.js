@@ -24,15 +24,17 @@ customElements.define('workflow-configuration', class extends HTMLElement {
         <div id="var-container" class="row">Loading..</div>`
         debugger;
 
-        window.FB_DATABASE.ref(`server/workspaces/${workspaceName}/varsConfig/repos/${repoName}`).get((error, result) => {
+        window.FB_DATABASE.ref(`server/workspaces/${workspaceName}/repoVars/repos/${repoName}/vars`).get((error, result) => {
             let mergedVarConfig = {}
+            debugger;
             const varConfig = Object.entries(result).reduce((prev, curr, i) => {
                 if (i === 0) {
                     debugger;
-                    return { [curr[0]]: curr[1] }
+                    return { [curr[1]['varName']]: curr[1] }
                 }
                 else {
-                    return { ...prev, [curr[0]]: curr[1] }
+                    debugger;
+                    return { ...prev, [curr[1]['varName']]: curr[1] }
                 }
 
             }, {})
@@ -45,8 +47,6 @@ customElements.define('workflow-configuration', class extends HTMLElement {
                     debugger;
                     mergedVarConfig = varConfig
                 }
-
-
             })
             debugger;
 

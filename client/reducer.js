@@ -261,7 +261,9 @@ export default (state, action) => {
 
                 if (r === action.payload.varKey) {
                   debugger;
-                  mappedObj = delete repoVars[action.payload.varKey]
+                  delete repoVars[action.payload.varKey]
+                  mappedObj =repoVars
+                debugger;
                   break;
                 } else {
                   mappedObj = { ...repoVars }

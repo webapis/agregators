@@ -131,7 +131,7 @@ customElements.define('vars-configuration', class extends HTMLElement {
                         debugger;
                         const { workspace: { workspaceSelected: { title: workspaceName } } } = window.pageStore.state
                         debugger;
-                        window.FB_DATABASE.ref(`server/workspaces/${workspaceName}/varsConfig/repos/${repoName}/vars/${varKey}`).remove((error, result) => {
+                        window.FB_DATABASE.ref(`server/workspaces/${workspaceName}/repoVars/repos/${repoName}/vars/${varKey}`).remove((error, result) => {
 
                             debugger;
                             window.pageStore.dispatch({ type: window.actionTypes.VAR_REMOVED, payload: { repoName, varKey } })
