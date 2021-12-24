@@ -10,21 +10,29 @@ customElements.define('google-oauth-config', class extends HTMLElement {
         this.uid = uid
         window.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
         document.getElementById('ws-breadcrumb').innerText = `Workspace(${workspaceName})`
-
+        window.pageStore.subscribe(window.actionTypes.GOOGLE_OAUTH_SCOPE_SAVED,state=>{
+            const { auth: { idToken, localId: uid,googleOauth }, workspace: { workspaceSelected: { title: workspaceName } }, googleAuthConfig } = window.pageStore.state
+            this.render({ googleAuthConfig,googleOauth })
+        })
+        window.pageStore.subscribe(window.actionTypes.EDIT_GOOGLE_OAUTH_SCOPE,state=>{
+            const { auth: { idToken, localId: uid,googleOauth }, workspace: { workspaceSelected: { title: workspaceName } }, googleAuthConfig } = window.pageStore.state
+            this.render({ googleAuthConfig,googleOauth })
+        })
         this.render({ googleAuthConfig,googleOauth })
     }
 
     render({ googleAuthConfig,googleOauth }) {
-        const { scopes } = googleAuthConfig
+        const { scopes ,editable} = googleAuthConfig
         this.innerHTML = `<div>
         <h5>Google OAuth Config</h5>
         <div class="mb-3">
         <label for="google-scopes-input" class="form-label">Google oauth scopes:</label>
-        <textarea class="form-control" id="google-scopes-input" rows="3">${scopes}</textarea>
+        <textarea class="form-control" id="google-scopes-input" rows="3" ${!editable && "disabled"}>${scopes}</textarea>
         </div>
         <div class="col-auto">
-        <button type="submit" class="btn btn-primary mb-3" id="save-scopes-btn">Save</button>
-        <button type="submit" class="btn btn-primary mb-3"id="authenticate-btn" ${googleOauth && 'disabled'}>${googleOauth? 'Authenticated':'Authenticate'}</button>
+        <button type="submit" class="btn btn-primary mb-3" id="save-scopes-btn" ${!editable && "hidden"}>Save</button>
+        <button type="submit" class="btn btn-primary mb-3" id="edit-scopes-btn" ${editable && "hidden"}>Edit</button>
+        <button type="submit" class="btn btn-primary mb-3"id="authenticate-btn" ${(editable || googleOauth)  && 'disabled'}>${googleOauth? 'Authenticated':'Authenticate'}</button>
         <button type="submit" class="btn btn-primary mb-3" id="revoke-scopes-btn">Revoke</button>
         </div>
         </div>`
@@ -38,10 +46,17 @@ customElements.define('google-oauth-config', class extends HTMLElement {
             debugger;
             window.FB_DATABASE.ref(`workspaces/${workspaceName}/oauth/scopes/google`).update({ scopes }, (error, result) => {
                 debugger;
+                window.pageStore.dispatch({type:window.actionTypes.GOOGLE_OAUTH_SCOPE_SAVED})
             })
             debugger;
         })
-
+        document.getElementById('edit-scopes-btn').addEventListener('click', (e) => {
+           
+                debugger;
+                window.pageStore.dispatch({type:window.actionTypes.EDIT_GOOGLE_OAUTH_SCOPE})
+         
+            debugger;
+        })
         document.getElementById('authenticate-btn').addEventListener('click',(e)=>{
             const { auth: { idToken, localId: uid }, workspace: { workspaceSelected: { title: workspaceName } }, googleAuthConfig: { scopes }  } = window.pageStore.state
             const client_id = "117708549296-uij0mup1c3biok6ifaupa2951vtvf418.apps.googleusercontent.com"

@@ -36,3 +36,37 @@ User creates private workspace
     Then component with "#local_pub_ws_bdd-ws-description" selector is visible to user 223
     Then component with "#local_pub_ws_bdd-ws-access-level" selector is visible to user 224
     Then component with "#local_pub_ws_bdd-ws-owner" selector is visible to user 225
+
+
+ Scenario: 3
+
+ User creates workspace vars
+  Given user clicks to button with "#local_pub_ws_bdd-link" selector 301
+  And component with "#vars-config-card" selector is visible to user 302
+  And user clicks to button with "#vars-config-card" selector 303
+  And component with "#repos" selector is visible to user 304
+  And user selects "workflow_a_a" from "#repos" select tag 305
+  And user types "PAGE_URL" to input with "#var-name-input" selector 306
+  And component with "#input-type-selector" selector is visible to user 307
+  And user selects "text" from "#input-type-selector" select tag 308
+  When user clicks to button with "#add-var-btn" selector 309
+  Then component with "#workflow_a_a-tr > td:nth-child(2)" id includes "workflow_a_a" textcontent 310
+  And component with "#workflow_a_a-tr > td:nth-child(3)" id includes "PAGE_URL" textcontent 311
+  And component with "#workflow_a_a-tr > td:nth-child(4)" id includes "text" textcontent 312
+
+
+  Scenario: 4
+User enables google oauth for selected workflow
+
+    Given user navigated to google-oauth-config.html page 401
+    And component with "#google-scopes-input" selector is visible to user 402
+    And user types "https://www.googleapis.com/auth/gmail.send https://www.googleapis.com/auth/drive" to input with "#google-scopes-input" selector 403
+    And user clicks to button with "#save-scopes-btn" selector 404
+    And button with "#authenticate-btn" selector is enabled 405
+    When user clicks to button with "#authenticate-btn" selector 406
+    Then button with "#authenticate-btn" selector is disabled 407
+
+
+  
+  
+  

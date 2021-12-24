@@ -30,6 +30,7 @@ customElements.define('vars-configuration', class extends HTMLElement {
         })
         window.pageStore.subscribe(window.actionTypes.VAR_ADDED, state => {
             const { auth: { token, idToken, localId: uid }, workspace: { workspaceSelected: { title: workspaceName } }, varConfiguration: { varEditor, vars } } = state
+            debugger;
             this.render({ varEditor, vars })
         })
         window.pageStore.subscribe(window.actionTypes.VARS_FETCHED, state => {
@@ -166,7 +167,10 @@ customElements.define('vars-configuration', class extends HTMLElement {
             const { workspace: { workspaceSelected: { title: workspaceName } }, varConfiguration: { varEditor: { varName, inputType, defaultValue, repoName } } } = window.pageStore.state
             window.FB_DATABASE.ref(`server/workspaces/${workspaceName}/repoVars/repos/${repoName}/vars`).push({ varName, inputType, defaultValue }, (error, result) => {
                 const { name: varKey } = result
+                window.pageStore.dispatch({ type: window.actionTypes.VAR_ADDED, payload: { varName, inputType, defaultValue, varKey, repoName } })
+          
                 debugger;
+                
                 document.getElementById('var-table').insertAdjacentHTML('beforeend', `<tr id ="${repoName}-tr">
                 <th scope="row"></th>
                 <td>${repoName}</td>
@@ -176,7 +180,8 @@ customElements.define('vars-configuration', class extends HTMLElement {
                 <td><button class="btn btn-outline-secondary">Edit</button></td>
                 <td><button class="btn btn-outline-secondary">Remove</button></td>
               </tr>`)
-                window.pageStore.dispatch({ type: window.actionTypes.VAR_ADDED, payload: { varName, inputType, defaultValue, varKey, repoName } })
+              debugger;
+           
             })
         })
     }

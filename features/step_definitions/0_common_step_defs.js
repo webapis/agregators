@@ -3,7 +3,7 @@ const assert = require('assert');
 const { Given, When, Then } = require('@cucumber/cucumber');
 
 
-const debuggedOrder = 807
+const debuggedOrder = 511
 const log = true
 global.success = 0
 Given('user clicks to button with {string} selector {int}', { timeout: 15000 }, async function (id, order) {
@@ -16,6 +16,9 @@ Given('user clicks to button with {string} selector {int}', { timeout: 15000 }, 
             debugger;
         }
         await global.page.click(id)
+        if (order === debuggedOrder) {
+            debugger;
+        }
         global.success++
         // await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-success-${id}.png` });
 
@@ -274,6 +277,33 @@ Given('wait for {int} seconds {int}', { timeout: 15000 }, async function (second
         throw error
     }
 
+
+})
+
+Given('page is navigated to {string} {int}', { timeout: 15000 }, async function (value, order) {
+
+    try {
+        if (order === debuggedOrder) {
+            debugger;
+        }
+
+
+   
+       await page.goto(value);
+      
+        debugger;
+        if (order === debuggedOrder) {
+            debugger;
+        }
+        //  await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-success-${id}.png` });
+        log && console.log(`${order}_success_|_page is navigated to`, value)
+        global.success++
+    } catch (error) {
+        debugger;
+        //   await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-error-${id}.png` });
+        // log && console.log(`${order}_failed_|_button enabled .......`, error)
+        throw error
+    }
 
 })
 

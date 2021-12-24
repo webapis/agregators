@@ -37,7 +37,7 @@ export const initState = stateFromLS
     workspaceUsers: { username: "", role: "" },
     clientError: '',
     taskRunner: { running: false },
-    googleAuthConfig: { scopes: '' },
+    googleAuthConfig: { scopes: '',editable:true },
     varConfiguration: { ownersRepos: [], vars: [], varEditor: { repoName: '', varName: '', inputType: '', defaultValue: '', editVar: false } },
     workflowConfiguration: { workflowVars: {}, repoVars: {} }
   };
@@ -181,6 +181,10 @@ export default (state, action) => {
       return { ...state, taskRunner: { ...state.taskRunner, runs: [...state.taskRunner.runs, ...action.payload] } }
     case actionTypes.GOOGLE_AUTH_SCOPE_CHANGED:
       return { ...state, googleAuthConfig: { ...state.googleAuthConfig, scopes: action.payload } }
+    case actionTypes.GOOGLE_OAUTH_SCOPE_SAVED:
+      return { ...state, googleAuthConfig: { ...state.googleAuthConfig, editable:false } }
+    case actionTypes.EDIT_GOOGLE_OAUTH_SCOPE:
+      return { ...state, googleAuthConfig: { ...state.googleAuthConfig, editable:true } }
     case actionTypes.VAR_REPO_SELECTED:
       return { ...state, varConfiguration: { ...state.varConfiguration, varEditor: { ...state.varConfiguration.varEditor, repoName: action.payload } } }
     case actionTypes.VAR_REPOS_FETCHED:
@@ -393,6 +397,7 @@ export const actionTypes = {
   RUNS_FETCHED: "RUNS_FETCHED",
   NEXT_RUNS_FETCHED: "NEXT_RUNS_FETCHED",
   GOOGLE_AUTH_SCOPE_CHANGED: "GOOGLE_AUTH_SCOPE_CHANGED",
+  GOOGLE_OAUTH_SCOPE_SAVED:'GOOGLE_OAUTH_SCOPE_SAVED',
 
   VAR_REPO_SELECTED: 'VAR_REPO_SELECTED',
   VAR_REPOS_FETCHED: 'VAR_REPOS_FETCHED',
@@ -406,6 +411,7 @@ export const actionTypes = {
   VAR_REMOVED: 'VAR_REMOVED',
   WORKFLOW_INPUT_CHANGED: 'WORKFLOW_INPUT_CHANGED',
   REPO_VARS_FETCHED: 'REPO_VARS_FETCHED',
-  WORKFLOW_VARS_FETCHED: 'WORKFLOW_VARS_FETCHED'
+  WORKFLOW_VARS_FETCHED: 'WORKFLOW_VARS_FETCHED',
+  EDIT_GOOGLE_OAUTH_SCOPE:'EDIT_GOOGLE_OAUTH_SCOPE'
 
 };

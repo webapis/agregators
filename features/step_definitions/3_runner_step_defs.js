@@ -2,7 +2,7 @@ require('dotenv').config()
 const assert = require('assert');
 const { Given, When, Then } = require('@cucumber/cucumber');
 
-Given('user navigates to workspaces-list.html page {int}',async function(order){
+Given('user navigates to task-runner.html page {int}',async function(order){
     try {
 
         // await global.page.setRequestInterception(true);
@@ -43,9 +43,9 @@ Given('user navigates to workspaces-list.html page {int}',async function(order){
           
         // })
 debugger;
-        await global.page.goto('https://localhost:8888/workspaces-list.html')
+        await global.page.goto('https://localhost:8888/task-runner.html')
         debugger;
-        console.log(`${order}_success_|_user navigated to workspaces-list.html page`)
+        console.log(`${order}_success_|_user navigated to task-runner.html page`)
         global.success++
 
     } catch (error) {

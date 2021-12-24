@@ -2,7 +2,7 @@ require('dotenv').config()
 const assert = require('assert');
 const { Given, When, Then } = require('@cucumber/cucumber');
 
-Given('user navigated to tasks-configuration.html page {int}', { timeout: 100000 }, async function (order) {
+Given('user navigated to google-oauth-config.html page {int}', { timeout: 100000 }, async function (order) {
     try {
 
         await global.page.setRequestInterception(true);
@@ -43,9 +43,9 @@ Given('user navigated to tasks-configuration.html page {int}', { timeout: 100000
           
         })
 
-        await global.page.goto('https://localhost:8888/tasks-configuration.html')
+        await global.page.goto('https://localhost:8888/google-oauth-config.html')
         debugger;
-        console.log(`${order}_success_|_user navigated to tasks-configuration.html page`)
+        console.log(`${order}_success_|_user navigated to google-oauth-config.html page`)
         global.success++
 
     } catch (error) {

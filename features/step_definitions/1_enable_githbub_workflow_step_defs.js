@@ -97,9 +97,9 @@ Given('user is on page workspace-tasks.html {int}', { timeout: 15000 }, async fu
         if (order === debuggedOrder) {
             
         }
-
+        debugger;
         await global.page.goto(`https://localhost:8888/workspace-tasks.html`)
-
+        debugger;
         //  await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-success-${url}.png` });
         log && console.log(`${order}_success_|_user is on page workspace-tasks.html`)
         global.success++
