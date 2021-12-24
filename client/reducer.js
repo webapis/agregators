@@ -39,7 +39,7 @@ export const initState = stateFromLS
     taskRunner: { running: false },
     googleAuthConfig: { scopes: '' },
     varConfiguration: { ownersRepos: [], vars: [], varEditor: { repoName: '', varName: '', inputType: '', defaultValue: '', editVar: false } },
-    workflowConfiguration:{}
+    workflowConfiguration: { workflowVars: {}, repoVars: {} }
   };
 
 export default (state, action) => {
@@ -286,7 +286,25 @@ export default (state, action) => {
         }
       }
     case actionTypes.WORKFLOW_INPUT_CHANGED:
-      return { ...state, workflowConfiguration: { ...state.workflowConfiguration, [action.payload.varName]: action.payload.value } }
+      let updatedWorkflowVars = state.workflowConfiguration.workflowVars
+      for (let uwf in updatedWorkflowVars) {
+        if (uwf === action.payload.key) {
+          updatedWorkflowVars[uwf].value = action.payload.value
+   
+          break;
+        }
+      }
+      return {
+        ...state, workflowConfiguration: {
+          ...state.workflowConfiguration, workflowVars: {
+            ...state.workflowConfiguration.workflowVars, ...updatedWorkflowVars
+          }
+        }
+      }
+    case actionTypes.REPO_VARS_FETCHED:
+      return { ...state, workflowConfiguration: { ...state.workflowConfiguration, repoVars: action.payload } }
+    case actionTypes.WORKFLOW_VARS_FETCHED:
+      return { ...state, workflowConfiguration: { ...state.workflowConfiguration, workflowVars: action.payload } }
     default:
 
       return state;
@@ -386,6 +404,8 @@ export const actionTypes = {
   EDIT_VAR_CLICKED: 'EDIT_VAR_CLICKED',
   VAR_UPDATED: 'VAR_UPDATED',
   VAR_REMOVED: 'VAR_REMOVED',
-  WORKFLOW_INPUT_CHANGED: 'WORKFLOW_INPUT_CHANGED'
+  WORKFLOW_INPUT_CHANGED: 'WORKFLOW_INPUT_CHANGED',
+  REPO_VARS_FETCHED: 'REPO_VARS_FETCHED',
+  WORKFLOW_VARS_FETCHED: 'WORKFLOW_VARS_FETCHED'
 
 };

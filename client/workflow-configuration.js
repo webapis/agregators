@@ -24,32 +24,58 @@ customElements.define('workflow-configuration', class extends HTMLElement {
         <div id="var-container" class="row">Loading..</div>`
 
 
-        window.FB_DATABASE.ref(`server/workspaces/${workspaceName}/repoVars/repos/${repoName}/vars`).get((error, result) => {
+        window.FB_DATABASE.ref(`server/workspaces/${workspaceName}/repoVars/repos/${repoName}/vars`).get((error, repoVars) => {
             let mergedVarConfig = {}
+            
+            // const  = Object.entries(result).reduce((prev, curr, i) => {
+            //     if (i === 0) {
 
-            const varConfig = Object.entries(result).reduce((prev, curr, i) => {
-                if (i === 0) {
+            //         return { [curr[1]['varName']]: { ...curr[1], value: '' } }
+            //     }
+            //     else {
 
-                    return { [curr[1]['varName']]: { ...curr[1], value: '' } }
-                }
-                else {
+            //         return { ...prev, [curr[1]['varName']]: { ...curr[1], value: '' } }
+            //     }
 
-                    return { ...prev, [curr[1]['varName']]: { ...curr[1], value: '' } }
-                }
+            // }, {})
 
-            }, {})
+            window.pageStore.dispatch({ type: window.actionTypes.REPO_VARS_FETCHED, payload: repoVars })
 
-            window.FB_DATABASE.ref(`server/workspaces/${workspaceName}/tasks/${taskId}/workflows/${workflowKey}/vars`).get((error, wfVars) => {
-                if (wfVars) {
-                    mergedVarConfig = { ...varConfig, ...wfVars }
 
+
+        })
+
+        window.pageStore.subscribe(window.actionTypes.REPO_VARS_FETCHED, state => {
+            const { workflowConfiguration: { repoVars } } = state
+            window.FB_DATABASE.ref(`server/workspaces/${workspaceName}/tasks/${taskId}/workflows/${workflowKey}/vars`).get((error, workflowfVars) => {
+                if (workflowfVars) {
+                    const mergedVars = { ...repoVars, ...workflowfVars }
+                    for (let m in mergedVars) {
+                        if (mergedVars[m].value === undefined) {
+
+                            mergedVars[m].value = ''
+                        }
+                    }
+                    for (let m in workflowfVars) {
+                        if (repoVars[m] === undefined) {
+                        
+                           delete  mergedVars[m]
+                        }
+                    }
+                    
+                    window.pageStore.dispatch({ type: window.actionTypes.WORKFLOW_VARS_FETCHED, payload: mergedVars })
+                    this.render({ mergedVarConfig: mergedVars })
+                    
                 } else {
-
-                    mergedVarConfig = varConfig
-                    this.render({ mergedVarConfig })
+                    
+                    for (let rv in repoVars) {
+                        repoVars[rv].value = ''
+                        
+                    }
+                    window.pageStore.dispatch({ type: window.actionTypes.WORKFLOW_VARS_FETCHED, payload: repoVars })
+                    this.render({ mergedVarConfig: repoVars })
                 }
             })
-
 
         })
 
@@ -57,27 +83,30 @@ customElements.define('workflow-configuration', class extends HTMLElement {
     }
 
     render({ mergedVarConfig }) {
+        
         document.getElementById('var-container').innerHTML = ''
-        for (let v in mergedVarConfig) {
-            const value = mergedVarConfig[v]['value']
-            const varName =mergedVarConfig[v]['varName']
-            document.getElementById('var-container').insertAdjacentHTML('beforeend', ` <div class="mb-3"><label for="${v}" class="form-label">${v}:</label><input type="text" value="${value}" placeholder="${v}" class="form-control m-1" id="${v}">  </div>`)
-            debugger;
-            document.getElementById(v).addEventListener('input', (e) => {
+        for (let key in mergedVarConfig) {
+            const value = mergedVarConfig[key]['value']
+            const varName = mergedVarConfig[key]['varName']
+            document.getElementById('var-container').insertAdjacentHTML('beforeend', ` <div class="mb-3"><label for="${key}" class="form-label">${varName}:</label><input type="text" value="${value}" placeholder="${varName}" class="form-control m-1" id="${varName}">  </div>`)
+            
+            document.getElementById(varName).addEventListener('input', (e) => {
                 const { id, value } = e.target
-                window.pageStore.dispatch({ type: window.actionTypes.WORKFLOW_INPUT_CHANGED, payload: { id, value,varName } })
-                debugger;
+                window.pageStore.dispatch({ type: window.actionTypes.WORKFLOW_INPUT_CHANGED, payload: { id, value, key } })
+
 
             })
         }
         document.getElementById('var-container').insertAdjacentHTML('beforeend', `  <div class="col-auto">
         <button type="submit" class="btn btn-primary mb-3" id="save-wf-vars">Save</button>
       </div>`
-      )
-      document.getElementById('save-wf-vars').addEventListener('click',(e)=>{
-        const { workspace: { workspaceSelected: { title: workspaceName } }, workspaceTasks: { taskSelected: {  id: taskId } }, taskWorkflows: { workflowSelected: {workflowKey },workflowConfiguration:{} } } = window.pageStore.state
-
-        window.FB_DATABASE.ref(`server/workspaces/${workspaceName}/tasks/${taskId}/workflows/${workflowKey}/vars`)
-      })
+        )
+        document.getElementById('save-wf-vars').addEventListener('click', (e) => {
+            const { workspace: { workspaceSelected: { title: workspaceName } }, workspaceTasks: { taskSelected: { id: taskId } }, taskWorkflows: { workflowSelected: { workflowKey } }, workflowConfiguration: { workflowVars } } = window.pageStore.state
+            
+            window.FB_DATABASE.ref(`server/workspaces/${workspaceName}/tasks/${taskId}/workflows/${workflowKey}/vars`).update(workflowVars, (error, result) => {
+                
+            })
+        })
     }
 })
