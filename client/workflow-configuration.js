@@ -105,7 +105,7 @@ customElements.define('workflow-configuration', class extends HTMLElement {
             const { workspace: { workspaceSelected: { title: workspaceName } }, workspaceTasks: { taskSelected: { id: taskId } }, taskWorkflows: { workflowSelected: { workflowKey } }, workflowConfiguration: { workflowVars } } = window.pageStore.state
             
             window.FB_DATABASE.ref(`server/workspaces/${workspaceName}/tasks/${taskId}/workflows/${workflowKey}/vars`).update(workflowVars, (error, result) => {
-                
+                window.location.replace('/task-workflows.html')
             })
         })
     }
