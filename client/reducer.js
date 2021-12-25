@@ -25,7 +25,7 @@ export const initState = stateFromLS
     runId: 0,
     completeTime: 0,
     selectedProjectTab: 'project-workflows',
-    workflowEditor: { workflowName: '', workflowDescription: '', ownersRepos: [], selectedRepo: '', isPrivate: '', selectedBranch: '', workflowConfig: '', tokenFPR: '', loading: false, configLoading: false },
+    workflowEditor: { workflowDescription: '', ownersRepos: [], selectedRepo: '', selectedBranch: '', loading: false, addNew:true },
     workflowList: { workflowTab: 'private-workflows', workflows: [] },
     workspaceList: { workspaces: [], selectedWorkspaceTab: 'private-tab' },
     workspaceDashboard: { selectedTab: 'workflows-tab', selectedWfContainerTab: 'collection-tab', containers: [], selectedContainer: '', selectedWfContainerEditorTab: 'workflows-tab' },
@@ -37,7 +37,7 @@ export const initState = stateFromLS
     workspaceUsers: { username: "", role: "" },
     clientError: '',
     taskRunner: { running: false },
-    googleAuthConfig: { scopes: '',editable:true },
+    googleAuthConfig: { scopes: '', editable: true },
     varConfiguration: { ownersRepos: [], vars: [], varEditor: { repoName: '', varName: '', inputType: '', defaultValue: '', editVar: false } },
     workflowConfiguration: { workflowVars: {}, repoVars: {} }
   };
@@ -110,7 +110,7 @@ export default (state, action) => {
       return { ...state, workflowEditor: { ...state.workflowEditor, repoBranches: action.payload, loading: false } }
     case actionTypes.REPO_SELECTED:
 
-      return { ...state, workflowEditor: { ...state.workflowEditor, selectedBranch:'',isPrivate: action.payload.isPrivate, selectedRepo: action.payload.selectedRepo, workflowName: `${state.auth.screenName}_${action.payload.selectedRepo}_${state.workflowEditor.selectedBranch}` } }
+      return { ...state, workflowEditor: { ...state.workflowEditor, selectedBranch: '', isPrivate: action.payload.isPrivate, selectedRepo: action.payload.selectedRepo, workflowName: `${state.auth.screenName}_${action.payload.selectedRepo}_${state.workflowEditor.selectedBranch}` } }
     case actionTypes.BRANCH_SELECTED:
 
       return { ...state, workflowEditor: { ...state.workflowEditor, selectedBranch: action.payload.branch, workflowName: `${state.auth.screenName}_${state.workflowEditor.selectedRepo}_${action.payload.branch}`, workflowConfig: action.payload.workflowConfig } }
@@ -182,9 +182,9 @@ export default (state, action) => {
     case actionTypes.GOOGLE_AUTH_SCOPE_CHANGED:
       return { ...state, googleAuthConfig: { ...state.googleAuthConfig, scopes: action.payload } }
     case actionTypes.GOOGLE_OAUTH_SCOPE_SAVED:
-      return { ...state, googleAuthConfig: { ...state.googleAuthConfig, editable:false } }
+      return { ...state, googleAuthConfig: { ...state.googleAuthConfig, editable: false } }
     case actionTypes.EDIT_GOOGLE_OAUTH_SCOPE:
-      return { ...state, googleAuthConfig: { ...state.googleAuthConfig, editable:true } }
+      return { ...state, googleAuthConfig: { ...state.googleAuthConfig, editable: true } }
     case actionTypes.VAR_REPO_SELECTED:
       return { ...state, varConfiguration: { ...state.varConfiguration, varEditor: { ...state.varConfiguration.varEditor, repoName: action.payload } } }
     case actionTypes.VAR_REPOS_FETCHED:
@@ -294,7 +294,7 @@ export default (state, action) => {
       for (let uwf in updatedWorkflowVars) {
         if (uwf === action.payload.key) {
           updatedWorkflowVars[uwf].value = action.payload.value
-   
+
           break;
         }
       }
@@ -309,6 +309,8 @@ export default (state, action) => {
       return { ...state, workflowConfiguration: { ...state.workflowConfiguration, repoVars: action.payload } }
     case actionTypes.WORKFLOW_VARS_FETCHED:
       return { ...state, workflowConfiguration: { ...state.workflowConfiguration, workflowVars: action.payload } }
+    case actionTypes.ADD_WORKFLOW:
+      return { ...state, workflowEditor: { workflowDescription: '', ownersRepos: [], selectedRepo: '', selectedBranch: '', loading: false, addNew:true } }
     default:
 
       return state;
@@ -397,7 +399,7 @@ export const actionTypes = {
   RUNS_FETCHED: "RUNS_FETCHED",
   NEXT_RUNS_FETCHED: "NEXT_RUNS_FETCHED",
   GOOGLE_AUTH_SCOPE_CHANGED: "GOOGLE_AUTH_SCOPE_CHANGED",
-  GOOGLE_OAUTH_SCOPE_SAVED:'GOOGLE_OAUTH_SCOPE_SAVED',
+  GOOGLE_OAUTH_SCOPE_SAVED: 'GOOGLE_OAUTH_SCOPE_SAVED',
 
   VAR_REPO_SELECTED: 'VAR_REPO_SELECTED',
   VAR_REPOS_FETCHED: 'VAR_REPOS_FETCHED',
@@ -412,6 +414,7 @@ export const actionTypes = {
   WORKFLOW_INPUT_CHANGED: 'WORKFLOW_INPUT_CHANGED',
   REPO_VARS_FETCHED: 'REPO_VARS_FETCHED',
   WORKFLOW_VARS_FETCHED: 'WORKFLOW_VARS_FETCHED',
-  EDIT_GOOGLE_OAUTH_SCOPE:'EDIT_GOOGLE_OAUTH_SCOPE'
+  EDIT_GOOGLE_OAUTH_SCOPE: 'EDIT_GOOGLE_OAUTH_SCOPE',
+  ADD_WORKFLOW: 'ADD_WORKFLOW'
 
 };
