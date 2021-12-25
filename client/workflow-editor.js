@@ -146,6 +146,16 @@ customElements.define('repo-branches', class extends HTMLElement {
     <select id="repobranches" name="branches" class="form-control">
     <option value="main">...Select branch</option>
     </select>`
+    const { auth: { token, screenName }, workflowEditor: { selectedRepo, selectedBranch,repoBranches } } = window.pageStore.state
+    if (selectedRepo.length > 0) {
+      const response = await fetch(`https://api.github.com/repos/${screenName}/${selectedRepo}/branches`, { method: 'get', headers: { Accept: "application/vnd.github.v3+json", authorization: `token ${token}` } })
+      const data = await response.json()
+      debugger;
+      this.render({ repoBranches: data, selectedBranch })
+      window.pageStore.dispatch({ type: window.actionTypes.REPOS_BRANCHES_FETCHED, payload: data })
+    }
+
+
     window.pageStore.subscribe(window.actionTypes.REPO_SELECTED, async state => {
 
       const { auth: { token, screenName }, workflowEditor: { selectedRepo, selectedBranch } } = window.pageStore.state
@@ -163,7 +173,7 @@ customElements.define('repo-branches', class extends HTMLElement {
       this.render({ repoBranches, selectedBranch, loading })
     })
 
-    const { workflowEditor: { repoBranches, selectedBranch } } = window.pageStore.state
+
 
     this.render({ repoBranches, selectedBranch })
 
@@ -176,14 +186,21 @@ customElements.define('repo-branches', class extends HTMLElement {
   }
 
   render({ repoBranches, selectedBranch, loading }) {
+    debugger;
+    const selector = document.getElementById('repobranches')
     if (loading) {
-      const selector = document.getElementById('repobranches')
+
 
       selector.innerHTML = `<option value="main">loading...</option>`
 
 
-    } else {
-      const selector = document.getElementById('repobranches')
+    // } else if (selectedBranch) {
+    //   //  const selector = document.getElementById('repobranches')
+    //  // selector.insertAdjacentHTML('beforeend', `<option  value=${selectedBranch} selected>${selectedBranch}</option>`)
+    // }
+    }
+    else {
+      // const selector = document.getElementById('repobranches')
       selector.innerHTML = `<option value="main">...Select branch</option>`
       repoBranches && repoBranches.forEach(branch => {
         debugger;
@@ -288,13 +305,13 @@ customElements.define('save-workflow-btn', class extends HTMLElement {
   render({ workflowName, workflowDescription, selectedRepo, selectedBranch, workflowKey }) {
     this.innerHTML = ` <button type="button" class="btn btn-secondary" id="save-workflow-btn" ${workflowName && workflowDescription && selectedRepo && selectedBranch ? '' : 'disabled'}>Save Workflow</button>`
     document.getElementById('save-workflow-btn').addEventListener('click', (e) => {
-      const { workflowEditor: { workflowDescription, selectedRepo, isPrivate, selectedBranch, workflowName, tokenFPR }, auth: { screenName }, workspace: { workspaceSelected: { title: workspaceName } }, workspaceTasks: { taskSelected: { taskName, id: taskId } } } = window.pageStore.state
+      const { workflowEditor: { workflowDescription, selectedRepo, selectedBranch, workflowName }, auth: { screenName }, workspace: { workspaceSelected: { title: workspaceName } }, workspaceTasks: { taskSelected: { taskName, id: taskId } } } = window.pageStore.state
 
       const workflowId = workflowKey ? workflowKey : Date.now()
-      const workflowInitials = { [`workspaces/${workspaceName}/workflowInitials/tasks/${taskId}/workflows/${workflowId}`]: { workflowDescription, workflowName, repoName: selectedRepo } }
-      const workflowProps = { [`workspaces/${workspaceName}/workflowProps/tasks/${taskId}/workflows/${workflowId}`]: { selectedRepo, isPrivate, selectedBranch, tokenFPR, screenName } }
+      const workflowInitials = { [`workspaces/${workspaceName}/workflowInitials/tasks/${taskId}/workflows/${workflowId}`]: { workflowDescription, workflowName, repoName: selectedRepo, selectedBranch } }
+      const workflowProps = { [`workspaces/${workspaceName}/workflowProps/tasks/${taskId}/workflows/${workflowId}`]: { selectedRepo, selectedBranch, screenName } }
 
-      const updateServer = { [`server/workspaces/${workspaceName}/tasks/${taskId}/workflows/${workflowId}`]: { workflowDescription, selectedRepo, isPrivate, selectedBranch, tokenFPR, screenName, workflowName } }
+      const updateServer = { [`server/workspaces/${workspaceName}/tasks/${taskId}/workflows/${workflowId}`]: { workflowDescription, selectedRepo, selectedBranch, screenName, workflowName } }
 
       window.FB_DATABASE.ref(`/`).update({ ...workflowInitials, ...workflowProps, ...updateServer }, (error, data) => {
         if (data) {

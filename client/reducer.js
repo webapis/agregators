@@ -110,7 +110,7 @@ export default (state, action) => {
       return { ...state, workflowEditor: { ...state.workflowEditor, repoBranches: action.payload, loading: false } }
     case actionTypes.REPO_SELECTED:
 
-      return { ...state, workflowEditor: { ...state.workflowEditor, isPrivate: action.payload.isPrivate, selectedRepo: action.payload.selectedRepo, workflowName: `${state.auth.screenName}_${action.payload.selectedRepo}_${state.workflowEditor.selectedBranch}` } }
+      return { ...state, workflowEditor: { ...state.workflowEditor, selectedBranch:'',isPrivate: action.payload.isPrivate, selectedRepo: action.payload.selectedRepo, workflowName: `${state.auth.screenName}_${action.payload.selectedRepo}_${state.workflowEditor.selectedBranch}` } }
     case actionTypes.BRANCH_SELECTED:
 
       return { ...state, workflowEditor: { ...state.workflowEditor, selectedBranch: action.payload.branch, workflowName: `${state.auth.screenName}_${state.workflowEditor.selectedRepo}_${action.payload.branch}`, workflowConfig: action.payload.workflowConfig } }
