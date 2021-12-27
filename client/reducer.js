@@ -25,7 +25,7 @@ export const initState = stateFromLS
     runId: 0,
     completeTime: 0,
     selectedProjectTab: 'project-workflows',
-    workflowEditor: { workflowDescription: '', ownersRepos: [], selectedRepo: '', selectedBranch: '', loading: false, addNew:true },
+    workflowEditor: { workflowDescription: '', ownersRepos: [], selectedRepo: '', selectedBranch: '', loading: false, addNew:true,repoBranches:[] },
     workflowList: { workflowTab: 'private-workflows', workflows: [] },
     workspaceList: { workspaces: [], selectedWorkspaceTab: 'private-tab' },
     workspaceDashboard: { selectedTab: 'workflows-tab', selectedWfContainerTab: 'collection-tab', containers: [], selectedContainer: '', selectedWfContainerEditorTab: 'workflows-tab' },
@@ -119,7 +119,7 @@ export default (state, action) => {
     case actionTypes.WORKFLOWS_FETCHED:
       return { ...state, workflowList: { workflows: action.payload } }
     case actionTypes.WORKFLOW_UPDATED:
-      return { ...state, workflowEditor: { workflowName: '', workflowDescription: '', ownersRepos: [], selectedRepo: '', isPrivate: '', selectedBranch: '', workflowName: '', tokenFPR: '' } }
+      return { ...state, workflowEditor: {  workflowDescription: '',repoBranches:[], ownersRepos: [], selectedRepo: '', selectedBranch: '', loading: false, addNew:true } }
     case actionTypes.EDIT_WORKFLOW:
       return { ...state, workflowEditor: { ...state.workflowEditor, ...action.payload } }
     case actionTypes.WORKSPACE_EDITOR_INPUT_CHANGED:

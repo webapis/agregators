@@ -61,7 +61,7 @@ customElements.define('workflow-editor', class extends HTMLElement {
       window.pageStore.dispatch({ type: window.actionTypes.CLOSE_WORKFLOW_EDITOR })
       window.location.replace('/task-workflows.html')
     })
- 
+
 
     this.querySelectorAll('.input').forEach(element => {
       element.addEventListener('input', (e) => {
@@ -143,11 +143,11 @@ customElements.define('repo-branches', class extends HTMLElement {
     </select>`
     const { auth: { token, screenName }, workflowEditor: { selectedRepo, selectedBranch } } = window.pageStore.state
     if (selectedRepo.length > 0) {
-      const response = await fetch(`https://api.github.com/repos/${screenName}/${selectedRepo}/branches`, { method: 'get', headers: { Accept: "application/vnd.github.v3+json", authorization: `token ${token}` } })
-      const data = await response.json()
-      debugger;
-      this.render({ repoBranches: data, selectedBranch })
-      window.pageStore.dispatch({ type: window.actionTypes.REPOS_BRANCHES_FETCHED, payload: data })
+      // const response = await fetch(`https://api.github.com/repos/${screenName}/${selectedRepo}/branches`, { method: 'get', headers: { Accept: "application/vnd.github.v3+json", authorization: `token ${token}` } })
+      // const data = await response.json()
+      // 
+      // // this.render({ repoBranches: data, selectedBranch })
+      // window.pageStore.dispatch({ type: window.actionTypes.REPOS_BRANCHES_FETCHED, payload: data })
     }
 
 
@@ -158,59 +158,74 @@ customElements.define('repo-branches', class extends HTMLElement {
       const response = await fetch(`https://api.github.com/repos/${screenName}/${selectedRepo}/branches`, { method: 'get', headers: { Accept: "application/vnd.github.v3+json", authorization: `token ${token}` } })
       const data = await response.json()
 
-      this.render({ repoBranches: data, selectedBranch })
+      //   this.render({ repoBranches: data, selectedBranch })
       window.pageStore.dispatch({ type: window.actionTypes.REPOS_BRANCHES_FETCHED, payload: data })
 
 
     })
-    window.pageStore.subscribe(window.actionTypes.REPOS_BRANCHES_PENDING, state => {
-      const { workflowEditor: { repoBranches, selectedBranch, loading } } = state
-      this.render({ repoBranches, selectedBranch, loading })
-    })
+    // window.pageStore.subscribe(window.actionTypes.REPOS_BRANCHES_PENDING, state => {
+    //   const { workflowEditor: { repoBranches, selectedBranch, loading } } = state
+    //   this.render({ repoBranches, selectedBranch, loading })
+    // })
 
+    // window.pageStore.subscribe(window.actionTypes.REPOS_BRANCHES_FETCHED, state => {
+    //   const { workflowEditor: { repoBranches, selectedBranch, loading } } = state
+    //   this.render({ repoBranches, selectedBranch, loading })
+    // })
 
+    // window.pageStore.subscribe(window.actionTypes.BRANCH_SELECTED, () => {
 
-    window.pageStore.subscribe(window.actionTypes.BRANCH_SELECTED, () => {
+    //   const { workflowEditor: { repoBranches, selectedBranch, loading } } = window.pageStore.state
 
-      const { workflowEditor: { repoBranches, selectedBranch, loading } } = window.pageStore.state
+    // })
 
-      this.render({ repoBranches, selectedBranch, loading })
-    })
+    this.render()
   }
 
-  render({ repoBranches, selectedBranch, loading }) {
-    debugger;
+  render() {
+    const { auth: { token, screenName }, workflowEditor: { repoBranches, selectedBranch, loading, selectedRepo } } = window.pageStore.state
     const selector = document.getElementById('repobranches')
-    if (loading) {
 
-
-      selector.innerHTML = `<option value="main">loading...</option>`
-
-
-     
-    }
-    else if (selectedBranch) {
-      debugger;
-      selector.innerHTML = `<option selectedvalue=${selectedBranch}>${selectedBranch}</option>`
+    window.pageStore.subscribe(window.actionTypes.REPOS_BRANCHES_FETCHED, state => {
+      const { workflowEditor: { repoBranches, selectedBranch, loading } } = state
       repoBranches && repoBranches.forEach(branch => {
-        debugger;
+
 
         selector.insertAdjacentHTML('beforeend', `<option  value=${branch.name}>${branch.name}</option>`)
 
       })
+    })
+
+    if (selectedRepo) {
+      const response = await fetch(`https://api.github.com/repos/${screenName}/${selectedRepo}/branches`, { method: 'get', headers: { Accept: "application/vnd.github.v3+json", authorization: `token ${token}` } })
+      const data = await response.json()
+
+      //   this.render({ repoBranches: data, selectedBranch })
+      window.pageStore.dispatch({ type: window.actionTypes.REPOS_BRANCHES_FETCHED, payload: data })
     }
 
 
+    // if (repoBranches.length > 0 ) {
+
+    //  repoBranches.forEach(branch => {
 
 
+    //     selector.insertAdjacentHTML('beforeend', `<option  value=${branch.name}>${branch.name}</option>`)
 
+    //   })
+
+    // }
+
+    else if (selectedBranch) {
+
+      selector.innerHTML = `<option selectedvalue=${selectedBranch}>${selectedBranch}</option>`
+
+    }
 
     document.getElementById('repobranches').addEventListener('change', async (e) => {
 
       const { auth: { token, screenName }, workflowEditor: { selectedRepo } } = window.pageStore.state
       console.log('inputType', e.inputType)
-
-
 
       if (e.inputType === undefined) {
         const { value } = e.target
@@ -264,7 +279,7 @@ customElements.define('save-workflow-btn', class extends HTMLElement {
   }
 
   render({ workflowDescription, selectedRepo, selectedBranch, workflowKey }) {
-    this.innerHTML = ` <button type="button" class="btn btn-secondary" id="save-workflow-btn" ${ workflowDescription && selectedRepo && selectedBranch ? '' : 'disabled'}>Save Workflow</button>`
+    this.innerHTML = ` <button type="button" class="btn btn-secondary" id="save-workflow-btn" ${workflowDescription && selectedRepo && selectedBranch ? '' : 'disabled'}>Save Workflow</button>`
     document.getElementById('save-workflow-btn').addEventListener('click', (e) => {
       const { workflowEditor: { workflowDescription, selectedRepo, selectedBranch }, auth: { screenName }, workspace: { workspaceSelected: { title: workspaceName } }, workspaceTasks: { taskSelected: { taskName, id: taskId } } } = window.pageStore.state
 
