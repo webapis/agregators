@@ -9,8 +9,11 @@ customElements.define('task-workflows', class extends HTMLElement {
         const resources = await import('./resources.js')
         await resources.default()
 
-        const { auth: { idToken, localId: uid }, workspace: { workspaceSelected: { title: workspaceName } }, workspaceTasks: { taskSelected: { taskName, id: taskId } } } = window.pageStore.state
+     
 
+        const {  title: workspaceName   } = JSON.parse(localStorage.getItem('workspaceSelected'))
+        const { idToken, localId: uid } =JSON.parse(localStorage.getItem('auth'))
+        const {taskName, id: taskId} = JSON.parse(localStorage.getItem('taskSelected'))
         document.getElementById('task-breadcrumb').innerText = `Task(${taskName})`
         document.getElementById('ws-breadcrumb').innerText = `Workspace(${workspaceName})`
         this.uid = uid
@@ -25,7 +28,7 @@ customElements.define('task-workflows', class extends HTMLElement {
 
             document.getElementById('add-workflow-btn').addEventListener('click',(e)=>{
                 e.preventDefault()
-                window.pageStore.dispatch({type:window.actionTypes.ADD_WORKFLOW})
+              //  window.pageStore.dispatch({type:window.actionTypes.ADD_WORKFLOW})
                 window.location.replace('/workflow-editor.html')
             })
 

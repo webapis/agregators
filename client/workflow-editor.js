@@ -7,8 +7,11 @@ customElements.define('workflow-editor', class extends HTMLElement {
     this.innerHTML = `loading...`
     const resources = await import('./resources.js')
     await resources.default()
-    const { workflowEditor: { workflowDescription }, auth: { idToken, localId: uid, token }, workspace: { workspaceSelected: { title: workspaceName } }, workspaceTasks: { taskSelected: { taskName } } } = window.pageStore.state
-
+   
+   const {  title: workspaceName   } = JSON.parse(localStorage.getItem('workspaceSelected'))
+        const { idToken, localId: uid,token } =JSON.parse(localStorage.getItem('auth'))
+        const {taskName, id: taskId} = JSON.parse(localStorage.getItem('taskSelected'))
+        const workflowEditor= JSON.parse(localStorage.getItem('workflowEditor'))
     document.getElementById('task-breadcrumb').innerText = `Task(${taskName})`
     document.getElementById('ws-breadcrumb').innerText = `Workspace(${workspaceName})`
     this.uid = uid
@@ -16,15 +19,14 @@ customElements.define('workflow-editor', class extends HTMLElement {
     window.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
 
     //fetch users repos
-    const response = await fetch('https://api.github.com/user/repos', { method: 'get', headers: { Accept: "application/vnd.github.v3+json", authorization: `token ${token}` } })
-    const ownersRepos = await response.json()
 
-    window.pageStore.dispatch({ type: window.actionTypes.USER_REPOS_FETCHED, payload: ownersRepos })
 
-    this.render({ workflowDescription })
+
+
+    this.render({ ...workflowEditor })
 
   }
-  render({ workflowDescription }) {
+  render({ workflowDescription='' }) {
 
     this.innerHTML = `
   
@@ -66,6 +68,8 @@ customElements.define('workflow-editor', class extends HTMLElement {
     this.querySelectorAll('.input').forEach(element => {
       element.addEventListener('input', (e) => {
         const { value, name } = e.target
+
+        debugger;
         window.pageStore.dispatch({ type: window.actionTypes.WORKFLOW_EDITOR_INPUT_CHANGED, payload: { value, input: name } })
 
       })
@@ -83,42 +87,61 @@ customElements.define('owners-repos', class extends HTMLElement {
     super()
   }
   async connectedCallback() {
-    const { workflowEditor: { selectedRepo, ownersRepos } } = window.pageStore.state
 
+  //  const  workflowEditor = JSON.parse(localStorage.getItem('workflowEditor'))
+   
 
     this.innerHTML = `<label for="repoDataList" class="form-label">Repository:</label>
     <select id="repos" name="repoDataList" class="form-control">
     <option value="default">...Select repository</option>
     </select>`
 
-    this.render({ ownersRepos, selectedRepo })
+    this.render()
 
-    window.pageStore.subscribe(window.actionTypes.REPO_SELECTED, state => {
-      const { workflowEditor: { selectedRepo, ownersRepos } } = state
-      this.render({ ownersRepos, selectedRepo })
-
-    })
+  
   }
-  async render({ ownersRepos, selectedRepo }) {
+  async render() {
 
-    const selector = document.getElementById('repos')
+  
+    const selectedRepo =localStorage.getItem('selectedRepo')
+   
+if(selectedRepo){
+  document.getElementById('repos').insertAdjacentHTML('afterbegin',`<option value="${selectedRepo}" selected>${selectedRepo}</option>`)
+}
+    document.getElementById('repos').addEventListener('focus',async(e)=>{
+      const { idToken, localId: uid,token } =JSON.parse(localStorage.getItem('auth'))
+     
+    
 
-    ownersRepos && ownersRepos.forEach(repo => {
+      const response = await fetch('https://api.github.com/user/repos', { method: 'get', headers: { Accept: "application/vnd.github.v3+json", authorization: `token ${token}` } })
 
-      selector.insertAdjacentHTML('beforeend', `<option ${selectedRepo === repo.name && 'selected'} value=${repo.name}>${repo.name}</option>`)
+      const ownersRepos = await response.json()
+      document.getElementById('repos').innerHTML=''
+      ownersRepos.forEach(repo=>{
+        const {name}=repo
+        const selectedRepo =localStorage.getItem('selectedRepo')
+        if(name !==selectedRepo){
+          document.getElementById('repos').insertAdjacentHTML('beforeend',`<option value="${name}">${name}</option>`)
+        }
+       
+
+     
+      })
+   
+    
     })
-
 
     document.getElementById('repos').addEventListener('change', (e) => {
 
       console.log('e', e.inputType)
       if (e.inputType === undefined) {
         const { value } = e.target
-        const { workflowEditor: { ownersRepos } } = window.pageStore.state
-        const selectedRepository = ownersRepos.find(o => o.name === value)
+        localStorage.setItem('selectedRepo',value)
+        window.location.reload()
+       
 
 
-        window.pageStore.dispatch({ type: window.actionTypes.REPO_SELECTED, payload: { selectedRepo: value, isPrivate: selectedRepository.private } })
+       
       }
 
     })
@@ -141,28 +164,29 @@ customElements.define('repo-branches', class extends HTMLElement {
     <select id="repobranches" name="branches" class="form-control">
     <option value="main">...Select branch</option>
     </select>`
-    const { auth: { token, screenName }, workflowEditor: { selectedRepo, selectedBranch } } = window.pageStore.state
-    if (selectedRepo.length > 0) {
-      // const response = await fetch(`https://api.github.com/repos/${screenName}/${selectedRepo}/branches`, { method: 'get', headers: { Accept: "application/vnd.github.v3+json", authorization: `token ${token}` } })
-      // const data = await response.json()
-      // 
-      // // this.render({ repoBranches: data, selectedBranch })
-      // window.pageStore.dispatch({ type: window.actionTypes.REPOS_BRANCHES_FETCHED, payload: data })
-    }
+    // const { auth: { token, screenName }, workflowEditor: { selectedRepo, selectedBranch } } = window.pageStore.state
+
+    // if (selectedRepo.length > 0) {
+    //   // const response = await fetch(`https://api.github.com/repos/${screenName}/${selectedRepo}/branches`, { method: 'get', headers: { Accept: "application/vnd.github.v3+json", authorization: `token ${token}` } })
+    //   // const data = await response.json()
+    //   // 
+    //   // // this.render({ repoBranches: data, selectedBranch })
+    //   // window.pageStore.dispatch({ type: window.actionTypes.REPOS_BRANCHES_FETCHED, payload: data })
+    // }
 
 
-    window.pageStore.subscribe(window.actionTypes.REPO_SELECTED, async state => {
+    // window.pageStore.subscribe(window.actionTypes.REPO_SELECTED, async state => {
 
-      const { auth: { token, screenName }, workflowEditor: { selectedRepo, selectedBranch } } = window.pageStore.state
-      window.pageStore.dispatch({ type: window.actionTypes.REPOS_BRANCHES_PENDING })
-      const response = await fetch(`https://api.github.com/repos/${screenName}/${selectedRepo}/branches`, { method: 'get', headers: { Accept: "application/vnd.github.v3+json", authorization: `token ${token}` } })
-      const data = await response.json()
+    //   const { auth: { token, screenName }, workflowEditor: { selectedRepo, selectedBranch } } = window.pageStore.state
+    //   window.pageStore.dispatch({ type: window.actionTypes.REPOS_BRANCHES_PENDING })
+    //   const response = await fetch(`https://api.github.com/repos/${screenName}/${selectedRepo}/branches`, { method: 'get', headers: { Accept: "application/vnd.github.v3+json", authorization: `token ${token}` } })
+    //   const data = await response.json()
 
-      //   this.render({ repoBranches: data, selectedBranch })
-      window.pageStore.dispatch({ type: window.actionTypes.REPOS_BRANCHES_FETCHED, payload: data })
+    //   //   this.render({ repoBranches: data, selectedBranch })
+    //   window.pageStore.dispatch({ type: window.actionTypes.REPOS_BRANCHES_FETCHED, payload: data })
 
 
-    })
+    // })
     // window.pageStore.subscribe(window.actionTypes.REPOS_BRANCHES_PENDING, state => {
     //   const { workflowEditor: { repoBranches, selectedBranch, loading } } = state
     //   this.render({ repoBranches, selectedBranch, loading })
@@ -182,26 +206,33 @@ customElements.define('repo-branches', class extends HTMLElement {
     this.render()
   }
 
-  render() {
-    const { auth: { token, screenName }, workflowEditor: { repoBranches, selectedBranch, loading, selectedRepo } } = window.pageStore.state
+  async render() {
+   // const { auth: { token, screenName }, workflowEditor: { repoBranches, selectedBranch, loading, selectedRepo } } = window.pageStore.state
+    const {token,screenName}= JSON.parse(localStorage.getItem('auth'))
+  
+    const selectedRepo =localStorage.getItem('selectedRepo')
     const selector = document.getElementById('repobranches')
-
-    window.pageStore.subscribe(window.actionTypes.REPOS_BRANCHES_FETCHED, state => {
-      const { workflowEditor: { repoBranches, selectedBranch, loading } } = state
-      repoBranches && repoBranches.forEach(branch => {
-
-
-        selector.insertAdjacentHTML('beforeend', `<option  value=${branch.name}>${branch.name}</option>`)
-
-      })
-    })
+    const selectedBranch =localStorage.getItem('selectedBranch')
+    if(selectedBranch){
+      selector.insertAdjacentHTML('beforeend', `<option  value="${selectedBranch}" selected>${selectedBranch}</option>`)
+    }
+ 
 
     if (selectedRepo) {
       const response = await fetch(`https://api.github.com/repos/${screenName}/${selectedRepo}/branches`, { method: 'get', headers: { Accept: "application/vnd.github.v3+json", authorization: `token ${token}` } })
-      const data = await response.json()
+      const branches = await response.json()
 
+      branches.forEach(branch=>{
+        const {name}= branch
+        if(name !==selectedBranch){
+          selector.insertAdjacentHTML('beforeend', `<option  value=${branch.name}>${branch.name}</option>`)
+        }
+       
+      })
+
+debugger;
       //   this.render({ repoBranches: data, selectedBranch })
-      window.pageStore.dispatch({ type: window.actionTypes.REPOS_BRANCHES_FETCHED, payload: data })
+    //  window.pageStore.dispatch({ type: window.actionTypes.REPOS_BRANCHES_FETCHED, payload: data })
     }
 
 
@@ -216,21 +247,20 @@ customElements.define('repo-branches', class extends HTMLElement {
 
     // }
 
-    else if (selectedBranch) {
+    // else if (selectedBranch) {
 
-      selector.innerHTML = `<option selectedvalue=${selectedBranch}>${selectedBranch}</option>`
+    //   selector.innerHTML = `<option  value=${selectedBranch} selected>${selectedBranch}</option>`
 
-    }
+    // }
 
     document.getElementById('repobranches').addEventListener('change', async (e) => {
 
-      const { auth: { token, screenName }, workflowEditor: { selectedRepo } } = window.pageStore.state
-      console.log('inputType', e.inputType)
+   
 
       if (e.inputType === undefined) {
         const { value } = e.target
-
-        window.pageStore.dispatch({ type: window.actionTypes.BRANCH_SELECTED, payload: { branch: value } })
+        localStorage.setItem('selectedBranch',value)
+      //  window.pageStore.dispatch({ type: window.actionTypes.BRANCH_SELECTED, payload: { branch: value } })
       }
 
     })
@@ -250,35 +280,37 @@ customElements.define('save-workflow-btn', class extends HTMLElement {
 
   connectedCallback() {
 
-    const { workflowEditor, auth: { idToken, localId: uid }, } = window.pageStore.state
+    const workflowEditor  = JSON.parse(localStorage.getItem('workflowEditor'))
+    const {idToken, localId: uid} = JSON.parse(localStorage.getItem('auth'))
+
     this.uid = uid
 
     window.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
-    this.render(workflowEditor)
-    window.pageStore.subscribe(window.actionTypes.USER_REPOS_FETCHED, state => {
-      const { workflowEditor } = state
-      this.render(workflowEditor)
-    })
-    window.pageStore.subscribe(window.actionTypes.REPO_SELECTED, state => {
-      const { workflowEditor } = state
-      this.render(workflowEditor)
-    })
-    window.pageStore.subscribe(window.actionTypes.WORKFLOW_CONFIG_FETCHED, state => {
-      const { workflowEditor } = state
-      this.render(workflowEditor)
-    })
-    window.pageStore.subscribe(window.actionTypes.BRANCH_SELECTED, state => {
-      const { workflowEditor } = state
-      this.render(workflowEditor)
-    })
+    this.render({...workflowEditor})
+    // window.pageStore.subscribe(window.actionTypes.USER_REPOS_FETCHED, state => {
+    //   const { workflowEditor } = state
+    //   this.render(workflowEditor)
+    // })
+    // window.pageStore.subscribe(window.actionTypes.REPO_SELECTED, state => {
+    //   const { workflowEditor } = state
+    //   this.render(workflowEditor)
+    // })
+    // window.pageStore.subscribe(window.actionTypes.WORKFLOW_CONFIG_FETCHED, state => {
+    //   const { workflowEditor } = state
+    //   this.render(workflowEditor)
+    // })
+    // window.pageStore.subscribe(window.actionTypes.BRANCH_SELECTED, state => {
+    //   const { workflowEditor } = state
+    //   this.render(workflowEditor)
+    // })
 
-    window.pageStore.subscribe(window.actionTypes.WORKFLOW_EDITOR_INPUT_CHANGED, state => {
-      const { workflowEditor } = state
-      this.render(workflowEditor)
-    })
+    // window.pageStore.subscribe(window.actionTypes.WORKFLOW_EDITOR_INPUT_CHANGED, state => {
+    //   const { workflowEditor } = state
+    //   this.render(workflowEditor)
+    // })
   }
 
-  render({ workflowDescription, selectedRepo, selectedBranch, workflowKey }) {
+  render({ workflowDescription='', selectedRepo='', selectedBranch='', workflowKey='' }) {
     this.innerHTML = ` <button type="button" class="btn btn-secondary" id="save-workflow-btn" ${workflowDescription && selectedRepo && selectedBranch ? '' : 'disabled'}>Save Workflow</button>`
     document.getElementById('save-workflow-btn').addEventListener('click', (e) => {
       const { workflowEditor: { workflowDescription, selectedRepo, selectedBranch }, auth: { screenName }, workspace: { workspaceSelected: { title: workspaceName } }, workspaceTasks: { taskSelected: { taskName, id: taskId } } } = window.pageStore.state

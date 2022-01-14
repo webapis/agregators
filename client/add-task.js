@@ -8,7 +8,8 @@ customElements.define('add-task', class extends HTMLElement {
         const resources = await import('./resources.js')
         await resources.default()
 
-        const { auth: { idToken, localId: uid }, workspace: { workspaceSelected: { title: workspaceName } } } = window.pageStore.state
+        const {  title: workspaceName   } = JSON.parse(localStorage.getItem('workspaceSelected'))
+        const { idToken, localId: uid } =JSON.parse(localStorage.getItem('auth'))
         this.uid = uid
         window.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
         document.getElementById('ws-breadcrumb').innerText = `Workspace(${workspaceName})`
@@ -22,7 +23,7 @@ customElements.define('add-task', class extends HTMLElement {
 
         document.getElementById('save-task-btn').addEventListener('click', (e) => {
             e.preventDefault()
-            const { workspace: { workspaceSelected: { title: workspaceName } } } = window.pageStore.state
+            const {  title: workspaceName   } = JSON.parse(localStorage.getItem('workspaceSelected'))
             const taskName = document.getElementById('taskname').value
         
             const taskId = Date.now()

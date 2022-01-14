@@ -7,15 +7,15 @@ customElements.define('workspace-editor', class extends HTMLElement {
         this.innerHTML =`loading...`
         const resources = await import('./resources.js')
         await resources.default()
-        const { auth: { idToken, localId: uid }, workspaceEditor } = window.pageStore.state
+        
+        const {idToken, localId: uid} =JSON.parse(localStorage.getItem('auth'))
+        const workspaceEditor =JSON.parse(localStorage.getItem('workspaceEditor'))
         this.uid = uid
         window.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
-        this.render({ workspaceEditor })
+        this.render({ workspaceEditor:workspaceEditor&&workspaceEditor })
     }
 
-    render({ workspaceEditor }) {
-       
-        const { workspaceName, accessLevel, description } = workspaceEditor
+    render({ workspaceName='',accessLevel='', description=''}) {
         this.innerHTML = `
    
         <div class="container">
@@ -53,7 +53,9 @@ customElements.define('workspace-editor', class extends HTMLElement {
 
             element.addEventListener('input', (e) => {
                 const { value, name } = e.target
-                window.pageStore.dispatch({ type: window.actionTypes.WORKSPACE_EDITOR_INPUT_CHANGED, payload: { [name]: value } })
+                const workspaceEditor =JSON.parse(localStorage.getItem('workspaceEditor'))
+        
+                localStorage.setItem('workspaceEditor', JSON.stringify({...workspaceEditor,[name]: value}))
             })
 
 
@@ -61,16 +63,19 @@ customElements.define('workspace-editor', class extends HTMLElement {
 
         document.getElementById('accessLevel').addEventListener('change', (e) => {
             const { value, id } = e.target
-            window.pageStore.dispatch({ type: window.actionTypes.WORKSPACE_EDITOR_INPUT_CHANGED, payload: { [id]: value } })
-            debugger;
+
+            const workspaceEditor =JSON.parse(localStorage.getItem('workspaceEditor'))
+      
+            localStorage.setItem('workspaceEditor', JSON.stringify({...workspaceEditor,[id]: value}))
+          
         })
 
 
 
         document.getElementById('save-ws-name-btn').addEventListener('click', (e) => {
             e.preventDefault()
-            const { workspaceEditor: { workspaceName, description, accessLevel }, auth: { screenName, localId } } = window.pageStore.state
-            
+            const  { workspaceName , accessLevel, description } = JSON.parse(localStorage.getItem('workspaceEditor')) 
+            const { screenName, localId } = JSON.parse(localStorage.getItem('auth')) 
             let update = {}
             if (accessLevel === "private") {
                 debugger;

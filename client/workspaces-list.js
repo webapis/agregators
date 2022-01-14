@@ -7,9 +7,10 @@ customElements.define('workspaces-list', class extends HTMLElement {
 
         this.innerHTML = `loading...`
         const resources = await import('./resources.js')
+     
         await resources.default()
         
-        const { auth: { idToken, localId: uid }, workspaceList: { selectedWorkspaceTab } } = window.pageStore.state
+        const  { idToken, localId: uid } = JSON.parse(localStorage.getItem('auth'))
         this.uid = uid
         
         window.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
@@ -19,7 +20,7 @@ customElements.define('workspaces-list', class extends HTMLElement {
         this.innerHTML = `
         <div class="container" id="container"></div>
         `
-
+        const selectedWorkspaceTab =localStorage.getItem('selectedWorkspaceTab')
         let workspacesRef = ''
         if (selectedWorkspaceTab === 'private-tab') {
             workspacesRef = `private/${uid}/workspaces`
@@ -38,7 +39,8 @@ customElements.define('workspaces-list', class extends HTMLElement {
     }
 
     render({ workspaces }) {
-        const { auth: { idToken, localId: uid }, workspaceList: { selectedWorkspaceTab } } = window.pageStore.state
+       
+        const selectedWorkspaceTab =localStorage.getItem('selectedWorkspaceTab')
         document.getElementById('container').innerHTML = ``
         document.getElementById('container').insertAdjacentHTML('beforeend', `
         <h5>Workspaces:</h5>
@@ -58,7 +60,7 @@ customElements.define('workspaces-list', class extends HTMLElement {
 
         document.getElementById('create-workspace-btn').addEventListener('click', (e) => {
             e.preventDefault()
-            window.pageStore.dispatch({ type: window.actionTypes.CREATE_NEW_WORKSPACE })
+          
             window.location.replace('/workspace-editor.html')
         })
 
@@ -110,8 +112,9 @@ customElements.define('workspace-component', class extends HTMLElement {
 
         document.getElementById(`${title}-link`).addEventListener('click', (e) => {
             const { id } = e.target
-
-            window.pageStore.dispatch({ type: window.actionTypes.WORKSPACE_SELECTED, payload: { title, accessLevel, description, owner } })
+            
+           // window.pageStore.dispatch({ type: window.actionTypes.WORKSPACE_SELECTED, payload: { title, accessLevel, description, owner } })
+            localStorage.setItem('workspaceSelected',JSON.stringify({title, accessLevel, description, owner }))
             window.location.replace('/workspace.html')
         })
 
@@ -126,29 +129,29 @@ customElements.define('workspaces-tab', class extends HTMLElement {
     }
 
     connectedCallback() {
-        const { auth: { idToken, localId: uid },workspaceList: { selectedWorkspaceTab, totalPrivate, totalPublic, totalShared }  } = window.pageStore.state
-      
+        //const { auth: { idToken, localId: uid },workspaceList: { selectedWorkspaceTab, totalPrivate, totalPublic, totalShared }  } = window.pageStore.state
+        const selectedWorkspaceTab =localStorage.getItem('selectedWorkspaceTab')
 
     
-        this.render({ selectedWorkspaceTab, totalPrivate, totalPublic, totalShared })
+        this.render({ selectedWorkspaceTab })
 
 
 
 
     }
 
-    render({ selectedWorkspaceTab, totalPrivate = 0, totalPublic = 0, totalShared = 0 }) {
+    render({ selectedWorkspaceTab }) {
 
 
         this.innerHTML = `<ul class="nav nav-tabs justify-content-end">
         <li class="nav-item">
-          <a class="nav-link ${selectedWorkspaceTab === 'private-tab' && 'active'}" aria-current="page" href="/workspaces-list.html" id="private-tab">Private(${totalPrivate})</a>
+          <a class="nav-link ${selectedWorkspaceTab === 'private-tab' && 'active'}" aria-current="page" href="/workspaces-list.html" id="private-tab">Private(${0})</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link ${selectedWorkspaceTab === 'public-tab' && 'active'}" href="/workspaces-list.html" id="public-tab">Public(${totalPublic})</a>
+          <a class="nav-link ${selectedWorkspaceTab === 'public-tab' && 'active'}" href="/workspaces-list.html" id="public-tab">Public(${0})</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link ${selectedWorkspaceTab === 'shared-tab' && 'active'}" href="/workspaces-list.html" id="shared-tab">Shared(${totalShared})</a>
+          <a class="nav-link ${selectedWorkspaceTab === 'shared-tab' && 'active'}" href="/workspaces-list.html" id="shared-tab">Shared(${0})</a>
         </li>
        
       </ul>`
@@ -156,24 +159,24 @@ customElements.define('workspaces-tab', class extends HTMLElement {
       document.getElementById('private-tab').addEventListener('click',(e)=>{
         e.preventDefault()
         const { id } = e.target
-
-        window.pageStore.dispatch({ type: window.actionTypes.WORKSPACE_TAB_CHANGED, payload: id })
+        localStorage.setItem('selectedWorkspaceTab',id)
+       
         window.location.replace('/workspaces-list.html')
       })
 
       document.getElementById('public-tab').addEventListener('click',(e)=>{
         e.preventDefault()
         const { id } = e.target
-
-        window.pageStore.dispatch({ type: window.actionTypes.WORKSPACE_TAB_CHANGED, payload: id })
+        localStorage.setItem('selectedWorkspaceTab',id)
+      
         window.location.replace('/workspaces-list.html')
       })
 
       document.getElementById('shared-tab').addEventListener('click',(e)=>{
         e.preventDefault()
         const { id } = e.target
-
-        window.pageStore.dispatch({ type: window.actionTypes.WORKSPACE_TAB_CHANGED, payload: id })
+        localStorage.setItem('selectedWorkspaceTab',id)
+       
         window.location.replace('/workspaces-list.html')
       })
     }
@@ -186,7 +189,7 @@ customElements.define('workspaces-tab-content', class extends HTMLElement{
     }
 
     connectedCallback(){
-        const { auth: { localId: uid } } = window.pageStore.state
+        const {localId: uid  } = JSON.parse(localStorage.getItem('auth'))
         const wsType =this.getAttribute('ws-type')
         let workspacesRef = ''
         if (wsType === 'private-tab') {
@@ -199,7 +202,7 @@ customElements.define('workspaces-tab-content', class extends HTMLElement{
         }
 
         window.FB_DATABASE.ref(workspacesRef).get((error, ws) => {
-            debugger;
+            
             if (ws) {
                 const workspaces = Object.entries(ws)
                 this.render({ workspaces })

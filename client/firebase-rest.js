@@ -97,9 +97,11 @@ function firebase() {
                      cb && cb(null,getJsonData)
                  }
             } catch (error) {
-               const {message}=error
-                window.pageStore.dispatch({ type: window.actionTypes.CLIENT_ERROR, payload: message })
-                cb && cb(error,null) 
+              // const {message}=error
+            
+          
+                throw error
+                //cb && cb(error,null) 
             }
         },
         remove: async function (cb) {
@@ -217,14 +219,14 @@ async function renewIdToken({ api_key, refreshToken }) {
 }
 
 async function updateIdToken() {
-
-    if (window.pageStore.state.auth) {
-        const { auth: { timestamp, api_key, refreshToken } } = window.pageStore.state
+    const auth = JSON.parse(localStorage.getItem('auth'))
+    if (auth) {
+        const { timestamp, api_key, refreshToken }  = auth
     
         if (Date.now() > timestamp) {
             const { id_token } = await renewIdToken({ api_key, refreshToken })
-          
-            window.pageStore.dispatch({ type: window.actionTypes.ID_TOKEN_UPDATED, payload: { idToken: id_token } })
+            JSON.stringify({...auth,idToken:id_token,timestamp: Date.now() + 3600000})
+           // window.pageStore.dispatch({ type: window.actionTypes.ID_TOKEN_UPDATED, payload: { idToken: id_token } })
         }
 
     }

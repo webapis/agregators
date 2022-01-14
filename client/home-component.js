@@ -9,14 +9,15 @@ customElements.define('home-component', class extends HTMLElement {
       
       
             const resources = await import('./resources.js')
+            //const {default:reducer} = await import('./state/reducers/homeComponentReducer.js')
             await resources.default()
 
 
-            const auth = window.pageStore.state.auth
-            const isValid = window.pageStore.state.auth ? new Date(parseInt(auth.expiresIn) * 1000) < Date.now() : false
+            const auth = JSON.parse(localStorage.getItem('auth'))
+            const isValid = auth ? new Date(parseInt(auth.expiresIn) * 1000) < Date.now() : false
             debugger;
             if (isValid) {
-                const { auth: { idToken, localId: uid }} = window.pageStore.state
+                const {  idToken, localId: uid } =auth
                 this.uid = uid
                 window.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
                 this.innerHTML = `<div>

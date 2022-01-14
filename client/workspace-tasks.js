@@ -15,7 +15,8 @@ customElements.define('workspace-tasks', class extends HTMLElement {
         const resources = await import('./resources.js')
         await resources.default()
 
-        const { auth: { idToken, localId: uid, token, screenName }, workspace: { workspaceSelected: { title: workspaceName } } } = window.pageStore.state
+        const {  title: workspaceName   } = JSON.parse(localStorage.getItem('workspaceSelected'))
+        const { idToken, localId: uid, token, screenName } =JSON.parse(localStorage.getItem('auth'))
         this.uid = uid
         window.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
 
@@ -96,7 +97,8 @@ customElements.define('workspace-tasks', class extends HTMLElement {
                         e.preventDefault()
                         const { id, name } = e.target
                         
-                        window.pageStore.dispatch({ type: window.actionTypes.TASK_SELECTED, payload: { id, taskName: name } })
+                  
+                        localStorage.setItem('taskSelected',JSON.stringify({id, taskName: name }))
                         window.location.replace('./task-workflows.html')
                     })
                 })
