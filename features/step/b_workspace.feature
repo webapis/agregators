@@ -1,49 +1,57 @@
-@workspace
+
 Feature: Workspace
 
 Scenario: 1
 
 User creates private workspace
 
-  Given component with "#workspace" selector is visible to user 201
-  And user clicks to button with "#workspace" selector 202
-  And user clicks to button with "#create-workspace-btn" selector 203
-  And user types "local_ws_bdd" to input with "#workspace-name-input" selector 204
-  And user types "private" to input with "#accessLevel" selector 205
-  And user types "local_ws_bdd_desc" to input with "#description" selector 206
-  When user clicks to button with "#save-ws-name-btn" selector 207
-  Then component with "#local_ws_bdd-ws" selector is visible to user 208
-  Then component with "#local_ws_bdd-ws-title" selector is visible to user 209
-  Then component with "#local_ws_bdd-ws-description" selector is visible to user 210
-  Then component with "#local_ws_bdd-ws-access-level" selector is visible to user 211
-  Then component with "#local_ws_bdd-ws-owner" selector is visible to user 212
+  Given component with "#workspace" selector is visible to user 101
+  And user clicks to button with "#workspace" selector 102
+  And user clicks to button with "#create-workspace-btn" selector 103
+  And user types "local_ws_bdd" to input with "#workspace-name-input" selector 104
+  And user types "private" to input with "#accessLevel" selector 105
+  And user types "local_ws_bdd_desc" to input with "#description" selector 106
+  When user clicks to button with "#save-ws-name-btn" selector 107
+  Then component with "#private-tab" selector is visible to user 108
+  Then user clicks to button with "#private-tab" selector 109
+  Then component with "#local_ws_bdd-ws" selector is visible to user 110
+  Then component with "#local_ws_bdd-ws-title" selector is visible to user 111
+  Then component with "#local_ws_bdd-ws-description" selector is visible to user 112
+  Then component with "#local_ws_bdd-ws-access-level" selector is visible to user 113
+  Then component with "#local_ws_bdd-ws-owner" selector is visible to user 114
 
 
 
   Scenario: 2
 
   User creates public workspace
-    Given component with "#create-workspace-btn" selector is visible to user 213
-    And user clicks to button with "#create-workspace-btn" selector 214
-    And user types "local_pub_ws_bdd" to input with "#workspace-name-input" selector 215
-    And user types "public" to input with "#accessLevel" selector 216
-    And user types "local_pub_ws_bdd_desc" to input with "#description" selector 217
-    And user clicks to button with "#save-ws-name-btn" selector 218
-    And component with "#public-tab" selector is visible to user 219
-    When user clicks to button with "#public-tab" selector 220
-    Then component with "#local_pub_ws_bdd-ws" selector is visible to user 221
-    Then component with "#local_pub_ws_bdd-ws-title" selector is visible to user 222
-    Then component with "#local_pub_ws_bdd-ws-description" selector is visible to user 223
-    Then component with "#local_pub_ws_bdd-ws-access-level" selector is visible to user 224
-    Then component with "#local_pub_ws_bdd-ws-owner" selector is visible to user 225
+    Given page is navigated to "https://localhost:8888/workspaces-list.html" 213
+    And component with "#create-workspace-btn" selector is visible to user 214
+    And user clicks to button with "#create-workspace-btn" selector 215
+    And user types "local_pub_ws_bdd" to input with "#workspace-name-input" selector 216
+    And user types "public" to input with "#accessLevel" selector 217
+    And user types "local_pub_ws_bdd_desc" to input with "#description" selector 218
+    And user clicks to button with "#save-ws-name-btn" selector 219
+    When component with "#public-tab" selector is visible to user 220
+    Then user clicks to button with "#public-tab" selector 221
+    Then component with "#local_pub_ws_bdd-ws" selector is visible to user 222
+    Then component with "#local_pub_ws_bdd-ws-title" selector is visible to user 223
+    Then component with "#local_pub_ws_bdd-ws-description" selector is visible to user 224
+    Then component with "#local_pub_ws_bdd-ws-access-level" selector is visible to user 225
+    Then component with "#local_pub_ws_bdd-ws-owner" selector is visible to user 226
 
-
+@workspace
  Scenario: 3
 
  User creates workspace vars
-  Given user clicks to button with "#local_pub_ws_bdd-link" selector 301
-  And component with "#vars-config-card" selector is visible to user 302
-  And user clicks to button with "#vars-config-card" selector 303
+  Given page is navigated to "https://localhost:8888/workspaces-list.html" 301
+  And component with "#public-tab" selector is visible to user 302
+  And user clicks to button with "#public-tab" selector 303
+  And component with "#local_pub_ws_bdd-link" selector is visible to user 304
+  And user clicks to button with "#local_pub_ws_bdd-link" selector 305
+  And component with "#vars-config-card" selector is visible to user 306
+  And user clicks to button with "#vars-config-card" selector 307
+
   And component with "#repos" selector is visible to user 304
   And user selects "workflow_a_a" from "#repos" select tag 305
   And user types "PAGE_URL" to input with "#var-name-input" selector 306

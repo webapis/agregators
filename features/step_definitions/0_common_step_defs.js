@@ -3,7 +3,7 @@ const assert = require('assert');
 const { Given, When, Then } = require('@cucumber/cucumber');
 
 
-const debuggedOrder = 705
+const debuggedOrder = 307
 const log = true
 global.success = 0
 Given('user clicks to button with {string} selector {int}', { timeout: 15000 }, async function (id, order) {
@@ -291,7 +291,7 @@ Given('page is navigated to {string} {int}', { timeout: 15000 }, async function 
    
        await page.goto(value);
       
-        debugger;
+    
         if (order === debuggedOrder) {
             debugger;
         }

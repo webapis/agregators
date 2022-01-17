@@ -73,10 +73,10 @@ Before({ timeout: 15000 }, async function (scenario) {
     const order = parseInt(name)
 
     if (order > 0) {
-      debugger;
+      
 
       const lsData = await updateIdToken(order)
-      debugger;
+      
       const { auth: { idToken },
         lastVisitedUrl } = lsData
       //load backend data from file
@@ -90,25 +90,19 @@ Before({ timeout: 15000 }, async function (scenario) {
       //load data for local storage
 
 
-      debugger;
+      
       //   update local storage
       await global.page.evaluate((_lsData) => {
-        function isJSON(str) {
-          try {
-            return (JSON.parse(str) && !!str);
-          } catch (e) {
-            return false;
-          }
-        }
+
         for (let l in _lsData) {
           window.localStorage.setItem(l,JSON.stringify(_lsData[l]))
         }
        
 
       }, lsData)
-      debugger;
-      await global.page.goto(lastVisitedUrl)
-      debugger;
+      
+   //   await global.page.goto(lastVisitedUrl)
+      
 
     }
   } catch (error) {
@@ -148,16 +142,16 @@ After({ timeout: 15000 }, async function (scenario) {
       return lsData
     })
     const { auth } = locData
-    debugger;
+    
 
-    const order = parseInt(name)
-    if (order === 0) {
-      fs.writeFileSync(`${process.cwd()}/mock-data/local-storage/0-after.json`, JSON.stringify({ ...locData, lastVisitedUrl }), { encoding: 'utf-8' })
-    }
-    debugger;
+  //  const order = parseInt(name)
+  //  if (order === 0) {
+      fs.writeFileSync(`${process.cwd()}/mock-data/local-storage/0-after.json`, JSON.stringify(locData), { encoding: 'utf-8' })
+    //}
+    
 
     const { idToken } = auth
-    debugger;
+    
     const backendData = await nodeFetch({ host: process.env.databaseHost, path: `/.json?auth=${idToken}`, method: 'GET', headers: {}, port: process.env.dbPort, ssh: process.env.dbSsh })
     const backendAfter = JSON.parse(backendData)
     //save backend data
@@ -178,7 +172,7 @@ After({ timeout: 15000 }, async function (scenario) {
 
 
 AfterAll(async function (error, result) {
-  debugger;
+  
   console.log('global.success______', global.success)
 
   await global.browser.close();
@@ -197,12 +191,12 @@ AfterAll(async function (error, result) {
 async function updateIdToken(order) {
 
   const data = fs.readFileSync(`${process.cwd()}/mock-data/local-storage/0-after.json`, { encoding: 'utf-8' })
-  debugger;
+  
   const authState = JSON.parse(data)
 
-  debugger;
+  
   if (authState.auth && (authState.auth.timestamp <= Date.now())) {
-    debugger;
+    
     const refreshData = await renewIdToken(authState.auth)
     const { id_token } = refreshData
 

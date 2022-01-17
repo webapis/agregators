@@ -20,28 +20,19 @@ customElements.define('workspaces-list', class extends HTMLElement {
         this.innerHTML = `
         <div class="container" id="container"></div>
         `
-        const selectedWorkspaceTab =localStorage.getItem('selectedWorkspaceTab')
-        let workspacesRef = ''
-        if (selectedWorkspaceTab === 'private-tab') {
-            workspacesRef = `private/${uid}/workspaces`
-        }
-        else if (selectedWorkspaceTab === 'public-tab') {
-            workspacesRef = `public/workspaces`
-        } else {
-            workspacesRef = `shared/${uid}/workspaces`
-        }
+        
 
 
         
-        this.render({ workspaces: [] })
+        this.render()
     
 
     }
 
-    render({ workspaces }) {
+    render() {
        
         const selectedWorkspaceTab =localStorage.getItem('selectedWorkspaceTab')
-        document.getElementById('container').innerHTML = ``
+       // document.getElementById('container').innerHTML = ``
         document.getElementById('container').insertAdjacentHTML('beforeend', `
         <h5>Workspaces:</h5>
         <a class="btn btn-outline-secondary mb-1" href="/workspace-editor.html" id="create-workspace-btn">Create Workspace</a>
