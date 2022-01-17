@@ -7,21 +7,21 @@ customElements.define('signed-in-as',
         }
 
             connectedCallback() {
-             
+             const auth =JSON.parse(localStorage.getItem('auth'))
       
-            if (window.pageStore && window.pageStore.state && window.pageStore.state.auth){
-                const { auth: { idToken, localId: uid }} = window.pageStore.state
+            if (auth){
+                const { idToken, localId: uid,screenName } =auth
                 this.uid = uid
                 this.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
-                this.FB_DATABASE.ref(`invitations/${window.pageStore.state.auth.screenName}/workspaces`).get((error,response)=>{
+                this.FB_DATABASE.ref(`invitations/${screenName}/workspaces`).get((error,response)=>{
                     const data=response && response &&  Object.keys(response)
                     this.innerHTML=``
-                    const auth = window.pageStore.state.auth
+                   
                     
                     document.getElementById('top-bar').insertAdjacentHTML('beforeend', `
                 <div class="mt-1" id="profile">
                 <span>Signed in as</span>
-                <span class="fw-bolder" id="screenname">${auth.screenName}</span>
+                <span class="fw-bolder" id="screenname">${screenName}</span>
                 <span class="fw-bolder">
                 <a href="/invitations.html" >
         

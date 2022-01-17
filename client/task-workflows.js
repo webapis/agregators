@@ -5,7 +5,7 @@ customElements.define('task-workflows', class extends HTMLElement {
     }
     async connectedCallback() {
         this.innerHTML == `loading...`
-        debugger;
+      
         const resources = await import('./resources.js')
         await resources.default()
 
@@ -28,24 +28,26 @@ customElements.define('task-workflows', class extends HTMLElement {
 
             document.getElementById('add-workflow-btn').addEventListener('click',(e)=>{
                 e.preventDefault()
-              //  window.pageStore.dispatch({type:window.actionTypes.ADD_WORKFLOW})
+              
+                
+                localStorage.setItem('workflowEditor',JSON.stringify({selectedBranch:'',selectedRepo:'',workflowDescription:'',workflowKey:''}))
                 window.location.replace('/workflow-editor.html')
             })
 
         window.FB_DATABASE.ref(`workspaces/${workspaceName}/workflowInitials/tasks/${taskId}/workflows`).get((error, result) => {
             if (result) {
-                debugger;
+              
                 const workflows = result && Object.entries(result)
-                debugger;
+              
                      document.getElementById('workflows').innerHTML = ``
                 workflows && workflows.forEach(wf => {
-                    debugger;
+                  
                     const workflowKey = wf[0]
                  //   const workflowName = wf[1]['workflowName']
                     const workflowDescription = wf[1]['workflowDescription']
                     const repoName = wf[1]['repoName']
                     const selectedBranch = wf[1]['selectedBranch']
-                    debugger;
+                  
                  
                     document.getElementById('workflows').insertAdjacentHTML('beforeend', `<div class="list-group-item d-flex justify-content-between "> <a href="#" class="nav-link" id="${workflowKey}-workflow-editor-btn">${repoName}   || ${selectedBranch}|| ${workflowDescription}</a>  <a href="#" id="${workflowKey}-workflow-config-btn" ><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-gear" viewBox="0 0 16 16">
                     <path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z"/>
@@ -53,16 +55,17 @@ customElements.define('task-workflows', class extends HTMLElement {
                   </svg></a></div>`)
                     document.getElementById(`${workflowKey}-workflow-config-btn`).addEventListener('click', (e) => {
                         e.preventDefault()
-                        window.pageStore.dispatch({ type: window.actionTypes.WORKFLOW_SELECTED, payload: {  workflowKey, workflowDescription, repoName } })
+                  
+                       localStorage.setItem('workflowEditor',JSON.stringify({workflowKey, workflowDescription, selectedRepo: repoName,selectedBranch}))
                         window.location.replace('/workflow-configuration.html')
                     })
                     document.getElementById(`${workflowKey}-workflow-editor-btn`).addEventListener('click', (e) => {
                         e.preventDefault()
                         try {
                             
-                
-                       debugger;
-                            window.pageStore.dispatch({ type: window.actionTypes.EDIT_WORKFLOW, payload: {  workflowKey, workflowDescription, selectedRepo: repoName, ownersRepos: [], loading: false,selectedBranch } })
+                            localStorage.setItem('workflowEditor',JSON.stringify({workflowKey, workflowDescription, selectedRepo: repoName,selectedBranch}))
+                     
+                     
                             window.location.replace('/workflow-editor.html')
                         } catch (error) {
 

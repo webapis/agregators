@@ -73,10 +73,12 @@ Before({ timeout: 15000 }, async function (scenario) {
     const order = parseInt(name)
 
     if (order > 0) {
+      debugger;
 
-
-      const authData = await updateIdToken()
-      const { auth: { idToken } } = authData
+      const lsData = await updateIdToken(order)
+      debugger;
+      const { auth: { idToken },
+        lastVisitedUrl } = lsData
       //load backend data from file
       const backEndBefore = fs.readFileSync(`${process.cwd()}/mock-data/back-end/${(order - 1).toString()}-after.json`, { encoding: 'utf-8' })
 
@@ -87,17 +89,26 @@ Before({ timeout: 15000 }, async function (scenario) {
 
       //load data for local storage
 
-      const localStorageBefore = fs.readFileSync(`${process.cwd()}/mock-data/local-storage/${(order - 1).toString()}-after.json`, { encoding: 'utf-8' })
 
-      const { lastVisitedUrl } = JSON.parse(localStorageBefore)
+      debugger;
+      //   update local storage
+      await global.page.evaluate((_lsData) => {
+        function isJSON(str) {
+          try {
+            return (JSON.parse(str) && !!str);
+          } catch (e) {
+            return false;
+          }
+        }
+        for (let l in _lsData) {
+          window.localStorage.setItem(l,JSON.stringify(_lsData[l]))
+        }
+       
 
-
-      // update local storage
-      await global.page.evaluate((_localStorageBefore) => {
-        window.localStorage.setItem("page-store", _localStorageBefore)
-      }, localStorageBefore)
+      }, lsData)
+      debugger;
       await global.page.goto(lastVisitedUrl)
-
+      debugger;
 
     }
   } catch (error) {
@@ -116,27 +127,43 @@ After({ timeout: 15000 }, async function (scenario) {
 
 
     const { pickle: { name } } = scenario
+    const lastVisitedUrl = await global.page.url()
 
-    const authData = await updateIdToken()
-    const { auth: { idToken } } = authData
+    const locData = await global.page.evaluate(() => {
+      const local = localStorage
+      function isJSON(str) {
+        try {
+          return (JSON.parse(str) && !!str);
+        } catch (e) {
+          return false;
+        }
+      }
+      let lsData = {}
+      for (let l in local) {
+        if (localStorage.getItem(l)) {
+          lsData = { ...lsData, [l]: isJSON(local[l]) ? JSON.parse(local[l]) : local[l] }
+        }
 
-    //fetch backend data
+      }
+      return lsData
+    })
+    const { auth } = locData
+    debugger;
+
+    const order = parseInt(name)
+    if (order === 0) {
+      fs.writeFileSync(`${process.cwd()}/mock-data/local-storage/0-after.json`, JSON.stringify({ ...locData, lastVisitedUrl }), { encoding: 'utf-8' })
+    }
+    debugger;
+
+    const { idToken } = auth
+    debugger;
     const backendData = await nodeFetch({ host: process.env.databaseHost, path: `/.json?auth=${idToken}`, method: 'GET', headers: {}, port: process.env.dbPort, ssh: process.env.dbSsh })
     const backendAfter = JSON.parse(backendData)
-
     //save backend data
     fs.writeFileSync(`${process.cwd()}/mock-data/back-end/${name}-after.json`, JSON.stringify(backendAfter), { encoding: 'utf-8' })
-    //get data from local storage
 
-    const localStorageAfter = await global.page.evaluate(() => {
-      return window.localStorage.getItem("page-store")
-    })
-    const lastVisitedUrl = await global.page.url()
-    const localStorageState = { ...JSON.parse(localStorageAfter), lastVisitedUrl }
 
-    //save local storage data to file
-    fs.writeFileSync(`${process.cwd()}/mock-data/local-storage/${name}-after.json`, JSON.stringify(localStorageState), { encoding: 'utf-8' })
-    debugger;
     await global.page.close()
 
   } catch (error) {
@@ -149,37 +176,36 @@ After({ timeout: 15000 }, async function (scenario) {
 
 })
 
-Before({ tags: '@workspace' }, async function () {
 
-})
 AfterAll(async function (error, result) {
   debugger;
-console.log('global.success______',   global.success)
+  console.log('global.success______', global.success)
 
   await global.browser.close();
-  if(global.success >=79){
+  if (global.success >= 79) {
     process.exit(0)
-  } else{
+  } else {
     process.exit(1)
   }
- 
+
 
 })
 
 
 
 
-async function updateIdToken() {
+async function updateIdToken(order) {
 
   const data = fs.readFileSync(`${process.cwd()}/mock-data/local-storage/0-after.json`, { encoding: 'utf-8' })
-
+  debugger;
   const authState = JSON.parse(data)
 
+  debugger;
   if (authState.auth && (authState.auth.timestamp <= Date.now())) {
-
+    debugger;
     const refreshData = await renewIdToken(authState.auth)
     const { id_token } = refreshData
-   
+
     const updatedState = { ...authState, auth: { ...authState.auth, idToken: id_token, timestamp: Date.now() } }
 
 

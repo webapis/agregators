@@ -7,50 +7,54 @@ customElements.define('vars-configuration', class extends HTMLElement {
         this.innerHTML = `Loading...`
         const resources = await import('./resources.js')
         await resources.default()
-        const { auth: { token, idToken, localId: uid }, workspace: { workspaceSelected: { title: workspaceName } }, varConfiguration: { varName, varInputType, varDefault } } = window.pageStore.state
+        const {  title: workspaceName   } = JSON.parse(localStorage.getItem('workspaceSelected'))
+        const { idToken, localId: uid,token } =JSON.parse(localStorage.getItem('auth'))
+   
         this.uid = uid
         window.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
         document.getElementById('ws-breadcrumb').innerText = `Workspace(${workspaceName})`
         const response = await fetch('https://api.github.com/user/repos', { method: 'get', headers: { Accept: "application/vnd.github.v3+json", authorization: `token ${token}` } })
         const ownersRepos = await response.json()
 
-        window.pageStore.dispatch({ type: window.actionTypes.VAR_REPOS_FETCHED, payload: ownersRepos })
+      //  window.pageStore.dispatch({ type: window.actionTypes.VAR_REPOS_FETCHED, payload: ownersRepos })
         window.FB_DATABASE.ref(`server/workspaces/${workspaceName}/repoVars/repos`).get((error, result) => {
             if (result) {
                 const vars = Object.entries(result)
                 debugger;
 
-                window.pageStore.dispatch({ type: window.actionTypes.VARS_FETCHED, payload: vars })
+             //   window.pageStore.dispatch({ type: window.actionTypes.VARS_FETCHED, payload: vars })
+             this.render({ varEditor, vars })
+                
             } else {
 
 
-                window.pageStore.dispatch({ type: window.actionTypes.VARS_FETCHED, payload: [] })
+             //   window.pageStore.dispatch({ type: window.actionTypes.VARS_FETCHED, payload: [] })
             }
 
         })
-        window.pageStore.subscribe(window.actionTypes.VAR_ADDED, state => {
-            const { auth: { token, idToken, localId: uid }, workspace: { workspaceSelected: { title: workspaceName } }, varConfiguration: { varEditor, vars } } = state
-            debugger;
-            this.render({ varEditor, vars })
-        })
-        window.pageStore.subscribe(window.actionTypes.VARS_FETCHED, state => {
-            const { auth: { token, idToken, localId: uid }, workspace: { workspaceSelected: { title: workspaceName } }, varConfiguration: { varEditor, vars } } = state
-            this.render({ varEditor, vars })
-        })
-        window.pageStore.subscribe(window.actionTypes.EDIT_VAR_CLICKED, state => {
-            const { auth: { token, idToken, localId: uid }, workspace: { workspaceSelected: { title: workspaceName } }, varConfiguration: { varEditor, vars } } = state
-            this.render({ varEditor, vars })
-        })
-        window.pageStore.subscribe(window.actionTypes.VAR_UPDATED, state => {
-            const { auth: { token, idToken, localId: uid }, workspace: { workspaceSelected: { title: workspaceName } }, varConfiguration: { varEditor, vars } } = state
-            debugger;
-            this.render({ varEditor, vars })
-        })
-        window.pageStore.subscribe(window.actionTypes.VAR_REMOVED, state => {
-            const { auth: { token, idToken, localId: uid }, workspace: { workspaceSelected: { title: workspaceName } }, varConfiguration: { varEditor, vars } } = state
-            debugger;
-            this.render({ varEditor, vars })
-        })
+        // window.pageStore.subscribe(window.actionTypes.VAR_ADDED, state => {
+        //     const { auth: { token, idToken, localId: uid }, workspace: { workspaceSelected: { title: workspaceName } }, varConfiguration: { varEditor, vars } } = state
+        //     debugger;
+        //     this.render({ varEditor, vars })
+        // })
+        // window.pageStore.subscribe(window.actionTypes.VARS_FETCHED, state => {
+        //     const { auth: { token, idToken, localId: uid }, workspace: { workspaceSelected: { title: workspaceName } }, varConfiguration: { varEditor, vars } } = state
+        //     this.render({ varEditor, vars })
+        // })
+        // window.pageStore.subscribe(window.actionTypes.EDIT_VAR_CLICKED, state => {
+        //     const { auth: { token, idToken, localId: uid }, workspace: { workspaceSelected: { title: workspaceName } }, varConfiguration: { varEditor, vars } } = state
+        //     this.render({ varEditor, vars })
+        // })
+        // window.pageStore.subscribe(window.actionTypes.VAR_UPDATED, state => {
+        //     const { auth: { token, idToken, localId: uid }, workspace: { workspaceSelected: { title: workspaceName } }, varConfiguration: { varEditor, vars } } = state
+        //     debugger;
+        //     this.render({ varEditor, vars })
+        // })
+        // window.pageStore.subscribe(window.actionTypes.VAR_REMOVED, state => {
+        //     const { auth: { token, idToken, localId: uid }, workspace: { workspaceSelected: { title: workspaceName } }, varConfiguration: { varEditor, vars } } = state
+        //     debugger;
+        //     this.render({ varEditor, vars })
+        // })
     }
 
     render({ varEditor, vars }) {

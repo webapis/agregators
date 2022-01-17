@@ -8,12 +8,15 @@ customElements.define('workflow-configuration', class extends HTMLElement {
         const resources = await import('./resources.js')
         await resources.default()
 
-        const { auth: { idToken, localId: uid }, workspace: { workspaceSelected: { title: workspaceName } }, workspaceTasks: { taskSelected: { taskName, id: taskId } }, taskWorkflows: { workflowSelected: { workflowName, workflowKey, repoName } } } = window.pageStore.state
-
+      //  const { auth: { idToken, localId: uid }, workspace: { workspaceSelected: { title: workspaceName } }, workspaceTasks: { taskSelected: { taskName, id: taskId } }, taskWorkflows: { workflowSelected: { workflowName, workflowKey, repoName } } } = window.pageStore.state
+      const { title: workspaceName } = JSON.parse(localStorage.getItem('workspaceSelected'))
+      const { idToken, localId: uid, token } = JSON.parse(localStorage.getItem('auth'))
+      const { taskName, id: taskId } = JSON.parse(localStorage.getItem('taskSelected'))
+      const {selectedRepo,workflowKey} = JSON.parse(localStorage.getItem('workflowEditor'))
 
         document.getElementById('ws-breadcrumb').innerText = `Workspace(${workspaceName})`
         document.getElementById('task-breadcrumb').innerText = `Task(${taskName})`
-        document.getElementById('workflow-breadcrumb').innerText = `Configuration(${workflowName})`
+        document.getElementById('workflow-breadcrumb').innerText = `Configuration(${selectedRepo})`
         this.uid = uid
         window.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
         this.innerHTML = `
@@ -24,29 +27,9 @@ customElements.define('workflow-configuration', class extends HTMLElement {
         <div id="var-container" class="row">Loading..</div>`
 
 
-        window.FB_DATABASE.ref(`server/workspaces/${workspaceName}/repoVars/repos/${repoName}/vars`).get((error, repoVars) => {
+        window.FB_DATABASE.ref(`server/workspaces/${workspaceName}/repoVars/repos/${selectedRepo}/vars`).get((error, repoVars) => {
             let mergedVarConfig = {}
-            
-            // const  = Object.entries(result).reduce((prev, curr, i) => {
-            //     if (i === 0) {
-
-            //         return { [curr[1]['varName']]: { ...curr[1], value: '' } }
-            //     }
-            //     else {
-
-            //         return { ...prev, [curr[1]['varName']]: { ...curr[1], value: '' } }
-            //     }
-
-            // }, {})
-
-            window.pageStore.dispatch({ type: window.actionTypes.REPO_VARS_FETCHED, payload: repoVars })
-
-
-
-        })
-
-        window.pageStore.subscribe(window.actionTypes.REPO_VARS_FETCHED, state => {
-            const { workflowConfiguration: { repoVars } } = state
+            debugger;
             window.FB_DATABASE.ref(`server/workspaces/${workspaceName}/tasks/${taskId}/workflows/${workflowKey}/vars`).get((error, workflowfVars) => {
                 if (workflowfVars) {
                     const mergedVars = { ...repoVars, ...workflowfVars }
@@ -63,7 +46,7 @@ customElements.define('workflow-configuration', class extends HTMLElement {
                         }
                     }
                     
-                    window.pageStore.dispatch({ type: window.actionTypes.WORKFLOW_VARS_FETCHED, payload: mergedVars })
+                   // window.pageStore.dispatch({ type: window.actionTypes.WORKFLOW_VARS_FETCHED, payload: mergedVars })
                     this.render({ mergedVarConfig: mergedVars })
                     
                 } else {
@@ -72,12 +55,20 @@ customElements.define('workflow-configuration', class extends HTMLElement {
                         repoVars[rv].value = ''
                         
                     }
-                    window.pageStore.dispatch({ type: window.actionTypes.WORKFLOW_VARS_FETCHED, payload: repoVars })
+                   // window.pageStore.dispatch({ type: window.actionTypes.WORKFLOW_VARS_FETCHED, payload: repoVars })
                     this.render({ mergedVarConfig: repoVars })
                 }
             })
 
+
+
         })
+
+        // window.pageStore.subscribe(window.actionTypes.REPO_VARS_FETCHED, state => {
+        //     const { workflowConfiguration: { repoVars } } = state
+        
+
+        // })
 
 
     }
