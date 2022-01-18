@@ -17,6 +17,7 @@ customElements.define('workspace-tasks', class extends HTMLElement {
 
         const {  title: workspaceName   } = JSON.parse(localStorage.getItem('workspaceSelected'))
         const { idToken, localId: uid, token, screenName } =JSON.parse(localStorage.getItem('auth'))
+        debugger;
         this.uid = uid
         window.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
 
@@ -27,10 +28,10 @@ customElements.define('workspace-tasks', class extends HTMLElement {
         `
         //check if runner is previously forked
         const wfRunnerBranchUrl = `https://api.github.com/repos/${screenName}/workflow_runner/branches/main`
-        const responseDeleteABranch = await fetch(wfRunnerBranchUrl, { headers: { Accept: "application/vnd.github.v3+json", authorization: `token ${token}` } })
-        console.log('responseDeleteABranch',responseDeleteABranch)
+        const responseBranch = await fetch(wfRunnerBranchUrl, { headers: { Accept: "application/vnd.github.v3+json", authorization: `token ${token}` } })
+        console.log('responseBranch',responseBranch)
         debugger;
-        const forked = responseDeleteABranch.ok
+        const forked = responseBranch.ok
         debugger;
         if(forked){
             //upstream forked runner
@@ -53,9 +54,6 @@ customElements.define('workspace-tasks', class extends HTMLElement {
 
                 this.loadTasks({workspaceName})
                 //display workspace tasks
-
-              
-
             } else{
                 //enable runners workflow
                 this.loadEnableWorkflow()
@@ -64,12 +62,8 @@ customElements.define('workspace-tasks', class extends HTMLElement {
             
          debugger;
             //fork runner
-            this.loadForkRunner()
-
-            
+            this.loadForkRunner()   
         }
-
-
 
     }
 
@@ -96,14 +90,11 @@ customElements.define('workspace-tasks', class extends HTMLElement {
                     element.addEventListener('click', e => {
                         e.preventDefault()
                         const { id, name } = e.target
-                        
-                  
                         localStorage.setItem('taskSelected',JSON.stringify({id, taskName: name }))
                         window.location.replace('./task-workflows.html')
                     })
                 })
             } else{
-          
                 taskElement
                 .innerHTML='0 Tasks found'
                 
@@ -170,8 +161,8 @@ customElements.define('fork-workflow-runner-btn', class extends HTMLElement {
     }
 
     async connectedCallback() {
-        const { auth: { token } } = window.pageStore.state
-  
+        //const { auth: { token } } = window.pageStore.state
+        const {token} =JSON.parse(localStorage.getItem('auth'))
 
         this.render({ token })
        

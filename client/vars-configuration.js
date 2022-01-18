@@ -7,54 +7,39 @@ customElements.define('vars-configuration', class extends HTMLElement {
         this.innerHTML = `Loading...`
         const resources = await import('./resources.js')
         await resources.default()
-        const {  title: workspaceName   } = JSON.parse(localStorage.getItem('workspaceSelected'))
-        const { idToken, localId: uid,token } =JSON.parse(localStorage.getItem('auth'))
-   
+        const { title: workspaceName } = JSON.parse(localStorage.getItem('workspaceSelected'))
+        const { idToken, localId: uid, token } = JSON.parse(localStorage.getItem('auth'))
+        //set initial state for varEditor
+        localStorage.getItem('varEditor') ? JSON.parse(localStorage.getItem('varEditor')) : localStorage.setItem('varEditor', JSON.stringify({ repoName: '', varName: '', inputType: '', defaultValue: '',varKey:'', editVar: false, ownersRepos: [],vars:[] }))
+
         this.uid = uid
         window.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
         document.getElementById('ws-breadcrumb').innerText = `Workspace(${workspaceName})`
+        //local owners repos
         const response = await fetch('https://api.github.com/user/repos', { method: 'get', headers: { Accept: "application/vnd.github.v3+json", authorization: `token ${token}` } })
         const ownersRepos = await response.json()
-
-      //  window.pageStore.dispatch({ type: window.actionTypes.VAR_REPOS_FETCHED, payload: ownersRepos })
+        const varEditor = JSON.parse(localStorage.getItem('varEditor'))
+        localStorage.setItem('varEditor',JSON.stringify({...varEditor,ownersRepos}))
+        debugger;
+     
         window.FB_DATABASE.ref(`server/workspaces/${workspaceName}/repoVars/repos`).get((error, result) => {
-            if (result) {
-                const vars = Object.entries(result)
-                debugger;
 
-             //   window.pageStore.dispatch({ type: window.actionTypes.VARS_FETCHED, payload: vars })
-             this.render({ varEditor, vars })
-                
+            if (!error) {
+                const vars = result && Object.entries(result)
+
+
+               
+                const varEditor = JSON.parse(localStorage.getItem('varEditor'))
+                this.render({ varEditor, vars: vars !== null ? vars : [] })
+
             } else {
 
 
-             //   window.pageStore.dispatch({ type: window.actionTypes.VARS_FETCHED, payload: [] })
+               
             }
 
         })
-        // window.pageStore.subscribe(window.actionTypes.VAR_ADDED, state => {
-        //     const { auth: { token, idToken, localId: uid }, workspace: { workspaceSelected: { title: workspaceName } }, varConfiguration: { varEditor, vars } } = state
-        //     debugger;
-        //     this.render({ varEditor, vars })
-        // })
-        // window.pageStore.subscribe(window.actionTypes.VARS_FETCHED, state => {
-        //     const { auth: { token, idToken, localId: uid }, workspace: { workspaceSelected: { title: workspaceName } }, varConfiguration: { varEditor, vars } } = state
-        //     this.render({ varEditor, vars })
-        // })
-        // window.pageStore.subscribe(window.actionTypes.EDIT_VAR_CLICKED, state => {
-        //     const { auth: { token, idToken, localId: uid }, workspace: { workspaceSelected: { title: workspaceName } }, varConfiguration: { varEditor, vars } } = state
-        //     this.render({ varEditor, vars })
-        // })
-        // window.pageStore.subscribe(window.actionTypes.VAR_UPDATED, state => {
-        //     const { auth: { token, idToken, localId: uid }, workspace: { workspaceSelected: { title: workspaceName } }, varConfiguration: { varEditor, vars } } = state
-        //     debugger;
-        //     this.render({ varEditor, vars })
-        // })
-        // window.pageStore.subscribe(window.actionTypes.VAR_REMOVED, state => {
-        //     const { auth: { token, idToken, localId: uid }, workspace: { workspaceSelected: { title: workspaceName } }, varConfiguration: { varEditor, vars } } = state
-        //     debugger;
-        //     this.render({ varEditor, vars })
-        // })
+       
     }
 
     render({ varEditor, vars }) {
@@ -98,26 +83,32 @@ customElements.define('vars-configuration', class extends HTMLElement {
 
         document.getElementById(`update-var-btn`).addEventListener('click', (e) => {
 
-            const {workspace: { workspaceSelected: { title: workspaceName } }, varConfiguration: { varEditor: { varName, inputType, defaultValue, repoName, varKey } } } = window.pageStore.state
+          
+            const { varName, inputType, defaultValue, repoName,varKey }  =JSON.parse(localStorage.getItem('varEditor'))
+            const { title: workspaceName } = JSON.parse(localStorage.getItem('workspaceSelected'))
             window.FB_DATABASE.ref(`server/workspaces/${workspaceName}/repoVars/repos/${repoName}/vars/${varKey}`).update({ inputType, defaultValue, varName }, (error, result) => {
-                window.pageStore.dispatch({ type: window.actionTypes.VAR_UPDATED, payload: { varName, inputType, defaultValue, varKey, repoName } })
+                debugger;
+                const varEditor  =JSON.parse(localStorage.getItem('varEditor'))
+                localStorage.setItem('varEditor', JSON.stringify({ ...varEditor, repoName:'', defaultValue:'', varName:'', inputType:'', varKey:'',editVar:false }))
+                location.reload()
+           
             })
         })
         if (vars.length > 0) {
             vars.forEach(v => {
-                debugger;
+
                 const repoName = v[0]
                 const props = Object.entries(v[1]['vars'])
                 props.forEach(prop => {
-                    debugger;
+
                     const varKey = prop[0]
                     const obj = prop[1]
-                    debugger;
+
 
                     const defaultValue = obj['defaultValue']
                     const inputType = obj['inputType']
                     const varName = obj['varName']
-                    debugger;
+
                     document.getElementById('var-table').insertAdjacentHTML('beforeend', `<tr id ="${varKey}-tr">
                     <th scope="row"></th>
                     <td>${repoName}</td>
@@ -129,17 +120,19 @@ customElements.define('vars-configuration', class extends HTMLElement {
                   </tr>`)
 
                     document.getElementById(`${varKey}-edit-btn`).addEventListener('click', (e) => {
-                        debugger;
-                        window.pageStore.dispatch({ type: window.actionTypes.EDIT_VAR_CLICKED, payload: { repoName, defaultValue, varName, inputType, varKey } })
+                        const varEditor = JSON.parse(localStorage.getItem('varEditor'))
+                        localStorage.setItem('varEditor', JSON.stringify({ ...varEditor, repoName, defaultValue, varName, inputType, varKey,editVar:true }))
+                        location.reload()
+                     
                     })
                     document.getElementById(`${varKey}-remove-btn`).addEventListener('click', (e) => {
-                        debugger;
-                        const { workspace: { workspaceSelected: { title: workspaceName } } } = window.pageStore.state
-                        debugger;
+
+                        const { title: workspaceName } = JSON.parse(localStorage.getItem('workspaceSelected'))
+
                         window.FB_DATABASE.ref(`server/workspaces/${workspaceName}/repoVars/repos/${repoName}/vars/${varKey}`).remove((error, result) => {
 
-                            debugger;
-                            window.pageStore.dispatch({ type: window.actionTypes.VAR_REMOVED, payload: { repoName, varKey } })
+                            location.reload()
+                         
                         })
                     })
 
@@ -154,27 +147,32 @@ customElements.define('vars-configuration', class extends HTMLElement {
         document.getElementById('var-name-input').addEventListener('input', (e) => {
             const { value } = e.target
 
-            window.pageStore.dispatch({ type: window.actionTypes.VAR_NAME_CHANGED, payload: value })
+         
+          const varEditor = JSON.parse(localStorage.getItem('varEditor'))
+          localStorage.setItem('varEditor', JSON.stringify({ ...varEditor, varName: value }))
         })
 
         document.getElementById('input-type-selector').addEventListener('change', (e) => {
             const { value } = e.target
-            window.pageStore.dispatch({ type: window.actionTypes.VAR_TYPE_CHANGED, payload: value })
+         
+            const varEditor = JSON.parse(localStorage.getItem('varEditor'))
+            localStorage.setItem('varEditor', JSON.stringify({ ...varEditor, inputType: value }))
         })
 
         document.getElementById('var-default-value').addEventListener('input', (e) => {
             const { value } = e.target
-            window.pageStore.dispatch({ type: window.actionTypes.VAR_DEFAULT_CHANGED, payload: value })
+            const varEditor = JSON.parse(localStorage.getItem('varEditor'))
+            localStorage.setItem('varEditor', JSON.stringify({ ...varEditor,    defaultValue: value }))
         })
 
         document.getElementById('add-var-btn').addEventListener('click', (e) => {
-            const { workspace: { workspaceSelected: { title: workspaceName } }, varConfiguration: { varEditor: { varName, inputType, defaultValue, repoName } } } = window.pageStore.state
+            const { varName, inputType, defaultValue, repoName }  =JSON.parse(localStorage.getItem('varEditor'))
+            const { title: workspaceName } = JSON.parse(localStorage.getItem('workspaceSelected'))
+            
             window.FB_DATABASE.ref(`server/workspaces/${workspaceName}/repoVars/repos/${repoName}/vars`).push({ varName, inputType, defaultValue }, (error, result) => {
                 const { name: varKey } = result
-                window.pageStore.dispatch({ type: window.actionTypes.VAR_ADDED, payload: { varName, inputType, defaultValue, varKey, repoName } })
-          
-                debugger;
-                
+                const varEditor = JSON.parse(localStorage.getItem('varEditor'))
+                localStorage.setItem('varEditor', JSON.stringify({ ...varEditor,repoName: '', varName: '', inputType: '', defaultValue: '', vars:[...varEditor.vars,{ varName, inputType, defaultValue, varKey, repoName }] }))
                 document.getElementById('var-table').insertAdjacentHTML('beforeend', `<tr id ="${repoName}-tr">
                 <th scope="row"></th>
                 <td>${repoName}</td>
@@ -184,8 +182,8 @@ customElements.define('vars-configuration', class extends HTMLElement {
                 <td><button class="btn btn-outline-secondary">Edit</button></td>
                 <td><button class="btn btn-outline-secondary">Remove</button></td>
               </tr>`)
-              debugger;
-           
+
+
             })
         })
     }
@@ -198,7 +196,7 @@ customElements.define('github-repos', class extends HTMLElement {
         super()
     }
     async connectedCallback() {
-        const { varConfiguration: { varEditor: { repoName }, ownersRepos } } = window.pageStore.state
+        const { repoName, ownersRepos } = JSON.parse(localStorage.getItem('varEditor'))
 
 
         this.innerHTML = `
@@ -208,10 +206,6 @@ customElements.define('github-repos', class extends HTMLElement {
 
         this.render({ ownersRepos, repoName })
 
-        window.pageStore.subscribe(window.actionTypes.VAR_REPO_SELECTED, state => {
-            const { varConfiguration: { varEditor: { repoName }, ownersRepos } } = state
-            this.render({ ownersRepos, repoName })
-        })
     }
     async render({ ownersRepos, repoName }) {
 
@@ -228,16 +222,10 @@ customElements.define('github-repos', class extends HTMLElement {
             console.log('e', e.inputType)
             if (e.inputType === undefined) {
                 const { value } = e.target
-                const { workflowEditor: { ownersRepos } } = window.pageStore.state
-                const selectedRepository = ownersRepos.find(o => o.name === value)
-
-
-                window.pageStore.dispatch({ type: window.actionTypes.VAR_REPO_SELECTED, payload: value })
+                const varEditor = JSON.parse(localStorage.getItem('varEditor'))
+                localStorage.setItem('varEditor', JSON.stringify({ ...varEditor, repoName: value }))
             }
-
         })
-
-
     }
 
 })

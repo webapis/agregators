@@ -1,4 +1,4 @@
-
+@workspace
 Feature: Workspace
 
 Scenario: 1
@@ -40,7 +40,7 @@ User creates private workspace
     Then component with "#local_pub_ws_bdd-ws-access-level" selector is visible to user 225
     Then component with "#local_pub_ws_bdd-ws-owner" selector is visible to user 226
 
-@workspace
+
  Scenario: 3
 
  User creates workspace vars
