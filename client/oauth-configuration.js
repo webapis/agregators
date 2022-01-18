@@ -6,7 +6,9 @@ customElements.define('oauth-configuration', class extends HTMLElement{
    async connectedCallback(){
     const resources = await import('./resources.js')
     await resources.default()
-    const { auth: { idToken, localId: uid, googleOauth }, workspace: { workspaceSelected: { title: workspaceName } } } = window.pageStore.state
+   // const { auth: { idToken, localId: uid, googleOauth }, workspace: { workspaceSelected: { title: workspaceName } } } = window.pageStore.state
+    const { title: workspaceName } = JSON.parse(localStorage.getItem('workspaceSelected'))
+    const { idToken, localId: uid, token } = JSON.parse(localStorage.getItem('auth'))
     this.uid = uid
     window.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
     document.getElementById('ws-breadcrumb').innerText = `Workspace(${workspaceName})`

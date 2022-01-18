@@ -49,8 +49,9 @@ function firebase() {
                 }
      
             } catch (error) {
-                const {message}=error
-                window.pageStore.dispatch({ type: window.actionTypes.CLIENT_ERROR, payload: message })
+                throw error
+             //   const {message}=error
+               // window.pageStore.dispatch({ type: window.actionTypes.CLIENT_ERROR, payload: message })
             }
           
          
