@@ -195,7 +195,7 @@ customElements.define('enable-workflows', class extends HTMLElement{
     }
 
     connectedCallback(){
-        const { auth: { screenName } } = window.pageStore.state
+        const {  screenName }  = JSON.parse(localStorage.getItem('auth'))
         this.innerHTML=`<a href="https://github.com/${screenName}/workflow_runner/actions"  target="_blank" id="enable-workflow-link">Enable Workflows</a>`
     }
 })

@@ -19,7 +19,8 @@ Enable Github workflow
 
 Scenario: 6
 User creates workspace task
-    Given component with "#add-task-btn" selector is visible to user 601     
+    Given page is navigated to "https://localhost:8888/workspace-tasks.html" 600
+    And component with "#add-task-btn" selector is visible to user 601     
     And user clicks to button with "#add-task-btn" selector 602
     And component with "#taskname" selector is visible to user 603  
     And user types "Task 1" to input with "#taskname" selector 604
