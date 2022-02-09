@@ -28,7 +28,7 @@
   "scripts": {
     "snipe": "node snipe.js",
     "local:start": "SERVER=LOCAL_SERVER node root/index.js",
-    "fb:emulator": "FIREBASE_DATABASE_EMULATOR_HOST='localhost:9000' firebase emulators:start",
+    "fb:emulator": "firebase emulators:start",
     "wfRunner": "node ./node_modules/workflow_runner/devServer.js",
     "netlifyDev": "netlify dev",
     "testCucumber:@auth": "./node_modules/.bin/cucumber-js --tags @auth",

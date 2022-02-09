@@ -9,6 +9,7 @@ console.log('process.env.headless.....', (/true/i).test(process.env.headless))
 
 const launchOptions = {
   timeout: 0,
+  //slowMo: 15,
   headless: (/true/i).test(process.env.headless),
 
   // executablePath:
@@ -28,8 +29,14 @@ const launchOptions = {
     "--unsafely-treat-insecure-origin-as-secure=https://localhost:8888"
   ]// ,devtools: true
 };
+
+//BEFORE_ALL HOOK---------------------------------------------
 BeforeAll({ timeout: 15000 }, async function () {
   try {
+
+    //1. LAUNCH BROWSER
+    global.browser = await puppeteer.launch(launchOptions);
+
     const screenshotsFolderPath = `${process.cwd()}/screenshots`
     if (fs.existsSync(screenshotsFolderPath)) {
 
@@ -40,14 +47,6 @@ BeforeAll({ timeout: 15000 }, async function () {
       await makeDir.sync(screenshotsFolderPath)
     }
 
-
-
-    //Initialize puppetteer
-    global.browser = await puppeteer.launch(launchOptions);
-
-
-
-    // perform some shared setup
   } catch (error) {
 
     console.log('error', error)
@@ -56,53 +55,45 @@ BeforeAll({ timeout: 15000 }, async function () {
 
 });
 
-
+//BEFORE HOOK------------------------------------------
 Before({ timeout: 15000 }, async function (scenario) {
   try {
+    //1.CREATE NEW PAGE
     global.page = await global.browser.newPage()
     await global.page.setViewport({
       width: 1200,
       height: 1250,
       deviceScaleFactor: 1,
     });
-    console.log('CRPKY', process.env.CRPKY)
-    await global.page.goto('https://localhost:8888')
+    
+    
+
+    //2.GET SCENARIO ORDER
     const { pickle: { name } } = scenario
-
-
     const order = parseInt(name)
 
+    //3.SET PREVIOUD LOCAL STORAGE AND FIREBASE DATABASE STATE
     if (order > 0) {
-      
-
-      const lsData = await updateIdToken(order)
-      
-      const { auth: { idToken },
-        lastVisitedUrl } = lsData
-      //load backend data from file
-      const backEndBefore = fs.readFileSync(`${process.cwd()}/mock-data/back-end/${(order - 1).toString()}-after.json`, { encoding: 'utf-8' })
-
-      console.log('process.env.dbPort__', process.env.dbPort)
-      console.log('process.env.dbSsh__', process.env.dbSsh)
-      // upload backend data
-      const response = await nodeFetch({ host: process.env.databaseHost, path: `/.json?auth=${idToken}`, method: 'PUT', body: backEndBefore, headers: {}, port: process.env.dbPort, ssh: process.env.dbSsh })
-
-      //load data for local storage
+      //3.1. NAVIGATE TO WEBSITE ROOT TO INITIALIZE LOCAL STORAGE-----------------------------------------------------------------
+       await global.page.goto('https://localhost:8888')
+      //-----------------------------------------------------END------------------------------------------------------------------
 
 
-      
-      //   update local storage
+      //3.2 SET BROWSERS LAST LOCAL STORAGE STATE ---START--------------------------------------------------------------------------
+      const lsData = await getLocalStorageData(order)
       await global.page.evaluate((_lsData) => {
-
         for (let l in _lsData) {
-          window.localStorage.setItem(l,JSON.stringify(_lsData[l]))
+          window.localStorage.setItem(l, JSON.stringify(_lsData[l]))
         }
-       
-
       }, lsData)
-      
-   //   await global.page.goto(lastVisitedUrl)
-      
+      //------------------------------------------END--------------------------------------------------------------------------------
+
+
+      //3.2 SET FIREBASE DATABASE'S PREVIOUS STATE --START------------------------------------------------------------------------------
+      const { auth: { idToken } } = lsData
+      const backEndBefore = fs.readFileSync(`${process.cwd()}/mock-data/back-end/${(order - 1).toString()}-after.json`, { encoding: 'utf-8' })
+      await nodeFetch({ host: process.env.databaseHost, path: `/.json?auth=${idToken}`, method: 'PUT', body: backEndBefore, headers: {}, port: process.env.dbPort, ssh: process.env.dbSsh })
+      //--------------------------------------------END------------------------------------------------------------------------------
 
     }
   } catch (error) {
@@ -114,15 +105,17 @@ Before({ timeout: 15000 }, async function (scenario) {
 
 
 })
-
+//AFTER HOOK---------------------------------------
 After({ timeout: 15000 }, async function (scenario) {
 
   try {
 
-
+    //1.GET SCENARIO ORDER---START-----------------------
     const { pickle: { name } } = scenario
-    const lastVisitedUrl = await global.page.url()
+    //---------------------END------------------------------
 
+
+    //2.SAVE BROWSER'S LOCAL STORAGE STATE TO FILE --START--------------------------
     const locData = await global.page.evaluate(() => {
       const local = localStorage
       function isJSON(str) {
@@ -137,45 +130,43 @@ After({ timeout: 15000 }, async function (scenario) {
         if (localStorage.getItem(l)) {
           lsData = { ...lsData, [l]: isJSON(local[l]) ? JSON.parse(local[l]) : local[l] }
         }
-
       }
       return lsData
     })
+    fs.writeFileSync(`${process.cwd()}/mock-data/local-storage/${name}-after.json`, JSON.stringify(locData), { encoding: 'utf-8' })
+    //-------------------------------------------------END--------------------------
+
+
+
+    //3. SAVE FIREBASE DATABASE STATE TO LOCAL FILE --START---------------------
     const { auth } = locData
-    
-
-  //  const order = parseInt(name)
-  //  if (order === 0) {
-      fs.writeFileSync(`${process.cwd()}/mock-data/local-storage/0-after.json`, JSON.stringify(locData), { encoding: 'utf-8' })
-    //}
-    
-
     const { idToken } = auth
-    
     const backendData = await nodeFetch({ host: process.env.databaseHost, path: `/.json?auth=${idToken}`, method: 'GET', headers: {}, port: process.env.dbPort, ssh: process.env.dbSsh })
     const backendAfter = JSON.parse(backendData)
-    //save backend data
     fs.writeFileSync(`${process.cwd()}/mock-data/back-end/${name}-after.json`, JSON.stringify(backendAfter), { encoding: 'utf-8' })
+    //--------------------------------------------------END---------------------
 
 
+
+    //4.CLOSE PAGE------------------------------
     await global.page.close()
+    //----------------------END-----------------
+
 
   } catch (error) {
 
     console.log('error', error)
     process.exit(1)
   }
-
-
-
 })
 
-
+//--AFTER_ALL HOOK---------------------------------------------START---------------------------------------
 AfterAll(async function (error, result) {
-  
-  console.log('global.success______', global.success)
 
+
+  //1.CLOSE BROWSER----------------------------
   await global.browser.close();
+
   if (global.success >= 79) {
     process.exit(0)
   } else {
@@ -185,18 +176,18 @@ AfterAll(async function (error, result) {
 
 })
 
+//-----------------------------------------------------------------END---------------------------------------
 
-
-
-async function updateIdToken(order) {
+//HELPER FUNCTIONS-------------------------START----------------------------------
+async function getLocalStorageData(order) {
 
   const data = fs.readFileSync(`${process.cwd()}/mock-data/local-storage/0-after.json`, { encoding: 'utf-8' })
-  
+
   const authState = JSON.parse(data)
 
-  
+  //refresh token if expired and save to mock_data/local-storage and return local-storage data from local file
   if (authState.auth && (authState.auth.timestamp <= Date.now())) {
-    
+
     const refreshData = await renewIdToken(authState.auth)
     const { id_token } = refreshData
 
@@ -208,7 +199,8 @@ async function updateIdToken(order) {
     return updatedState
 
   } else {
-    console.log('old auth')
+    //if refresh token is not expired just return local-storage data from local file
+
     return require(`${process.cwd()}/mock-data/local-storage/0-after.json`)
   }
 
@@ -223,3 +215,5 @@ async function renewIdToken({ api_key, refreshToken }) {
 
   return data
 }
+
+//----------------------------------------------END----------------------------------

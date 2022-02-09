@@ -65,14 +65,20 @@ User creates private workspace
 
   Scenario: 4
 User enables google oauth for selected workflow
-
-    Given user navigated to google-oauth-config.html page 401
-    And component with "#google-scopes-input" selector is visible to user 402
-    And user types "https://www.googleapis.com/auth/gmail.send https://www.googleapis.com/auth/drive" to input with "#google-scopes-input" selector 403
-    And user clicks to button with "#save-scopes-btn" selector 404
-    And button with "#authenticate-btn" selector is enabled 405
-    When user clicks to button with "#authenticate-btn" selector 406
-    Then button with "#authenticate-btn" selector is disabled 407
+    Given page is navigated to "https://localhost:8888/workspaces-list.html" 401
+    And component with "#public-tab" selector is visible to user 402
+    And user clicks to button with "#public-tab" selector 403
+    And component with "#local_pub_ws_bdd-link" selector is visible to user 404
+    And user clicks to button with "#local_pub_ws_bdd-link" selector 405
+    And user navigated to google-oauth-config.html page 406
+    And component with "#google-scopes-input" selector is visible to user 407
+    And user types "https://www.googleapis.com/auth/gmail.send https://www.googleapis.com/auth/drive" to input with "#google-scopes-input" selector 408
+    And user clicks to button with "#save-scopes-btn" selector 409
+    And component with "#authenticate-btn" selector is visible to user 410
+    And button with "#authenticate-btn" selector is enabled 411
+    And user clicks to button with "#authenticate-btn" selector 412
+    And component with "#edit-scopes-btn" selector is visible to user 413
+    And button with "#edit-scopes-btn" selector is enabled 414
 
 
   

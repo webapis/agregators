@@ -3,7 +3,7 @@ const assert = require('assert');
 const { Given, When, Then } = require('@cucumber/cucumber');
 
 
-const debuggedOrder = 506
+const debuggedOrder = 412
 const log = true
 global.success = 0
 Given('user clicks to button with {string} selector {int}', { timeout: 15000 }, async function (id, order) {
@@ -19,6 +19,8 @@ Given('user clicks to button with {string} selector {int}', { timeout: 15000 }, 
         if (order === debuggedOrder) {
             debugger;
         }
+      
+   
         global.success++
         // await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-success-${id}.png` });
 

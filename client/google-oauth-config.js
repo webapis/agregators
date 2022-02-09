@@ -34,10 +34,10 @@ customElements.define('google-oauth-config', class extends HTMLElement {
         <textarea class="form-control" id="google-scopes-input" rows="3" ${!editable && "disabled"}>${scopes}</textarea>
         </div>
         <div class="col-auto">
-        <button type="submit" class="btn btn-primary mb-3" id="save-scopes-btn" ${!editable && "hidden"}>Save</button>
-        <button type="submit" class="btn btn-primary mb-3" id="edit-scopes-btn" ${editable && "hidden"}>Edit</button>
-        <button type="submit" class="btn btn-primary mb-3"id="authenticate-btn" ${(editable || googleOauth) && 'disabled'}>${googleOauth ? 'Authenticated' : 'Authenticate'}</button>
-        <button type="submit" class="btn btn-primary mb-3" id="revoke-scopes-btn">Revoke</button>
+        <button  class="btn btn-primary mb-3" id="save-scopes-btn" ${!editable && "hidden"}>Save</button>
+        <button  class="btn btn-primary mb-3" id="edit-scopes-btn" ${editable && "hidden"}>Edit</button>
+        <button  class="btn btn-primary mb-3"id="authenticate-btn" ${(editable || googleOauth) && 'disabled'}>${googleOauth ? 'Authenticated' : 'Authenticate'}</button>
+        <button  class="btn btn-primary mb-3" id="revoke-scopes-btn">Revoke</button>
         </div>
         </div>`
         document.getElementById('google-scopes-input').addEventListener('input', (e) => {
@@ -48,19 +48,25 @@ customElements.define('google-oauth-config', class extends HTMLElement {
         })
 
         document.getElementById('save-scopes-btn').addEventListener('click', (e) => {
-
+debugger;
             const { title: workspaceName } = JSON.parse(localStorage.getItem('workspaceSelected'))
             const { googleAuthConfig: { scopes } } = JSON.parse(localStorage.getItem('google'))
+            const ref =window.FB_DATABASE.ref(`workspaces/${workspaceName}/oauth/scopes/google`)
             debugger;
-            window.FB_DATABASE.ref(`workspaces/${workspaceName}/oauth/scopes/google`).update({ scopes }, (error, result) => {
-                debugger;
-                const google = JSON.parse(localStorage.getItem('google'))
-                debugger;
-                localStorage.setItem('google', JSON.stringify({ ...google, googleAuthConfig: { ...google.googleAuthConfig, scopes, editable: false } }))
-                debugger;
-                location.reload()
+            ref.update({ scopes }, (error, result) => {
+                if(error){
+                    debugger
+                }else{
+                    debugger;
+                    const google = JSON.parse(localStorage.getItem('google'))
+                    debugger;
+                    localStorage.setItem('google', JSON.stringify({ ...google, googleAuthConfig: { ...google.googleAuthConfig, scopes, editable: false } }))
+                    debugger;
+                    location.reload()
+                }
+             
             })
-            debugger;
+          
         })
         document.getElementById('edit-scopes-btn').addEventListener('click', (e) => {
             const google = JSON.parse(localStorage.getItem('google'))
