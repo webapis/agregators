@@ -1,6 +1,5 @@
 require('dotenv').config()
 
-const { Given } = require('@cucumber/cucumber');
 const fs = require('fs')
 
 const debuggedOrder = 606
@@ -10,15 +9,15 @@ async function mockGithubBranchesAndRepos(order) {
     try {
 
 
-        const bodyRepos = fs.readFileSync(`${process.cwd()}/mock-data/git-repos/repos.json`)
-        const bodyBranches = fs.readFileSync(`${process.cwd()}/mock-data/git-repos/branches.json`)
+
+
         await global.page.setRequestInterception(true);
 
         global.page.on('request', (interceptedRequest) => {
             const url = interceptedRequest._url
 
             if (url === 'https://api.github.com/user/repos') {
-         
+                const bodyRepos = fs.readFileSync(`${process.cwd()}/mock-data/git-repos/repos.json`)
 
                 interceptedRequest.respond({
                     status: 200,
@@ -29,7 +28,7 @@ async function mockGithubBranchesAndRepos(order) {
                 })
 
             } else if (url === 'https://api.github.com/repos/codergihub/moda/branches') {
-            
+                const bodyBranches = fs.readFileSync(`${process.cwd()}/mock-data/git-repos/branches.json`)
                 interceptedRequest.respond({
                     status: 202,
                     statusText: "",
@@ -51,8 +50,21 @@ async function mockGithubBranchesAndRepos(order) {
 
                 })
             }
+            else if (url.includes('https://github.com/login/oauth/authorize?client_id')) {
+
+             
+                debugger;
+                interceptedRequest.respond({
+                    status: 302,
+                    statusText: "",
+                    headers:{Location:'https://localhost:8888/.netlify/functions/auth-callback'},
+                    contentType: 'application/json',
+                    body:'',
+
+                })
+            }
             else {
-          
+
                 interceptedRequest.continue();
             }
 

@@ -22,21 +22,18 @@ BeforeAll({ timeout: 15000 }, async function () {
 //BEFORE HOOK------------------------------------------
 Before({ timeout: 15000 }, async function (scenario) {
   try {
+
     const { setAppState } = require('./hooks/setAppState');
     const { initializePage } = require('./hooks/initializePage')
+    const { mockGithubBranchesAndRepos } = require('./mocks/mock_github_branches_and_repos')
     await initializePage()
+    await mockGithubBranchesAndRepos()
     await setAppState(scenario)
   } catch (error) {
     console.log('error', error)
     process.exit(1)
   }
 
-})
-
-
-Before({ tags: '@workflow' }, async function () {
-  const { mockGithubBranchesAndRepos } = require('./mocks/mock_github_branches_and_repos')
-  await mockGithubBranchesAndRepos()
 })
 
 
