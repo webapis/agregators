@@ -1,23 +1,29 @@
-@workflow
+
 
 Feature: Workflow
-
+@workflow
 Scenario: 7
 
     User creates task workflows
-    
-    Given component with "#tasks a[name='Task 1']" selector is visible to user 701
-    And user clicks to button with "#tasks a[name='Task 1']" selector 702
-    And component with "#add-workflow-btn" selector is visible to user 703
-    And user clicks to button with "#add-workflow-btn" selector 704
-    And component with "#repos" selector is visible to user 705
-    And user selects "workflow_a_a" from "#repos" select tag 706
-    And component with "#repobranches" selector is visible to user 707
-    And user selects "main" from "#repobranches" select tag 708
-    And user types "local_wf_bdd_desc" to input with "#workflowDescriptionTextarea" selector 709
-    And button with "#save-workflow-btn" selector is enabled 710
-    When user clicks to button with "#save-workflow-btn" selector 711
-    Then component with "#workflows" selector is visible to user 712
+    Given page is navigated to "https://localhost:8888/workspaces-list.html" 700
+    And component with "#public-tab" selector is visible to user 701
+    And user clicks to button with "#public-tab" selector 702
+    And component with "#local_pub_ws_bdd-link" selector is visible to user 703
+    And user clicks to button with "#local_pub_ws_bdd-link" selector 704
+    And component with "#tasks-card" selector is visible to user 705
+    And user clicks to button with "#tasks-card" selector 706
+    And component with "#tasks a[name='Task 1']" selector is visible to user 707
+    And user clicks to button with "#tasks a[name='Task 1']" selector 708
+    And component with "#add-workflow-btn" selector is visible to user 709
+    And user clicks to button with "#add-workflow-btn" selector 710
+    And component with "#repos" selector is visible to user 711
+    And user selects "workflow_a_a" from "#repos" select tag 712
+    And component with "#repobranches" selector is visible to user 713
+    And user selects "main" from "#repobranches" select tag 714
+    And user types "local_wf_bdd_desc" to input with "#workflowDescriptionTextarea" selector 715
+    And button with "#save-workflow-btn" selector is enabled 716
+    When user clicks to button with "#save-workflow-btn" selector 717
+    Then component with "#workflows" selector is visible to user 718
 
 
 Scenario: 8

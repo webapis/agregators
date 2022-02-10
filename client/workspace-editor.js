@@ -17,7 +17,6 @@ customElements.define('workspace-editor', class extends HTMLElement {
 
     render({ workspaceName='',accessLevel='', description=''}) {
         this.innerHTML = `
-   
         <div class="container">
         <h3>New Workspace:</h3>
         <div class="row">
@@ -50,15 +49,12 @@ customElements.define('workspace-editor', class extends HTMLElement {
        `
 
         Array.from(document.getElementsByClassName('form-control')).forEach(element => {
-
             element.addEventListener('input', (e) => {
                 const { value, name } = e.target
                 const workspaceEditor =JSON.parse(localStorage.getItem('workspaceEditor'))
         
                 localStorage.setItem('workspaceEditor', JSON.stringify({...workspaceEditor,[name]: value}))
             })
-
-
         })
 
         document.getElementById('accessLevel').addEventListener('change', (e) => {

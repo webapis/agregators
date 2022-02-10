@@ -20,14 +20,10 @@ customElements.define('workflow-editor', class extends HTMLElement {
 
     //fetch users repos
 
-
-
-
     this.render({ ...workflowEditor })
 
   }
   render({ workflowDescription = '' }) {
-
     this.innerHTML = `
   
         <div >
@@ -64,11 +60,7 @@ customElements.define('workflow-editor', class extends HTMLElement {
       const workflowEditor = JSON.parse(localStorage.getItem('workflowEditor'))
       localStorage.setItem('workflowEditor',JSON.stringify({...workflowEditor,workflowDescription:value}))
       
-
-
     })
-
-
   }
 })
 
@@ -103,7 +95,7 @@ customElements.define('owners-repos', class extends HTMLElement {
       const response = await fetch('https://api.github.com/user/repos', { method: 'get', headers: { Accept: "application/vnd.github.v3+json", authorization: `token ${token}` } })
 
       const ownersRepos = await response.json()
-    
+
       document.getElementById('repos').innerHTML = ''
       ownersRepos.forEach(repo => {
         const { name } = repo
@@ -125,6 +117,7 @@ customElements.define('owners-repos', class extends HTMLElement {
         const { value } = e.target
         const workflowEditor = JSON.parse(localStorage.getItem('workflowEditor'))
         localStorage.setItem('workflowEditor', JSON.stringify({ ...workflowEditor, selectedRepo: value }))
+        
         window.location.reload()
 
       }
@@ -171,7 +164,7 @@ customElements.define('repo-branches', class extends HTMLElement {
       const { selectedRepo, selectedBranch } = workflowEditor
       const response = await fetch(`https://api.github.com/repos/${screenName}/${selectedRepo}/branches`, { method: 'get', headers: { Accept: "application/vnd.github.v3+json", authorization: `token ${token}` } })
       const branches = await response.json()
-
+debugger;
       branches.forEach(branch => {
         const { name } = branch
         if (name !== selectedBranch) {

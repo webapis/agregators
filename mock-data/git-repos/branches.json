@@ -1,0 +1,36 @@
+[
+    {
+        "name": "defacto",
+        "commit": {
+            "sha": "efdc476556456b168406f2d68f07f656b7958361",
+            "url": "https://api.github.com/repos/codergihub/moda/commits/efdc476556456b168406f2d68f07f656b7958361"
+        },
+        "protected": false,
+        "protection": {
+            "enabled": false,
+            "required_status_checks": {
+                "enforcement_level": "off",
+                "contexts": [],
+                "checks": []
+            }
+        },
+        "protection_url": "https://api.github.com/repos/codergihub/moda/branches/defacto/protection"
+    },
+    {
+        "name": "main",
+        "commit": {
+            "sha": "efdc476556456b168406f2d68f07f656b7958361",
+            "url": "https://api.github.com/repos/codergihub/moda/commits/efdc476556456b168406f2d68f07f656b7958361"
+        },
+        "protected": false,
+        "protection": {
+            "enabled": false,
+            "required_status_checks": {
+                "enforcement_level": "off",
+                "contexts": [],
+                "checks": []
+            }
+        },
+        "protection_url": "https://api.github.com/repos/codergihub/moda/branches/main/protection"
+    }
+]

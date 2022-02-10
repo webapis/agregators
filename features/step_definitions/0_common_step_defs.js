@@ -3,7 +3,7 @@ const assert = require('assert');
 const { Given, When, Then } = require('@cucumber/cucumber');
 
 
-const debuggedOrder = 412
+const debuggedOrder = 712
 const log = true
 global.success = 0
 Given('user clicks to button with {string} selector {int}', { timeout: 15000 }, async function (id, order) {
@@ -131,10 +131,6 @@ Given('user focuses on component with {string} selector {int}', { timeout: 15000
         throw error
     }
 
-
-
-
-
 })
 Given('component with {string} selector is visible to user {int}', { timeout: 15000 }, async function (id, order) {
     try {
@@ -160,11 +156,6 @@ Given('component with {string} selector is visible to user {int}', { timeout: 15
         debugger;
         throw error
     }
-
-
-
-
-
 
 })
 
@@ -195,12 +186,13 @@ Then('page is navigated to {string} url {int}', { timeout: 15000 }, async functi
 Given('user selects {string} from {string} select tag {int}', { timeout: 15000 }, async function (value, id, order) {
     try {
 
-        if (order === debuggedOrder) {
-            debugger;
-        }
+   
         await global.page.waitFor(2000);
 
         await global.page.select(`select${id}`, value)
+        if (order === debuggedOrder) {
+            debugger;
+        }
         //  await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-success-${id}.png` });
         log && console.log(`${order}_success_|_user selects.......${value}`, id)
         global.success++
