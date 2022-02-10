@@ -13,7 +13,7 @@ customElements.define('oauth-configuration', class extends HTMLElement{
     window.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
     document.getElementById('ws-breadcrumb').innerText = `Workspace(${workspaceName})`
         this.innerHTML=`Auth configuration
-        <a href="/google-oauth-config.html">Google OAuth Config</a>
+        <a href="/google-oauth-config.html" id="google-oauth-config-link">Google OAuth Config</a>
         `
     
 

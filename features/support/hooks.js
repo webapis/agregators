@@ -25,9 +25,10 @@ Before({ timeout: 15000 }, async function (scenario) {
 
     const { setAppState } = require('./hooks/setAppState');
     const { initializePage } = require('./hooks/initializePage')
-    const { mockGithubBranchesAndRepos } = require('./mocks/mock_github_branches_and_repos')
+    const { mockRequest } = require('./mocks/mockRequest')
+
     await initializePage()
-    await mockGithubBranchesAndRepos()
+    await mockRequest()
     await setAppState(scenario)
   } catch (error) {
     console.log('error', error)

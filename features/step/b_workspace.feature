@@ -1,4 +1,4 @@
-
+@workspace
 Feature: Workspace
 
 Scenario: 1
@@ -62,23 +62,28 @@ User creates private workspace
   And component with "#workflow_a_a-tr > td:nth-child(3)" id includes "PAGE_URL" textcontent 311
   And component with "#workflow_a_a-tr > td:nth-child(4)" id includes "text" textcontent 312
 
-@workspace
+
   Scenario: 4
-User enables google oauth for selected workflow
+
+User enables google oauth for selected workflow  
+
     Given page is navigated to "https://localhost:8888/workspaces-list.html" 401
     And component with "#public-tab" selector is visible to user 402
     And user clicks to button with "#public-tab" selector 403
     And component with "#local_pub_ws_bdd-link" selector is visible to user 404
     And user clicks to button with "#local_pub_ws_bdd-link" selector 405
-    And user navigated to google-oauth-config.html page 406
-    And component with "#google-scopes-input" selector is visible to user 407
-    And user types "https://www.googleapis.com/auth/gmail.send https://www.googleapis.com/auth/drive" to input with "#google-scopes-input" selector 408
-    And user clicks to button with "#save-scopes-btn" selector 409
-    And component with "#authenticate-btn" selector is visible to user 410
-    And button with "#authenticate-btn" selector is enabled 411
-    And user clicks to button with "#authenticate-btn" selector 412
-    And component with "#edit-scopes-btn" selector is visible to user 413
-    And button with "#edit-scopes-btn" selector is enabled 414
+    And component with "#auth-config-card" selector is visible to user 406
+    And user clicks to button with "#auth-config-card" selector 407
+    And component with "#google-oauth-config-link" selector is visible to user 410
+    And user clicks to button with "#google-oauth-config-link" selector 411
+    And component with "#google-scopes-input" selector is visible to user 412
+    And user types "https://www.googleapis.com/auth/gmail.send https://www.googleapis.com/auth/drive" to input with "#google-scopes-input" selector 413
+    And user clicks to button with "#save-scopes-btn" selector 414
+    And component with "#authenticate-btn" selector is visible to user 415
+    And button with "#authenticate-btn" selector is enabled 416
+    And user clicks to button with "#authenticate-btn" selector 417
+    And component with "#edit-scopes-btn" selector is visible to user 418
+    And button with "#edit-scopes-btn" selector is enabled 419
 
 
   

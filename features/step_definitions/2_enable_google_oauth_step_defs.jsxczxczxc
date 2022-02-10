@@ -1,0 +1,15 @@
+require('dotenv').config()
+const assert = require('assert');
+const { Given, When, Then } = require('@cucumber/cucumber');
+
+Given('user navigated to google-oauth-config.html page {int}', { timeout: 100000 }, async function (order) {
+    try {
+
+    
+        global.success++
+
+    } catch (error) {
+        debugger;
+        throw error
+    }
+})
