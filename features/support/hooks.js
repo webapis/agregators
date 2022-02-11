@@ -1,5 +1,5 @@
 require('dotenv').config()
-
+const nock = require('nock')
 const { Before, After, BeforeAll, AfterAll } = require('@cucumber/cucumber');
 
 
@@ -20,16 +20,18 @@ BeforeAll({ timeout: 15000 }, async function () {
 
 
 //BEFORE HOOK------------------------------------------
-Before({ timeout: 15000 }, async function (scenario) {
+Before({ timeout: 60000 }, async function (scenario) {
   try {
 
     const { setAppState } = require('./hooks/setAppState');
     const { initializePage } = require('./hooks/initializePage')
-    const { mockRequest } = require('./mocks/mockRequest')
-
+    const { mockBrowserRequest } = require('./mocks/browser-https-mock/browserHttpsRequestMock')
+    const { githubHttpsRequestsMock } = require('./mocks/server-https-mock/github-https-mock')
+    githubHttpsRequestsMock()
     await initializePage()
-    await mockRequest()
+    await mockBrowserRequest()
     await setAppState(scenario)
+
   } catch (error) {
     console.log('error', error)
     process.exit(1)

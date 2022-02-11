@@ -43,7 +43,10 @@ const { nodeFetch } = require('../nodejs/node-fetch')
 async function fetchGithubAccessToken({ code, client_id, client_secret }) {
 
     //const response = await fetch(`https://github.com/login/oauth/access_token?client_id=${client_id}&client_secret=${client_secret}&code=${code}`, { method: 'post', headers: { 'Accept': 'application/json' } })
-
+console.log('fetchGithubAccessToken............................................')
+debugger;
+try {
+    
 
     var options = {
         host: 'github.com',
@@ -65,7 +68,7 @@ async function fetchGithubAccessToken({ code, client_id, client_secret }) {
             });
             responce.on("error", function (error) {
                 console.log("Body", error);
-
+debugger
                 return reject(error)
             });
         });
@@ -75,6 +78,9 @@ async function fetchGithubAccessToken({ code, client_id, client_secret }) {
     })
 
     return await prom
+} catch (error) {
+    debugger;
+}
 }
 
 async function authWithFirebase({ access_token, key }) {

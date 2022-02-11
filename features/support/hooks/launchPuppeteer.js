@@ -26,6 +26,7 @@ const launchOptions = {
 async function launchPuppeteer(){
     //1. LAUNCH BROWSER
     global.browser = await puppeteer.launch(launchOptions);
+    debugger;
 }
 
 module.exports={launchPuppeteer}

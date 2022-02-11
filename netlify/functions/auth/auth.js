@@ -14,6 +14,7 @@ exports.handler = async function (event, context) {
   //   }
 
   // } else {
+    debugger;
   const state =process.env.githuboauthState?  process.env.githuboauthState:'prod_state'
     console.log('gh_client_id....', process.env.gh_client_id)
     return {

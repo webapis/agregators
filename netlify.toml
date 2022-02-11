@@ -9,7 +9,7 @@ publish = "client"
 
 [dev.https]
     certFile = "cert.pem" # path to the certificate file
-    keyFile = "privatekey.pem" # path to the private key file
+    keyFile = "key.pem" # path to the private key file
 
 [[redirects]]
 from ="/api/fb-dev/*"

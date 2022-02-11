@@ -45,13 +45,26 @@ function mockGithubBranchesAndRepos(interceptedRequest) {
     else if (url.includes('https://github.com/login/oauth/authorize?client_id')) {
 
 
-        debugger;
+     
         interceptedRequest.respond({
             status: 302,
             statusText: "",
-            headers: { Location: 'https://localhost:8888/.netlify/functions/auth-callback' },
+            headers: { Location: 'https://localhost:8888/.netlify/functions/auth-callback?code=d5208301d28ea656c330' },
             contentType: 'application/json',
             body: '',
+
+        })
+    }
+
+    else if (url.includes('https://github.com/login/oauth/access_token?client_id=')) {
+    debugger;
+        const bodyRepos = fs.readFileSync(`${process.cwd()}/mock-data/git-repos/tokenResponse.json`)
+
+        interceptedRequest.respond({
+            status: 200,
+            statusText: "",
+            contentType: 'application/json',
+            body: bodyRepos,
 
         })
     }
