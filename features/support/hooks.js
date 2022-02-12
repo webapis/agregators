@@ -22,14 +22,16 @@ BeforeAll({ timeout: 15000 }, async function () {
 //BEFORE HOOK------------------------------------------
 Before({ timeout: 60000 }, async function (scenario) {
   try {
-
+debugger;
     const { setAppState } = require('./hooks/setAppState');
+  
     const { initializePage } = require('./hooks/initializePage')
     const { mockBrowserRequest } = require('./mocks/browser-https-mock/browserHttpsRequestMock')
     await initializePage()
     await mockBrowserRequest()
+    debugger;
     await setAppState(scenario)
-
+debugger;
   } catch (error) {
     console.log('error', error)
     process.exit(1)

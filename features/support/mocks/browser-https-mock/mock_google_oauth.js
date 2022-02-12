@@ -1,7 +1,7 @@
  function mockGoogleOAuth(interceptedRequest) {
         const url = interceptedRequest._url
         if (url.includes('https://accounts.google.com/o/oauth2/v2/auth?scope=')) {
-            console.log('url', url)
+     
             debugger;
             interceptedRequest.continue({ url: 'https://localhost:8888/google-auth-callback' })
 
@@ -21,7 +21,7 @@
             })
         } else if (url.includes('https://localhost:8888/.netlify/functions/google-auth-callback')) {
             debugger;
-            console.log('url', url)
+         
             interceptedRequest.continue();
         }
 

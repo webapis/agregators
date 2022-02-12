@@ -4,7 +4,7 @@ async function mockBrowserRequest() {
     await global.page.setRequestInterception(true);
     global.page.on('request', (interceptedRequest) => {
         const url = interceptedRequest._url
-        console.log('url', url)
+   
         if (url.includes('google')) {
             mockGoogleOAuth(interceptedRequest)
         }

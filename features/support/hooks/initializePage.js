@@ -7,7 +7,7 @@ async function initializePage(){
      deviceScaleFactor: 1,
    });
 
-   await global.page.goto('https://127.0.0.1:8888')
+   await global.page.goto('https://localhost:8888')
 
 }
 

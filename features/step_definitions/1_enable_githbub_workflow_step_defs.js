@@ -15,10 +15,10 @@ Given('user is on page workspace-tasks.html {int}', { timeout: 15000 }, async fu
         let countAgregate = 0
         global.page.on('request', (interceptedRequest) => {
             const url = interceptedRequest._url
-
+           
 
             if (url === 'https://api.github.com/repos/codergihub/workflow_runner/branches/main' && counter === 0) {
-           
+                debugger;
                 counter++
                 interceptedRequest.respond({
                     status: 404,
@@ -30,7 +30,7 @@ Given('user is on page workspace-tasks.html {int}', { timeout: 15000 }, async fu
             }
 
             else if (url === 'https://api.github.com/repos/codergihub/workflow_runner/branches/main' && counter === 1) {
-           
+                debugger;
                 interceptedRequest.respond({
                     status: 200,
                     statusText: "",
@@ -41,7 +41,7 @@ Given('user is on page workspace-tasks.html {int}', { timeout: 15000 }, async fu
             }
 
             else if (url === 'https://api.github.com/repos/codergihub/workflow_runner/actions/workflows/aggregate.yml') {
-             
+                debugger;
                 if (countAgregate === 0) {
                     countAgregate++
                    
@@ -66,7 +66,7 @@ Given('user is on page workspace-tasks.html {int}', { timeout: 15000 }, async fu
 
 
             } else if (url === 'https://api.github.com/repos/webapis/workflow_runner/forks') {
-                
+                debugger;
                 interceptedRequest.respond({
                     status: 202,
                     statusText: "",
@@ -76,7 +76,7 @@ Given('user is on page workspace-tasks.html {int}', { timeout: 15000 }, async fu
                 })
             }
             else if (url === `https://api.github.com/repos/codergihub/workflow_runner/merge-upstream`) {
-                
+                debugger;
                 interceptedRequest.respond({
                     status: 200,
                     statusText: "",
