@@ -26,8 +26,6 @@ Before({ timeout: 60000 }, async function (scenario) {
     const { setAppState } = require('./hooks/setAppState');
     const { initializePage } = require('./hooks/initializePage')
     const { mockBrowserRequest } = require('./mocks/browser-https-mock/browserHttpsRequestMock')
-    const { githubHttpsRequestsMock } = require('./mocks/server-https-mock/github-https-mock')
-    githubHttpsRequestsMock()
     await initializePage()
     await mockBrowserRequest()
     await setAppState(scenario)

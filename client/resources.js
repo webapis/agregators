@@ -1,5 +1,5 @@
 
-
+document.head.insertAdjacentHTML('beforeend','<link href="/bootstrap.min.css" rel="stylesheet">')
 
 export default async (reducer) => {
   
@@ -7,7 +7,6 @@ export default async (reducer) => {
        // import('./air-store.js'),
        // import('./reducer.js'),
         import('./firebase-rest.js'),
-        import('https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js'),
         import('./signed-in-as.js'),
         import('./error-displayer.js')
     

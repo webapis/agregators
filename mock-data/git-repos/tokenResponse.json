@@ -1,2 +1,5 @@
-
-"{\"access_token\":\"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\",\"token_type\":\"bearer\",\"scope\":\"repo,user,workflow\"}"
+{
+  "access_token": "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",
+  "token_type": "bearer",
+  "scope": "repo,user,workflow"
+}
