@@ -9,6 +9,7 @@ function mockGithubBranchesAndRepos(interceptedRequest) {
     const url = interceptedRequest._url
 
     if (url === 'https://api.github.com/user/repos') {
+        debugger;
         const bodyRepos = fs.readFileSync(`${process.cwd()}/mock-data/git-repos/repos.json`)
 
         interceptedRequest.respond({
@@ -20,6 +21,7 @@ function mockGithubBranchesAndRepos(interceptedRequest) {
         })
 
     } else if (url === 'https://api.github.com/repos/codergihub/moda/branches') {
+        debugger;
         const bodyBranches = fs.readFileSync(`${process.cwd()}/mock-data/git-repos/branches.json`)
         interceptedRequest.respond({
             status: 202,
@@ -32,7 +34,7 @@ function mockGithubBranchesAndRepos(interceptedRequest) {
     //github action is enabled
     else if (url === 'https://api.github.com/repos/codergihub/workflow_runner/actions/workflows/aggregate.yml') {
 
-
+debugger;
 
         interceptedRequest.respond({
             status: 200,

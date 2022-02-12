@@ -4,7 +4,7 @@ async function setAppState(scenario) {
   //2.GET SCENARIO ORDER
   const { pickle: { name } } = scenario
   const order = parseInt(name)
-  debugger;
+  
   //3.SET PREVIOUD LOCAL STORAGE AND FIREBASE DATABASE STATE
   if (order > 0) {
     //3.1. NAVIGATE TO WEBSITE ROOT TO INITIALIZE LOCAL STORAGE-----------------------------------------------------------------
@@ -16,21 +16,21 @@ async function setAppState(scenario) {
     const orderStr =(order-1).toString()
     const localStorageString =fs.readFileSync(`${process.cwd()}/mock-data/local-storage/${orderStr}-after.json`, { encoding: 'utf-8' })
     const lsData = JSON.parse(localStorageString)
-    debugger;
+    
     await global.page.evaluate((_lsData) => {
       for (let l in _lsData) {
         window.localStorage.setItem(l, JSON.stringify(_lsData[l]))
       }
     }, lsData)
     //------------------------------------------END--------------------------------------------------------------------------------
-    debugger;
+    
 
     //3.2 SET FIREBASE DATABASE'S PREVIOUS STATE --START------------------------------------------------------------------------------
     const { auth: { idToken } } = lsData
     const backEndBefore = fs.readFileSync(`${process.cwd()}/mock-data/back-end/${orderStr}-after.json`, { encoding: 'utf-8' })
     await nodeFetch({ host: process.env.databaseHost, path: `/.json?auth=${idToken}`, method: 'PUT', body: backEndBefore, headers: {}, port: process.env.dbPort, ssh: process.env.dbSsh })
     //--------------------------------------------END------------------------------------------------------------------------------
-    debugger;
+    
   }
 }
 
@@ -40,7 +40,7 @@ async function getLocalStorageData(order) {
   const data = fs.readFileSync(`${process.cwd()}/mock-data/local-storage/0-after.json`, { encoding: 'utf-8' })
 
   const authState = JSON.parse(data)
-  debugger;
+  
   //refresh token if expired and save to mock_data/local-storage and return local-storage data from local file
   if (authState.auth && (authState.auth.timestamp <= Date.now())) {
 
@@ -51,12 +51,12 @@ async function getLocalStorageData(order) {
 
 
     fs.writeFileSync(`${process.cwd()}/mock-data/local-storage/0-after.json`, JSON.stringify(updatedState), { encoding: 'utf-8' })
-debugger;
+
     return updatedState
 
   } else {
     //if refresh token is not expired just return local-storage data from local file
-debugger;
+
     return require(`${process.cwd()}/mock-data/local-storage/0-after.json`)
   }
 

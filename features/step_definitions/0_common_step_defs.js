@@ -3,7 +3,7 @@ const assert = require('assert');
 const { Given, When, Then } = require('@cucumber/cucumber');
 
 
-const debuggedOrder = 412
+const debuggedOrder = 507
 const log = true
 global.success = 0
 Given('user clicks to button with {string} selector {int}', { timeout: 15000 }, async function (id, order) {
@@ -130,7 +130,7 @@ Given('user focuses on component with {string} selector {int}', { timeout: 15000
     }
 
 })
-Given('component with {string} selector is visible to user {int}', { timeout: 15000 }, async function (id, order) {
+Given('component with {string} selector is visible to user {int}', { timeout: 30000 }, async function (id, order) {
     try {
         if (order === debuggedOrder) {
             debugger;
@@ -151,7 +151,7 @@ Given('component with {string} selector is visible to user {int}', { timeout: 15
 
         //   await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-error-${id}.png` });
         //  log && console.log(`${order}_failed_|_component is visible .......`, error)
-        debugger;
+    debugger;
         throw error
     }
 

@@ -36,7 +36,7 @@ async function saveAppState(scenario){
 
 
     //3. SAVE FIREBASE DATABASE STATE TO LOCAL FILE --START-------------------------
-    debugger;
+    
     const { auth } = locData
     const { idToken } = auth
     const backendData = await nodeFetch({ host: process.env.databaseHost, path: `/.json?auth=${idToken}`, method: 'GET', headers: {}, port: process.env.dbPort, ssh: process.env.dbSsh })
