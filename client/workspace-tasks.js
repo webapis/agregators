@@ -37,7 +37,7 @@ customElements.define('workspace-tasks', class extends HTMLElement {
             //upstream forked runner
             const fetchPath = `https://api.github.com/repos/${screenName}/workflow_runner/merge-upstream`
 
-            await fetch(fetchPath, {
+       const responseupst=     await fetch(fetchPath, {
                 method: 'post',
                 headers: {
                     authorization: `token ${token}`,
@@ -45,6 +45,7 @@ customElements.define('workspace-tasks', class extends HTMLElement {
                 },
                 body: JSON.stringify({ branch: 'main' })
             })
+            debugger;
             // check if runner's workflow is enabled
             const workflowUrl = `https://api.github.com/repos/${screenName}/workflow_runner/actions/workflows/aggregate.yml`
             const workflowState = await fetch(workflowUrl, { headers: { Accept: "application/vnd.github.v3+json", authorization: `token ${token}` } })

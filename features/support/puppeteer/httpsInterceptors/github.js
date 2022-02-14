@@ -1,10 +1,12 @@
 const fs = require('fs')
+let repoForked = false;
+global.actionEnabled = false;
 function gitHubInterceptor(interceptedRequest, order) {
 
     const url = interceptedRequest._url
 
     if (url.includes('https://github.com/login/oauth/authorize?client_id')) {
-        debugger;
+    
         interceptedRequest.respond({
             status: 302,
             statusCode: 302,
@@ -12,7 +14,7 @@ function gitHubInterceptor(interceptedRequest, order) {
         })
     } else
         if (url === 'https://api.github.com/user/repos') {
-            debugger;
+      
             const bodyRepos = fs.readFileSync(`${process.cwd()}/mock-data/git-repos/repos.json`)
 
             interceptedRequest.respond({
@@ -25,7 +27,7 @@ function gitHubInterceptor(interceptedRequest, order) {
 
         } else
             if (url === 'https://api.github.com/repos/codergihub/moda/branches') {
-                debugger;
+             
                 const bodyBranches = fs.readFileSync(`${process.cwd()}/mock-data/git-repos/branches.json`)
                 interceptedRequest.respond({
                     status: 202,
@@ -34,9 +36,68 @@ function gitHubInterceptor(interceptedRequest, order) {
                     body: bodyBranches,
 
                 })
-            } else if (url === 'https://api.github.com/repos/codergihub/workflow_runner/actions/workflows/aggregate.yml') {
 
-                debugger;
+
+                //is not forked
+            }
+            else if (url === 'https://api.github.com/repos/codergihub/workflow_runner/branches/main' && order === '5' && repoForked === false) {
+
+             
+
+                interceptedRequest.respond({
+                    status: 404,
+                    statusText: "",
+                    contentType: 'application/json',
+                    body: 'mock 3',
+
+                })
+            }
+            //is forked
+            else if (url === 'https://api.github.com/repos/codergihub/workflow_runner/branches/main' && order === '5' && repoForked === true) {
+
+              
+
+                interceptedRequest.respond({
+                    status: 200,
+                    ok: true,
+                    statusText: "",
+                    contentType: 'application/json',
+                    body: 'mock 3',
+
+                })
+            }
+            //fork 
+            else if (url === 'https://api.github.com/repos/webapis/workflow_runner/forks' && order === '5') {
+                repoForked = true
+           
+
+                interceptedRequest.respond({
+                    status: 202,
+                    statusText: "",
+                    ok: true,
+                    contentType: 'application/json',
+                    body: 'mock 3',
+
+                })
+            }
+            //action is not enabled
+            else if (url === 'https://api.github.com/repos/codergihub/workflow_runner/actions/workflows/aggregate.yml' && order === '5' && global.actionEnabled === false) {
+
+              
+
+                interceptedRequest.respond({
+                    status: 404,
+                    ok:false,
+                    statusText: "",
+                    contentType: 'application/json',
+                    body: 'mock 3',
+
+                })
+            }
+            //action is enabled
+            else if (url === 'https://api.github.com/repos/codergihub/workflow_runner/actions/workflows/aggregate.yml' && order === '5' && global.actionEnabled === true) {
+
+              
 
                 interceptedRequest.respond({
                     status: 200,
@@ -45,7 +106,37 @@ function gitHubInterceptor(interceptedRequest, order) {
                     body: 'mock 3',
 
                 })
-            } else {
+            }
+
+            //enable action
+            else if (url === 'https://github.com/codergihub/workflow_runner/actions') {
+                              
+                actionEnabled = true;
+             debugger;
+           //  interceptedRequest.continue({url:'https://localhost:8888/workspace-tasks.html'})
+                // interceptedRequest.respond({
+                //     status: 200,
+                //     statusText: "",
+                //     contentType: 'application/json',
+                //     body: 'mock 3',
+
+                // })
+            }
+            //merge repo
+            else if (url === 'https://api.github.com/repos/codergihub/workflow_runner/merge-upstream' && order === '5') {
+
+           
+
+                interceptedRequest.respond({
+                    status: 200,
+                    statusText: "",
+                    contentType: 'application/json',
+                    body: 'mock 3',
+
+                })
+            }
+
+            else {
                 interceptedRequest.continue();
             }
 }
