@@ -1,6 +1,6 @@
 
 const puppeteer = require("puppeteer");
-console.log('process.env.headless.....', (/true/i).test(process.env.headless))
+//console.log('process.env.headless.....', (/true/i).test(process.env.headless))
 const launchOptions = {
     timeout: 0,
     //slowMo: 15,
@@ -26,7 +26,7 @@ const launchOptions = {
 async function launchPuppeteer(){
     //1. LAUNCH BROWSER
     global.browser = await puppeteer.launch(launchOptions);
-    debugger;
+    
 }
 
 module.exports={launchPuppeteer}

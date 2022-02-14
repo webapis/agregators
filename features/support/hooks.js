@@ -3,15 +3,19 @@ require('dotenv').config()
 const { Before, After, BeforeAll, AfterAll } = require('@cucumber/cucumber');
 
 
+const timeout = 30000
+
 //BEFORE_ALL HOOK---------------------------------------------
-BeforeAll({ timeout: 15000 }, async function () {
+BeforeAll({ timeout }, async function () {
   try {
+
     const { launchPuppeteer } = require('./hooks/launchPuppeteer')
-    const { clearScreenshots } = require('./hooks/clearScreenshots')
+     const { clearScreenshots } = require('./hooks/clearScreenshots')
     await launchPuppeteer()
     clearScreenshots()
-  } catch (error) {
 
+  } catch (error) {
+    debugger;
     console.log('error', error)
     process.exit(1)
   }
@@ -20,15 +24,18 @@ BeforeAll({ timeout: 15000 }, async function () {
 
 
 //BEFORE HOOK------------------------------------------
-Before({ timeout: 60000 }, async function (scenario) {
+Before({ timeout }, async function (scenario) {
   try {
+
+
     const { setAppState } = require('./hooks/setAppState');
     const { initializePage } = require('./hooks/initializePage')
-    const { mockBrowserRequest } = require('./mocks/browser-https-mock/browserHttpsRequestMock')
-    await initializePage()
-    await mockBrowserRequest()
+    await initializePage(scenario)
     await setAppState(scenario)
+
+  
   } catch (error) {
+    debugger;
     console.log('error', error)
     process.exit(1)
   }
@@ -36,12 +43,13 @@ Before({ timeout: 60000 }, async function (scenario) {
 
 
 //AFTER HOOK---------------------------------------
-After({ timeout: 15000 }, async function (scenario) {
+After({ timeout }, async function (scenario) {
   try {
     const { saveAppState } = require('./hooks/saveAppState')
     await saveAppState(scenario)
     await global.page.close()
   } catch (error) {
+    debugger;
     console.log('error', error)
     process.exit(1)
   }
@@ -51,9 +59,10 @@ After({ timeout: 15000 }, async function (scenario) {
 
 //--AFTER_ALL HOOK---------------------------------------------START---------------------------------------
 AfterAll(async function (error, result) {
+  debugger;
   await global.browser.close();
   if (global.success >= 79) {
-    process.exit(0)
+    // process.exit(0)
   } else {
     process.exit(1)
   }

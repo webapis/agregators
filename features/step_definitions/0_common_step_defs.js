@@ -3,10 +3,12 @@ const assert = require('assert');
 const { Given, When, Then } = require('@cucumber/cucumber');
 
 
-const debuggedOrder = 507
+const debuggedOrder = 1
 const log = true
-global.success = 0
-Given('user clicks to button with {string} selector {int}', { timeout: 15000 }, async function (id, order) {
+global.success = 1
+const timeout = 15000
+Given('user clicks to button with {string} selector {int}', { timeout }, async function (id, order) {
+
     try {
         if (order === debuggedOrder) {
             debugger;
@@ -20,17 +22,7 @@ Given('user clicks to button with {string} selector {int}', { timeout: 15000 }, 
             debugger;
         }
         global.success++
-        // await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-success-${id}.png` });
-
-
-        // if(process.env.gh_action==='true'){
-        //     const artifactName =`${order}-success-${id}.png`
-        //     const files =[`screenshots/${order}-success-${id}.png`]
-        //     console.log('process.env.gh_action......',process.env.gh_action)
-        //     const artifactClient = artifact.create()
-        //     const uploadResponse = await artifactClient.uploadArtifact(artifactName, files, rootDirectory, options)
-        //     console.log('uploadResponse',uploadResponse)
-        // }
+    
 
         log && console.log(`${order}_success_|_user clicked.......`, id)
 
@@ -46,7 +38,7 @@ Given('user clicks to button with {string} selector {int}', { timeout: 15000 }, 
 })
 
 
-Given('user types {string} to input with {string} selector {int}', { timeout: 15000 }, async function (value, id, order) {
+Given('user types {string} to input with {string} selector {int}', { timeout }, async function (value, id, order) {
     try {
 
         if (order === debuggedOrder) {
@@ -79,7 +71,7 @@ Given('user types {string} to input with {string} selector {int}', { timeout: 15
 
 })
 
-Given('button with {string} selector is enabled {int}', { timeout: 15000 }, async function (id, order) {
+Given('button with {string} selector is enabled {int}', { timeout }, async function (id, order) {
 
     try {
         if (order === debuggedOrder) {
@@ -110,7 +102,7 @@ Given('button with {string} selector is enabled {int}', { timeout: 15000 }, asyn
     }
 
 })
-Given('user focuses on component with {string} selector {int}', { timeout: 15000 }, async function (id, order) {
+Given('user focuses on component with {string} selector {int}', { timeout }, async function (id, order) {
     try {
 
         if (order === debuggedOrder) {
@@ -130,7 +122,7 @@ Given('user focuses on component with {string} selector {int}', { timeout: 15000
     }
 
 })
-Given('component with {string} selector is visible to user {int}', { timeout: 30000 }, async function (id, order) {
+Given('component with {string} selector is visible to user {int}', { timeout }, async function (id, order) {
     try {
         if (order === debuggedOrder) {
             debugger;
@@ -141,7 +133,7 @@ Given('component with {string} selector is visible to user {int}', { timeout: 30
         if (order === debuggedOrder) {
             debugger;
         }
-
+   
         log && console.log(`${order}_success_|_component is visible .......`, id)
         if (order === debuggedOrder) {
             debugger;
@@ -158,7 +150,7 @@ Given('component with {string} selector is visible to user {int}', { timeout: 30
 })
 
 
-Then('page is navigated to {string} url {int}', { timeout: 15000 }, async function (url, order) {
+Then('page is navigated to {string} url {int}', { timeout }, async function (url, order) {
 
     try {
 
@@ -181,7 +173,7 @@ Then('page is navigated to {string} url {int}', { timeout: 15000 }, async functi
 
 })
 
-Given('user selects {string} from {string} select tag {int}', { timeout: 15000 }, async function (value, id, order) {
+Given('user selects {string} from {string} select tag {int}', { timeout }, async function (value, id, order) {
     try {
 
    
@@ -206,7 +198,7 @@ Given('user selects {string} from {string} select tag {int}', { timeout: 15000 }
 
 })
 
-Given('component with {string} id includes {string} textcontent {int}', { timeout: 15000 }, async function (id, value, order) {
+Given('component with {string} id includes {string} textcontent {int}', { timeout }, async function (id, value, order) {
     try {
         if (order === debuggedOrder) {
             debugger;
@@ -231,7 +223,7 @@ Given('component with {string} id includes {string} textcontent {int}', { timeou
 
 
 
-Given('button with {string} selector is disabled {int}', { timeout: 15000 }, async function (id, order) {
+Given('button with {string} selector is disabled {int}', { timeout }, async function (id, order) {
 
     try {
         if (order === debuggedOrder) {
@@ -259,7 +251,7 @@ Given('button with {string} selector is disabled {int}', { timeout: 15000 }, asy
 })
 
 
-Given('wait for {int} seconds {int}', { timeout: 15000 }, async function (seconds, order) {
+Given('wait for {int} seconds {int}', { timeout }, async function (seconds, order) {
     try {
         debugger;
         await global.page.waitFor(seconds);
@@ -272,7 +264,7 @@ Given('wait for {int} seconds {int}', { timeout: 15000 }, async function (second
 
 })
 
-Given('page is navigated to {string} {int}', { timeout: 15000 }, async function (value, order) {
+Given('page is navigated to {string} {int}', { timeout }, async function (value, order) {
 
     try {
         if (order === debuggedOrder) {
@@ -299,11 +291,3 @@ Given('page is navigated to {string} {int}', { timeout: 15000 }, async function 
 
 })
 
-/*
-      - name: Archive production artifacts
-        uses: actions/upload-artifact@v2
-                with:
-          name: screenshots
-          path: |
-            screenshots
-*/

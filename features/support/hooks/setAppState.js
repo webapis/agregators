@@ -7,6 +7,7 @@ async function setAppState(scenario) {
   
   //3.SET PREVIOUD LOCAL STORAGE AND FIREBASE DATABASE STATE
   if (order > 0) {
+   
     //3.1. NAVIGATE TO WEBSITE ROOT TO INITIALIZE LOCAL STORAGE-----------------------------------------------------------------
     //   await global.page.goto('https://localhost:8888')
     //-----------------------------------------------------END------------------------------------------------------------------
@@ -30,7 +31,7 @@ async function setAppState(scenario) {
     const backEndBefore = fs.readFileSync(`${process.cwd()}/mock-data/back-end/${orderStr}-after.json`, { encoding: 'utf-8' })
     await nodeFetch({ host: process.env.databaseHost, path: `/.json?auth=${idToken}`, method: 'PUT', body: backEndBefore, headers: {}, port: process.env.dbPort, ssh: process.env.dbSsh })
     //--------------------------------------------END------------------------------------------------------------------------------
-    
+
   }
 }
 

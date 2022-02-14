@@ -30,8 +30,20 @@ customElements.define('home-component', class extends HTMLElement {
                 this.innerHTML = `<div>
                 
                 <home-card title="Sign in" page-link="/.netlify/functions/auth" link-id="signin"></home-card>
+             
+                </div>
                 
-                </div>`
+                `
+
+                // document.getElementById('signin')&&  document.getElementById('signin').addEventListener('click',function(e){
+
+                //     e.preventDefault()
+                //     const {id,href}=e.target
+                //     console.log('id',id)
+                //     console.log('href',href)
+                //     debugger;
+                //     window.location.replace(href)
+                // })
             }
 
       
@@ -56,5 +68,6 @@ customElements.define('home-card', class extends HTMLElement {
         this.innerHTML = `<div>
         <a class="btn btn-warning m-1" style="height:10vh; width:10vh;" href="${pageLink}" id=${id}>${title}</a>
         </div>`
+        
     }
 })
