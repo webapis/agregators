@@ -1,33 +1,23 @@
 
 const { exchangeGoogleAuthorizationCode, updateUsersWorkspaceGoogleAuthState } = require('../../../root/utils/oauth2/server/server.oauth2')
-
+require('./test')
 const client_id = process.env.client_id
 const client_secret = process.env.CLIENT_SECRET
 const redirect_uri = process.env.redirectUri
 exports.handler = async (event, context) => {
 
     const { code, state } = event.queryStringParameters
-    // return {
-    //     statusCode: 200,
-    //     body: JSON.stringify(event)
-    // }
 
-    let authdata =null
-    if(state){
-        authdata = await exchangeGoogleAuthorizationCode({ client_id, client_secret, code, redirect_uri })
-    } else{
-        authdata= require(`${process.cwd()}/mock-data/serverless/exchangeGoogleAuthorizationCode.json`)
-    }
-   
+debugger;   
+    const  authdata = await exchangeGoogleAuthorizationCode({ client_id, client_secret, code, redirect_uri })
+    
+
     debugger;
     await updateUsersWorkspaceGoogleAuthState({ ...authdata, state })
     const { access_token, refresh_token, scope } = authdata
 
     debugger;
-    // return {
-    //     statusCode: 200,
-    //     body: JSON.stringify(authdata)
-    // }
+   
     return {
         statusCode: 200, body: `<!DOCTYPE html>
       <html lang="en">

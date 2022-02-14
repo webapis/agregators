@@ -12,7 +12,7 @@ async function httpInterceptors(scenario) {
         const url = interceptedRequest._url
 
         if (url.includes('github.com')) {
-            debugger;
+          
             gitHubInterceptor(interceptedRequest, order)
         }
         else if (url.includes('google.com')) {
@@ -20,7 +20,7 @@ async function httpInterceptors(scenario) {
             googleInterceptor(interceptedRequest, order)
         }
         else if (url.includes('googleapis.com')) {
-            debugger;
+         
             googleAPIsInterceptor(interceptedRequest, order)
         }
         else

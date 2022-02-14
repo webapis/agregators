@@ -3,7 +3,7 @@ const assert = require('assert');
 const { Given, When, Then } = require('@cucumber/cucumber');
 
 
-const debuggedOrder = 1
+const debuggedOrder = 417
 const log = true
 global.success = 1
 const timeout = 15000
@@ -177,7 +177,7 @@ Given('user selects {string} from {string} select tag {int}', { timeout }, async
     try {
 
    
-        await global.page.waitFor(2000);
+      //  await global.page.waitFor(2000);
 
         await global.page.select(`select${id}`, value)
         if (order === debuggedOrder) {
@@ -207,7 +207,7 @@ Given('component with {string} id includes {string} textcontent {int}', { timeou
 
         const matchesTextCotnent = await global.page.evaluate((_id, _value) => document.querySelector(_id).textContent.includes(_value), id, value)
         // await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-success-${id}.png` });
-        debugger;
+
         assert.equal(matchesTextCotnent, true)
         log && console.log(`${order}_success_|_component includes text content.......${value}`, id)
         global.success++
@@ -254,7 +254,7 @@ Given('button with {string} selector is disabled {int}', { timeout }, async func
 Given('wait for {int} seconds {int}', { timeout }, async function (seconds, order) {
     try {
         debugger;
-        await global.page.waitFor(seconds);
+        // await global.page.waitFor(seconds);
         log && console.log(`${order}_success_|_wait for ${seconds}seconds .......`)
         global.success++
     } catch (error) {

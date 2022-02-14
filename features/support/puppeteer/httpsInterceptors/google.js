@@ -4,17 +4,7 @@ function googleInterceptor(interceptedRequest) {
     if (url.includes('https://accounts.google.com/o/oauth2/v2/auth?scope=')) {
 
 debugger;
-        interceptedRequest.continue({ url: 'https://localhost:8888/google-auth-callback' })
-
-        // } else if (url.includes('authorization_code')) {
-        //     const body = fs.readFileSync(`${process.cwd()}/mock-data/git-repos/branches.json`)
-        //     interceptedRequest.respond({
-        //         status: 200,
-        //         statusText: "",
-        //         contentType: 'application/json',
-        //         body
-        //     })
-        // } 
+        interceptedRequest.continue({ url: 'https://localhost:8888/google-auth-callback?state=test_state&code=123' })
     }
     else {
         interceptedRequest.continue();

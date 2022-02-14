@@ -1,5 +1,5 @@
 
-
+@workspace
 Feature: Workspace
 
 Scenario: 1
@@ -62,7 +62,7 @@ User creates private workspace
   And component with "#workflow_a_a-tr > td:nth-child(3)" id includes "PAGE_URL" textcontent 315
   And component with "#workflow_a_a-tr > td:nth-child(4)" id includes "text" textcontent 316
 
-@workspace
+
   Scenario: 4
 
 User enables google oauth for selected workflow  
