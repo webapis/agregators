@@ -1,7 +1,7 @@
 
-
-Feature: Task
 @task
+Feature: Task
+
 Scenario: 5
 Enable Github workflow
     Given page is navigated to "https://localhost:8888/workspaces-list.html" 500
@@ -14,9 +14,9 @@ Enable Github workflow
     And component with "#fork-runner-btn" selector is visible to user 507
     And user clicks to button with "#fork-runner-btn" selector 508
     And component with "#enable-workflow-link" selector is visible to user 509
-    And user clicks to button with "#enable-workflow-link" selector 510
-    And component with "#add-task-btn" selector is visible to user 512
-    And component with "#tasks-config-btn" selector is visible to user 513
+    And a tag with "#enable-workflow-link" selector opens in "_self" target 510
+    And component with "#add-task-btn" selector is visible to user 511
+    And component with "#tasks-config-btn" selector is visible to user 512
 
 
 Scenario: 6
@@ -27,7 +27,7 @@ User creates workspace task
     And component with "#local_pub_ws_bdd-link" selector is visible to user 603
     And user clicks to button with "#local_pub_ws_bdd-link" selector 604
     And component with "#tasks-card" selector is visible to user 605
-    And github action is enabled 606
+    And user clicks to button with "#tasks-card" selector 606
     And component with "#add-task-btn" selector is visible to user 607
     And user clicks to button with "#add-task-btn" selector 608
     And component with "#taskname" selector is visible to user 609 

@@ -3,12 +3,11 @@ const assert = require('assert');
 const { Given, When, Then } = require('@cucumber/cucumber');
 
 
-const debuggedOrder = 510
+const debuggedOrder = 612
 const log = true
 global.success = 1
 const timeout = 15000
 Given('user clicks to button with {string} selector {int}', { timeout }, async function (id, order) {
-
     try {
         if (order === debuggedOrder) {
             debugger;
@@ -22,7 +21,6 @@ Given('user clicks to button with {string} selector {int}', { timeout }, async f
             debugger;
         }
         global.success++
-    
 
         log && console.log(`${order}_success_|_user clicked.......`, id)
 
@@ -133,7 +131,7 @@ Given('component with {string} selector is visible to user {int}', { timeout }, 
         if (order === debuggedOrder) {
             debugger;
         }
-   
+
         log && console.log(`${order}_success_|_component is visible .......`, id)
         if (order === debuggedOrder) {
             debugger;
@@ -143,7 +141,7 @@ Given('component with {string} selector is visible to user {int}', { timeout }, 
 
         //   await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-error-${id}.png` });
         //  log && console.log(`${order}_failed_|_component is visible .......`, error)
-    debugger;
+        debugger;
         throw error
     }
 
@@ -176,8 +174,8 @@ Then('page is navigated to {string} url {int}', { timeout }, async function (url
 Given('user selects {string} from {string} select tag {int}', { timeout }, async function (value, id, order) {
     try {
 
-   
-      //  await global.page.waitFor(2000);
+
+        //  await global.page.waitFor(2000);
 
         await global.page.select(`select${id}`, value)
         if (order === debuggedOrder) {
@@ -272,10 +270,10 @@ Given('page is navigated to {string} {int}', { timeout }, async function (value,
         }
 
 
-   
-       await page.goto(value);
-      
-    
+
+        await page.goto(value);
+
+
         if (order === debuggedOrder) {
             debugger;
         }
@@ -291,3 +289,24 @@ Given('page is navigated to {string} {int}', { timeout }, async function (value,
 
 })
 
+Given('a tag with {string} selector opens in {string} target {int}', { timeout }, async function (selector, targetValue, order) {
+    if (order === debuggedOrder) {
+     
+    }
+    await global.page.waitForSelector(selector)
+
+   await global.page.evaluate((_selector, _targetValue) => {
+        document.querySelector(_selector).setAttribute('target',_targetValue)
+    }, selector, targetValue)
+    debugger;
+    if (order === debuggedOrder) {
+        debugger;
+    }
+    await global.page.click(selector)
+    if (order === debuggedOrder) {
+        debugger;
+    }
+
+    log && console.log(`${order}_success_|_a tag with${targetValue} opened`, selector)
+   
+})

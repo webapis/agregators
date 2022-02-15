@@ -3,7 +3,7 @@ const puppeteer = require("puppeteer");
 //console.log('process.env.headless.....', (/true/i).test(process.env.headless))
 const launchOptions = {
     timeout: 0,
-    //slowMo: 15,
+    slowMo: 15,
     headless: (/true/i).test(process.env.headless),
   
     // executablePath:
