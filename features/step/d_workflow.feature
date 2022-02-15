@@ -1,7 +1,7 @@
 
 
 Feature: Workflow
-@workflow
+
 Scenario: 7
 
     User creates task workflows
@@ -20,7 +20,7 @@ Scenario: 7
     When user clicks to button with "#save-workflow-btn" selector 712
     Then component with "#workflows" selector is visible to user 713
 
-
+@workflow
 Scenario: 8
 
  User updates workflow vars
