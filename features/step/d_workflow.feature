@@ -11,13 +11,14 @@ Scenario: 7
     And component with "#add-workflow-btn" selector is visible to user 703
     And user clicks to button with "#add-workflow-btn" selector 704
     And component with "#repos" selector is visible to user 705
-    And user selects "workflow_a_a" from "#repos" select tag 706
-    And component with "#repobranches" selector is visible to user 707
-    And user selects "main" from "#repobranches" select tag 708
-    And user types "local_wf_bdd_desc" to input with "#workflowDescriptionTextarea" selector 709
-    And button with "#save-workflow-btn" selector is enabled 710
-    When user clicks to button with "#save-workflow-btn" selector 711
-    Then component with "#workflows" selector is visible to user 712
+    And user selects "moda" from "#repos" select tag 706
+    And component with "#branches" selector is visible to user 707
+    And user focuses on component with "#branches" selector 708
+    And user selects "main" from "#branches" select tag 709
+    And user types "local_wf_bdd_desc" to input with "#workflowDescriptionTextarea" selector 710
+    And button with "#save-workflow-btn" selector is enabled 711
+    When user clicks to button with "#save-workflow-btn" selector 712
+    Then component with "#workflows" selector is visible to user 713
 
 
 Scenario: 8

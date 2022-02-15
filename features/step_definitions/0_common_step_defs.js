@@ -3,7 +3,7 @@ const assert = require('assert');
 const { Given, When, Then } = require('@cucumber/cucumber');
 
 
-const debuggedOrder = 701
+const debuggedOrder = 709
 const log = true
 global.success = 1
 const timeout = 15000
@@ -176,7 +176,9 @@ Given('user selects {string} from {string} select tag {int}', { timeout }, async
 
 
         //  await global.page.waitFor(2000);
-
+        if (order === debuggedOrder) {
+            debugger;
+        }
         await global.page.select(`select${id}`, value)
         if (order === debuggedOrder) {
             debugger;

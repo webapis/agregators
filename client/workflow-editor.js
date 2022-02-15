@@ -32,10 +32,10 @@ customElements.define('workflow-editor', class extends HTMLElement {
         <div class="row">
       <div class="col-12">
       <div class="mb-3">
-      <list-dropdown id="repos"  label="Repositories" name="Repo"></list-dropdown>
+      <list-dropdown data-id="repos" load="true"  label="Repositories" name="Repo"></list-dropdown>
     </div>
     <div class="mb-3">
-    <list-dropdown id="branches"  label="Branches" name="Branch"></list-dropdown>
+    <list-dropdown load="false" data-id="branches"  label="Branches" name="Branch"></list-dropdown>
   </div>
   <div class="mb-3">
   
@@ -82,7 +82,7 @@ customElements.define('list-dropdown', class extends HTMLElement {
 
   async render(){
     const workflowEditor = JSON.parse(localStorage.getItem('workflowEditor'))
-   const id = this.getAttribute('id')
+   const id = this.getAttribute('data-id')
    const label = this.getAttribute('label')
    const name = this.getAttribute('name')
    this.innerHTML = `<label for="${id}" class="form-label">${label}:</label>
@@ -90,24 +90,25 @@ customElements.define('list-dropdown', class extends HTMLElement {
    <option value="default">...Loading</option>
    </select>`
    const selected =workflowEditor[`selected${name}`]
-   if(selected){
+   const load =this.getAttribute('load')
+   if(load==='true'){
      debugger;
-    this.querySelector(`#${id}`).insertAdjacentHTML('beforeend', `<option  value=${selected} selected>${selected}</option>`)
-   //} else{
-   // await this.fetchData()
+    await this.fetchData()
    }
 
-
-   this.querySelector(`#${id}`).addEventListener('change', (e) => {
-
-     if (e.inputType === undefined) {
-       const { value, name } = e.target
    
+
+
+   document.getElementById(id).addEventListener('change', (e) => {
+    const workflowEditor = JSON.parse(localStorage.getItem('workflowEditor'))
+  
+       const { value, name } = e.target
+   debugger;
        localStorage.setItem('workflowEditor', JSON.stringify({ ...workflowEditor, [`selected${name}`]: value }))
-     }
+     
    })
 
-   this.querySelector(`#${id}`).addEventListener('focus', (e) => {
+   document.getElementById(id).addEventListener('focus', (e) => {
      debugger;
       this.fetchData()
    })
@@ -117,23 +118,26 @@ customElements.define('list-dropdown', class extends HTMLElement {
     const { token,screenName } = JSON.parse(localStorage.getItem('auth'))
     const {selectedRepo} = JSON.parse(localStorage.getItem('workflowEditor'))
     const workflowEditor = JSON.parse(localStorage.getItem('workflowEditor'))
-   const id = this.getAttribute('id')
+
+   const id = this.getAttribute('data-id')
    const sourceUrl = id==='repos' ?'https://api.github.com/user/repos':`https://api.github.com/repos/${screenName}/${selectedRepo}/branches`
-   const selector=this.querySelector(`#${id}`)
-    selector.innerHTML='<option>Loading...</option'
+   debugger;
+   const selector= document.getElementById(id)
+
    const response = await fetch(sourceUrl, { method: 'get', headers: { Accept: "application/vnd.github.v3+json", authorization: `token ${token}` } })
     debugger;
    const sourceData = await response.json()
    const compName = this.getAttribute('name')
    debugger;
    selector.innerHTML=''
+   
    sourceData.forEach(data => {
     const selected =workflowEditor[`selected${compName}`]
     if (selected && selected !==data.name) {
     
-      selector.insertAdjacentHTML('beforeend', `<option  value=${data.name}>${data.name}</option>`)
+      selector.insertAdjacentHTML('beforeend', `<option  value="${data.name}">${data.name}</option>`)
     } else{
-      selector.insertAdjacentHTML('beforeend', `<option  value=${data.name} selected>${data.name}</option>`)
+      selector.insertAdjacentHTML('beforeend', `<option  value="${data.name}" selected>${data.name}</option>`)
       debugger;
     }
     
@@ -174,7 +178,6 @@ customElements.define('save-workflow-btn', class extends HTMLElement {
         if (data) {
           window.location.replace('/task-workflows.html')
         }
-
       })
     })
   }
