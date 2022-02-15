@@ -89,7 +89,7 @@ function firebase() {
                  const error =getJsonData&&  getJsonData['error']
                  
                  if(error){
-                     debugger;
+                     
                      window.pageStore.dispatch({ type: window.actionTypes.CLIENT_ERROR, payload: error })
                      cb && cb(error,null) 
                      
@@ -116,7 +116,7 @@ function firebase() {
                  const error =getJsonData&&  getJsonData['error']
                  
                  if(error){
-                     debugger;
+                     
                      window.pageStore.dispatch({ type: window.actionTypes.CLIENT_ERROR, payload: error })
                      cb && cb(error,null) 
                      
@@ -135,7 +135,7 @@ function firebase() {
             try {
                 await updateIdToken()
                 const fetchUrl =this.url ==='/'? `${this.projectUri}/.json?auth=${this.idToken}`: `${this.projectUri}/${this.url}.json?auth=${this.idToken}&orderBy="${this.orderByValue}"&limitToFirst=${this.limitToFirstValue}`
-                debugger;
+                
               const getResponse =await   fetch(fetchUrl, { method: 'GET'})
               const getJsonData =await getResponse.json()
  
@@ -143,7 +143,7 @@ function firebase() {
                  const error =getJsonData&&  getJsonData['error']
                  
                  if(error){
-                     debugger;
+                     
                      window.pageStore.dispatch({ type: window.actionTypes.CLIENT_ERROR, payload: error })
                      cb && cb(error,null) 
                      
@@ -214,9 +214,9 @@ function firebase() {
     }
 }
 async function renewIdToken({ api_key, refreshToken }) {
-    debugger;
+    
     const response = await fetch(`https://securetoken.googleapis.com/v1/token?key=${api_key}`, { method: 'post', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: `grant_type=refresh_token&refresh_token=${refreshToken}` })
-               debugger;
+               
     const data = await response.json()
     return data
 }

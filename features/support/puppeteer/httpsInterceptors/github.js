@@ -70,7 +70,7 @@ function gitHubInterceptor(interceptedRequest, order) {
                 })
             }
             //is forked
-            else if (url === 'https://api.github.com/repos/codergihub/workflow_runner/branches/main' && order === '6') {
+            else if (url === 'https://api.github.com/repos/codergihub/workflow_runner/branches/main' && (order === '6' || order==='7')) {
 
                 debugger;
 
@@ -124,7 +124,7 @@ function gitHubInterceptor(interceptedRequest, order) {
 
                 })
             }
-            else if (url === 'https://api.github.com/repos/codergihub/workflow_runner/actions/workflows/aggregate.yml' && order === '6') {
+            else if (url === 'https://api.github.com/repos/codergihub/workflow_runner/actions/workflows/aggregate.yml' && (order === '6' || order==='7')) {
                 debugger;
                 interceptedRequest.respond({
                     status: 200,
