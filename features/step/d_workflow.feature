@@ -1,5 +1,5 @@
 
-
+@workflow
 Feature: Workflow
 
 Scenario: 7
@@ -20,12 +20,12 @@ Scenario: 7
     When user clicks to button with "#save-workflow-btn" selector 712
     Then component with "#workflows" selector is visible to user 713
 
-@workflow
+
 Scenario: 8
 
  User updates workflow vars
 
-    Given user clicks to button with "#codergihub_workflow_a_a_main-workflow-config-btn" selector 801
+    Given page is navigated to "https://localhost:8888/workflow-configuration.html" 800
     And component with "#PAGE_URL" selector is visible to user 802
     And user types "https://defacto.com" to input with "#PAGE_URL" selector 803
     When user clicks to button with "#save-wf-vars" selector 804

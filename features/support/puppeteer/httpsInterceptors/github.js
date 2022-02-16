@@ -2,7 +2,7 @@ const fs = require('fs')
 let repoForked = false;
 global.actionEnabled = false;
 function gitHubInterceptor(interceptedRequest, order) {
-    if (order === '6') {
+    if (order !== '5') {
         repoForked === true
         global.actionEnabled = true
     }
@@ -70,9 +70,9 @@ function gitHubInterceptor(interceptedRequest, order) {
                 })
             }
             //is forked
-            else if (url === 'https://api.github.com/repos/codergihub/workflow_runner/branches/main' && (order === '6' || order==='7')) {
+            else if (url === 'https://api.github.com/repos/codergihub/workflow_runner/branches/main' && (order !== '5')) {
 
-             
+
 
                 interceptedRequest.respond({
                     status: 200,
@@ -124,8 +124,8 @@ function gitHubInterceptor(interceptedRequest, order) {
 
                 })
             }
-            else if (url === 'https://api.github.com/repos/codergihub/workflow_runner/actions/workflows/aggregate.yml' && (order === '6' || order==='7')) {
-            
+            else if (url === 'https://api.github.com/repos/codergihub/workflow_runner/actions/workflows/aggregate.yml' && (order !== '5')) {
+
                 interceptedRequest.respond({
                     status: 200,
                     statusText: "",
@@ -141,7 +141,7 @@ function gitHubInterceptor(interceptedRequest, order) {
                 debugger;
 
                 interceptedRequest.respond({ status: 302, headers: { Location: 'https://localhost:8888/workspace-tasks.html' } })
-             
+
             }
             //merge repo
             else if (url === 'https://api.github.com/repos/codergihub/workflow_runner/merge-upstream') {
