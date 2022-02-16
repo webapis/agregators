@@ -10,34 +10,35 @@ customElements.define('task-runner', class extends HTMLElement {
     const resources = await import('./resources.js')
     await resources.default()
 
-    const { auth: { idToken, localId: uid }, workspace: { workspaceSelected: { title: workspaceName } } } = window.pageStore.state
+    //const { auth: { idToken, localId: uid }, workspace: { workspaceSelected: { title: workspaceName } } } = window.pageStore.state
+    const { title: workspaceName } = JSON.parse(localStorage.getItem('workspaceSelected'))
+    const { idToken, localId: uid, screenName: owner, email, token, refreshToken } = JSON.parse(localStorage.getItem('auth'))
+    const { taskName, id: taskId } = JSON.parse(localStorage.getItem('taskSelected'))
     this.uid = uid
 
     window.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
     document.getElementById('ws-breadcrumb').innerText = `Workspace(${workspaceName})`
 
 
+    // window.pageStore.subscribe(window.actionTypes.RUNNER_STARTED, async state => {
+
+    //   //const { taskRunner: { [workspaceName]: { runState, runid, start } }, auth: { idToken, localId, token, screenName: owner, email, refreshToken } } = state
+
+    //   const parameters = `${token}--xxx--${owner}--xxx--${idToken}--xxx--${email}--xxx--${uid}--xxx--${refreshToken}--xxx--${'selectedContainer'}--xxx--${window.projectUrl}--xxx--${workspaceName}--xxx--${runid}--xxx--${start}`
+
+    //   const body = JSON.stringify({ ref: 'main', inputs: { projectName: workspaceName, parameters } })
+
+    //   if (workspaceName === 'local_ws_bdd' ||workspaceName==='local_pub_ws_bdd') {
+
+    //     const response = await fetch('http://localhost:3001', { body, method: 'post' })
 
 
-    window.pageStore.subscribe(window.actionTypes.RUNNER_STARTED, async state => {
+    //   } else {
 
-      const { taskRunner: { [workspaceName]: { runState, runid, start } }, auth: { idToken, localId, token, screenName: owner, email, refreshToken } } = state
+    //     await triggerAction({ gh_action_url: `https://api.github.com/repos/${owner}/workflow_runner/actions/workflows/aggregate.yml/dispatches`, ticket: token, body })
+    //   }
 
-      const parameters = `${token}--xxx--${owner}--xxx--${idToken}--xxx--${email}--xxx--${localId}--xxx--${refreshToken}--xxx--${'selectedContainer'}--xxx--${window.projectUrl}--xxx--${workspaceName}--xxx--${runid}--xxx--${start}`
-
-      const body = JSON.stringify({ ref: 'main', inputs: { projectName: workspaceName, parameters } })
-
-      if (workspaceName === 'local_ws_bdd' ||workspaceName==='local_pub_ws_bdd') {
-
-        const response = await fetch('http://localhost:3001', { body, method: 'post' })
-
-
-      } else {
-
-        await triggerAction({ gh_action_url: `https://api.github.com/repos/${owner}/workflow_runner/actions/workflows/aggregate.yml/dispatches`, ticket: token, body })
-      }
-
-    })
+    // })
 
 
 
@@ -106,46 +107,48 @@ customElements.define('run-result', class extends HTMLElement {
       }
     })
 
-    window.pageStore.subscribe(window.actionTypes.RUNNER_STARTED, async state => {
+    //     window.pageStore.subscribe(window.actionTypes.RUNNER_STARTED, async state => {
 
-      const { workspace: { workspaceSelected: { title: workspaceName } } } = state
-      const { taskRunner: { [workspaceName]: { runState, runid, start } } } = state
+    //      // const { workspace: { workspaceSelected: { title: workspaceName } } } = state
+    //       const {  title: workspaceName   } = JSON.parse(localStorage.getItem('workspaceSelected'))
+    //       const { idToken} =JSON.parse(localStorage.getItem('auth'))
+    //       //const { taskRunner: { [workspaceName]: { runState, runid, start } } } = state
+    //            const {[workspaceName]: { runState, runid, start }} =JSON.parse(this.localStorage.getItem('taskRunner'))
+    //       const startDate = `${new Date(parseInt(start)).toLocaleDateString()} ${new Date(parseInt(start)).toLocaleTimeString()}`
 
-      const startDate = `${new Date(parseInt(start)).toLocaleDateString()} ${new Date(parseInt(start)).toLocaleTimeString()}`
+    //       if (runid) {
+    //         document.getElementById('body-container').insertAdjacentHTML('afterbegin', `<div id="runid-${runid}"class="col-12 row py-2 border border-bottom-0">
+    //               <div scope="row" class="col-1">${runid}</div>
+    //               <div class="col">${startDate}</div>
+    //               <div class="col"><span class="text-warning">Pending...</span></div>
+    //               <div class="col"><span class="text-warning">Pending...</span></div>
+    //               <div class="col"><div class="spinner-border spinner-border-sm text-warning" role="status"> <span class="visually-hidden">Loading...</span></div>
+    //               <div class="col"></div>
+    //             </div>`)
+    //         window.FB_DATABASE.ref(`runs/${workspaceName}/${runid}`).on('value', (error, result) => {
+    //           if (result) {
+    //             const data = result.data
+    //             if (data.runState === 2 || data.runState === 3) {
+    // debugger;
+    //               this.querySelectorAll(`#runid-${runid} div`)[2].textContent = `${new Date(data.end).toLocaleDateString()} ${new Date(data.end).toLocaleTimeString()}`
 
-      if (runid) {
-        document.getElementById('body-container').insertAdjacentHTML('afterbegin', `<div id="runid-${runid}"class="col-12 row py-2 border border-bottom-0">
-              <div scope="row" class="col-1">${runid}</div>
-              <div class="col">${startDate}</div>
-              <div class="col"><span class="text-warning">Pending...</span></div>
-              <div class="col"><span class="text-warning">Pending...</span></div>
-              <div class="col"><div class="spinner-border spinner-border-sm text-warning" role="status"> <span class="visually-hidden">Loading...</span></div>
-              <div class="col"></div>
-            </div>`)
-        window.FB_DATABASE.ref(`runs/${workspaceName}/${runid}`).on('value', (error, result) => {
-          if (result) {
-            const data = result.data
-            if (data.runState === 2 || data.runState === 3) {
-debugger;
-              this.querySelectorAll(`#runid-${runid} div`)[2].textContent = `${new Date(data.end).toLocaleDateString()} ${new Date(data.end).toLocaleTimeString()}`
+    //               this.querySelectorAll(`#runid-${runid} div`)[3].textContent = data.duration;
 
-              this.querySelectorAll(`#runid-${runid} div`)[3].textContent = data.duration;
+    //               this.querySelectorAll(`#runid-${runid} div`)[4].innerHTML = data.runState === 2 ? `<span class="text-success">Ok</span>` : `<span class="text-danger">Error</span>`
+    //               this.querySelector('#body-container >div').insertAdjacentHTML('beforeend', `  <div class="col"><a href="${data.html_url}">Log</a></div>`)
+    //               window.pageStore.dispatch({ type: window.actionTypes.RUNNER_COMPLETE })
+    //             }
 
-              this.querySelectorAll(`#runid-${runid} div`)[4].innerHTML = data.runState === 2 ? `<span class="text-success">Ok</span>` : `<span class="text-danger">Error</span>`
-              this.querySelector('#body-container >div').insertAdjacentHTML('beforeend', `  <div class="col"><a href="${data.html_url}">Log</a></div>`)
-              window.pageStore.dispatch({ type: window.actionTypes.RUNNER_COMPLETE })
-            }
-          
-          }
-        })
-      }
-    })
+    //           }
+    //         })
+    //       }
+    //     })
 
-    window.pageStore.subscribe(window.actionTypes.RUNS_FETCHED, state => {
+    // window.pageStore.subscribe(window.actionTypes.RUNS_FETCHED, state => {
 
-      const { taskRunner: { runs } } = state
-      this.displayRuns({ runs })
-    })
+    //   const { taskRunner: { runs } } = state
+    //   this.displayRuns({ runs })
+    // })
 
     await this.fetchRuns()
 
@@ -155,8 +158,9 @@ debugger;
   }//connectedCallback
 
   async fetchRuns() {
-    const { workspace: { workspaceSelected: { title: workspaceName } }, auth: { idToken } } = window.pageStore.state
-
+    // const { workspace: { workspaceSelected: { title: workspaceName } }, auth: { idToken } } = window.pageStore.state
+    const { title: workspaceName } = JSON.parse(localStorage.getItem('workspaceSelected'))
+    const { idToken } = JSON.parse(localStorage.getItem('auth'))
     try {
       await window.updateIdToken()
       const runLength = await this.fetchRunLength()
@@ -171,8 +175,8 @@ debugger;
       const error = getJsonData && getJsonData['error']
 
       if (error) {
-        
-          window.pageStore.dispatch({ type: window.actionTypes.CLIENT_ERROR, payload: error })
+
+        window.pageStore.dispatch({ type: window.actionTypes.CLIENT_ERROR, payload: error })
       } else {
         const runs = Object.entries(getJsonData).sort((a, b) => {
           const one = parseInt(a[0])
@@ -183,7 +187,7 @@ debugger;
       }
     } catch (error) {
       const { message } = error
-      window.pageStore.dispatch({ type: window.actionTypes.CLIENT_ERROR, payload: message })
+      //  window.pageStore.dispatch({ type: window.actionTypes.CLIENT_ERROR, payload: message })
 
     }
   }//fetch runs
@@ -215,7 +219,9 @@ debugger;
   }//display runs
 
   async fetchNextRuns() {
-    const { workspace: { workspaceSelected: { title: workspaceName } }, auth: { idToken }, taskRunner: { runs } } = window.pageStore.state
+    // const { workspace: { workspaceSelected: { title: workspaceName } }, auth: { idToken }, taskRunner: { runs } } = window.pageStore.state
+    const { title: workspaceName } = JSON.parse(localStorage.getItem('workspaceSelected'))
+    const { idToken } = JSON.parse(localStorage.getItem('auth'))
     const endAt = parseInt(runs[runs.length - 1][0]) - 1
     const runLength = await this.fetchRunLength()
     const startAt = runs.length + 10 >= runLength ? 1 : endAt - 10
@@ -240,7 +246,7 @@ debugger;
 
         if (error) {
 
-          window.pageStore.dispatch({ type: window.actionTypes.CLIENT_ERROR, payload: error })
+          //  window.pageStore.dispatch({ type: window.actionTypes.CLIENT_ERROR, payload: error })
 
 
         } else {
@@ -254,7 +260,7 @@ debugger;
             return two - one
           });
 
-          window.pageStore.dispatch({ type: window.actionTypes.NEXT_RUNS_FETCHED, payload: runs })
+          // window.pageStore.dispatch({ type: window.actionTypes.NEXT_RUNS_FETCHED, payload: runs })
           this.displayRuns({ runs })
 
         }
@@ -262,15 +268,16 @@ debugger;
     } catch (error) {
       const { message } = error
 
-      window.pageStore.dispatch({ type: window.actionTypes.CLIENT_ERROR, payload: message })
+      // window.pageStore.dispatch({ type: window.actionTypes.CLIENT_ERROR, payload: message })
 
     }
   }//fetchNextRUns
 
   async fetchRunLength() {
     try {
-      const { workspace: { workspaceSelected: { title: workspaceName } }, auth: { idToken } } = window.pageStore.state
-
+      //const { workspace: { workspaceSelected: { title: workspaceName } }, auth: { idToken } } = window.pageStore.state
+      const { title: workspaceName } = JSON.parse(localStorage.getItem('workspaceSelected'))
+      const { idToken } = JSON.parse(localStorage.getItem('auth'))
       try {
         await window.updateIdToken()
         const fetchUrl = `${window.projectUrl}/runs/inc/${workspaceName}/incs.json?auth=${idToken}`
@@ -281,7 +288,7 @@ debugger;
         const error = getJsonData && getJsonData['error']
 
         if (error) {
-          window.pageStore.dispatch({ type: window.actionTypes.CLIENT_ERROR, payload: error })
+          //  window.pageStore.dispatch({ type: window.actionTypes.CLIENT_ERROR, payload: error })
         } else {
 
           return getJsonData
@@ -307,20 +314,11 @@ customElements.define('runner-button', class extends HTMLElement {
   }
 
   connectedCallback() {
-    const { taskRunner: { running } } = window.pageStore.state
-    
-    this.render({ running })
 
-    window.pageStore.subscribe(window.actionTypes.RUNNER_STARTED, state => {
-      const { taskRunner: { running } } = state
-      
-      this.render({ running })
-    })
-    window.pageStore.subscribe(window.actionTypes.RUNNER_COMPLETE, state => {
-      const { taskRunner: { running } } = state
-      debugger;
-      this.render({ running })
-    })
+
+    this.render({ running: '' })
+
+
   }
 
   render({ running }) {
@@ -328,10 +326,12 @@ customElements.define('runner-button', class extends HTMLElement {
     this.innerHTML = `<button class="btn btn-outline-dark" id="run-tasks-btn" ${running && 'disabled'}>${running ? 'Running...' : 'Run'}</button>`
 
     document.getElementById('run-tasks-btn').addEventListener('click', async (e) => {
+      debugger;
       //3
       e.preventDefault()
+      const { title: workspaceName } = JSON.parse(localStorage.getItem('workspaceSelected'))
+      const { idToken } = JSON.parse(localStorage.getItem('auth'))
 
-      const { workspace: { workspaceSelected: { title: workspaceName } }, auth: { idToken, localId: uid } } = window.pageStore.state
       let update = {}
 
 
@@ -342,11 +342,11 @@ customElements.define('runner-button', class extends HTMLElement {
 
         const updateIncResponse = await fetch(fetchUrl, { method: 'PUT', body: JSON.stringify({ '.sv': { 'increment': 1 } }) })
         const incrementedNumber = await updateIncResponse.json()
-
+        debugger;
         const error = incrementedNumber['error']
         if (error) {
 
-          window.pageStore.dispatch({ type: window.actionTypes.CLIENT_ERROR, payload: error })
+          // window.pageStore.dispatch({ type: window.actionTypes.CLIENT_ERROR, payload: error })
 
         } else {
           let runid = incrementedNumber
@@ -357,8 +357,10 @@ customElements.define('runner-button', class extends HTMLElement {
             //4
 
             if (data) {
-
-              window.pageStore.dispatch({ type: window.actionTypes.RUNNER_STARTED, payload: { workspace: workspaceName, runState: 1, runid: incrementedNumber, start } })
+              debugger;
+              localStorage.setItem('taskRunner', JSON.stringify({ [workspaceName]: { runState: 1, runid: incrementedNumber, start } }))
+              this.runnerStarted()
+              // window.pageStore.dispatch({ type: window.actionTypes.RUNNER_STARTED, payload: { workspace: workspaceName, runState: 1, runid: incrementedNumber, start } })
 
             }
           })
@@ -366,12 +368,33 @@ customElements.define('runner-button', class extends HTMLElement {
 
       } catch (error) {
         const { message } = error
-        window.pageStore.dispatch({ type: window.actionTypes.CLIENT_ERROR, payload: message })
+        // window.pageStore.dispatch({ type: window.actionTypes.CLIENT_ERROR, payload: message })
       }
 
 
     })
+  }//render
+
+  async runnerStarted() {
+    const { title: workspaceName } = JSON.parse(localStorage.getItem('workspaceSelected'))
+    const { idToken, localId: uid, screenName: owner, email, token, refreshToken } = JSON.parse(localStorage.getItem('auth'))
+    const { [workspaceName]: { runid, start } } = JSON.parse(localStorage.getItem('taskRunner'))
+    const parameters = `${token}--xxx--${owner}--xxx--${idToken}--xxx--${email}--xxx--${uid}--xxx--${refreshToken}--xxx--${'selectedContainer'}--xxx--${window.projectUrl}--xxx--${workspaceName}--xxx--${runid}--xxx--${start}`
+
+    const body = JSON.stringify({ ref: 'main', inputs: { projectName: workspaceName, parameters } })
+    debugger;
+    if (workspaceName === 'local_ws_bdd' || workspaceName === 'local_pub_ws_bdd') {
+      debugger;
+      const response = await fetch('http://localhost:3001', { body, method: 'post' })
+
+      debugger;
+    } else {
+      debugger;
+      await triggerAction({ gh_action_url: `https://api.github.com/repos/${owner}/workflow_runner/actions/workflows/aggregate.yml/dispatches`, ticket: token, body })
+    }
   }
+
+
 })
 
 
@@ -381,17 +404,17 @@ async function triggerAction({ ticket, body, gh_action_url }) {
   debugger;
 
   try {
-    const response =await fetch(gh_action_url, {
+    const response = await fetch(gh_action_url, {
       method: 'post',
       headers: {
-          authorization: `token ${ticket}`,
-          Accept: 'application/vnd.github.v3+json'
+        authorization: `token ${ticket}`,
+        Accept: 'application/vnd.github.v3+json'
       },
       body
-  })
-  const data =await response.json()
+    })
+    const data = await response.json()
   } catch (error) {
     debugger;
   }
- 
+
 }

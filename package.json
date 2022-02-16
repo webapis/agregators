@@ -45,7 +45,6 @@
     "encryptData": "node encryptData.js",
     "decryptData": "node decryptData.js"
   },
-  "pre-commit": [],
   "nodemonConfig": {
     "ignore": [
       "test/*",
