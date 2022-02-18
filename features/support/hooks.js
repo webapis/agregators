@@ -17,7 +17,7 @@ BeforeAll({ timeout }, async function () {
   } catch (error) {
     debugger;
     console.log('error', error)
-    process.exit(1)
+  //  process.exit(1)
   }
 
 });
@@ -37,7 +37,7 @@ Before({ timeout }, async function (scenario) {
   } catch (error) {
     debugger;
     console.log('error', error)
-    process.exit(1)
+   // process.exit(1)
   }
 })
 
@@ -51,7 +51,7 @@ After({ timeout }, async function (scenario) {
   } catch (error) {
     debugger;
     console.log('error', error)
-    process.exit(1)
+  //  process.exit(1)
   }
 })
 
@@ -64,7 +64,7 @@ AfterAll(async function (error, result) {
   if (global.success >= 79) {
     // process.exit(0)
   } else {
-    process.exit(1)
+   // process.exit(1)
   }
 })
 
