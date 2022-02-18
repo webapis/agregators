@@ -58,7 +58,7 @@ jobs:
         run: 'npm run decryptData'
       - name: Run bdd test
         id: bddtest
-        run: npm run bddTest
+        run: npm run bddCITest
       - name: deploy to netlify
         if: ${{steps.bddtest.outcome =='success'}}
         run: netlify deploy --prod
