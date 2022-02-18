@@ -12,7 +12,7 @@ BeforeAll({ timeout }, async function () {
     const { launchPuppeteer } = require('./hooks/launchPuppeteer')
      const { clearScreenshots } = require('./hooks/clearScreenshots')
     await launchPuppeteer()
- //   clearScreenshots()
+    clearScreenshots()
 
   } catch (error) {
     debugger;
@@ -62,9 +62,10 @@ AfterAll(async function (error, result) {
   debugger;
   await global.browser.close();
   if (global.success >= 79) {
-    // process.exit(0)
+   //  process.exit(0)
   } else {
-   // process.exit(1)
+    
+    //process.exit(1)
   }
 })
 

@@ -2,7 +2,8 @@ const fs = require('fs')
 let repoForked = false;
 global.actionEnabled = false;
 function gitHubInterceptor(interceptedRequest, order) {
-    if (order !== '5') {
+    const orderInt =parseInt(order)
+    if (orderInt > 5) {
         repoForked === true
         global.actionEnabled = true
     }
@@ -100,7 +101,7 @@ function gitHubInterceptor(interceptedRequest, order) {
             //action is not enabled
             else if (url === 'https://api.github.com/repos/codergihub/workflow_runner/actions/workflows/aggregate.yml' && order === '5' && global.actionEnabled === false) {
 
-
+debugger;
 
                 interceptedRequest.respond({
                     status: 404,
@@ -114,7 +115,7 @@ function gitHubInterceptor(interceptedRequest, order) {
             //action is enabled
             else if (url === 'https://api.github.com/repos/codergihub/workflow_runner/actions/workflows/aggregate.yml' && order === '5' && global.actionEnabled === true) {
 
-
+debugger;
 
                 interceptedRequest.respond({
                     status: 200,
@@ -125,7 +126,7 @@ function gitHubInterceptor(interceptedRequest, order) {
                 })
             }
             else if (url === 'https://api.github.com/repos/codergihub/workflow_runner/actions/workflows/aggregate.yml' && (order !== '5')) {
-
+debugger;
                 interceptedRequest.respond({
                     status: 200,
                     statusText: "",

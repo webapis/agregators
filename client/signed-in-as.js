@@ -18,7 +18,7 @@ customElements.define('signed-in-as',
                     this.innerHTML=``
                    
                     
-                    document.getElementById('top-bar').insertAdjacentHTML('beforeend', `
+                    document.getElementById('top-bar')&&   document.getElementById('top-bar').insertAdjacentHTML('beforeend', `
                 <div class="mt-1" id="profile">
                 <span>Signed in as</span>
                 <span class="fw-bolder" id="screenname">${screenName}</span>
