@@ -37,7 +37,7 @@
     "testCucumber:@task": "./node_modules/.bin/cucumber-js --tags @task",
     "testCucumber:@workflow": "./node_modules/.bin/cucumber-js --tags @workflow",
     "testCucumber:@runner": "./node_modules/.bin/cucumber-js --tags @runner",
-    "testCucumber": "./node_modules/.bin/cucumber-js --tags 'not @auth'",
+    "testCucumber": "./node_modules/.bin/cucumber-js",
     "bddTest": "(netlify dev) & (firebase emulators:start)& (node ./node_modules/workflow_runner/devServer.js) & (sleep 30 && npm run testCucumber)",
     "bddlocalTest": "(/Users/personalcomputer/.npm-global/lib/node_modules/netlify-cli/bin/run dev) & (firebase emulators:start) & (BDD_TEST=TRUE sleep 40 && npm run testCucumber)",
     "netlifyLocalDev": "BDD_TEST=FALSE /Users/personalcomputer/.npm-global/lib/node_modules/netlify-cli/bin/run dev",

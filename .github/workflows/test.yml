@@ -25,6 +25,7 @@ env:
   CRPKY: ${{secrets.CRPKY}}
   gh_action: 'true'
   ACTIONS_RUNTIME_TOKEN: ${{secrets.ACTIONS_RUNTIME_TOKEN}}
+  BDD_TEST: 'TRUE'
 jobs:
   bdd:
     runs-on: ubuntu-latest
