@@ -62,3 +62,7 @@ jobs:
       - name: deploy to netlify
         if: ${{steps.bddtest.outcome =='success'}}
         run: netlify deploy --prod
+      - name: upload snapshots
+        uses: actions/upload-artifact@v2
+        with:
+          path: screenshots

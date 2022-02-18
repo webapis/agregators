@@ -26,7 +26,7 @@ Given('user clicks to button with {string} selector {int}', { timeout }, async f
 
     } catch (error) {
         debugger;
-        //   await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-error-${id}.png` });
+        await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-error-${id}.png` });
         // log && console.log(`${order}_failed_|_user clicked.......`, error)
         throw error
 
@@ -60,7 +60,7 @@ Given('user types {string} to input with {string} selector {int}', { timeout }, 
         global.success++
     } catch (error) {
         debugger;
-        //  await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-error-${id}.png` });
+        await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-error-${id}.png` });
         // log && console.log(`${order}_failed_|_user types .......${value}`, error)
         throw error
     }
@@ -94,7 +94,7 @@ Given('button with {string} selector is enabled {int}', { timeout }, async funct
         global.success++
     } catch (error) {
         debugger;
-        //   await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-error-${id}.png` });
+        await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-error-${id}.png` });
         // log && console.log(`${order}_failed_|_button enabled .......`, error)
         throw error
     }
@@ -114,7 +114,7 @@ Given('user focuses on component with {string} selector {int}', { timeout }, asy
         global.success++
     } catch (error) {
         debugger;
-        //   await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-error-${id}.png` });
+        await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-error-${id}.png` });
         //  log && console.log(`${order}_failed_|_user focused on .......`, error)
         throw error
     }
@@ -139,7 +139,7 @@ Given('component with {string} selector is visible to user {int}', { timeout }, 
         global.success++
     } catch (error) {
 
-        //   await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-error-${id}.png` });
+        await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-error-${id}.png` });
         //  log && console.log(`${order}_failed_|_component is visible .......`, error)
         debugger;
         throw error
@@ -164,7 +164,7 @@ Then('page is navigated to {string} url {int}', { timeout }, async function (url
         global.success++
     } catch (error) {
         debugger;
-        // await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-error-nav.png` });
+        await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-error.png` });
         //  log && console.log(`${order}_falied_|_page is navigated to .......${url}`, error)
         throw error
     }
@@ -188,7 +188,7 @@ Given('user selects {string} from {string} select tag {int}', { timeout }, async
         global.success++
     } catch (error) {
         debugger;
-        //  await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-error-${id}.png` });
+        await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-error-${id}.png` });
         //  log && console.log(`${order}_failed_|_user selects.......${value}`, error)
         throw error
     }
@@ -213,7 +213,7 @@ Given('component with {string} id includes {string} textcontent {int}', { timeou
         global.success++
     } catch (error) {
         debugger;
-        //  await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-error-${id}.png` });
+        await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-error-${id}.png` });
         //  log && console.log(`${order}_error_|_component includes text content.......${value}`, error)
         throw error
     }
@@ -243,7 +243,7 @@ Given('button with {string} selector is disabled {int}', { timeout }, async func
         global.success++
     } catch (error) {
         debugger;
-        //   await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-error-${id}.png` });
+        await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-error-${id}.png` });
         // log && console.log(`${order}_failed_|_button enabled .......`, error)
         throw error
     }
@@ -258,6 +258,7 @@ Given('wait for {int} seconds {int}', { timeout }, async function (seconds, orde
         log && console.log(`${order}_success_|_wait for ${seconds}seconds .......`)
         global.success++
     } catch (error) {
+        await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-error.png` });
         throw error
     }
 
@@ -284,7 +285,7 @@ Given('page is navigated to {string} {int}', { timeout }, async function (value,
         global.success++
     } catch (error) {
         debugger;
-        //   await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-error-${id}.png` });
+        await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-error.png` });
         // log && console.log(`${order}_failed_|_button enabled .......`, error)
         throw error
     }
@@ -292,23 +293,28 @@ Given('page is navigated to {string} {int}', { timeout }, async function (value,
 })
 
 Given('a tag with {string} selector opens in {string} target {int}', { timeout }, async function (selector, targetValue, order) {
-    if (order === debuggedOrder) {
-     
-    }
-    await global.page.waitForSelector(selector)
+    try {
+        if (order === debuggedOrder) {
 
-   await global.page.evaluate((_selector, _targetValue) => {
-        document.querySelector(_selector).setAttribute('target',_targetValue)
-    }, selector, targetValue)
-    debugger;
-    if (order === debuggedOrder) {
-        debugger;
-    }
-    await global.page.click(selector)
-    if (order === debuggedOrder) {
-        debugger;
-    }
+        }
+        await global.page.waitForSelector(selector)
 
-    log && console.log(`${order}_success_|_a tag with${targetValue} opened`, selector)
-   
+        await global.page.evaluate((_selector, _targetValue) => {
+            document.querySelector(_selector).setAttribute('target', _targetValue)
+        }, selector, targetValue)
+        debugger;
+        if (order === debuggedOrder) {
+            debugger;
+        }
+        await global.page.click(selector)
+        if (order === debuggedOrder) {
+            debugger;
+        }
+
+        log && console.log(`${order}_success_|_a tag with${targetValue} opened`, selector)
+    } catch (error) {
+        await global.page.screenshot({ path: `${process.cwd()}/screenshots/${order}-error.png` });
+        // log && console.log(`${order}_failed_|_button enabled .......`, error)
+        throw error
+    }
 })
