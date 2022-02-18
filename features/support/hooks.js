@@ -12,7 +12,7 @@ BeforeAll({ timeout }, async function () {
     const { launchPuppeteer } = require('./hooks/launchPuppeteer')
      const { clearScreenshots } = require('./hooks/clearScreenshots')
     await launchPuppeteer()
-    clearScreenshots()
+ //   clearScreenshots()
 
   } catch (error) {
     debugger;
