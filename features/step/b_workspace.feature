@@ -53,14 +53,14 @@ User creates private workspace
   And component with "#vars-config-card" selector is visible to user 306
   And user clicks to button with "#vars-config-card" selector 307
   And component with "#repos" selector is visible to user 308
-  And user selects "moda" from "#repos" select tag 309
+  And user selects "workflow_a_a" from "#repos" select tag 309
   And user types "PAGE_URL" to input with "#var-name-input" selector 310
   And component with "#input-type-selector" selector is visible to user 311
   And user selects "text" from "#input-type-selector" select tag 312
   When user clicks to button with "#add-var-btn" selector 313
-  Then component with "#moda-tr > td:nth-child(2)" id includes "moda" textcontent 314
-  And component with "#moda-tr > td:nth-child(3)" id includes "PAGE_URL" textcontent 315
-  And component with "#moda-tr > td:nth-child(4)" id includes "text" textcontent 316
+  Then component with "#workflow_a_a-tr > td:nth-child(2)" id includes "workflow_a_a" textcontent 314
+  And component with "#workflow_a_a-tr > td:nth-child(3)" id includes "PAGE_URL" textcontent 315
+  And component with "#workflow_a_a-tr > td:nth-child(4)" id includes "text" textcontent 316
 
 
   Scenario: 4

@@ -24,7 +24,7 @@
     "node-watch": "0.7.1",
     "pre-commit": "1.2.2",
     "puppeteer": "7.1.0",
-    "workflow_runner": "^1.9.0"
+    "workflow_runner": "^1.11.0"
   },
   "scripts": {
     "snipe": "node snipe.js",

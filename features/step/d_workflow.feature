@@ -11,7 +11,7 @@ Scenario: 7
     And component with "#add-workflow-btn" selector is visible to user 703
     And user clicks to button with "#add-workflow-btn" selector 704
     And component with "#repos" selector is visible to user 705
-    And user selects "moda" from "#repos" select tag 706
+    And user selects "workflow_a_a" from "#repos" select tag 706
     And component with "#branches" selector is visible to user 707
     And user focuses on component with "#branches" selector 708
     And user selects "main" from "#branches" select tag 709
