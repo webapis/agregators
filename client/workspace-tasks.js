@@ -231,19 +231,20 @@ customElements.define('task-component', class extends HTMLElement {
           <h7>Task Configurations:</h7>
           <div class="border border-1 p-2">
           <task-config></task-config>
+          <div>
           <button class="btn btn-outline-secondary btn-sm">Vars</button>
-          <button class="btn btn-outline-secondary btn-sm" id="add-workflow-btn-${id}">Add workflow</button>
+          <button class="btn btn-outline-secondary btn-sm" id="add-workflow-btn-${id}">Add</button>
           <button class="btn btn-outline-success btn-sm">Run</button>
           <button class="btn btn-outline-danger btn-sm">Abort</button>
           <button class="btn btn-outline-secondary btn-sm">Logs</button>
+          <button class="btn btn-outline-warning btn-sm">Edit</button>
+          </div>
+     
+          </div>
+         <task-run-state></task-run-state>
           </div>
           </div>
-    
-          </div>
-          
 </div>
- 
-
         </div>
         <div>
         
@@ -273,7 +274,7 @@ customElements.define('task-component', class extends HTMLElement {
                         const wfContainer = document.getElementById(`accordion-body-${id}`).querySelector('.wf-container')
                         wfContainer.innerHTML = '<div class="row"><h7 class="col-9">Workflows:</h7><h7 class="col-3 text-end">Workflow configurations:</h7><div>'
 
-                        workflows && workflows.forEach((wf,i) => {
+                        workflows && workflows.forEach((wf, i) => {
 
                             const workflowKey = wf[0]
                             //   const workflowName = wf[1]['workflowName']
@@ -285,25 +286,23 @@ customElements.define('task-component', class extends HTMLElement {
                             wfContainer.insertAdjacentHTML('beforeend', `<div class="d-flex justify-content-between list-group-item">
                             <h7>${i}. <span class="fw-bolder">Repo: </span>${repoName}, <span class="fw-bolder">Branch: </span>${selectedBranch},<span class="fw-bolder">Desc: </span>${workflowDescription}</h7>
                                                                                                 <div class ="buttons">
-                                                                                              
                                                                                                 <button class="btn btn-outline-secondary btn-sm" id="${workflowKey}-workflow-config-btn">Vars</button>
                                                                                                 <button class="btn btn-outline-warning btn-sm" id="${workflowKey}-workflow-editor-btn">Edit</button>
                                                                                                 <button class="btn btn-outline-danger btn-sm">Delete</button>
+                                                                                                <button class="btn"><div class="spinner-grow text-success" role="status">
+                                                                                                <span class="visually-hidden">Loading...</span>
+                                                                                              </div></button>
                                                                                                 </div>
-                                                                                                                                      </div>`)
+                                                                                                </div>`)
                             document.getElementById(`${workflowKey}-workflow-config-btn`).addEventListener('click', (e) => {
                                 e.preventDefault()
-
                                 localStorage.setItem('workflowEditor', JSON.stringify({ workflowKey, workflowDescription, selectedRepo: repoName, selectedBranch }))
                                 window.location.replace('/workflow-configuration.html')
                             })
                             document.getElementById(`${workflowKey}-workflow-editor-btn`).addEventListener('click', (e) => {
                                 e.preventDefault()
                                 try {
-
                                     localStorage.setItem('workflowEditor', JSON.stringify({ workflowKey, workflowDescription, selectedRepo: repoName, selectedBranch }))
-
-
                                     window.location.replace('/workflow-editor.html')
                                 } catch (error) {
 
@@ -323,6 +322,49 @@ customElements.define('task-component', class extends HTMLElement {
 })
 
 
+customElements.define('task-run-state', class extends HTMLElement{
+    constructor(){
+        super()
+
+    }
+
+    connectedCallback(){
+        this.innerHTML=`<div>
+        <h7>Last Run:</h7>
+        <div class="border border-0">
+        <li class="list-group-item d-flex justify-content-between align-items-start">
+        <div class="ms-2 me-auto">
+          <div class="fw-light">Start</div>
+       
+        </div>
+        <span class="badge bg-primary rounded-pill">14</span>
+      </li>
+      <li class="list-group-item d-flex justify-content-between align-items-start">
+        <div class="ms-2 me-auto">
+          <div class="fw-light">End</div>
+        
+        </div>
+        <span class="badge bg-primary rounded-pill">14</span>
+      </li>
+      <li class="list-group-item d-flex justify-content-between align-items-start">
+        <div class="ms-2 me-auto">
+          <div class="fw-light">Duration</div>
+       
+        </div>
+        <span class="badge bg-primary rounded-pill">14</span>
+      </li>
+
+      <li class="list-group-item d-flex justify-content-between align-items-start">
+      <div class="ms-2 me-auto">
+        <div class="fw-light">Result</div>
+     
+      </div>
+      <span class="badge bg-success rounded-pill">Complete</span>
+    </li>
+        </div>
+        </div>`
+    }
+})
 
 
 customElements.define('config-workflow-icon', class extends HTMLElement {

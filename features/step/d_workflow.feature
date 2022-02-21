@@ -32,5 +32,12 @@ Scenario: 8
     Then component with "#workflows" selector is visible to user 805
 
 
+    #create workflow
+    #edit workflow
+    #delete workflow
+    #edit workflow variable
+    
+
+
 
     
