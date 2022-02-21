@@ -93,29 +93,11 @@ customElements.define('workspace-tasks', class extends HTMLElement {
 
                     taskElement.insertAdjacentHTML('beforeend', ` <task-component id="${taskId}" name="${taskName}"></task-component>`)
 
-                    //  taskElement.insertAdjacentHTML('beforeend', ` <a href="/task-workflows.html" class="list-group-item list-group-item-action" id="${taskId}" name="${taskName}">${taskName}</a>`)
 
 
                 }
 
-                // tasks &&     tasks.forEach(task => {
-                //   
-                //     taskElement.id='tasks'
-                //     const taskId = task[0]
-                //     const taskName = task[1]['taskName']
-                //     taskElement.innerHTML=''
-                //     taskElement.insertAdjacentHTML('beforeend', ` <task-component id="${taskId}" name="${taskName}"></task-component>`)
 
-                //     taskElement.insertAdjacentHTML('beforeend', ` <a href="/task-workflows.html" class="list-group-item list-group-item-action" id="${taskId}" name="${taskName}">${taskName}</a>`)
-                // })
-                // Array.from(document.getElementsByClassName('list-group-item')).forEach(element => {
-                //     element.addEventListener('click', e => {
-                //         e.preventDefault()
-                //         const { id, name } = e.target
-                //         localStorage.setItem('taskSelected',JSON.stringify({id, taskName: name }))
-                //         window.location.replace('./task-workflows.html')
-                //     })
-                //})
             } else {
                 taskElement
                     .innerHTML = '0 Tasks found'
@@ -236,9 +218,7 @@ customElements.define('task-component', class extends HTMLElement {
         <h2 class="accordion-header d-flex" id="panelsStayOpen-heading-${id}">
           <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-${id}" aria-expanded="true" aria-controls="panelsStayOpen-${id}">
            ${name}
-  
           </button>
-       
         </h2>
         
            <div id="panelsStayOpen-${id}" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-heading-${id}">
@@ -252,9 +232,10 @@ customElements.define('task-component', class extends HTMLElement {
           <div class="border border-1 p-2">
           <task-config></task-config>
           <button class="btn btn-outline-secondary btn-sm">Vars</button>
-          <button class="btn btn-outline-secondary btn-sm">Add workflow</button>
+          <button class="btn btn-outline-secondary btn-sm" id="add-workflow-btn-${id}">Add workflow</button>
           <button class="btn btn-outline-success btn-sm">Run</button>
           <button class="btn btn-outline-danger btn-sm">Abort</button>
+          <button class="btn btn-outline-secondary btn-sm">Logs</button>
           </div>
           </div>
     
@@ -267,15 +248,19 @@ customElements.define('task-component', class extends HTMLElement {
         <div>
         
     `
+        document.getElementById(`add-workflow-btn-${id}`).addEventListener('click', (e) => {
+            e.preventDefault()
 
+
+            localStorage.setItem('workflowEditor', JSON.stringify({ selectedBranch: '', selectedRepo: '', workflowDescription: '', workflowKey: '' }))
+            localStorage.setItem('taskSelected', JSON.stringify({ id, taskName: name }))
+            window.location.replace('/workflow-editor.html')
+        })
         document.getElementById(`panelsStayOpen-heading-${id}`).addEventListener('click', e => {
             e.preventDefault()
             open = !open
 
-            // const { id, name} = e.target
 
-            //  localStorage.setItem('taskSelected',JSON.stringify({id, taskName: name }))
-            //window.location.replace('./task-workflows.html')
             if (open) {
 
 
@@ -288,7 +273,7 @@ customElements.define('task-component', class extends HTMLElement {
                         const wfContainer = document.getElementById(`accordion-body-${id}`).querySelector('.wf-container')
                         wfContainer.innerHTML = '<h7>Workflows:</h7>'
 
-                        workflows && workflows.forEach(wf => {
+                        workflows && workflows.forEach((wf,i) => {
 
                             const workflowKey = wf[0]
                             //   const workflowName = wf[1]['workflowName']
@@ -297,10 +282,14 @@ customElements.define('task-component', class extends HTMLElement {
                             const selectedBranch = wf[1]['selectedBranch']
 
 
-                            wfContainer.insertAdjacentHTML('beforeend', `<div class=" d-flex justify-content-between list-group-item"> <a href="#" class="nav-link" id="${workflowKey}-workflow-editor-btn">${repoName}   || ${selectedBranch}|| ${workflowDescription}</a>  <a href="#" id="${workflowKey}-workflow-config-btn" ><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-gear" viewBox="0 0 16 16">
-                                    <path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z"/>
-                                    <path d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52l-.094-.319zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115l.094-.319z"/>
-                                  </svg></a></div>`)
+                            wfContainer.insertAdjacentHTML('beforeend', `<div class="d-flex justify-content-between list-group-item">
+                            <h7>${i}. <span class="fw-bolder">Repo: </span>${repoName}, <span class="fw-bolder">Branch: </span>${selectedBranch},<span class="fw-bolder">Desc: </span>${workflowDescription}</h7>
+                                                                                                <div class ="buttons">
+                                                                                                <button class="btn btn-outline-secondary btn-sm" id="${workflowKey}-workflow-config-btn">Vars</button>
+                                                                                                <button class="btn btn-outline-warning btn-sm" id="${workflowKey}-workflow-editor-btn">Edit</button>
+                                                                                                <button class="btn btn-outline-danger btn-sm">Delete</button>
+                                                                                                </div>
+                                                                                                                                      </div>`)
                             document.getElementById(`${workflowKey}-workflow-config-btn`).addEventListener('click', (e) => {
                                 e.preventDefault()
 
@@ -333,13 +322,33 @@ customElements.define('task-component', class extends HTMLElement {
 })
 
 
-customElements.define('task-config', class extends HTMLElement{
-    constructor(){
+
+
+customElements.define('config-workflow-icon', class extends HTMLElement {
+    constructor() {
         super()
     }
 
-    connectedCallback(){
-        this.innerHTML=`        
+    connectedCallback() {
+        const workflowKey = this.getAttribute("workflowKey")
+        const workflowDescription = this.getAttribute("workflowDescription")
+        const repoName = this.getAttribute("repoName")
+        const selectedBranch = this.getAttribute("selectedBranch")
+        debugger;
+        this.outerHTML = ` <a href="#" id="${workflowKey}-workflow-editor-btn">${repoName}   || ${selectedBranch}|| ${workflowDescription}</a>  <a href="#" id="${workflowKey}-workflow-config-btn" ><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-gear" viewBox="0 0 16 16">
+        <path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z"/>
+        <path d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52l-.094-.319zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115l.094-.319z"/>
+      </svg></a>`
+    }
+})
+
+customElements.define('task-config', class extends HTMLElement {
+    constructor() {
+        super()
+    }
+
+    connectedCallback() {
+        this.innerHTML = `        
 
           <div class="input-group input-group-sm mb-3">
             <span class="input-group-text" id="inputGroup-sizing-sm">Run order</span>

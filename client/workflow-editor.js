@@ -176,7 +176,7 @@ customElements.define('save-workflow-btn', class extends HTMLElement {
 
       window.FB_DATABASE.ref(`/`).update({ ...workflowInitials, ...workflowProps, ...updateServer }, (error, data) => {
         if (data) {
-          window.location.replace('/task-workflows.html')
+          window.location.replace('/workspace-tasks.html')
         }
       })
     })
