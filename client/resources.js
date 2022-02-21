@@ -7,8 +7,8 @@ export default async (reducer) => {
 
         import('./firebase-rest.js'),
         import('./signed-in-as.js'),
-        import('./error-displayer.js')
-    
+        import('./error-displayer.js'),
+        import('./bootstrap.min.js')
     ])
 
     window.projectUrl =window.location.hostname==='localhost'?'http://localhost:9000':'https://workflow-prod-799d4-default-rtdb.firebaseio.com'
