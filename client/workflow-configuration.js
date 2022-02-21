@@ -14,7 +14,7 @@ customElements.define('workflow-configuration', class extends HTMLElement {
 
         document.getElementById('ws-breadcrumb').innerText = `Workspace(${workspaceName})`
         document.getElementById('task-breadcrumb').innerText = `Task(${taskName})`
-        document.getElementById('workflow-breadcrumb').innerText = `Configuration(${selectedRepo})`
+        document.getElementById('workflow-breadcrumb').innerText = `Workflow(${selectedRepo})`
         this.uid = uid
         window.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
         this.innerHTML = `

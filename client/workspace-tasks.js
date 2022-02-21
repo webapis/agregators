@@ -271,7 +271,7 @@ customElements.define('task-component', class extends HTMLElement {
                         const workflows = result && Object.entries(result)
                         debugger;
                         const wfContainer = document.getElementById(`accordion-body-${id}`).querySelector('.wf-container')
-                        wfContainer.innerHTML = '<h7>Workflows:</h7>'
+                        wfContainer.innerHTML = '<div class="row"><h7 class="col-9">Workflows:</h7><h7 class="col-3 text-end">Workflow configurations:</h7><div>'
 
                         workflows && workflows.forEach((wf,i) => {
 
@@ -285,6 +285,7 @@ customElements.define('task-component', class extends HTMLElement {
                             wfContainer.insertAdjacentHTML('beforeend', `<div class="d-flex justify-content-between list-group-item">
                             <h7>${i}. <span class="fw-bolder">Repo: </span>${repoName}, <span class="fw-bolder">Branch: </span>${selectedBranch},<span class="fw-bolder">Desc: </span>${workflowDescription}</h7>
                                                                                                 <div class ="buttons">
+                                                                                              
                                                                                                 <button class="btn btn-outline-secondary btn-sm" id="${workflowKey}-workflow-config-btn">Vars</button>
                                                                                                 <button class="btn btn-outline-warning btn-sm" id="${workflowKey}-workflow-editor-btn">Edit</button>
                                                                                                 <button class="btn btn-outline-danger btn-sm">Delete</button>
