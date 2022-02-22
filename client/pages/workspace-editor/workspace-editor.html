@@ -1,29 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
+    <title>Workspace name</title>
 
   
 </head>
+
 <body>
-    
+
     <div class="container mt-1">
         <div id="top-bar" class="d-flex justify-content-between">
-            <div class="breadcrumb flat ">
-                <a href="/home.html" class="active">Home</a>
-               
-                </div>
-
+        <div class="breadcrumb flat">
+            <a href="/index.html">Home</a>
+            <a href="/pages/workspaces-list/workspaces-list.html">Workspaces</a>
+            <a href="#" class="active">New Workspace</a>
         </div>
-    
-
-        <home-component></home-component>
+     
     </div>
+    <workspace-editor></workspace-editor>
 
-    <script src="/components/home-component.js"></script>
 
+    <script src="./workspace-editor.js"></script>
 </body>
+
 </html>

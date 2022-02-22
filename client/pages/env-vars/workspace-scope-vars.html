@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workspace vars</title>
+</head>
+<body>
+    <div class="container mt-1">
+        <div id="top-bar" class="d-flex justify-content-between">
+        <div class="breadcrumb flat">
+            <a href="/index.html" >Home</a>
+            <a href="/pages/workspaces-list/workspaces-list.html" >Workspaces</a>
+            <a href="/pages/workspaces-list/workspaces-list.html"  id="ws-breadcrumb">Workspace</a>
+            <a href="/workspace-users.html" class="active" id="ws-breadcrumb">Vars</a>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <env-vars scope="workspace" class="row"></env-vars>
+    </div>
+        <script src="./env-vars.js"></script>
+</body>
+</html>

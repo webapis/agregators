@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Scope Vars</title>
+</head>
+<body>
+    <div class="container mt-1">
+        <div id="top-bar" class="d-flex justify-content-between">
+        <div class="breadcrumb flat">
+            <a href="/index.html" >Home</a>
+            <a href="/pages/workspaces-list/workspaces-list.html" >Workspaces</a>
+            <a href="/pages/workspaces-list/workspaces-list.html"  id="workspace-breadcrumb">Workspace</a>
+            <a href="/pages/workspace-tasks/workspace-tasks.html"  id="tasks-breadcrumb">Tasks</a>
+            <a href="/pages/workspace-tasks/workspace-tasks.html"  id="task-breadcrumb">Task
+            </a>
+            <a href="#" class="active" id="ws-breadcrumb">Vars</a>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <env-vars scope="task" class="row"></env-vars>
+    </div>
+        <script src="./env-vars.js"></script>
+</body>
+</html>

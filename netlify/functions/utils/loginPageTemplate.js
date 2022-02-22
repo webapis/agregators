@@ -38,7 +38,7 @@ function template({  email, localId,photoUrl, screenName, idToken, refreshToken,
 <input type="hidden" id="refreshToken" value="${refreshToken}"/>
 <input type="hidden" id="expiresIn" value="${expiresIn}"/>
 
-    <script src="${process.env.host}/login-page.js"></script>
+    <script src="${process.env.host}/pages/login/login-page.js"></script>
  
 </body>
 
