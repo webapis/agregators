@@ -70,8 +70,8 @@ customElements.define('task-component', class extends HTMLElement {
             e.preventDefault()
 
 
-            localStorage.setItem('workflowEditor', JSON.stringify({ selectedBranch: '', selectedRepo: '', workflowDescription: '', workflowKey: '' }))
-            localStorage.setItem('task', JSON.stringify({ id, taskName: name }))
+            localStorage.setItem('workflow', JSON.stringify({ selectedBranch: '', selectedRepo: '', workflowDescription: '', workflowKey: '' }))
+            localStorage.setItem('task', JSON.stringify({ id, taskName: name,runOrder:order,runSequence:sequence }))
             window.location.replace('/pages/workflow-editor/workflow-editor.html')
         })
         document.getElementById(`panelsStayOpen-heading-${id}`).addEventListener('click', e => {
