@@ -26,7 +26,7 @@ customElements.define('workspace-tasks', class extends HTMLElement {
             import('./js/triggerAction.js'),
         ])
 
-        const { title: workspaceName } = JSON.parse(localStorage.getItem('workspaceSelected'))
+        const { title: workspaceName } = JSON.parse(localStorage.getItem('workspace'))
         const { idToken, localId: uid, token, screenName } = JSON.parse(localStorage.getItem('auth'))
 
         this.uid = uid
@@ -81,7 +81,8 @@ customElements.define('workspace-tasks', class extends HTMLElement {
 
     loadTasks({ workspaceName }) {
         document.getElementById('container').innerHTML = ` <a class="btn btn-outline-secondary m-1" href="/pages/task-editor/task-editor.html" id="task-editor-btn">Add Task</a><button class="btn btn-outline-success">Run </button> <button class="btn btn-outline-danger">Abort </button>`
-
+           
+     
 
         window.FB_DATABASE.ref(`workspaces/${workspaceName}/tasks`).get((error, result) => {
             const tasks = result //&& Object.entries(result)
@@ -89,25 +90,33 @@ customElements.define('workspace-tasks', class extends HTMLElement {
             document.getElementById('container').appendChild(taskElement)
             if (result) {
 
-            
-
-
                 taskElement.id = 'tasks'
                 taskElement.classList.add('accordion')
-              
-                for (let task in tasks) {
-                    const current = tasks[task]
+                 const orderByRunOrder =Object.entries(tasks).map(m=>{
+                     const taskId =m[0]
+                     const taskProps =m[1]
+                     return {taskId,...taskProps}
+                 }).sort(function compare( a, b ) {
+                    if ( a.runOrder < b.runOrder ){
+                      return -1;
+                    }
+                    if ( a.runOrder > b.runOrder ){
+                      return 1;
+                    }
+                    return 0;
+                  }
+                  )
+            
+                 orderByRunOrder.forEach(task=>{
+                    const taskId = task['taskId']
+                    const taskName = task['taskName']
+                    const runOrder =task['runOrder']
+                    const runSequence=task['runSequence']
+                    debugger;
+                    taskElement.insertAdjacentHTML('beforeend', ` <task-component id="${taskId}" name="${taskName}" order="${runOrder}" sequence="${runSequence}"></task-component>`)
 
-
-                    const taskId = task
-                    const taskName = current['taskName']
-
-
-                    taskElement.insertAdjacentHTML('beforeend', ` <task-component id="${taskId}" name="${taskName}"></task-component>`)
-
-
-
-                }
+                 })
+               
 
 
             } else {

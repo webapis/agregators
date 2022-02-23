@@ -49,7 +49,7 @@ customElements.define('workspaces-list', class extends HTMLElement {
 
         document.getElementById('create-workspace-btn').addEventListener('click', (e) => {
             e.preventDefault()
-          
+            localStorage.setItem('workspace', JSON.stringify({ title:'', accessLevel:'', description:'', owner:'' }))
             window.location.replace('/pages/workspace-editor/workspace-editor.html')
         })
 

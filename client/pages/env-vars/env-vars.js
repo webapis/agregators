@@ -9,7 +9,7 @@ customElements.define('env-vars', class extends HTMLElement {
         await resources.default()
 
   
-        const { title: workspaceName } = JSON.parse(localStorage.getItem('workspaceSelected'))
+        const { title: workspaceName } = JSON.parse(localStorage.getItem('workspace'))
         const { taskName } = JSON.parse(localStorage.getItem('taskSelected'))
         const { idToken, localId: uid, token, screenName } = JSON.parse(localStorage.getItem('auth'))
         window.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)

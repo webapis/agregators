@@ -86,10 +86,11 @@ User enables google oauth for selected workflow
 
   
   
-  #Create,Edit,Delete private, public and shared workspace
+  #Create,Edit,Delete private, public workspace
+
   #Create, Edit, Delete, workspace vars
   #Create workflow input
   #Navigate to Tasks
   #Enable,Disable Google oauth oauthentication
   #Navigate back using breadcrumb
-
+  #share workspace

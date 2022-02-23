@@ -6,6 +6,8 @@ customElements.define('task-component', class extends HTMLElement {
     connectedCallback() {
         const id = this.getAttribute('id')
         const name = this.getAttribute('name')
+        const order =this.getAttribute('order')
+        const sequence =this.getAttribute('sequence')
         let open = false
         this.innerHTML = `
         <div class="accordion-item">
@@ -24,14 +26,14 @@ customElements.define('task-component', class extends HTMLElement {
           <div class= "col-4">
           <h7>Task Configurations:</h7>
           <div class="border border-1 p-2">
-          <task-config></task-config>
+          <task-config taskId="${id}" title="${name}" order="${order}" sequence="${sequence}"></task-config>
           <div>
           <button class="btn btn-outline-secondary btn-sm" id="${id}-vars-btn">Vars</button>
           <button class="btn btn-outline-secondary btn-sm" id="add-workflow-btn-${id}">Add</button>
           <button class="btn btn-outline-success btn-sm">Run</button>
           <button class="btn btn-outline-danger btn-sm">Abort</button>
           <button class="btn btn-outline-secondary btn-sm" id="${id}-logs-btn">Logs</button>
-          <button class="btn btn-outline-warning btn-sm" id="${id}-edit-btn">Edit</button>
+          
           </div>
      
           </div>
@@ -49,25 +51,17 @@ customElements.define('task-component', class extends HTMLElement {
 
 
         //localStorage.setItem('workflowEditor', JSON.stringify({ selectedBranch: '', selectedRepo: '', workflowDescription: '', workflowKey: '' }))
-        localStorage.setItem('taskSelected', JSON.stringify({ id, taskName: name }))
+        localStorage.setItem('task', JSON.stringify({ id, taskName: name }))
         window.location.replace('/pages/task-logs/task-logs.html')
 
     })
-    document.getElementById(`${id}-edit-btn`).addEventListener('click', (e) => {
-        e.preventDefault()
 
-
-        //localStorage.setItem('workflowEditor', JSON.stringify({ selectedBranch: '', selectedRepo: '', workflowDescription: '', workflowKey: '' }))
-        localStorage.setItem('taskSelected', JSON.stringify({ id, taskName: name }))
-        window.location.replace('/pages/task-editor/task-editor.html')
-
-    })
         document.getElementById(`${id}-vars-btn`).addEventListener('click', (e) => {
             e.preventDefault()
 
 
             //localStorage.setItem('workflowEditor', JSON.stringify({ selectedBranch: '', selectedRepo: '', workflowDescription: '', workflowKey: '' }))
-            localStorage.setItem('taskSelected', JSON.stringify({ id, taskName: name }))
+            localStorage.setItem('task', JSON.stringify({ id, taskName: name }))
             window.location.replace('/pages/env-vars/task-scope-vars.html')
 
         })
@@ -77,7 +71,7 @@ customElements.define('task-component', class extends HTMLElement {
 
 
             localStorage.setItem('workflowEditor', JSON.stringify({ selectedBranch: '', selectedRepo: '', workflowDescription: '', workflowKey: '' }))
-            localStorage.setItem('taskSelected', JSON.stringify({ id, taskName: name }))
+            localStorage.setItem('task', JSON.stringify({ id, taskName: name }))
             window.location.replace('/pages/workflow-editor/workflow-editor.html')
         })
         document.getElementById(`panelsStayOpen-heading-${id}`).addEventListener('click', e => {
@@ -88,7 +82,7 @@ customElements.define('task-component', class extends HTMLElement {
             if (open) {
 
 
-                const { title: workspaceName } = JSON.parse(localStorage.getItem('workspaceSelected'))
+                const { title: workspaceName } = JSON.parse(localStorage.getItem('workspace'))
                 window.FB_DATABASE.ref(`workspaces/${workspaceName}/workflowInitials/tasks/${id}/workflows`).get((error, result) => {
                     if (result) {
 
@@ -135,7 +129,7 @@ customElements.define('task-component', class extends HTMLElement {
                         })
 
                     } else {
-                        //   document.getElementById('workflows').innerHTML = '0 Workflows found'
+                       
 
                     }
                 })

@@ -8,7 +8,7 @@ customElements.define('task-editor', class extends HTMLElement {
         const resources = await import('/js/resources.js')
         await resources.default()
 
-        const {  title: workspaceName   } = JSON.parse(localStorage.getItem('workspaceSelected'))
+        const {  title: workspaceName   } = JSON.parse(localStorage.getItem('workspace'))
        
         const { idToken, localId: uid } =JSON.parse(localStorage.getItem('auth'))
         this.uid = uid
@@ -23,14 +23,14 @@ customElements.define('task-editor', class extends HTMLElement {
 
         document.getElementById('save-task-btn').addEventListener('click', (e) => {
             e.preventDefault()
-            const {  title: workspaceName   } = JSON.parse(localStorage.getItem('workspaceSelected'))
+         //   const {  title: workspaceName   } = JSON.parse(localStorage.getItem('workspace'))
             const taskName = document.getElementById('taskname').value
         
             const taskId = Date.now()
-            const updateServerWorkSpace = { [`server/workspaces/${workspaceName}/tasks/${taskId}`]: { taskName } }
+            const updateServerWorkSpace = { [`server/workspaces/${workspaceName}/tasks/${taskId}`]: {     taskName,runOrder:'0',runSequence:'sequential' } }
             const updateClientWorkSpace = {
                 [`workspaces/${workspaceName}/tasks/${taskId}`]: {
-                    taskName
+                    taskName,runOrder:'0',runSequence:'sequential'
                   
                 }
             }

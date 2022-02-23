@@ -42,12 +42,15 @@ User creates workspace task
 #create task
 #edit Task
 #delete task
+#edit task order
+#edit task sequence
+
+
 #run task
 #abort task
 #task logs
 #edit task vars
-#edit task order
-#edit task sequence
+
 
     
     
