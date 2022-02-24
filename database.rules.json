@@ -1,5 +1,11 @@
 {
   "rules": {
+    "inputs": {
+      "$workspace": {
+        ".read": "true",
+        ".write": "auth != null"
+      }
+    },
     "workspaces": {
       "$workspace": {
         ".read": "true",

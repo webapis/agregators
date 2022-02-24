@@ -20,21 +20,22 @@ customElements.define('input-configuration', class extends HTMLElement {
         const repos = await response.json()
 
         localStorage.setItem('repos', JSON.stringify(repos))
-        
 
-        window.FB_DATABASE.ref(`server/workspaces/${workspaceName}/repoInputs/repos`).get((error, result) => {
-
+        debugger
+        window.FB_DATABASE.ref(`inputs/workspaces/${workspaceName}/repos`).get((error, result) => {
+            debugger;
             if (!error) {
-                const inputs = result && Object.entries(result)
+                const workflows = result && Object.entries(result)
 
-
+                debugger;
 
                 const inputEditor = JSON.parse(localStorage.getItem('inputEditor'))
-                this.render({ inputEditor, inputs: inputs !== null ? inputs : [] })
+                debugger;
+                this.render({ inputEditor, workflows: workflows !== null ? workflows : [] })
 
             } else {
 
-
+                debugger;
 
             }
 
@@ -42,8 +43,8 @@ customElements.define('input-configuration', class extends HTMLElement {
 
     }
 
-    render({ inputEditor, inputs }) {
-        const { inputName, inputType, defaultValue, editVar } = inputEditor
+    render({ inputEditor, workflows }) {
+        const { inputName, editVar } = inputEditor
 
         this.innerHTML = `Inputs Configuration
         <table class="table">
@@ -61,13 +62,11 @@ customElements.define('input-configuration', class extends HTMLElement {
     <th scope="col"><select id="repos" class="form-control">
     <option value="">Select Repo</option>
     </select></th>
-    <th scope="col"><input class="form-control" type="text" placeholder="Enter Input name" id="var-name-input" value="${inputName}"/></th>
-    <th scope="col">
+    <th scope="col"><input class="form-control" type="text" placeholder="Enter Input name" id="input-name" value="${inputName}"/></th>
+ 
 
-    </th>
-
-    <th scope="col"><button class="btn btn-outline-secondary" id="add-var-btn" ${editVar && 'disabled'}>Add</button></th>
-    <th scope="col"><button class="btn btn-outline-secondary" ${!editVar && 'disabled'} id="update-var-btn">Update</button></th>
+    <th scope="col"><button class="btn btn-outline-secondary" id="add-input-btn" ${editVar && 'disabled'}>Add</button></th>
+    <th scope="col"><button class="btn btn-outline-secondary" disabled id="update-input_btn">Update</button></th>
   </tr>
   </thead>
   <tbody id="var-table">
@@ -78,13 +77,14 @@ customElements.define('input-configuration', class extends HTMLElement {
         `
 
         document.getElementById('repos').addEventListener('focus', (e) => {
-            const { selectedRepo } = JSON.parse(localStorage.getItem('inputEditor'))
+            const { repoName } = JSON.parse(localStorage.getItem('inputEditor'))
             document.getElementById('repos').innerHTML = ''
             document.getElementById('repos').insertAdjacentHTML('afterbegin', '<option value="">Selecte Repo</option>')
             const repos = JSON.parse(localStorage.getItem('repos'))
+
             repos.forEach(repo => {
                 const { name } = repo
-                if (name !== selectedRepo) {
+                if (name !== repoName) {
                     document.getElementById('repos').insertAdjacentHTML('afterbegin', `<option value="${name}">${name}</option>`)
                 }
 
@@ -93,37 +93,32 @@ customElements.define('input-configuration', class extends HTMLElement {
         document.getElementById('repos').addEventListener('change', (e) => {
             const { value } = e.target
             const inputEditor = JSON.parse(localStorage.getItem('inputEditor'))
-            localStorage.setItem('inputEditor', JSON.stringify({ ...inputEditor, selectedRepo: value }))
+            localStorage.setItem('inputEditor', JSON.stringify({ ...inputEditor, repoName: value }))
         })
-        document.getElementById(`update-var-btn`).addEventListener('click', (e) => {
+        document.getElementById(`update-input_btn`).addEventListener('click', (e) => {
 
 
-            const { inputName, inputType, defaultValue, repoName, inputKey } = JSON.parse(localStorage.getItem('inputEditor'))
-            const { title: workspaceName } = JSON.parse(localStorage.getItem('workspaceSelected'))
-            window.FB_DATABASE.ref(`server/workspaces/${workspaceName}/repoVars/repos/${repoName}/vars/${inputKey}`).update({ inputType, defaultValue, inputName }, (error, result) => {
-                
+            const { inputName, repoName, inputKey } = JSON.parse(localStorage.getItem('inputEditor'))
+            const { title: workspaceName } = JSON.parse(localStorage.getItem('workspace'))
+            window.FB_DATABASE.ref(`inputs/workspaces/${workspaceName}/repos/${repoName}/${inputKey}`).update({ inputName }, (error, result) => {
+
                 const inputEditor = JSON.parse(localStorage.getItem('inputEditor'))
-                localStorage.setItem('inputEditor', JSON.stringify({ ...inputEditor, repoName: '', defaultValue: '', inputName: '', inputType: '', inputKey: '', editVar: false }))
+                localStorage.setItem('inputEditor', JSON.stringify({ ...inputEditor, repoName: '', inputName: '', inputKey: '', editVar: false }))
                 location.reload()
 
             })
         })
-        if (inputs.length > 0) {
-            inputs.forEach(v => {
-
-                const repoName = v[0]
-                const props = Object.entries(v[1]['inputs'])
-                props.forEach(prop => {
-
-                    const inputKey = prop[0]
-                    const obj = prop[1]
-                    const inputName = obj['inputName']
-
+        if (workflows.length > 0) {
+            workflows.forEach(workflow => {
+                debugger;
+                const repoName = workflow[0]
+                const inputs = workflow[1]
+                for (let inputKey in inputs) {
+                    const inputName = inputs[inputKey]['inputName']
                     document.getElementById('var-table').insertAdjacentHTML('beforeend', `<tr id ="${inputKey}-tr">
                     <th scope="row"></th>
                     <td>${repoName}</td>
                     <td>${inputName}</td>
-              
                     <td><button class="btn btn-outline-secondary" id="${inputKey}-edit-btn">Edit</button></td>
                     <td><button class="btn btn-outline-secondary" id="${inputKey}-remove-btn">Remove</button></td>
                   </tr>`)
@@ -131,29 +126,29 @@ customElements.define('input-configuration', class extends HTMLElement {
                     document.getElementById(`${inputKey}-edit-btn`).addEventListener('click', (e) => {
                         const inputEditor = JSON.parse(localStorage.getItem('inputEditor'))
                         localStorage.setItem('inputEditor', JSON.stringify({ ...inputEditor, repoName, inputName, inputKey, editVar: true }))
-                        location.reload()
 
+                        document.getElementById('repos').innerHTML = ''
+                        document.getElementById('repos').insertAdjacentHTML('afterbegin', `<option value="${repoName}" selected>${repoName}</option>`)
+                        document.getElementById('input-name').value=inputName
+                        document.getElementById('update-input_btn').removeAttribute('disabled')
+                        
                     })
+
                     document.getElementById(`${inputKey}-remove-btn`).addEventListener('click', (e) => {
-
-                        const { title: workspaceName } = JSON.parse(localStorage.getItem('workspaceSelected'))
-
-                        window.FB_DATABASE.ref(`server/workspaces/${workspaceName}/repoInputs/repos/${repoName}/inputs/${inputKey}`).remove((error, result) => {
-
+                        const { title: workspaceName } = JSON.parse(localStorage.getItem('workspace'))
+                        window.FB_DATABASE.ref(`inputs/workspaces/${workspaceName}/repos/${repoName}/${inputKey}`).remove((error, result) => {
                             location.reload()
-
                         })
                     })
 
-
-                })
+                }
 
             })
         } else {
-            document.getElementById('var-table').innerHTML = `No vars set`
+            document.getElementById('var-table').innerHTML = `No inputs set`
         }
 
-        document.getElementById('var-name-input').addEventListener('input', (e) => {
+        document.getElementById('input-name').addEventListener('input', (e) => {
             const { value } = e.target
 
 
@@ -163,14 +158,14 @@ customElements.define('input-configuration', class extends HTMLElement {
 
 
 
-        document.getElementById('add-var-btn').addEventListener('click', (e) => {
+        document.getElementById('add-input-btn').addEventListener('click', (e) => {
             const { inputName, repoName } = JSON.parse(localStorage.getItem('inputEditor'))
-            const { title: workspaceName } = JSON.parse(localStorage.getItem('workspaceSelected'))
+            const { title: workspaceName } = JSON.parse(localStorage.getItem('workspace'))
 
-            window.FB_DATABASE.ref(`server/workspaces/${workspaceName}/repoVars/repos/${repoName}/vars`).push({ inputName }, (error, result) => {
+            window.FB_DATABASE.ref(`inputs/workspaces/${workspaceName}/repos/${repoName}`).push({ inputName }, (error, result) => {
                 const { name: inputKey } = result
                 const inputEditor = JSON.parse(localStorage.getItem('inputEditor'))
-                localStorage.setItem('inputEditor', JSON.stringify({ ...inputEditor, repoName: '', inputName: '', vars: [...inputEditor.vars, { inputName, inputKey, repoName }] }))
+                localStorage.setItem('inputEditor', JSON.stringify({ ...inputEditor, repoName: '', inputName: '', inputs: [...inputEditor.inputs, { inputName, inputKey, repoName }] }))
                 document.getElementById('var-table').insertAdjacentHTML('beforeend', `<tr id ="${repoName}-tr">
                 <th scope="row"></th>
                 <td>${repoName}</td>
@@ -183,6 +178,8 @@ customElements.define('input-configuration', class extends HTMLElement {
 
             })
         })
+
+
     }
 })
 
