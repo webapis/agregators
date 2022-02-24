@@ -1,10 +1,12 @@
 {
   "rules": {
     "inputs": {
-      "$workspace": {
         ".read": "true",
         ".write": "auth != null"
-      }
+    },
+    "inputRepos":{
+      ".read": "true",
+      ".write": "auth != null"
     },
     "workspaces": {
       "$workspace": {
