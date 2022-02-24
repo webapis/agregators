@@ -96,16 +96,12 @@ customElements.define('input-configuration', class extends HTMLElement {
             localStorage.setItem('inputEditor', JSON.stringify({ ...inputEditor, repoName: value }))
         })
         document.getElementById(`update-input_btn`).addEventListener('click', (e) => {
-
-
             const { inputName, repoName, inputKey } = JSON.parse(localStorage.getItem('inputEditor'))
             const { title: workspaceName } = JSON.parse(localStorage.getItem('workspace'))
             window.FB_DATABASE.ref(`inputs/workspaces/${workspaceName}/repos/${repoName}/${inputKey}`).update({ inputName }, (error, result) => {
-
                 const inputEditor = JSON.parse(localStorage.getItem('inputEditor'))
                 localStorage.setItem('inputEditor', JSON.stringify({ ...inputEditor, repoName: '', inputName: '', inputKey: '', editVar: false }))
                 location.reload()
-
             })
         })
         if (workflows.length > 0) {
