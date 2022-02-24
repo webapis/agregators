@@ -1,16 +1,16 @@
-customElements.define('workflow-configuration', class extends HTMLElement {
+customElements.define('workflow-vars', class extends HTMLElement {
     constructor() {
         super()
     }
 
     async connectedCallback() {
         this.innerHTML = `loading...`
-        const resources = await import('./resources.js')
+        const resources = await import('../../js/resources.js')
         await resources.default()
-        const { title: workspaceName } = JSON.parse(localStorage.getItem('workspaceSelected'))
+        const { title: workspaceName } = JSON.parse(localStorage.getItem('workspace'))
         const { idToken, localId: uid, token } = JSON.parse(localStorage.getItem('auth'))
-        const { taskName, id: taskId } = JSON.parse(localStorage.getItem('taskSelected'))
-        const { selectedRepo, workflowKey } = JSON.parse(localStorage.getItem('workflowEditor'))
+        const { taskName, id: taskId } = JSON.parse(localStorage.getItem('task'))
+        const { selectedRepo, workflowKey } = JSON.parse(localStorage.getItem('workflow'))
 
         document.getElementById('ws-breadcrumb').innerText = `Workspace(${workspaceName})`
         document.getElementById('task-breadcrumb').innerText = `Task(${taskName})`
@@ -20,55 +20,54 @@ customElements.define('workflow-configuration', class extends HTMLElement {
         this.innerHTML = `
       
         <div>
-        <h5>Workflow Enviroment Valiables:</h5>
+        <h5>Workflow Inputs:</h5>
         </div>
         <div id="var-container" class="row">Loading..</div>`
 
 
-        window.FB_DATABASE.ref(`server/workspaces/${workspaceName}/repoVars/repos/${selectedRepo}/vars`).get((error, repoVars) => {
+        window.FB_DATABASE.ref(`server/workspaces/${workspaceName}/repoInputs/repos/${selectedRepo}/inputs`).get((error, repoInputs) => {
          
             debugger;
-            window.FB_DATABASE.ref(`server/workspaces/${workspaceName}/tasks/${taskId}/workflows/${workflowKey}/vars`).get((error, workflowfVars) => {
-                if (workflowfVars) {
+            window.FB_DATABASE.ref(`server/workspaces/${workspaceName}/tasks/${taskId}/workflows/${workflowKey}/vars`).get((error, workflowVars) => {
+                if (workflowVars) {
                     debugger;
-                    const mergedVars = { ...repoVars, ...workflowfVars }
-                    for (let m in mergedVars) {
-                        if (mergedVars[m].value === undefined) {
+                    const mergedInputs = { ...repoInputs, ...workflowVars }
+                    for (let m in mergedInputs) {
+                        if (mergedInputs[m].value === undefined) {
 
-                            mergedVars[m].value = ''
+                            mergedInputs[m].value = ''
                         }
                     }
-                    for (let m in workflowfVars) {
-                        if (repoVars[m] === undefined) {
+                    for (let m in workflowVars) {
+                        if (repoInputs[m] === undefined) {
 
-                            delete mergedVars[m]
+                            delete mergedInputs[m]
                         }
                     }
 
-                    this.render({ mergedVarConfig: mergedVars })
+                    this.render({ mergedInputConfig: mergedInputs })
 
                 } else {
-                    for (let rv in repoVars) {
-                        repoVars[rv].value = ''
+                    for (let rv in repoInputs) {
+                        repoInputs[rv].value = ''
                     }
-                    this.render({ mergedVarConfig: repoVars })
+                    this.render({ mergedInputConfig: repoInputs })
                 }
             })
         })
     }
 
     render({ mergedVarConfig }) {
-
+debugger;
         document.getElementById('var-container').innerHTML = ''
         for (let key in mergedVarConfig) {
             const value = mergedVarConfig[key]['value']
-            const varName = mergedVarConfig[key]['varName']
-            const inputType = mergedVarConfig[key]['inputType']
-            const defaultValue = mergedVarConfig[key]['defaultValue']
+            const inputName = mergedVarConfig[key]['inputName']
 
-            document.getElementById('var-container').insertAdjacentHTML('beforeend', ` <div class="mb-3"><label for="${key}" class="form-label">${varName}:</label><input type="text" value="${value}" placeholder="${varName}" class="form-control m-1" id="${varName}">  </div>`)
 
-            document.getElementById(varName).addEventListener('input', (e) => {
+            document.getElementById('var-container').insertAdjacentHTML('beforeend', ` <div class="mb-3"><label for="${key}" class="form-label">${inputName}:</label><input type="text" value="${value}" placeholder="${inputName}" class="form-control m-1" id="${inputName}">  </div>`)
+
+            document.getElementById(inputName).addEventListener('input', (e) => {
                 const { id, value } = e.target
 
                 const workflowConfiguration = localStorage.getItem('workflowConfiguration') && JSON.parse(localStorage.getItem('workflowConfiguration'))
@@ -81,14 +80,13 @@ customElements.define('workflow-configuration', class extends HTMLElement {
                     } else {
                         updatedVars[key] = {}
                         debugger;
-                        updatedVars[key].varName = varName
+                        updatedVars[key].inputName = inputName
                         updatedVars[key].value = value
-                        updatedVars[key].inputType = inputType
-                        updatedVars[key].defaultValue = defaultValue
+                
                         localStorage.setItem('workflowConfiguration', JSON.stringify({ vars: updatedVars }))
                     }
                 } else {
-                    localStorage.setItem('workflowConfiguration', JSON.stringify({ vars: { [key]: { varName, value, inputType, defaultValue } } }))
+                    localStorage.setItem('workflowConfiguration', JSON.stringify({ vars: { [key]: { inputName, value, } } }))
                 }
             })
         }
@@ -99,9 +97,9 @@ customElements.define('workflow-configuration', class extends HTMLElement {
         document.getElementById('save-wf-vars').addEventListener('click', (e) => {
 
             const { vars: workflowVars } = localStorage.getItem('workflowConfiguration') && JSON.parse(localStorage.getItem('workflowConfiguration'))
-            const { title: workspaceName } = JSON.parse(localStorage.getItem('workspaceSelected'))
-            const { id: taskId } = JSON.parse(localStorage.getItem('taskSelected'))
-            const { workflowKey } = JSON.parse(localStorage.getItem('workflowEditor'))
+            const { title: workspaceName } = JSON.parse(localStorage.getItem('workspace'))
+            const { id: taskId } = JSON.parse(localStorage.getItem('task'))
+            const { workflowKey } = JSON.parse(localStorage.getItem('workflow'))
             window.FB_DATABASE.ref(`server/workspaces/${workspaceName}/tasks/${taskId}/workflows/${workflowKey}/vars`).update(workflowVars, (error, result) => {
                 window.location.replace('/task-workflows.html')
             })

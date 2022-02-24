@@ -9,11 +9,21 @@ customElements.define('workflow-editor', class extends HTMLElement {
     await resources.default()
 
     const { title: workspaceName } = JSON.parse(localStorage.getItem('workspace'))
-    const { idToken, localId: uid, token,screenName } = JSON.parse(localStorage.getItem('auth'))
+    const { idToken, localId: uid, token, screenName } = JSON.parse(localStorage.getItem('auth'))
     const { taskName, id: taskId } = JSON.parse(localStorage.getItem('task'))
-    const workflow = JSON.parse(localStorage.getItem('workflow'))
+
     document.getElementById('task-breadcrumb').innerText = `Task(${taskName})`
     document.getElementById('ws-breadcrumb').innerText = `Workspace(${workspaceName})`
+
+
+
+    const response = await fetch('https://api.github.com/user/repos', { method: 'get', headers: { Accept: "application/vnd.github.v3+json", authorization: `token ${token}` } })
+    const repos = await response.json()
+    this.repos = repos
+    const workflow = JSON.parse(localStorage.getItem('workflow'))
+
+    
+
     this.uid = uid
 
     window.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
@@ -23,7 +33,7 @@ customElements.define('workflow-editor', class extends HTMLElement {
     this.render({ ...workflow })
 
   }
-  render({ workflowDescription = '',selectedBranch,selectedRepo }) {
+  render({ workflowDescription = '', selectedBranch, selectedRepo }) {
 
     this.innerHTML = `
   
@@ -32,10 +42,14 @@ customElements.define('workflow-editor', class extends HTMLElement {
         <div class="row">
       <div class="col-12">
       <div class="mb-3">
-      <list-dropdown data-id="repos" load="true"  label="Repositories" name="Repo"></list-dropdown>
+     <select class="form-control" id="repos">
+     <option value="">Select Repo</option>
+     </select>
     </div>
     <div class="mb-3">
-    <list-dropdown load="false" data-id="branches"  label="Branches" name="Branch"></list-dropdown>
+    <select class="form-control" id="branches">
+    <option value="">Select Branch</option>
+    </select>
   </div>
   <div class="mb-3">
   
@@ -52,11 +66,64 @@ customElements.define('workflow-editor', class extends HTMLElement {
         </div>
         </div>
      `
-    document.getElementById('close-workflow-editor-btn').addEventListener('click', () => {
-   
-      window.location.replace('/task-workflows.html')
+    //Repo
+    if (selectedRepo !== '') {
+      document.getElementById('repos').insertAdjacentHTML('afterbegin', `<option value="${selectedRepo}" selected>${selectedRepo}</option>`)
+    }
+    document.getElementById('repos').addEventListener('focus', (e) => {
+      document.getElementById('repos').innerHTML = ''
+      document.getElementById('repos').insertAdjacentHTML('afterbegin', `<option value="" selected>Select Repo</option>`)
+      if (selectedRepo !== '') {
+        document.getElementById('repos').insertAdjacentHTML('afterbegin', `<option value="${selectedRepo}" selected>${selectedRepo}</option>`)
+      }
+      this.repos&& this.repos.forEach(repo => {
+        const { name } = repo
+        if (name !== selectedRepo)
+          document.getElementById('repos').insertAdjacentHTML('beforeend', `<option value="${name}">${name}</option>`)
+      })
+
+    })
+    document.getElementById('repos').addEventListener('change',async (e)=>{
+      const {  token, screenName } = JSON.parse(localStorage.getItem('auth'))
+      const workflow = JSON.parse(localStorage.getItem('workflow'))
+      const { value } = e.target
+      localStorage.setItem('workflow', JSON.stringify({ ...workflow, selectedRepo: value }))
+
+      const response = await fetch(`https://api.github.com/repos/${screenName}/${value}/branches`, { method: 'get', headers: { Accept: "application/vnd.github.v3+json", authorization: `token ${token}` } })
+
+      const branches = await response.json()
+     localStorage.setItem("branches", JSON.stringify(branches))
+
+    })
+    //Branch
+
+    if (selectedBranch !== '') {
+      document.getElementById('branches').insertAdjacentHTML('afterbegin', `<option value="${selectedBranch}" selected>${selectedBranch}</option>`)
+    }
+
+    document.getElementById('branches').addEventListener('focus',(e)=>{
+      document.getElementById('branches').innerHTML = ''
+      document.getElementById('branches').insertAdjacentHTML('afterbegin', `<option value="" selected>Select Branch</option>`)
+      if (selectedBranch !== '') {
+        document.getElementById('branches').insertAdjacentHTML('afterbegin', `<option value="${selectedBranch}" selected>${selectedBranch}</option>`)
+      }
+      const branches =JSON.parse(localStorage.getItem('branches'))
+      branches&& branches.forEach(branch => {
+        const { name } = branch
+        if (name !== selectedBranch)
+          document.getElementById('branches').insertAdjacentHTML('beforeend', `<option value="${name}">${name}</option>`)
+      })
     })
 
+    document.getElementById('branches').addEventListener('change',async (e)=>{
+  
+      const workflow = JSON.parse(localStorage.getItem('workflow'))
+      const { value } = e.target
+      localStorage.setItem('workflow', JSON.stringify({ ...workflow, selectedBranch: value }))
+
+  
+
+    })
 
     document.getElementById('workflowDescriptionTextarea').addEventListener('input', (e) => {
       const { value } = e.target
@@ -71,81 +138,83 @@ customElements.define('workflow-editor', class extends HTMLElement {
 
 
 
-customElements.define('list-dropdown', class extends HTMLElement {
-  constructor() {
-    super()
-  }
+// customElements.define('list-dropdown', class extends HTMLElement {
+//   constructor() {
+//     super()
+//   }
 
-  async connectedCallback() {
-    this.render()
-  }
+//   async connectedCallback() {
+//     this.render()
+//   }
 
-  async render(){
-    const workflow = JSON.parse(localStorage.getItem('workflow'))
-   const id = this.getAttribute('data-id')
-   const label = this.getAttribute('label')
-   const name = this.getAttribute('name')
-   this.innerHTML = `<label for="${id}" class="form-label">${label}:</label>
-   <select id="${id}" name="${name}" class="form-control">
-   <option value="default">...Loading</option>
-   </select>`
-   const selected =workflow[`selected${name}`]
-   const load =this.getAttribute('load')
-   if(load==='true'){
-     debugger;
-    await this.fetchData()
-   }
+//   async render() {
+//     const workflow = JSON.parse(localStorage.getItem('workflow'))
 
-   
-
-
-   document.getElementById(id).addEventListener('change', (e) => {
-    const workflow = JSON.parse(localStorage.getItem('workflow'))
-  
-       const { value, name } = e.target
-   debugger;
-       localStorage.setItem('workflow', JSON.stringify({ ...workflow, [`selected${name}`]: value }))
-     
-   })
-
-   document.getElementById(id).addEventListener('focus', (e) => {
-     debugger;
-     
-      this.fetchData()
-   })
-  }
-
- async fetchData (){
-    const { token,screenName } = JSON.parse(localStorage.getItem('auth'))
-    const {selectedRepo} = JSON.parse(localStorage.getItem('workflow'))
-    const workflow = JSON.parse(localStorage.getItem('workflow'))
-
-   const id = this.getAttribute('data-id')
-   const sourceUrl = id==='repos' ?'https://api.github.com/user/repos':`https://api.github.com/repos/${screenName}/${selectedRepo}/branches`
-   debugger;
-   const selector= document.getElementById(id)
-
-   const response = await fetch(sourceUrl, { method: 'get', headers: { Accept: "application/vnd.github.v3+json", authorization: `token ${token}` } })
-    debugger;
-   const sourceData = await response.json()
-   const compName = this.getAttribute('name')
-   debugger;
-   selector.innerHTML=''
-   
-   sourceData.forEach(data => {
-    const selected =workflow[`selected${compName}`]
-    if (selected && selected !==data.name) {
+//     const id = this.getAttribute('data-id')
+//     const label = this.getAttribute('label')
+//     const name = this.getAttribute('name')
     
-      selector.insertAdjacentHTML('beforeend', `<option  value="${data.name}">${data.name}</option>`)
-    } else{
-      selector.insertAdjacentHTML('beforeend', `<option  value="${data.name}" selected>${data.name}</option>`)
-      debugger;
-    }
-    
-   })
- 
-  }
-})
+//     this.innerHTML = `<label for="${id}" class="form-label">${label}:</label>
+//    <select id="${id}" name="${name}" class="form-control">
+//    <option value="default">...Loading</option>
+//    </select>`
+//     const selected = workflow[`selected${name}`]
+//     const load = this.getAttribute('load')
+//     if (load === 'true') {
+
+//       await this.fetchData()
+//     }
+
+
+
+
+//     document.getElementById(id).addEventListener('change', (e) => {
+//       const workflow = JSON.parse(localStorage.getItem('workflow'))
+
+//       const { value, name } = e.target
+//       f
+//       localStorage.setItem('workflow', JSON.stringify({ ...workflow, [`selected${name}`]: value }))
+
+//     })
+
+//     document.getElementById(id).addEventListener('focus', (e) => {
+
+
+//       this.fetchData()
+//     })
+//   }
+
+//   async fetchData() {
+//     const { token, screenName } = JSON.parse(localStorage.getItem('auth'))
+//     const { selectedRepo } = JSON.parse(localStorage.getItem('workflow'))
+//     const workflow = JSON.parse(localStorage.getItem('workflow'))
+
+//     const id = this.getAttribute('data-id')
+//     const sourceUrl = id === 'repos' ? 'https://api.github.com/user/repos' : `https://api.github.com/repos/${screenName}/${selectedRepo}/branches`
+
+//     const selector = document.getElementById(id)
+
+//     const response = await fetch(sourceUrl, { method: 'get', headers: { Accept: "application/vnd.github.v3+json", authorization: `token ${token}` } })
+
+//     const sourceData = await response.json()
+//     const compName = this.getAttribute('name')
+
+//     selector.innerHTML = ''
+
+//     sourceData.forEach(data => {
+//       const selected = workflow[`selected${compName}`]
+//       if (selected && selected !== data.name) {
+
+//         selector.insertAdjacentHTML('beforeend', `<option  value="${data.name}">${data.name}</option>`)
+//       } else {
+//         selector.insertAdjacentHTML('beforeend', `<option  value="${data.name}" selected>${data.name}</option>`)
+
+//       }
+
+//     })
+
+//   }
+// })
 
 
 

@@ -82,8 +82,6 @@ customElements.define('workspace-tasks', class extends HTMLElement {
     loadTasks({ workspaceName }) {
         document.getElementById('container').innerHTML = ` <a class="btn btn-outline-secondary m-1" href="/pages/task-editor/task-editor.html" id="task-editor-btn">Add Task</a><button class="btn btn-outline-success">Run </button> <button class="btn btn-outline-danger">Abort </button>`
            
-     
-
         window.FB_DATABASE.ref(`workspaces/${workspaceName}/tasks`).get((error, result) => {
             const tasks = result //&& Object.entries(result)
             const taskElement = document.createElement('div')
@@ -116,15 +114,12 @@ customElements.define('workspace-tasks', class extends HTMLElement {
                     taskElement.insertAdjacentHTML('beforeend', ` <task-component id="${taskId}" name="${taskName}" order="${runOrder}" sequence="${runSequence}"></task-component>`)
 
                  })
-               
-
 
             } else {
                 taskElement
                     .innerHTML = '0 Tasks found'
 
             }
-
 
         })
 

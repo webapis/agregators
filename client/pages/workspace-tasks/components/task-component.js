@@ -6,8 +6,8 @@ customElements.define('task-component', class extends HTMLElement {
     connectedCallback() {
         const id = this.getAttribute('id')
         const name = this.getAttribute('name')
-        const order =this.getAttribute('order')
-        const sequence =this.getAttribute('sequence')
+        const order = this.getAttribute('order')
+        const sequence = this.getAttribute('sequence')
         let open = false
         this.innerHTML = `
         <div class="accordion-item">
@@ -46,15 +46,15 @@ customElements.define('task-component', class extends HTMLElement {
         
     `
 
-    document.getElementById(`${id}-logs-btn`).addEventListener('click', (e) => {
-        e.preventDefault()
+        document.getElementById(`${id}-logs-btn`).addEventListener('click', (e) => {
+            e.preventDefault()
 
 
-        //localStorage.setItem('workflowEditor', JSON.stringify({ selectedBranch: '', selectedRepo: '', workflowDescription: '', workflowKey: '' }))
-        localStorage.setItem('task', JSON.stringify({ id, taskName: name }))
-        window.location.replace('/pages/task-logs/task-logs.html')
+            //localStorage.setItem('workflowEditor', JSON.stringify({ selectedBranch: '', selectedRepo: '', workflowDescription: '', workflowKey: '' }))
+            localStorage.setItem('task', JSON.stringify({ id, taskName: name }))
+            window.location.replace('/pages/task-logs/task-logs.html')
 
-    })
+        })
 
         document.getElementById(`${id}-vars-btn`).addEventListener('click', (e) => {
             e.preventDefault()
@@ -71,7 +71,7 @@ customElements.define('task-component', class extends HTMLElement {
 
 
             localStorage.setItem('workflow', JSON.stringify({ selectedBranch: '', selectedRepo: '', workflowDescription: '', workflowKey: '' }))
-            localStorage.setItem('task', JSON.stringify({ id, taskName: name,runOrder:order,runSequence:sequence }))
+            localStorage.setItem('task', JSON.stringify({ id, taskName: name, runOrder: order, runSequence: sequence }))
             window.location.replace('/pages/workflow-editor/workflow-editor.html')
         })
         document.getElementById(`panelsStayOpen-heading-${id}`).addEventListener('click', e => {
@@ -100,27 +100,51 @@ customElements.define('task-component', class extends HTMLElement {
                             const selectedBranch = wf[1]['selectedBranch']
 
 
-                            wfContainer.insertAdjacentHTML('beforeend', `<div class="d-flex justify-content-between list-group-item">
+                            wfContainer.insertAdjacentHTML('beforeend', `<div class="d-flex justify-content-between list-group-item" id="${id}-${workflowKey}-wf">
                             <h7>${i}. <span class="fw-bolder">Repo: </span>${repoName}, <span class="fw-bolder">Branch: </span>${selectedBranch},<span class="fw-bolder">Desc: </span>${workflowDescription}</h7>
                                                                                                 <div class ="buttons">
                                                                                                 <button class="btn btn-outline-secondary btn-sm" id="${workflowKey}-workflow-config-btn">Vars</button>
                                                                                                 <button class="btn btn-outline-warning btn-sm" id="${workflowKey}-workflow-editor-btn">Edit</button>
-                                                                                                <button class="btn btn-outline-danger btn-sm">Delete</button>
+                                                                                                <button class="btn btn-outline-danger btn-sm" id="${workflowKey}-workflow-delete-btn">Delete</button>
                                                                                                 <button class="btn"><div class="spinner-grow text-success" role="status">
                                                                                                 <span class="visually-hidden">Loading...</span>
                                                                                               </div></button>
                                                                                                 </div>
                                                                                                 </div>`)
+
+                            document.getElementById(`${workflowKey}-workflow-delete-btn`).addEventListener('click', (e) => {
+                                e.preventDefault()
+                                if (confirm(`Are you sure you want to delete $${repoName} this workflow ?`)) {
+                                    const { title: workspaceName } = JSON.parse(localStorage.getItem('workspace'))
+                                    const taskId = id
+                                    const workflowInitials = { [`workspaces/${workspaceName}/workflowInitials/tasks/${taskId}/workflows/${workflowKey}`]: null }
+                                    const workflowProps = { [`workspaces/${workspaceName}/workflowProps/tasks/${taskId}/workflows/${workflowKey}`]: null }
+                                    const updateServer = { [`server/workspaces/${workspaceName}/tasks/${taskId}/workflows/${workflowKey}`]: null }
+
+                                    window.FB_DATABASE.ref(`/`).update({ ...workflowInitials, ...workflowProps, ...updateServer }, (error, data) => {
+                                        if (data) {
+                                            console.log('workflow deleted')
+                                            const parent = document.getElementById(`${id}-${workflowKey}-wf`).parentElement
+                                            parent.removeChild(document.getElementById(`${id}-${workflowKey}-wf`))
+
+                                        }
+                                    })
+                                }
+
+                            })
                             document.getElementById(`${workflowKey}-workflow-config-btn`).addEventListener('click', (e) => {
                                 e.preventDefault()
-                                localStorage.setItem('workflowEditor', JSON.stringify({ workflowKey, workflowDescription, selectedRepo: repoName, selectedBranch }))
-                                window.location.replace('/workflow-configuration.html')
+                                localStorage.setItem('workflow', JSON.stringify({ workflowKey, workflowDescription, selectedRepo: repoName, selectedBranch }))
+
+                                window.location.replace('/pages/workflow-vars/workflow-vars.html')
                             })
                             document.getElementById(`${workflowKey}-workflow-editor-btn`).addEventListener('click', (e) => {
                                 e.preventDefault()
                                 try {
-                                    localStorage.setItem('workflowEditor', JSON.stringify({ workflowKey, workflowDescription, selectedRepo: repoName, selectedBranch }))
-                                    window.location.replace('/workflow-editor.html')
+                                    localStorage.setItem('workflow', JSON.stringify({ workflowKey, workflowDescription, selectedRepo: repoName, selectedBranch }))
+                                    localStorage.setItem('task', JSON.stringify({ taskName: name, runOrder: order, runSequence: sequence, id }))
+                                    localStorage.setItem('inputEditor', JSON.stringify({ selectedBranch: "", inputName: '', inputs: [] }))
+                                    window.location.replace('/pages/workflow-editor/workflow-editor.html')
                                 } catch (error) {
 
                                 }
@@ -129,7 +153,7 @@ customElements.define('task-component', class extends HTMLElement {
                         })
 
                     } else {
-                       
+
 
                     }
                 })
