@@ -117,7 +117,7 @@ function firebase() {
                  
                  if(error){
                      
-                     window.pageStore.dispatch({ type: window.actionTypes.CLIENT_ERROR, payload: error })
+                  //   window.pageStore.dispatch({ type: window.actionTypes.CLIENT_ERROR, payload: error })
                      cb && cb(error,null) 
                      
                  } else{
@@ -126,7 +126,7 @@ function firebase() {
                  }
             } catch (error) {
                const {message}=error
-                window.pageStore.dispatch({ type: window.actionTypes.CLIENT_ERROR, payload: message })
+               // window.pageStore.dispatch({ type: window.actionTypes.CLIENT_ERROR, payload: message })
                 cb && cb(error,null) 
             }
         },

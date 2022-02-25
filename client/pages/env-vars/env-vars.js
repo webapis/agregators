@@ -80,7 +80,7 @@ customElements.define('env-vars', class extends HTMLElement {
 
                 document.getElementById(`${varKey}-var-name`).innerHTML = varName
                 document.getElementById(`${varKey}-var-value`).innerHTML = varValue
-                
+
 
                 document.getElementById('var-key-input').value = ""
                 document.getElementById('var-name-input').value = ""
@@ -97,7 +97,7 @@ customElements.define('env-vars', class extends HTMLElement {
             window.FB_DATABASE.ref(refPath).push({ varName, varValue }, (error, result) => {
                 const { name: inputKey } = result
                 document.getElementById('var-container').insertAdjacentHTML('beforeend', `  
-                <tr>
+                <tr id="${inputKey}-table-raw">
                 <th scope="row">1</th>
                 <td id="${inputKey}-var-name">${varName}</td>
                 <td id="${inputKey}-var-value">${varValue}</td>
@@ -110,19 +110,27 @@ customElements.define('env-vars', class extends HTMLElement {
               </tr>
                 `)
                 debugger;
+                const removeRefPath = this.getAttribute('scope') === 'workspace' ? `server/workspaces/${workspaceName}/vars/${inputKey}` : `server/workspaces/${workspaceName}/tasks/${this.getAttribute('taskId')}/vars/${inputKey}`
+                document.getElementById(`${inputKey}-remove-var-btn`).addEventListener('click', (e) => {
+                    removeVar(removeRefPath,`${inputKey}-table-raw`)
+                    //----------------------------------------------------------------------------------------------------
+    
+                })
+            })//
 
-            })
+         
         })
 
 
 
         const refPath = this.getAttribute('scope') === 'workspace' ? `server/workspaces/${workspaceName}/vars` : `server/workspaces/${workspaceName}/tasks/${this.getAttribute('taskId')}/vars`
+
         window.FB_DATABASE.ref(refPath).get((error, vars) => {
             for (let v in vars) {
                 const varName = vars[v]['varName']
                 const varValue = vars[v]['varValue']
                 document.getElementById('var-container').insertAdjacentHTML('beforeend', `  
-            <tr>
+            <tr id="${v}-table-raw">
             <th scope="row">${v}</th>
             <td id="${v}-var-name">${varName}</td>
             <td id="${v}-var-value">${varValue}</td>
@@ -141,9 +149,11 @@ customElements.define('env-vars', class extends HTMLElement {
                     document.getElementById('var-value-input').value = varValue
 
                 })
-
+                const removeRefPath = this.getAttribute('scope') === 'workspace' ? `server/workspaces/${workspaceName}/vars/${v}` : `server/workspaces/${workspaceName}/tasks/${this.getAttribute('taskId')}/vars/${v}`
                 document.getElementById(`${v}-remove-var-btn`).addEventListener('click', (e) => {
-//----------------------------------------------------------------------------------------------------
+                    removeVar(removeRefPath,`${v}-table-raw`)
+                    //----------------------------------------------------------------------------------------------------
+
                 })
 
             }//for
@@ -158,3 +168,15 @@ customElements.define('env-vars', class extends HTMLElement {
 
 
 })
+
+
+function removeVar(refPath,id) {
+    window.FB_DATABASE.ref(refPath).remove((error, vars) => {
+
+            const parent =document.getElementById(id).parentNode
+            parent.removeChild(document.getElementById(id))
+
+        debugger;
+
+    })
+}
