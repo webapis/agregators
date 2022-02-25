@@ -109,6 +109,9 @@ customElements.define('env-vars', class extends HTMLElement {
                 </td>
               </tr>
                 `)
+                document.getElementById('var-key-input').value = ''
+                document.getElementById('var-name-input').value = ''
+                document.getElementById('var-value-input').value = ''
                 debugger;
                 const removeRefPath = this.getAttribute('scope') === 'workspace' ? `server/workspaces/${workspaceName}/vars/${inputKey}` : `server/workspaces/${workspaceName}/tasks/${this.getAttribute('taskId')}/vars/${inputKey}`
                 document.getElementById(`${inputKey}-remove-var-btn`).addEventListener('click', (e) => {
