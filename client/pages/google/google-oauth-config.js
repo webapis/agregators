@@ -4,10 +4,10 @@ customElements.define('google-oauth-config', class extends HTMLElement {
     }
 
     async connectedCallback() {
-        const resources = await import('../../js/resources.js')
+        const resources = await import('/js/resources.js')
         await resources.default()
 
-        const { title: workspaceName } = JSON.parse(localStorage.getItem('workspaceSelected'))
+        const { title: workspaceName } = JSON.parse(localStorage.getItem('workspace'))
         const { idToken, localId: uid, token } = JSON.parse(localStorage.getItem('auth'))
         this.uid = uid
         window.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
@@ -42,7 +42,7 @@ customElements.define('google-oauth-config', class extends HTMLElement {
 
         document.getElementById('save-scopes-btn').addEventListener('click', (e) => {
 debugger;
-            const { title: workspaceName } = JSON.parse(localStorage.getItem('workspaceSelected'))
+            const { title: workspaceName } = JSON.parse(localStorage.getItem('workspace'))
             const { googleAuthConfig: { scopes } } = JSON.parse(localStorage.getItem('google'))
             const ref =window.FB_DATABASE.ref(`workspaces/${workspaceName}/oauth/scopes/google`)
             debugger;
@@ -73,7 +73,7 @@ debugger;
         })
         document.getElementById('authenticate-btn').addEventListener('click', (e) => {
 
-            const { title: workspaceName } = JSON.parse(localStorage.getItem('workspaceSelected'))
+            const { title: workspaceName } = JSON.parse(localStorage.getItem('workspace'))
             const { idToken, localId: uid } = JSON.parse(localStorage.getItem('auth'))
         
             const client_id = "117708549296-uij0mup1c3biok6ifaupa2951vtvf418.apps.googleusercontent.com"

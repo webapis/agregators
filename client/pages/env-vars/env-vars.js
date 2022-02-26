@@ -17,9 +17,11 @@ customElements.define('env-vars', class extends HTMLElement {
         this.uid = uid
 
         window.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
-
+      
+        
         debugger;
         document.getElementById('workspace-breadcrumb').innerText = `Workspace(${workspaceName})`
+ 
         const scope = this.getAttribute('scope')
         this.innerHTML = `<div> ${scope} Scope Vars
         <div class="row">
@@ -42,7 +44,7 @@ customElements.define('env-vars', class extends HTMLElement {
       <th scope="col">#</th>
       <th scope="col">Var Name</th>
       <th scope="col">Var Value</th>
-      <th scope="col">Handle</th>
+      <th scope="col">Actions</th>
     </tr>
     <tr>
     <th scope="col">
