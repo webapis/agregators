@@ -80,8 +80,40 @@ customElements.define('workspace-tasks', class extends HTMLElement {
     }
 
     loadTasks({ workspaceName }) {
-        document.getElementById('container').innerHTML = ` <a class="btn btn-outline-secondary m-1" href="/pages/task-editor/task-editor.html" id="task-editor-btn">Add Task</a><button class="btn btn-outline-success">Run </button> <button class="btn btn-outline-danger">Abort </button>`
-           
+        document.getElementById('container').innerHTML = `
+         <a class="btn btn-outline-secondary m-1" href="/pages/task-editor/task-editor.html" id="task-editor-btn">Add Task</a>
+         <button class="btn btn-outline-success" id="run-all-tasks-btn">Run </button>
+         <button class="btn btn-outline-danger">Abort </button>
+         <a class="btn btn-outline-info" id="workflow-run-logs-btn" href="/pages/workspace-run-logs/workspace-run-logs.html">Logs</a>
+         `
+
+     
+
+        document.getElementById(`run-all-tasks-btn`).addEventListener('click', async (e) => {
+
+            // const { taskRunner: { [workspaceName]: { runState, runid, start } }, auth: { idToken, localId, token, screenName: owner, email, refreshToken } } = state
+            const { title: workspaceName } = JSON.parse(localStorage.getItem('workspace'))
+            const { idToken, localId: uid, token, screenName: owner, email, refreshToken } = JSON.parse(localStorage.getItem('auth'))
+            const runid = Date.now()
+            const start = runid
+            const runNext = true
+            const taskId = this.orderedTasks[0]['taskId']
+            const runSequence =this.orderedTasks[0]['runSequence']
+            const first ='true'
+            const wfrunid =runid
+            debugger;
+            const parameters = `${token}--xxx--${owner}--xxx--${idToken}--xxx--${email}--xxx--${uid}--xxx--${refreshToken}--xxx--${'selectedContainer'}--xxx--${window.projectUrl}--xxx--${workspaceName}--xxx--${runid}--xxx--${start}--xxx--${taskId}--xxx--${runNext}--xxx--${runSequence}--xxx--${first}--xxx--${wfrunid}`
+
+            const body = JSON.stringify({ ref: 'main', inputs: { projectName: workspaceName, parameters } })
+
+            if (workspaceName === 'local_ws_bdd' || workspaceName === 'local_pub_ws_bdd') {
+                const response = await fetch('http://localhost:3001', { body, method: 'post' })
+            } else {
+                await triggerAction({ gh_action_url: `https://api.github.com/repos/${owner}/workflow_runner/actions/workflows/aggregate.yml/dispatches`, ticket: token, body })
+            }
+        })
+
+
         window.FB_DATABASE.ref(`workspaces/${workspaceName}/tasks`).get((error, result) => {
             const tasks = result //&& Object.entries(result)
             const taskElement = document.createElement('div')
@@ -90,30 +122,30 @@ customElements.define('workspace-tasks', class extends HTMLElement {
 
                 taskElement.id = 'tasks'
                 taskElement.classList.add('accordion')
-                 const orderByRunOrder =Object.entries(tasks).map(m=>{
-                     const taskId =m[0]
-                     const taskProps =m[1]
-                     return {taskId,...taskProps}
-                 }).sort(function compare( a, b ) {
-                    if ( a.runOrder < b.runOrder ){
-                      return -1;
+                const orderByRunOrder = Object.entries(tasks).map(m => {
+                    const taskId = m[0]
+                    const taskProps = m[1]
+                    return { taskId, ...taskProps }
+                }).sort(function compare(a, b) {
+                    if (a.runOrder < b.runOrder) {
+                        return -1;
                     }
-                    if ( a.runOrder > b.runOrder ){
-                      return 1;
+                    if (a.runOrder > b.runOrder) {
+                        return 1;
                     }
                     return 0;
-                  }
-                  )
-            
-                 orderByRunOrder.forEach(task=>{
+                }
+                )
+                this.orderedTasks = orderByRunOrder
+                orderByRunOrder.forEach(task => {
                     const taskId = task['taskId']
                     const taskName = task['taskName']
-                    const runOrder =task['runOrder']
-                    const runSequence=task['runSequence']
+                    const runOrder = task['runOrder']
+                    const runSequence = task['runSequence']
                     debugger;
                     taskElement.insertAdjacentHTML('beforeend', ` <task-component id="${taskId}" name="${taskName}" order="${runOrder}" sequence="${runSequence}"></task-component>`)
 
-                 })
+                })
 
             } else {
                 taskElement

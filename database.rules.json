@@ -4,6 +4,10 @@
         ".read": "true",
         ".write": "auth != null"
     },
+    "workflows": {
+      ".read": "true",
+      ".write": "auth != null"
+  },
     "inputRepos":{
       ".read": "true",
       ".write": "auth != null"

@@ -240,11 +240,11 @@ customElements.define('save-workflow-btn', class extends HTMLElement {
       const { id: taskId } = JSON.parse(localStorage.getItem('task'))
 
       const workflowId = workflowKey ? workflowKey : Date.now()
-      const workflowInitials = { [`workspaces/${workspaceName}/workflowInitials/tasks/${taskId}/workflows/${workflowId}`]: { workflowDescription, repoName: selectedRepo, selectedBranch } }
-      const workflowProps = { [`workspaces/${workspaceName}/workflowProps/tasks/${taskId}/workflows/${workflowId}`]: { selectedRepo, selectedBranch, screenName } }
-      const updateServer = { [`server/workspaces/${workspaceName}/tasks/${taskId}/workflows/${workflowId}`]: { workflowDescription, selectedRepo, selectedBranch, screenName } }
+     // const workflowInitials = { [`workspaces/${workspaceName}/workflowInitials/tasks/${taskId}/workflows/${workflowId}`]: { workflowDescription, repoName: selectedRepo, selectedBranch } }
+    //  const workflowProps = { [`workspaces/${workspaceName}/workflowProps/tasks/${taskId}/workflows/${workflowId}`]: { selectedRepo, selectedBranch, screenName } }
+      const update = { [`workflows/workspaces/${workspaceName}/tasks/${taskId}/${workflowId}`]: { workflowDescription, repoName:selectedRepo, selectedBranch, screenName } }
 
-      window.FB_DATABASE.ref(`/`).update({ ...workflowInitials, ...workflowProps, ...updateServer }, (error, data) => {
+      window.FB_DATABASE.ref(`/`).update(update, (error, data) => {
         if (data) {
           window.location.replace('/pages/workspace-tasks/workspace-tasks.html')
         }

@@ -30,7 +30,7 @@ customElements.define('task-component', class extends HTMLElement {
           <div>
           <button class="btn btn-outline-secondary btn-sm" id="${id}-vars-btn">Vars</button>
           <button class="btn btn-outline-secondary btn-sm" id="add-workflow-btn-${id}">Add</button>
-          <button class="btn btn-outline-success btn-sm">Run</button>
+          <button class="btn btn-outline-success btn-sm" id="run-task-btn-${id}">Run</button>
           <button class="btn btn-outline-danger btn-sm">Abort</button>
           <button class="btn btn-outline-secondary btn-sm" id="${id}-logs-btn">Logs</button>
           
@@ -43,14 +43,20 @@ customElements.define('task-component', class extends HTMLElement {
 </div>
         </div>
         <div>
-        
     `
+    document.getElementById(`run-task-btn-${id}`).addEventListener('click', (e) => {
+        e.preventDefault()
 
+        localStorage.setItem('task', JSON.stringify({ id, taskName: name }))
+        //window.location.replace('/pages/task-logs/task-logs.html')
+
+    })
+
+    
         document.getElementById(`${id}-logs-btn`).addEventListener('click', (e) => {
             e.preventDefault()
 
-
-            //localStorage.setItem('workflowEditor', JSON.stringify({ selectedBranch: '', selectedRepo: '', workflowDescription: '', workflowKey: '' }))
+       
             localStorage.setItem('task', JSON.stringify({ id, taskName: name }))
             window.location.replace('/pages/task-logs/task-logs.html')
 
@@ -60,7 +66,7 @@ customElements.define('task-component', class extends HTMLElement {
             e.preventDefault()
 
 
-            //localStorage.setItem('workflowEditor', JSON.stringify({ selectedBranch: '', selectedRepo: '', workflowDescription: '', workflowKey: '' }))
+
             localStorage.setItem('task', JSON.stringify({ id, taskName: name }))
             window.location.replace('/pages/env-vars/task-scope-vars.html')
 
@@ -83,16 +89,17 @@ customElements.define('task-component', class extends HTMLElement {
 
 
                 const { title: workspaceName } = JSON.parse(localStorage.getItem('workspace'))
-                window.FB_DATABASE.ref(`workspaces/${workspaceName}/workflowInitials/tasks/${id}/workflows`).get((error, result) => {
+                const taskId=id
+                window.FB_DATABASE.ref(`workflows/workspaces/${workspaceName}/tasks/${taskId}`).get((error, result) => {
                     if (result) {
-
+debugger;
                         const workflows = result && Object.entries(result)
                         debugger;
                         const wfContainer = document.getElementById(`accordion-body-${id}`).querySelector('.wf-container')
                         wfContainer.innerHTML = '<div class="row"><h7 class="col-9">Workflows:</h7><h7 class="col-3 text-end">Workflow configurations:</h7><div>'
 
                         workflows && workflows.forEach((wf, i) => {
-
+                            debugger;
                             const workflowKey = wf[0]
                             //   const workflowName = wf[1]['workflowName']
                             const workflowDescription = wf[1]['workflowDescription']
@@ -117,11 +124,10 @@ customElements.define('task-component', class extends HTMLElement {
                                 if (confirm(`Are you sure you want to delete $${repoName} this workflow ?`)) {
                                     const { title: workspaceName } = JSON.parse(localStorage.getItem('workspace'))
                                     const taskId = id
-                                    const workflowInitials = { [`workspaces/${workspaceName}/workflowInitials/tasks/${taskId}/workflows/${workflowKey}`]: null }
-                                    const workflowProps = { [`workspaces/${workspaceName}/workflowProps/tasks/${taskId}/workflows/${workflowKey}`]: null }
-                                    const updateServer = { [`server/workspaces/${workspaceName}/tasks/${taskId}/workflows/${workflowKey}`]: null }
+                    
+                                    const update = { [`workflows/workspaces/${workspaceName}/tasks/${taskId}`]: null }
 
-                                    window.FB_DATABASE.ref(`/`).update({ ...workflowInitials, ...workflowProps, ...updateServer }, (error, data) => {
+                                    window.FB_DATABASE.ref(`/`).update(update, (error, data) => {
                                         if (data) {
                                             console.log('workflow deleted')
                                             const parent = document.getElementById(`${id}-${workflowKey}-wf`).parentElement

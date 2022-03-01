@@ -1,4 +1,4 @@
-customElements.define('task-logs', class extends HTMLElement{
+customElements.define('workspace-run-logs', class extends HTMLElement{
     constructor(){
         super()
     }
@@ -9,13 +9,13 @@ customElements.define('task-logs', class extends HTMLElement{
         const resources = await import('/js/resources.js')
         await resources.default()
 
-        const {  title: workspaceName   } = JSON.parse(localStorage.getItem('workspaceSelected'))
-        const { taskName } = JSON.parse(localStorage.getItem('taskSelected'))
+        const {  title: workspaceName   } = JSON.parse(localStorage.getItem('workspace'))
+ 
         const { idToken, localId: uid } =JSON.parse(localStorage.getItem('auth'))
         this.uid = uid
         window.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
         document.getElementById('workspace-breadcrumb').innerText = `Workspace(${workspaceName})`
-        document.getElementById('task-breadcrumb').innerText = `Task(${taskName})`
-        this.innerHTML=`Task logs`
+      
+        this.innerHTML=`Workspace run logs`
     }
 })
