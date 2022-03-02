@@ -255,8 +255,6 @@ customElements.define('run-result', class extends HTMLElement {
             const one = parseInt(a[0])
             const two = parseInt(b[0])
 
-
-
             return two - one
           });
 
