@@ -118,6 +118,7 @@ customElements.define('workspace-accordion-item', class extends HTMLElement {
                         const success = task['success']
                         const taskName = task['taskName']
                         const total = task['total']
+                       
                         debugger;
                         document.getElementById(`body-${runid}`).insertAdjacentHTML('beforeend', `
                         <task-accordion-item taskName="${taskName}" runOrder="${runOrder}" runSequence="${runSequence}" total="${total}" success="${success}" failed="${failed}" start="${start}" end="${end}" data-id="${i}">
@@ -140,6 +141,7 @@ customElements.define('task-accordion-item', class extends HTMLElement {
     }
 
     connectedCallback() {
+        this.open=false
         const dataId = this.getAttribute('data-id')
         const taskName =this.getAttribute('taskName')
         const runOrder=this.getAttribute('runOrder')
@@ -152,7 +154,7 @@ customElements.define('task-accordion-item', class extends HTMLElement {
         this.innerHTML = `
         <div class="accordion-item">
         <h2 class="accordion-header" id="heading-${dataId}">
-          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-${dataId}" aria-expanded="true" aria-controls="collapse-${dataId}">
+          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-${dataId}" aria-expanded="true" aria-controls="collapse-${dataId}" id="${dataId}-wf-btn">
           <span class="badge  text-dark m-1 fw-light">TaskName: <span class="badge bg-secondary fw-normal">${taskName}</span></span>
           <span class="badge  text-dark m-1 fw-light">Run Order: <span class="badge bg-secondary fw-normal">${runOrder}</span></span>
           <span class="badge  text-dark m-1 fw-light">Run Order: <span class="badge bg-secondary fw-normal">${runSequence}</span></span>
@@ -169,6 +171,19 @@ customElements.define('task-accordion-item', class extends HTMLElement {
           </div>
         </div>
       </div>`
+
+      document.getElementById(`${dataId}-wf-btn`).addEventListener('click',(e)=>{
+          this.open=!this.open
+          if(this.open){
+            window.FB_DATABASE.ref(`/workflowLogs/${workspaceName}/${runid}/tasks/${taskId}`).on('value', async (error, { data }) => {
+                debugger;
+           
+             
+            
+            })
+          }
+          debugger;
+      })
     }
 })
 
