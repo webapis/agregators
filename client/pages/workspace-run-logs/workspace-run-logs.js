@@ -18,7 +18,9 @@ customElements.define('workspace-run-logs', class extends HTMLElement {
         document.getElementById('workspace-breadcrumb').innerText = `Workspace(${workspaceName})`
 
         window.FB_DATABASE.ref(`/workspaceLogs/${workspaceName}/logs`).on('value', (error, { data }) => {
+           
             for (let log in data) {
+            
                 const last = data[log]['last']
                 const start = data[log]['start']
                 const success = data[log]['success']
@@ -40,6 +42,7 @@ customElements.define('workspace-accordion-item', class extends HTMLElement {
     }
 
     connectedCallback() {
+       
         const dataId = this.getAttribute('data-id')
         const last = new Date(parseInt(this.getAttribute('last')))
         const start = new Date(parseInt(this.getAttribute('start')))
@@ -61,14 +64,49 @@ customElements.define('workspace-accordion-item', class extends HTMLElement {
         <div class="accordion-item">
         <h2 class="accordion-header" id="heading-${dataId}">
           <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-${dataId}" aria-expanded="true" aria-controls="collapse-${dataId}" id="ws-${dataId}-btn">
-          <span class="badge bg-info text-dark fw-normal m-1">Date: <span class="badge bg-secondary fw-normal">${date}</span></span>
-          <span class="badge bg-info text-dark fw-normal">start: <span class="badge bg-secondary fw-normal">${startTime}</span></span>
-          <span class="badge bg-info text-dark m-1 fw-normal">last: <span class="badge bg-secondary fw-normal">${endTime}</span></span>
-          <span class="badge bg-info text-dark m-1 fw-normal">Duration: <span class="badge bg-secondary fw-normal">${duration}</span></span>
-          <span class="badge bg-info text-dark m-1 fw-normal">totalTasks: <span class="badge bg-secondary fw-normal">${totalTasks}</span></span>
-          <span class="badge bg-info text-dark m-1 fw-normal">totalWorkflows: <span class="badge bg-secondary fw-normal">${totalWorkflows}</span></span>
-          <span class="badge bg-info text-dark m-1 fw-normal">success: <span class="badge bg-secondary fw-normal">${success}</span></span>
-          <span class="badge bg-warning text-dark m-1 fw-normal">failed: <span class="badge bg-secondary fw-normal">${failed !== 'undefined' ? failed : 0}</span></span>
+          <div class="row">
+          <div class="col row p-1">
+          <span class="col-12 badge bg-info text-dark fw-normal">Date:</span>
+          <span class="col-12 badge bg-secondary fw-normal">${date}</span>
+          </div>
+         
+          <div class="col row p-1">
+          <span class="col-12 badge bg-info text-dark fw-normal">Start:</span>
+          <span class="col-12 badge bg-secondary fw-normal">${startTime}</span>
+          </div>
+
+          <div class="col row p-1">
+          <span class="col-12 badge bg-info text-dark fw-normal">End:</span>
+          <span class="col-12 badge bg-secondary fw-normal">${endTime}</span>
+          </div>
+
+          <div class="col row p-1">
+          <span class="col-12 badge bg-info text-dark fw-normal">Duration:</span>
+          <span class="col-12 badge bg-secondary fw-normal">${duration}</span>
+          </div>
+
+          <div class="col row p-1">
+          <span class="col-12 badge bg-info text-dark fw-normal">Total Tasks:</span>
+          <span class="col-12 badge bg-secondary fw-normal">${totalTasks}</span>
+          </div>
+
+          <div class="col row p-1">
+          <span class="col-12 badge bg-info text-dark fw-normal">Total Workflows:</span>
+          <span class="col-12 badge bg-secondary fw-normal">${totalWorkflows}</span>
+          </div>
+          
+          <div class="col row p-1">
+          <span class="col-12 badge bg-info text-dark fw-normal">Success:</span>
+          <span class="col-12 badge bg-secondary fw-normal">${success}</span>
+          </div>
+
+          <div class="col row p-1">
+          <span class="col-12 badge bg-warning text-dark fw-normal">Failed:</span>
+          <span class="col-12 badge bg-secondary fw-normal">${failed !== 'undefined' ? failed : 0}</span>
+          </div>
+
+      
+          </div>
           </button>
         </h2>
         <div id="collapse-${dataId}" class="accordion-collapse collapse" aria-labelledby="heading-${dataId}" data-bs-parent="#accordionExample">
@@ -166,21 +204,111 @@ customElements.define('task-accordion-item', class extends HTMLElement {
         <div class="accordion-item">
         <h2 class="accordion-header" id="heading-${taskId}-${runid}">
           <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-${taskId}-${runid}" aria-expanded="true" aria-controls="collapse-${taskId}-${runid}" id="${taskId}-${runid}-wf-btn">
+        <div class="row">
+
+        <div class="col row p-1">
+        <span class="col-12 badge bg-success text-light m-1 fw-light">TaskName:</span>
+        <span class="col-12 badge bg-secondary fw-normal">${taskName}</span>
+        </div>
+
+        <div class="col row p-1">
+        <span class="col-12 badge  bg-success text-light m-1 fw-light">Run Order:</span>
+        <span class="col-12 badge bg-secondary fw-normal">${runOrder}</span>
+        </div>
         
-          <span class="badge  text-dark m-1 fw-light">TaskName:  <span class="badge bg-secondary fw-normal">${taskName}</span></span>
-          <span class="badge  text-dark m-1 fw-light">Run Order: <span class="badge bg-secondary fw-normal">${runOrder}</span></span>
-          <span class="badge  text-dark m-1 fw-light">Total:     <span class="badge bg-secondary fw-normal">${total}</span></span>
-          <span class="badge  text-dark m-1 fw-light">Start:     <span class="badge bg-secondary fw-normal">${startTime}</span></span>
-          <span class="badge  text-dark m-1 fw-light">End:       <span class="badge bg-secondary fw-normal">${endTime}</span></span>
-          <span class="badge  text-dark m-1 fw-light">Duration:       <span class="badge bg-secondary fw-normal">${duration}</span></span>
-          <span class="badge  text-dark m-1 fw-light">Success:   <span class="badge bg-secondary fw-normal">${success}</span></span>
-          <span class="badge  text-dark m-1 fw-light">Failed:    <span class="badge bg-secondary fw-normal">${failed}</span></span>
-          <span class="badge  text-dark m-1 fw-light">Run Sequence: <span class="badge bg-secondary fw-normal">${runSequence}</span></span>
+        <div class="col row p-1">
+        <span class="col-12 badge  bg-success text-light m-1 fw-light">Total:</span>
+        <span class="col-12 badge bg-secondary fw-normal">${total}</span>
+        </div>
+       
+        <div class="col row p-1">
+        <span class="col-12 badge  bg-success text-light m-1 fw-light">Start:</span>
+        <span class="col-12 badge bg-secondary fw-normal">${startTime}</span>
+        </div>
+
+        <div class="col row p-1">
+        <span class="col-12 badge  bg-success text-light m-1 fw-light">End:</span>
+        <span class="col-12 badge bg-secondary fw-normal">${endTime}</span>
+        </div>
+        
+        <div class="col row p-1">
+        <span class="col-12 badge  bg-success text-light m-1 fw-light">Duration:</span>
+        <span class="col-12 badge bg-secondary fw-normal">${duration}</span>
+        </div>
+
+        <div class="col row p-1">
+        <span class="col-12 badge  bg-success text-light m-1 fw-light">Success:</span>
+        <span class="col-12 badge bg-secondary fw-normal">${success}</span>
+        </div>
+       
+        <div class="col row p-1">
+        <span class="col-12 badge  bg-success text-light m-1 fw-light">Failed:</span>
+        <span class="col-12 badge bg-secondary fw-normal">${failed}</span>
+        </div>
+        <div class="col row p-1">
+        <span class="col-12 badge  bg-success text-light m-1 fw-light">Run Sequence:</span>
+        <span class="col-12 badge bg-secondary fw-normal">${runSequence}</span>
+        </div>
+   
+          </div>
           </button>
         </h2>
         <div id="collapse-${taskId}-${runid}" class="accordion-collapse collapse" aria-labelledby="heading-${taskId}-${runid}" data-bs-parent="#accordionExample">
           <div class="accordion-body" id="body-wf-${taskId}-${runid}">
              
+
+          <div class="row">
+
+          <div class="col row px-1">
+          <span class="col-12 badge bg-primary  text-light m-1 fw-normal">Workflow Name: </span>
+         
+          </div>
+         
+          <div class="col row px-1">
+          <span class="col-12 badge  bg-primary  text-light m-1 fw-normal">RepoName: </span>
+        
+          </div>
+  
+         
+          <div class="col row px-1">
+          <span class="col-12 badge  bg-primary  text-light m-1 fw-normal">Selected Branch: </span>
+         
+          </div>
+  
+         
+          <div class="col row px-1">
+          <span class="col-12 badge  bg-primary  text-light m-1 fw-normal">Owner: </span>
+        
+          </div>
+  
+          <div class="col row px-1">
+          <span class="col-12 badge  bg-primary  text-light m-1 fw-normal">Start: </span>
+    
+          </div>
+  
+          <div class="col row px-1">
+          <span class="col-12 badge  bg-primary  text-light m-1 fw-normal">End: </span>
+         
+          </div>
+         
+          <div class="col row px-1">
+          <span class="col-12 badge  bg-primary  text-light m-1 fw-normal">Duration: </span>
+       
+          </div>
+  
+          <div class="col row px-1">
+          <span class="col-12 badge  bg-primary  text-light m-1 fw-normal">Result: </span>
+        
+          </div>
+     
+          <div class="col row px-1">
+          <span class="col-12 badge  bg-primary  text-light m-1 fw-normal">Desc: </span>
+          
+          </div>
+      
+        </div>
+
+
           </div>
         </div>
       </div>`
@@ -261,16 +389,55 @@ customElements.define('workflow-list-items', class extends HTMLElement {
         const endTime = `${end.getHours()}:${end.getMinutes()}:${end.getSeconds()}`
         debugger;
         this.innerHTML = `
-        <div>
-        <span class="badge  text-dark m-1 fw-normal">Workflow Name: <span class="badge bg-secondary fw-normal" >${desc}</span></span>
-        <span class="badge  text-dark m-1 fw-normal">RepoName: <span class="badge bg-secondary fw-normal" >${repoName}</span></span>
-        <span class="badge  text-dark m-1 fw-normal">Selected Branch: <span class="badge bg-secondary fw-normal" >${selectedBranch}</span></span>
-        <span class="badge  text-dark m-1 fw-normal">Owner: <span class="badge bg-secondary fw-normal" >${owner}</span></span>
-        <span class="badge  text-dark m-1 fw-normal">Start: <span class="badge bg-secondary fw-normal" >${startTime}</span></span>
-        <span class="badge  text-dark m-1 fw-normal">End: <span class="badge bg-secondary fw-normal" >${endTime}</span></span>
-        <span class="badge  text-dark m-1 fw-normal">Duration: <span class="badge bg-secondary fw-normal" >${duration}</span></span>
-        <span class="badge  text-dark m-1 fw-normal">Result: <span class="badge bg-secondary fw-normal" >${result}</span></span>
-        <span class="badge  text-dark m-1 fw-normal">Desc: <span class="badge bg-secondary fw-normal" >${desc}</span></span>
+        <div class="row">
+
+        <div class="col row px-1 mb-1">
+      
+        <span class="col-12 badge bg-secondary fw-normal" >${desc}</span>
+        </div>
+       
+        <div class="col row px-1 mb-1">
+      
+        <span class="col-12 badge bg-secondary fw-normal" >${repoName}</span>
+        </div>
+
+       
+        <div class="col row px-1 mb-1">
+     
+        <span class="col-12 badge bg-secondary fw-normal" >${selectedBranch}</span>
+        </div>
+
+       
+        <div class="col row px-1 mb-1">
+       
+        <span class="col-12 badge bg-secondary fw-normal" >${owner}</span>
+        </div>
+
+        <div class="col row px-1 mb-1">
+       
+        <span class="col-12 badge bg-secondary fw-normal" >${startTime}</span>
+        </div>
+
+        <div class="col row px-1 mb-1">
+     
+        <span class="col-12 badge bg-secondary fw-normal" >${endTime}</span>
+        </div>
+       
+        <div class="col row px-1 mb-1">
+      
+        <span class="col-12 badge bg-secondary fw-normal" >${duration}</span>
+        </div>
+
+        <div class="col row px-1 mb-1">
+      
+        <span class="col-12 badge bg-secondary fw-normal" >${result}</span>
+        </div>
+   
+        <div class="col row px-1 mb-1">
+       
+        <span class="col-12 badge bg-secondary fw-normal" >${desc}</span>
+        </div>
+    
       </div>`
 
 
