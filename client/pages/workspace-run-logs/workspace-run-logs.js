@@ -32,7 +32,9 @@ customElements.define('workspace-run-logs', class extends HTMLElement {
                 </workspace-accordion-item>`)
             }
         })
-        this.innerHTML = `<div class="accordion" id="accordion-container"></div>`
+        this.innerHTML = `<div class="accordion" id="accordion-container">
+        <h7>Workspace run results:</h7>
+        </div>`
     }
 })
 
@@ -111,7 +113,7 @@ customElements.define('workspace-accordion-item', class extends HTMLElement {
         </h2>
         <div id="collapse-${dataId}" class="accordion-collapse collapse" aria-labelledby="heading-${dataId}" data-bs-parent="#accordionExample">
           <div class="accordion-body" id="body-${runid}">
-       
+       <h7>Tasks run results:</h7>
           </div>
         </div>
       </div>`
@@ -212,41 +214,41 @@ customElements.define('task-accordion-item', class extends HTMLElement {
         </div>
 
         <div class="col row p-1">
-        <span class="col-12 badge  bg-success text-light m-1 fw-light">Run Order:</span>
+        <span class="col-12 badge bg-success text-light m-1 fw-light">Run Order:</span>
         <span class="col-12 badge bg-secondary fw-normal">${runOrder}</span>
         </div>
         
         <div class="col row p-1">
-        <span class="col-12 badge  bg-success text-light m-1 fw-light">Total:</span>
+        <span class="col-12 badge bg-success text-light m-1 fw-light">Total:</span>
         <span class="col-12 badge bg-secondary fw-normal">${total}</span>
         </div>
        
         <div class="col row p-1">
-        <span class="col-12 badge  bg-success text-light m-1 fw-light">Start:</span>
+        <span class="col-12 badge bg-success text-light m-1 fw-light">Start:</span>
         <span class="col-12 badge bg-secondary fw-normal">${startTime}</span>
         </div>
 
         <div class="col row p-1">
-        <span class="col-12 badge  bg-success text-light m-1 fw-light">End:</span>
+        <span class="col-12 badge bg-success text-light m-1 fw-light">End:</span>
         <span class="col-12 badge bg-secondary fw-normal">${endTime}</span>
         </div>
         
         <div class="col row p-1">
-        <span class="col-12 badge  bg-success text-light m-1 fw-light">Duration:</span>
+        <span class="col-12 badge bg-success text-light m-1 fw-light">Duration:</span>
         <span class="col-12 badge bg-secondary fw-normal">${duration}</span>
         </div>
 
         <div class="col row p-1">
-        <span class="col-12 badge  bg-success text-light m-1 fw-light">Success:</span>
+        <span class="col-12 badge bg-success text-light m-1 fw-light">Success:</span>
         <span class="col-12 badge bg-secondary fw-normal">${success}</span>
         </div>
        
         <div class="col row p-1">
-        <span class="col-12 badge  bg-success text-light m-1 fw-light">Failed:</span>
+        <span class="col-12 badge bg-success text-light m-1 fw-light">Failed:</span>
         <span class="col-12 badge bg-secondary fw-normal">${failed}</span>
         </div>
         <div class="col row p-1">
-        <span class="col-12 badge  bg-success text-light m-1 fw-light">Run Sequence:</span>
+        <span class="col-12 badge bg-success text-light m-1 fw-light">Run Sequence:</span>
         <span class="col-12 badge bg-secondary fw-normal">${runSequence}</span>
         </div>
    
@@ -255,7 +257,7 @@ customElements.define('task-accordion-item', class extends HTMLElement {
         </h2>
         <div id="collapse-${taskId}-${runid}" class="accordion-collapse collapse" aria-labelledby="heading-${taskId}-${runid}" data-bs-parent="#accordionExample">
           <div class="accordion-body" id="body-wf-${taskId}-${runid}">
-             
+             <h7>Workflows run result:</h7>
 
           <div class="row">
 
