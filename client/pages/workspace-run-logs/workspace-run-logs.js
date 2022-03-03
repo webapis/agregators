@@ -1,3 +1,4 @@
+
 customElements.define('workspace-run-logs', class extends HTMLElement {
     constructor() {
         super()
@@ -24,22 +25,14 @@ customElements.define('workspace-run-logs', class extends HTMLElement {
                 const failed = data[log]['failed']
                 const totalTasks = data[log]['totalTasks']
                 const totalWorkflows = data[log]['totalWorkflows']
-
                 document.getElementById('accordion-container').insertAdjacentHTML('beforeend', `
                 <workspace-accordion-item last="${last}" start="${start}" success="${success}" failed="${failed}" totalTasks="${totalTasks}" totalWorkflows="${totalWorkflows}" data-id="${log}-ws" runid="${log}">
                 </workspace-accordion-item>`)
-
             }
-
         })
-
-        this.innerHTML = `<div class="accordion" id="accordion-container">
-        
-                        
-                     </div>`
+        this.innerHTML = `<div class="accordion" id="accordion-container"></div>`
     }
 })
-
 
 customElements.define('workspace-accordion-item', class extends HTMLElement {
     constructor() {
@@ -100,16 +93,16 @@ customElements.define('workspace-accordion-item', class extends HTMLElement {
 
                             const task = await getResponse.json()
 
-                            return { ...task, end, start, failed, success, total }
+                            return { ...task,taskId,runid, end, start, failed, success, total }
 
                         })())
                    
                     }//end for loop
                     const tasks = await Promise.all(taskPromises)
-                    debugger;
+                
                   //  document.getElementById(`body-${runid}`).innerHTML=''
                     tasks.forEach((task,i) => {
-                        debugger;
+                  
                         const end = task['end']
                         const failed = task['failed']
                         const runOrder = task['runOrder']
@@ -118,10 +111,11 @@ customElements.define('workspace-accordion-item', class extends HTMLElement {
                         const success = task['success']
                         const taskName = task['taskName']
                         const total = task['total']
-                       
-                        debugger;
+                        const taskId=task['taskId']
+                        const runid =this.getAttribute('runid')
+                      
                         document.getElementById(`body-${runid}`).insertAdjacentHTML('beforeend', `
-                        <task-accordion-item taskName="${taskName}" runOrder="${runOrder}" runSequence="${runSequence}" total="${total}" success="${success}" failed="${failed}" start="${start}" end="${end}" data-id="${i}">
+                        <task-accordion-item taskName="${taskName}" runid="${runid}" taskId="${taskId}" runOrder="${runOrder}" runSequence="${runSequence}" total="${total}" success="${success}" failed="${failed}" start="${start}" end="${end}" data-id="${i}">
                         </task-accordion-item>`)
                     })
                 })
@@ -151,6 +145,9 @@ customElements.define('task-accordion-item', class extends HTMLElement {
         const success=this.getAttribute('success')
         const failed =this.getAttribute('failed')
         const total= this.getAttribute('total')
+        const taskId=this.getAttribute('taskId')
+        const runid =this.getAttribute('runid')
+        debugger;
         this.innerHTML = `
         <div class="accordion-item">
         <h2 class="accordion-header" id="heading-${dataId}">
@@ -166,8 +163,8 @@ customElements.define('task-accordion-item', class extends HTMLElement {
           </button>
         </h2>
         <div id="collapse-${dataId}" class="accordion-collapse collapse" aria-labelledby="heading-${dataId}" data-bs-parent="#accordionExample">
-          <div class="accordion-body">
-              <workflow-list-items data-id="five"></workflow-list-items>
+          <div class="accordion-body" id="body-wf-${taskId}">
+             
           </div>
         </div>
       </div>`
@@ -175,14 +172,53 @@ customElements.define('task-accordion-item', class extends HTMLElement {
       document.getElementById(`${dataId}-wf-btn`).addEventListener('click',(e)=>{
           this.open=!this.open
           if(this.open){
-            window.FB_DATABASE.ref(`/workflowLogs/${workspaceName}/${runid}/tasks/${taskId}`).on('value', async (error, { data }) => {
-                debugger;
+            const { title: workspaceName } = JSON.parse(localStorage.getItem('workspace'))
+            const { idToken } = JSON.parse(localStorage.getItem('auth'))
+            window.FB_DATABASE.ref(`/workflowLogs/${workspaceName}/${runid}/tasks/${taskId}/workflows`).on('value', async (error, { data }) => {
            
+                let workPromises = []
+                for (let workflowKey in data) {
+
+                    const end = data[workflowKey]['log']['end']
+                    const start = data[workflowKey]['log']['start']
+                    const result = data[workflowKey]['log']['result']
              
+              
+
+                    workPromises.push((async () => {
+                        const fetchUrl = `${window.projectUrl}/workflows/workspaces/${workspaceName}/tasks/${taskId}/${workflowKey}/.json?auth=${idToken}`
+                 
+                        const getResponse = await fetch(fetchUrl, { method: 'GET' })
+
+                        const workflow = await getResponse.json()
+
+                        return { ...workflow,taskId,runid, end, start, result }
+
+                    })())
+               
+                }//end for loop
+                const workflows = await Promise.all(workPromises)
+                workflows.forEach(wf=>{
+                    debugger;
+                            const end =wf['end']
+                            const repoName=wf["repoName"]
+                            const result=wf["result"]
+                            const runid =wf['runid']
+                            const screenName=wf["screenName"]
+                            const selectedBranch=wf["selectedBranch"]
+                            const start=wf['start']
+                            const workflowDescription=wf['workflowDescription']
+
+                           document.getElementById(`body-wf-${taskId}`).insertAdjacentHTML('beforeend', 
+                `<workflow-list-items repoName="${repoName}" selectedBranch="${selectedBranch}" owner="${screenName}" start="${start}" end="${end}" result="${result}" workflowDescription="${workflowDescription}">
+                 </workflow-list-items>`)
+                    debugger;
+                })
+
             
             })
           }
-          debugger;
+         
       })
     }
 })
@@ -195,14 +231,26 @@ customElements.define('workflow-list-items', class extends HTMLElement {
 
     connectedCallback() {
         const dataId = this.getAttribute('data-id')
+        const taskId=this.getAttribute
+        const repoName=this.getAttribute('repoName')
+        const selectedBranch=this.getAttribute('selectedBranch')
+        const owner=this.getAttribute('owner')
+        const start=this.getAttribute('start')
+        const end=this.getAttribute('end')
+        const result =this.getAttribute('result')
+        const desc= this.getAttribute('workflowDescription')
+
+        debugger;
         this.innerHTML =`
-        <ul class="list-group">
-        <li class="list-group-item">WorkFlow 1</li>
-        <li class="list-group-item">WorkFlow 2</li>
-        <li class="list-group-item">WorkFlow 3</li>
-        <li class="list-group-item">WorkFlow 4</li>
-        <li class="list-group-item">WorkFlow 5</li>
-      </ul>`
+        <div>
+        <span class="badge  text-dark m-1 fw-normal">RepoName: <span class="badge bg-secondary fw-normal" >${repoName}</span></span>
+        <span class="badge  text-dark m-1 fw-normal">Selected Branch: <span class="badge bg-secondary fw-normal" >${selectedBranch}</span></span>
+        <span class="badge  text-dark m-1 fw-normal">Owner: <span class="badge bg-secondary fw-normal" >${owner}</span></span>
+        <span class="badge  text-dark m-1 fw-normal">Start: <span class="badge bg-secondary fw-normal" >${start}</span></span>
+        <span class="badge  text-dark m-1 fw-normal">End: <span class="badge bg-secondary fw-normal" >${end}</span></span>
+        <span class="badge  text-dark m-1 fw-normal">Result: <span class="badge bg-secondary fw-normal" >${result}</span></span>
+        <span class="badge  text-dark m-1 fw-normal">Desc: <span class="badge bg-secondary fw-normal" >${desc}</span></span>
+      </div>`
 
 
     }
