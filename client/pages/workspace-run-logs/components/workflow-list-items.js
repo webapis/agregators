@@ -4,8 +4,7 @@ customElements.define('workflow-list-items', class extends HTMLElement {
     }
 
     connectedCallback() {
-        const dataId = this.getAttribute('data-id')
-        const taskId = this.getAttribute
+    
         const repoName = this.getAttribute('repoName')
         const selectedBranch = this.getAttribute('selectedBranch')
         const owner = this.getAttribute('owner')

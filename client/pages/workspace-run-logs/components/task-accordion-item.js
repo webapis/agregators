@@ -16,17 +16,17 @@ customElements.define('task-accordion-item', class extends HTMLElement {
         const failed = this.getAttribute('failed')
         const total = this.getAttribute('total')
         const taskId = this.getAttribute('taskId')
-        const runid = this.getAttribute('runid')
+        const wsrunid = this.getAttribute('wsrunid')
         const { hours, mins, seconds } = window.timespan(end, start)
         const duration = `${hours}:${mins}:${seconds}`
         const startTime = `${start.getHours()}:${start.getMinutes()}:${start.getSeconds()}`
         const endTime = `${end.getHours()}:${end.getMinutes()}:${end.getSeconds()}`
     
-        debugger;
+        
         this.innerHTML = `
         <div class="accordion-item">
-        <h2 class="accordion-header" id="heading-${taskId}-${runid}">
-          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-${taskId}-${runid}" aria-expanded="true" aria-controls="collapse-${taskId}-${runid}" id="${taskId}-${runid}-wf-btn">
+        <h2 class="accordion-header" id="heading-${taskId}-${wsrunid}">
+          <button class="accordion-button py-0" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-${taskId}-${wsrunid}" aria-expanded="true" aria-controls="collapse-${taskId}-${wsrunid}" id="${taskId}-${wsrunid}-wf-btn">
         <div class="row">
 
         <div class="col row p-1">
@@ -76,8 +76,8 @@ customElements.define('task-accordion-item', class extends HTMLElement {
           </div>
           </button>
         </h2>
-        <div id="collapse-${taskId}-${runid}" class="accordion-collapse collapse" aria-labelledby="heading-${taskId}-${runid}" data-bs-parent="#accordionExample">
-          <div class="accordion-body" id="body-wf-${taskId}-${runid}">
+        <div id="collapse-${taskId}-${wsrunid}" class="accordion-collapse collapse" aria-labelledby="heading-${taskId}-${wsrunid}" data-bs-parent="#accordionExample">
+          <div class="accordion-body" id="body-wf-${taskId}-${wsrunid}">
              <h7>Workflows run result:</h7>
 
           <div class="row">
@@ -136,20 +136,21 @@ customElements.define('task-accordion-item', class extends HTMLElement {
         </div>
       </div>`
 
-        document.getElementById(`${taskId}-${runid}-wf-btn`).addEventListener('click', (e) => {
+        document.getElementById(`${taskId}-${wsrunid}-wf-btn`).addEventListener('click', async(e) => {
             this.open = !this.open
             if (this.open) {
                 const { title: workspaceName } = JSON.parse(localStorage.getItem('workspace'))
                 const { idToken } = JSON.parse(localStorage.getItem('auth'))
-                window.FB_DATABASE.ref(`/workflowLogs/${workspaceName}/${runid}/tasks/${taskId}/workflows`).on('value', async (error, { data }) => {
+                const workflowLogRef=`/workflowLogs/${workspaceName}/${wsrunid}/tasks/${taskId}/workflows`
+                const workflowLogObjects =await window.getLogObjects(workflowLogRef)
+          
 
                     let workPromises = []
-                    for (let workflowKey in data) {
+                    for (let workflowKey in workflowLogObjects) {
 
-                        const end = data[workflowKey]['log']['end']
-                        const start = data[workflowKey]['log']['start']
-                        const result = data[workflowKey]['log']['result']
-
+                        const end = workflowLogObjects[workflowKey]['log']['end']
+                        const start = workflowLogObjects[workflowKey]['log']['start']
+                        const result = workflowLogObjects[workflowKey]['log']['result']
 
 
                         workPromises.push((async () => {
@@ -159,31 +160,38 @@ customElements.define('task-accordion-item', class extends HTMLElement {
 
                             const workflow = await getResponse.json()
 
-                            return { ...workflow, taskId, runid, end, start, result }
+                            return { ...workflow, taskId, wsrunid, end, start, result,workflowKey }
 
                         })())
 
                     }//end for loop
                     const workflows = await Promise.all(workPromises)
+                    debugger;
+                    debugger;
                     workflows.forEach(wf => {
-                        debugger;
+                        const taskId =this.getAttribute('taskId')
                         const end = wf['end']
                         const repoName = wf["repoName"]
                         const result = wf["result"]
-                        const runid = wf['runid']
+                        const wsrunid = wf['wsrunid']
                         const screenName = wf["screenName"]
                         const selectedBranch = wf["selectedBranch"]
                         const start = wf['start']
                         const workflowDescription = wf['workflowDescription']
-
-                        document.getElementById(`body-wf-${taskId}-${runid}`).insertAdjacentHTML('beforeend',
-                            `<workflow-list-items repoName="${repoName}" selectedBranch="${selectedBranch}" owner="${screenName}" start="${start}" end="${end}" result="${result}" workflowDescription="${workflowDescription}">
+                        const workflowKey=wf['workflowKey']
+                        if(document.getElementById(`${workflowKey}-${taskId}-${wsrunid}`)){
+                          debugger;
+                          const parent =document.getElementById(`${workflowKey}-${taskId}-${wsrunid}`).parentElement
+                          parent.removeChild(document.getElementById(`${workflowKey}-${taskId}-${wsrunid}`))
+                      }
+                        document.getElementById(`body-wf-${taskId}-${wsrunid}`).insertAdjacentHTML('beforeend',
+                            `<workflow-list-items workflowKey="${workflowKey}" taskId="${taskId}" wsrunid="${wsrunid}" repoName="${repoName}" selectedBranch="${selectedBranch}" owner="${screenName}" start="${start}" end="${end}" result="${result}" workflowDescription="${workflowDescription}" id="${workflowKey}-${taskId}-${wsrunid}">
                  </workflow-list-items>`)
-                        debugger;
+                        
                     })
 
 
-                })
+                
             }
 
         })

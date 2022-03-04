@@ -16,25 +16,30 @@ customElements.define('workspace-run-logs', class extends HTMLElement {
         this.uid = uid
         window.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
         document.getElementById('workspace-breadcrumb').innerText = `Workspace(${workspaceName})`
-
-        window.FB_DATABASE.ref(`/workspaceLogs/${workspaceName}/logs`).on('value', (error, { data }) => {
-
-            for (let log in data) {
-
-                const last = data[log]['last']
-                const start = data[log]['start']
-                const success = data[log]['success']
-                const failed = data[log]['failed']
-                const totalTasks = data[log]['totalTasks']
-                const totalWorkflows = data[log]['totalWorkflows']
-                document.getElementById('accordion-container').insertAdjacentHTML('beforeend', `
-                <workspace-accordion-item last="${last}" start="${start}" success="${success}" failed="${failed}" totalTasks="${totalTasks}" totalWorkflows="${totalWorkflows}" data-id="${log}-ws" runid="${log}">
-                </workspace-accordion-item>`)
-            }
-        })
         this.innerHTML = `<div class="accordion" id="accordion-container">
         <h7>Workspace run results:</h7>
         </div>`
+        const workspaceLogRef =`/workspaceLogs/${workspaceName}/logs`
+        const workspaceLogObjests =await getLogObjects(workspaceLogRef)
+        debugger;
+     
+
+            for (let wsrunid in workspaceLogObjests) {
+debugger;
+                const last = workspaceLogObjests[wsrunid]['last']
+                const start = workspaceLogObjests[wsrunid]['start']
+                const success = workspaceLogObjests[wsrunid]['success']
+                const failed = workspaceLogObjests[wsrunid]['failed']
+                const totalTasks = workspaceLogObjests[wsrunid]['totalTasks']
+                const totalWorkflows = workspaceLogObjests[wsrunid]['totalWorkflows']
+                debugger;
+         
+                document.getElementById('accordion-container').insertAdjacentHTML('beforeend', `
+                <workspace-accordion-item last="${last}" start="${start}" success="${success}" failed="${failed}" totalTasks="${totalTasks}" totalWorkflows="${totalWorkflows}" data-id="${wsrunid}-ws" wsrunid="${wsrunid}">
+                </workspace-accordion-item>`)
+            }
+        
+      
     }
 })
 
@@ -62,3 +67,18 @@ function timespan(date2, date1) {
 }
 
 window.timespan = timespan
+
+async function getLogObjects(ref){
+
+    const auth=JSON.parse( localStorage.getItem('auth'))
+    const {idToken}=auth
+
+    const fetchUrl = `${window.projectUrl}/${ref}/.json?auth=${idToken}`
+    const getResponse =await   fetch(fetchUrl, { method: 'GET'})
+    const getJsonData =await getResponse.json()
+
+    return getJsonData
+
+}
+
+window.getLogObjects=getLogObjects
