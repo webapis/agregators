@@ -9,7 +9,7 @@ customElements.define('workspace-view', class extends HTMLElement{
         await resources.default()
        // const { workspace:{workspaceSelected:{title}}} = window.pageStore.state
         const {idToken, localId: uid } =JSON.parse(localStorage.getItem('auth'))
-        const {title} =JSON.parse(localStorage.getItem('workspaceSelected'))
+        const {title} =JSON.parse(localStorage.getItem('workspace'))
 
         this.uid = uid
         window.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)

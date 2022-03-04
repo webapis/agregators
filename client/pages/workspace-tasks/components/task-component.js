@@ -37,7 +37,7 @@ customElements.define('task-component', class extends HTMLElement {
           </div>
      
           </div>
-         <task-run-state></task-run-state>
+         <task-run-state taskId="${id}"></task-run-state>
           </div>
           </div>
 </div>
@@ -92,14 +92,14 @@ customElements.define('task-component', class extends HTMLElement {
                 const taskId=id
                 window.FB_DATABASE.ref(`workflows/workspaces/${workspaceName}/tasks/${taskId}`).get((error, result) => {
                     if (result) {
-debugger;
+
                         const workflows = result && Object.entries(result)
-                        debugger;
+                        
                         const wfContainer = document.getElementById(`accordion-body-${id}`).querySelector('.wf-container')
                         wfContainer.innerHTML = '<div class="row"><h7 class="col-9">Workflows:</h7><h7 class="col-3 text-end">Workflow configurations:</h7><div>'
 
                         workflows && workflows.forEach((wf, i) => {
-                            debugger;
+                            
                             const workflowKey = wf[0]
                             //   const workflowName = wf[1]['workflowName']
                             const workflowDescription = wf[1]['workflowDescription']

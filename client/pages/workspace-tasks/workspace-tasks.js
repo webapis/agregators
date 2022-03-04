@@ -101,7 +101,7 @@ customElements.define('workspace-tasks', class extends HTMLElement {
             const runSequence =this.orderedTasks[0]['runSequence']
             const first ='true'
             const wfrunid =runid
-            debugger;
+            
             const parameters = `${token}--xxx--${owner}--xxx--${idToken}--xxx--${email}--xxx--${uid}--xxx--${refreshToken}--xxx--${'selectedContainer'}--xxx--${window.projectUrl}--xxx--${workspaceName}--xxx--${runid}--xxx--${start}--xxx--${taskId}--xxx--${runNext}--xxx--${runSequence}--xxx--${first}--xxx--${wfrunid}`
 
             const body = JSON.stringify({ ref: 'main', inputs: { projectName: workspaceName, parameters } })
@@ -142,7 +142,7 @@ customElements.define('workspace-tasks', class extends HTMLElement {
                     const taskName = task['taskName']
                     const runOrder = task['runOrder']
                     const runSequence = task['runSequence']
-                    debugger;
+                    
                     taskElement.insertAdjacentHTML('beforeend', ` <task-component id="${taskId}" name="${taskName}" order="${runOrder}" sequence="${runSequence}"></task-component>`)
 
                 })
@@ -180,3 +180,26 @@ customElements.define('workspace-tasks', class extends HTMLElement {
 
 
 
+
+function timespan(date2, date1) {
+
+
+    var diff = date2.getTime() - date1.getTime();
+
+    var days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    diff -= days * (1000 * 60 * 60 * 24);
+
+    var hours = Math.floor(diff / (1000 * 60 * 60));
+    diff -= hours * (1000 * 60 * 60);
+
+    var mins = Math.floor(diff / (1000 * 60));
+    diff -= mins * (1000 * 60);
+
+    var seconds = Math.floor(diff / (1000));
+    diff -= seconds * (1000);
+
+    console.log(days + " days, " + hours + " hours, " + mins + " minutes, " + seconds + " seconds");
+    return { days, hours, mins, seconds }
+}
+
+window.timespan=timespan
