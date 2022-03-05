@@ -96,7 +96,17 @@ customElements.define('task-component', class extends HTMLElement {
                         const workflows = result && Object.entries(result)
                         
                         const wfContainer = document.getElementById(`accordion-body-${id}`).querySelector('.wf-container')
-                        wfContainer.innerHTML = '<div class="row"><h7 class="col-9">Workflows:</h7><h7 class="col-3 text-end">Workflow configurations:</h7><div>'
+                        wfContainer.innerHTML = `<div class="row"><h7 class="col-12 text-end">Workflows:</h7>
+                       <div class="row mb-1 pb-1">
+                       <div class="col-2 fw-bold">Repo</div>
+                       <div class="col-2 fw-bold">Branch</div>
+                       <div class="col-2 fw-bold">Workflow</div>
+                       <div class="col-1 fw-bold text-center">Controls</div>
+                       <div class="col-5 fw-bold row">
+                       <div class="text-center"> Last Run State</div>
+                       </div>
+                       </div> 
+                        <div>`
 
                         workflows && workflows.forEach((wf, i) => {
                             
@@ -107,16 +117,17 @@ customElements.define('task-component', class extends HTMLElement {
                             const selectedBranch = wf[1]['selectedBranch']
 
 
-                            wfContainer.insertAdjacentHTML('beforeend', `<div class="d-flex justify-content-between list-group-item" id="${id}-${workflowKey}-wf">
-                            <h7>${i}. <span class="fw-bolder">Repo: </span>${repoName}, <span class="fw-bolder">Branch: </span>${selectedBranch},<span class="fw-bolder">Desc: </span>${workflowDescription}</h7>
-                                                                                                <div class ="buttons">
-                                                                                                <button class="btn btn-outline-secondary btn-sm" id="${workflowKey}-workflow-config-btn">Vars</button>
-                                                                                                <button class="btn btn-outline-warning btn-sm" id="${workflowKey}-workflow-editor-btn">Edit</button>
-                                                                                                <button class="btn btn-outline-danger btn-sm" id="${workflowKey}-workflow-delete-btn">Delete</button>
-                                                                                                <button class="btn"><div class="spinner-grow text-success" role="status">
-                                                                                                <span class="visually-hidden">Loading...</span>
-                                                                                              </div></button>
-                                                                                                </div>
+                            wfContainer.insertAdjacentHTML('beforeend', `<div class="row mb-1 border-bottom pb-1" id="${id}-${workflowKey}-wf">
+                             <div class="col-2">${repoName}</div> 
+                             <div class="col-2">${selectedBranch}</div> 
+                             <div class="col-2">${workflowDescription}</div> 
+                             <div class ="buttons col-1 d-flex flex-column">
+                             <button class="btn btn-outline-secondary btn-sm mb-1" id="${workflowKey}-workflow-config-btn">Vars</button>
+                             <button class="btn btn-outline-warning btn-sm mb-1" id="${workflowKey}-workflow-editor-btn">Edit</button>
+                             <button class="btn btn-outline-danger btn-sm mb-1" id="${workflowKey}-workflow-delete-btn">Delete</button>
+                             </div>
+                              <workflow-run-state class=col-5 workflowKey=${workflowKey} taskId="${taskId}"></workflow-run-state>                                                           
+                                                                                             
                                                                                                 </div>`)
 
                             document.getElementById(`${workflowKey}-workflow-delete-btn`).addEventListener('click', (e) => {

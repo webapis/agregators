@@ -23,7 +23,9 @@ customElements.define('workspace-tasks', class extends HTMLElement {
             import('./components/task-component.js'),
             import('./components/task-config.js'),
             import('./components/task-run-state.js'),
+            import('./components/workflow-run-state.js'),
             import('./components/run-all-tasks-btn.js'),
+            import('./components/workspace-run-state.js'),
             import('./js/triggerAction.js'),
         ])
 
@@ -82,10 +84,16 @@ customElements.define('workspace-tasks', class extends HTMLElement {
 
     loadTasks({ workspaceName }) {
         document.getElementById('container').innerHTML = `
+        <div class="d-flex justify-content-between">
+        <div>
          <a class="btn btn-outline-secondary m-1" href="/pages/task-editor/task-editor.html" id="task-editor-btn">Add Task</a>
          <run-all-tasks-btn> </run-all-tasks-btn>
          <button class="btn btn-outline-danger">Abort </button>
-         <a class="btn btn-outline-info" id="workflow-run-logs-btn" href="/pages/workspace-run-logs/workspace-run-logs.html">Logs</a>
+         <a class="btn btn-outline-info" id="workflow-run-logs-btn" href="/pages/workspace-run-logs/workspace-run-logs.html">Logs</a> 
+         </div>
+            <workspace-run-state></workspace-run-state>
+         </div>
+         </div>
          `
 
         window.FB_DATABASE.ref(`workspaces/${workspaceName}/tasks`).get((error, result) => {
@@ -175,7 +183,7 @@ function timespan(date2, date1) {
     const hourwithzero = hours < 10 ? `0${hours}` : hours
     const minwithzero = mins < 10 ? `0${mins}` : mins
     const secwithzero = seconds < 10 ? `0${seconds}` : seconds
-    debugger;
+    
     console.log(days + " days, " + hourwithzero + " hours, " + minwithzero + " minutes, " + secwithzero + " seconds");
     return { days, hours: hourwithzero, mins: minwithzero, seconds: secwithzero }
 }
@@ -183,12 +191,12 @@ function timespan(date2, date1) {
 window.timespan = timespan
 
 function formatTime(date) {
-    debugger;
+    
     return `${date.getHours() <10 ?'0'+date.getHours():date.getHours()}:${date.getMinutes() <10 ?'0'+date.getMinutes():date.getMinutes()}:${date.getSeconds() <10 ?'0'+date.getSeconds():date.getSeconds()}`
 }
 
 function formatDate(date) {
-    debugger;
+    
     return `${date.getDate() < 10 ?'0'+date.getDate():date.getDate()}.${date.getMonth() < 10 ?'0'+(date.getMonth()+1):date.getMonth()}.${date.getFullYear()}`
 }
 window.formatTime = formatTime
