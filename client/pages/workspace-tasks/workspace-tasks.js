@@ -111,15 +111,15 @@ customElements.define('workspace-tasks', class extends HTMLElement {
                 }
                 )
                 window.orderedTasks = orderByRunOrder
-              
+
                 orderByRunOrder.forEach(task => {
                     const taskId = task['taskId']
                     const taskName = task['taskName']
                     const runOrder = task['runOrder']
                     const runSequence = task['runSequence']
-                    
+
                     taskElement.insertAdjacentHTML('beforeend', ` <task-component id="${taskId}" name="${taskName}" order="${runOrder}" sequence="${runSequence}"></task-component>`)
-               
+
                 })
 
             } else {
@@ -172,9 +172,24 @@ function timespan(date2, date1) {
 
     var seconds = Math.floor(diff / (1000));
     diff -= seconds * (1000);
-
-    console.log(days + " days, " + hours + " hours, " + mins + " minutes, " + seconds + " seconds");
-    return { days, hours, mins, seconds }
+    const hourwithzero = hours < 10 ? `0${hours}` : hours
+    const minwithzero = mins < 10 ? `0${mins}` : mins
+    const secwithzero = seconds < 10 ? `0${seconds}` : seconds
+    debugger;
+    console.log(days + " days, " + hourwithzero + " hours, " + minwithzero + " minutes, " + secwithzero + " seconds");
+    return { days, hours: hourwithzero, mins: minwithzero, seconds: secwithzero }
 }
 
-window.timespan=timespan
+window.timespan = timespan
+
+function formatTime(date) {
+    debugger;
+    return `${date.getHours() <10 ?'0'+date.getHours():date.getHours()}:${date.getMinutes() <10 ?'0'+date.getMinutes():date.getMinutes()}:${date.getSeconds() <10 ?'0'+date.getSeconds():date.getSeconds()}`
+}
+
+function formatDate(date) {
+    debugger;
+    return `${date.getDate() < 10 ?'0'+date.getDate():date.getDate()}.${date.getMonth() < 10 ?'0'+(date.getMonth()+1):date.getMonth()}.${date.getFullYear()}`
+}
+window.formatTime = formatTime
+window.formatDate = formatDate
