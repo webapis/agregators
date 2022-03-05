@@ -84,16 +84,18 @@ customElements.define('workspace-tasks', class extends HTMLElement {
 
     loadTasks({ workspaceName }) {
         document.getElementById('container').innerHTML = `
-        <div class="d-flex justify-content-between">
-        <div>
+        <div class="row">
+        <div class="col-3">
          <a class="btn btn-outline-secondary m-1" href="/pages/task-editor/task-editor.html" id="task-editor-btn">Add Task</a>
          <run-all-tasks-btn> </run-all-tasks-btn>
          <button class="btn btn-outline-danger">Abort </button>
          <a class="btn btn-outline-info" id="workflow-run-logs-btn" href="/pages/workspace-run-logs/workspace-run-logs.html">Logs</a> 
          </div>
-            <workspace-run-state></workspace-run-state>
+         <div class="col-2 fw-bold text-decoration-underline text-end">Workflow's Last Run State:</div>
+         <workspace-run-state class="col-7 border border-1 mb-1 pb-1"></workspace-run-state>
          </div>
-         </div>
+       
+       
          `
 
         window.FB_DATABASE.ref(`workspaces/${workspaceName}/tasks`).get((error, result) => {

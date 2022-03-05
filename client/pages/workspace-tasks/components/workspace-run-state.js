@@ -85,26 +85,26 @@ customElements.define('workspace-run-state', class extends HTMLElement {
         const endTime = `${window.formatTime(end)}`
         const date = `${window.formatDate(start)}`
         debugger;
-        this.innerHTML = `<div>
+        this.innerHTML = `
         <div class="row">
-        <div class="col">Total Tasks</div>
-        <div class="col">Total Workflows</div>
-        <div class="col">Date</div>
-        <div class="col">Start</div>
-        <div class="col">End</div>
-        <div class="col">Duration</div>
-        <div class="col">Success</div>
-        <div class="col">Failed</div>
+        <div class="col fw-normal text-center">Tasks</div>
+        <div class="col fw-normal text-center">Workflows</div>
+        <div class="col fw-normal text-center">Date</div>
+        <div class="col fw-normal text-center">Start</div>
+        <div class="col fw-normal text-center">End</div>
+        <div class="col fw-normal text-center">Duration</div>
+        <div class="col fw-normal text-center">Success</div>
+        <div class="col fw-normal text-center">Failed</div>
         </div>
         <div class="row">
-        <div class="col" id="${workspaceName}-total-tasks">${totalTasks}</div>
-        <div class="col" id="${workspaceName}-total-workflows">${totalWorkflows}</div>
-        <div class="col" id="${workspaceName}-date">${date}</div>
-        <div class="col" id="${workspaceName}-start">${startTime}</div>
-        <div class="col" id="${workspaceName}-end">${endTime}</div>
-        <div class="col" id="${workspaceName}-duration">${duration}</div>
-        <div class="col" id="${workspaceName}-success">${success}</div>
-        <div class="col" id="${workspaceName}-failed">${failed}</div>
+        <div class="col text-center" id="${workspaceName}-total-tasks"> <span class="badge bg-primary fw-light">${totalTasks}</span></div>
+        <div class="col text-center" id="${workspaceName}-total-workflows">  <span class="badge bg-primary fw-light">${totalWorkflows}</span></div>
+        <div class="col text-center" id="${workspaceName}-date"> <span class="badge bg-primary fw-light">${date}</span></div>
+        <div class="col text-center" id="${workspaceName}-start"><span class="badge bg-primary fw-light">${startTime}</span></div>
+        <div class="col text-center" id="${workspaceName}-end"><span class="badge bg-primary fw-light">${endTime}</span></div>
+        <div class="col text-center" id="${workspaceName}-duration"><span class="badge bg-primary fw-light">${duration}</span></div>
+        <div class="col text-center" id="${workspaceName}-success"><span class="badge bg-primary fw-light">${success}</span></div>
+        <div class="col text-center" id="${workspaceName}-failed"><span class="badge bg-primary fw-light">${failed}</span></div>
         </div>`
     }
 })

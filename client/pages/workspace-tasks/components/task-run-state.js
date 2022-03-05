@@ -91,7 +91,7 @@ customElements.define('task-run-state', class extends HTMLElement {
     const date = `${window.formatDate(start)}`
 
     this.innerHTML = `<div>
-      <h7>Last Run:</h7>
+      <h7>Task's Last Run State:</h7>
       <div class="border border-0">
       <li class="list-group-item d-flex justify-content-between align-items-start">
       <div class="ms-2 me-auto">

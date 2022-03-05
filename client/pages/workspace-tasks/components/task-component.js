@@ -103,7 +103,7 @@ customElements.define('task-component', class extends HTMLElement {
                        <div class="col-2 fw-bold">Workflow</div>
                        <div class="col-1 fw-bold text-center">Controls</div>
                        <div class="col-5 fw-bold row">
-                       <div class="text-center"> Last Run State</div>
+                       <div class="text-center"> Workflows's Last Run State</div>
                        </div>
                        </div> 
                         <div>`
