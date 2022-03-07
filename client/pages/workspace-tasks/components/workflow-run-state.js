@@ -22,9 +22,12 @@ customElements.define('workflow-run-state', class extends HTMLElement{
         };
 
         childaddedEvent.addEventListener('put',  (e)=> {
-            const { data } = JSON.parse(e.data)
+    
+            const  state =  JSON.parse(e.data)
            
-            this.render(data, taskId,workflowKey)
+            this.render(state.data, taskId,workflowKey)
+          
+
         })
         childaddedEvent.addEventListener('patch',  (e)=> {
             
@@ -83,14 +86,32 @@ customElements.define('workflow-run-state', class extends HTMLElement{
     }
 
     render(data,taskId,workflowKey){
-        const { result } = data
-        const start = new Date(parseInt(data.start))
-        const end = new Date(parseInt(data.end))
-        const { hours, mins, seconds } = window.timespan(end, start)
-        const duration = `${hours}:${mins}:${seconds}`
-        const startTime = `${window.formatTime(start)}`
-        const endTime = `${window.formatTime(end)}`
-        const date = `${window.formatDate(start)}`
+      //  const { result } = data
+        const result =(data&&data.result)?data.result:0
+        const start =data&& data.start&&  new Date(parseInt(data.start))
+        const end = data&&data.end&& new Date(parseInt(data.end))
+        let duration = "00:00:00"
+        let startTime ="00:00:00"
+        let endTime = "00:00:00"
+        let date = "00.00.0000"
+    
+    
+            if(end && start){
+                const { hours, mins, seconds } = window.timespan(end, start)
+                 duration = `${hours}:${mins}:${seconds}`
+              
+              
+               
+            }
+    
+            if(start){
+                 startTime = `${window.formatTime(start)}`
+                 date = `${window.formatDate(start)}`
+            }
+            if(end){
+                 endTime = `${window.formatTime(end)}`
+            }
+      
         this.innerHTML=`
         <div class="row">
         <div class="col-3 fw-normal text-center fw-normal">Start</div>
@@ -104,7 +125,7 @@ customElements.define('workflow-run-state', class extends HTMLElement{
         <span class="col-3 badge rounded-pill bg-primary fw-light"id="${taskId}-${workflowKey}-duration">${duration}</span>
         <span class="col-3 badge rounded-pill fw-light bg-${result==='success'?'success':'danger'}"id="${taskId}-${workflowKey}-result">${result}</span>
 
-        <span class="badge bg-primary rounded-pill fw-normal d-none" id="${taskId}-${workflowKey}-timestamp">${data.start}</span>
+        <span class="badge bg-primary rounded-pill fw-normal d-none" id="${taskId}-${workflowKey}-timestamp">${start}</span>
         </div>`
     }
 })

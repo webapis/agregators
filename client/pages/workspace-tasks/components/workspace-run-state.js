@@ -15,75 +15,111 @@ customElements.define('workspace-run-state', class extends HTMLElement {
 
         };
         childaddedEvent.addEventListener('put', (e) => {
+                debugger;
+                const state  = JSON.parse(e.data)
+                this.render(state.data, workspaceName)
+        })
+        childaddedEvent.addEventListener('patch', (e) => {
 
             const { data } = JSON.parse(e.data)
-            this.render(data, workspaceName)
+         
 
+            const start = data['start'] && new Date(parseInt(data['start']))
+            const timestamp = data['start'] && data['start']
+            const end = data['last'] && new Date(parseInt(data['last']))
+            const success = data['success']
+            const failed = data['failed']
+           // const total = data['total']
+            start !== undefined ? document.getElementById(`${workspaceName}-start-time`).innerHTML = `${window.formatTime(start)}` : ''
+            start !== undefined ? document.getElementById(`${workspaceName}-date`).innerHTML = `${window.formatDate(start)}` : ''
+            timestamp !== undefined ? document.getElementById(`${workspaceName}-timestamp`).innerHTML = timestamp : ''
+           // end !== undefined ? document.getElementById(`${workspaceName}-end-time`).innerHTML = `${window.formatTime(end)}` : document.getElementById(`${workspaceName}-end-time`).innerHTML = `<div class="spinner-grow text-light spinner-grow-sm" role="status" id="side_state_spinner-${workspaceName}"><span class="visually-hidden">Loading...</span></div>`
+            if(end !==undefined){
+                debugger;
+            }
+            success !== undefined ? document.getElementById(`${workspaceName}-success`).innerHTML = success : document.getElementById(`${workspaceName}-failed`).innerHTML = 0
+            failed !== undefined ? document.getElementById(`${workspaceName}-failed`).innerHTML = failed : document.getElementById(`${workspaceName}-failed`).innerHTML = 0
+           // total !== undefined ? document.getElementById(`${workspaceName}-total`).innerHTML = total : ''
+            const totalWorkSpaces =parseInt( document.getElementById(`${workspaceName}-total-workflows`).textContent)
+            const totalSuccessFul=parseInt( document.getElementById(`${workspaceName}-success`).textContent)
+            debugger;
+            const totalFailed =parseInt(document.getElementById(`${workspaceName}-failed`).textContent)
+                if(totalWorkSpaces === (totalSuccessFul+ totalFailed)){
+                    document.getElementById(`${workspaceName}-end-time`).innerHTML = `${window.formatTime(end)}` 
+                } else
+                {
+                    debugger;
+                    document.getElementById(`${workspaceName}-end-time`).innerHTML = document.getElementById(`${workspaceName}-end-time`).innerHTML = `<div class="spinner-grow text-light spinner-grow-sm" role="status" id="side_state_spinner-${workspaceName}"><span class="visually-hidden">Loading...</span></div>`
+                }
+
+            if (end !== undefined) {
+                this.timeInterval = null
+
+                let starttimestamp = new Date(parseInt(document.getElementById(`${workspaceName}-timestamp`).textContent))
+
+                const { hours, mins, seconds } = window.timespan(end, starttimestamp)
+                const duration = `${hours}:${mins}:${seconds}`
+                document.getElementById(`${workspaceName}-duration`).innerHTML = duration
+            } else {
+                // get previous duration
+
+
+
+            }
+
+            let timer = setInterval(function () {
+                const sidespinner = document.getElementById(`side_state_spinner-${workspaceName}`)
+                if (end === undefined && sidespinner !== null) {
+
+                    let starttimestamp = new Date(parseInt(document.getElementById(`${workspaceName}-timestamp`).textContent))
+                    let currentTime = new Date(Date.now())
+                    const { hours, mins, seconds } = window.timespan(currentTime, starttimestamp)
+                    const duration = `${hours}:${mins}:${seconds}`
+                    document.getElementById(`${workspaceName}-duration`).innerHTML = duration
+                } else {
+                    console.log('end', end)
+                    clearSelf(timer)
+                }
+
+            }, 1000)
+
+            let clearSelf = function (intfunct) {
+                clearInterval(intfunct)
+            }
         })
-        // childaddedEvent.addEventListener('patch', (e) => {
-
-        //     const { data } = JSON.parse(e.data)
-
-        //     const start = data['start'] && new Date(parseInt(data['start']))
-        //     const timestamp = data['start'] && data['start']
-        //     const end = data['end'] && new Date(parseInt(data['end']))
-        //     const success = data['success']
-        //     const failed = data['failed']
-        //     const total = data['total']
-        //     start !== undefined ? document.getElementById(`${taskId}-start-time`).innerHTML = `${window.formatTime(start)}` : ''
-        //     start !== undefined ? document.getElementById(`${taskId}-date`).innerHTML = `${window.formatDate(start)}` : ''
-        //     timestamp !== undefined ? document.getElementById(`${taskId}-timestamp`).innerHTML = timestamp : ''
-        //     end !== undefined ? document.getElementById(`${taskId}-end-time`).innerHTML = `${window.formatTime(end)}` : document.getElementById(`${taskId}-end-time`).innerHTML = `<div class="spinner-grow text-light spinner-grow-sm" role="status" id="side_state_spinner-${taskId}"><span class="visually-hidden">Loading...</span></div>`
-
-        //     success !== undefined ? document.getElementById(`${taskId}-success`).innerHTML = success : document.getElementById(`${taskId}-failed`).innerHTML = 0
-        //     failed !== undefined ? document.getElementById(`${taskId}-failed`).innerHTML = failed : document.getElementById(`${taskId}-failed`).innerHTML = 0
-        //     total !== undefined ? document.getElementById(`${taskId}-total`).innerHTML = total : ''
-        //     if (end !== undefined) {
-        //         this.timeInterval = null
-
-        //         let starttimestamp = new Date(parseInt(document.getElementById(`${taskId}-timestamp`).textContent))
-
-        //         const { hours, mins, seconds } = window.timespan(end, starttimestamp)
-        //         const duration = `${hours}:${mins}:${seconds}`
-        //         document.getElementById(`${taskId}-duration`).innerHTML = duration
-        //     } else {
-        //         // get previous duration
-
-
-
-        //     }
-
-        //     let timer = setInterval(function () {
-        //         const sidespinner = document.getElementById(`side_state_spinner-${taskId}`)
-        //         if (end === undefined && sidespinner !== null) {
-
-        //             let starttimestamp = new Date(parseInt(document.getElementById(`${taskId}-timestamp`).textContent))
-        //             let currentTime = new Date(Date.now())
-        //             const { hours, mins, seconds } = window.timespan(currentTime, starttimestamp)
-        //             const duration = `${hours}:${mins}:${seconds}`
-        //             document.getElementById(`${taskId}-duration`).innerHTML = duration
-        //         } else {
-        //             console.log('end', end)
-        //             clearSelf(timer)
-        //         }
-
-        //     }, 1000)
-
-        //     let clearSelf = function (intfunct) {
-        //         clearInterval(intfunct)
-        //     }
-        // })
     }
     render(data, workspaceName) {
-        const { success, failed, totalTasks,totalWorkflows } = data
-        const start = new Date(parseInt(data.start))
-        const end = new Date(parseInt(data.last))
+ 
+        const success= (data&&data.success) ? data.success:0
+        const failed =(data&&data.failed)? data.failed:0
+        const totalTasks=(data&&data.totalTasks) ?data.totalTasks:0
+        const totalWorkflows=(data&& data.totalWorkflows) ?data.totalWorkflows:0
 
-        const { hours, mins, seconds } = window.timespan(end, start)
-        const duration = `${hours}:${mins}:${seconds}`
-        const startTime = `${window.formatTime(start)}`
-        const endTime = `${window.formatTime(end)}`
-        const date = `${window.formatDate(start)}`
+        const start =data&& data.start&&  new Date(parseInt(data.start))
+        const end = data&&data.last&& new Date(parseInt(data.last))
+        let duration = "00:00:00";
+        let startTime ="00:00:00";
+        let endTime = "00:00:00";
+        let date = "00.00.0000";
+
+   
+            if(end && start){
+                const { hours, mins, seconds } = window.timespan(end, start)
+                 duration = `${hours}:${mins}:${seconds}`
+              
+              
+               
+            }
+
+            if(start){
+                 startTime = `${window.formatTime(start)}`
+                 date = `${window.formatDate(start)}`
+            }
+            if(end){
+                 endTime = `${window.formatTime(end)}`
+            }
+      
+    
         debugger;
         this.innerHTML = `
         <div class="row">
@@ -97,14 +133,15 @@ customElements.define('workspace-run-state', class extends HTMLElement {
         <div class="col fw-normal text-center">Failed</div>
         </div>
         <div class="row">
-        <div class="col text-center" id="${workspaceName}-total-tasks"> <span class="badge bg-primary fw-light">${totalTasks}</span></div>
-        <div class="col text-center" id="${workspaceName}-total-workflows">  <span class="badge bg-primary fw-light">${totalWorkflows}</span></div>
-        <div class="col text-center" id="${workspaceName}-date"> <span class="badge bg-primary fw-light">${date}</span></div>
-        <div class="col text-center" id="${workspaceName}-start"><span class="badge bg-primary fw-light">${startTime}</span></div>
-        <div class="col text-center" id="${workspaceName}-end"><span class="badge bg-primary fw-light">${endTime}</span></div>
-        <div class="col text-center" id="${workspaceName}-duration"><span class="badge bg-primary fw-light">${duration}</span></div>
-        <div class="col text-center" id="${workspaceName}-success"><span class="badge bg-primary fw-light">${success}</span></div>
-        <div class="col text-center" id="${workspaceName}-failed"><span class="badge bg-primary fw-light">${failed}</span></div>
+        <div class="col text-center"> <span class="badge bg-primary fw-light" id="${workspaceName}-total-tasks">${totalTasks}</span></div>
+        <div class="col text-center">  <span class="badge bg-primary fw-light" id="${workspaceName}-total-workflows">${totalWorkflows}</span></div>
+        <div class="col text-center"> <span class="badge bg-primary fw-light" id="${workspaceName}-date">${date}</span></div>
+        <div class="col text-center"><span class="badge bg-primary fw-light" id="${workspaceName}-start-time">${startTime}</span></div>
+        <div class="col text-center"><span class="badge bg-primary fw-light" id="${workspaceName}-end-time">${endTime}</span></div>
+        <div class="col text-center"><span class="badge bg-primary fw-light" id="${workspaceName}-duration">${duration}</span></div>
+        <div class="col text-center"><span class="badge bg-primary fw-light" id="${workspaceName}-success">${success}</span></div>
+        <div class="col text-center"><span class="badge bg-primary fw-light" id="${workspaceName}-failed">${failed}</span></div>
+        <span class="badge bg-primary rounded-pill fw-normal d-none" id="${workspaceName}-timestamp">${start}</span>
         </div>`
     }
 })

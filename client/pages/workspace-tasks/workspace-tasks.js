@@ -91,7 +91,7 @@ customElements.define('workspace-tasks', class extends HTMLElement {
          <button class="btn btn-outline-danger">Abort </button>
          <a class="btn btn-outline-info" id="workflow-run-logs-btn" href="/pages/workspace-run-logs/workspace-run-logs.html">Logs</a> 
          </div>
-         <div class="col-2 fw-bold text-decoration-underline text-end">Workflow's Last Run State:</div>
+         <div class="col-2 fw-bold text-decoration-underline text-end fw-normal">Workflow's Last Run State:</div>
          <workspace-run-state class="col-7 border border-1 mb-1 pb-1"></workspace-run-state>
          </div>
        
