@@ -29,6 +29,7 @@ async function setAppState(scenario) {
     //3.2 SET FIREBASE DATABASE'S PREVIOUS STATE --START------------------------------------------------------------------------------
     const { auth: { idToken } } = lsData
     const backEndBefore = fs.readFileSync(`${process.cwd()}/mock-data/back-end/${orderStr}-after.json`, { encoding: 'utf-8' })
+    await nodeFetch({ host: process.env.databaseHost, path: `/.json?auth=${idToken}`, method: 'PUT', body: null, headers: {}, port: process.env.dbPort, ssh: process.env.dbSsh })
     await nodeFetch({ host: process.env.databaseHost, path: `/.json?auth=${idToken}`, method: 'PUT', body: backEndBefore, headers: {}, port: process.env.dbPort, ssh: process.env.dbSsh })
     //--------------------------------------------END------------------------------------------------------------------------------
 

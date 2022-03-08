@@ -68,11 +68,12 @@ customElements.define('input-configuration', class extends HTMLElement {
         document.getElementById('add-workflow-btn').addEventListener('click', (e) => {
             const { inputName, repoName } = JSON.parse(localStorage.getItem('inputEditor'))
             const { title: workspaceName } = JSON.parse(localStorage.getItem('workspace'))
+          
             window.FB_DATABASE.ref(`inputRepos/workspaces/${workspaceName}/repos/${repoName}`).set("", (error, result) => {
-                const { name: inputKey } = result
+         
                 const inputEditor = JSON.parse(localStorage.getItem('inputEditor'))
-                localStorage.setItem('inputEditor', JSON.stringify({ ...inputEditor, repoName: '', inputName: '', inputs: [...inputEditor.inputs, { inputName, inputKey, repoName }] }))
-                insertAccordionItem(repoName,inputKey)
+                localStorage.setItem('inputEditor', JSON.stringify({ ...inputEditor, repoName: '', inputName: '', inputs: [...inputEditor.inputs, { inputName, repoName }] }))
+                insertAccordionItem(repoName,repoName)
 //----------------------------------
             })
         })
@@ -179,6 +180,7 @@ document.getElementById(`remove-all-input-btn-${i}`).addEventListener('click',(e
     debugger;
       window.FB_DATABASE.ref(`inputs/workspaces/${workspaceName}/repos/${repoName}`).push({inputName}, (error,result) => {
         debugger;
+        document.getElementById(`input-name-${i}`).value=''
         if (!error) {   
          const inputKey =result['name']
 

@@ -8,7 +8,6 @@ customElements.define('env-vars', class extends HTMLElement {
         const resources = await import('../../js/resources.js')
         await resources.default()
 
-
         const { title: workspaceName } = JSON.parse(localStorage.getItem('workspace'))
 
         const { idToken, localId: uid, token, screenName } = JSON.parse(localStorage.getItem('auth'))
@@ -19,7 +18,7 @@ customElements.define('env-vars', class extends HTMLElement {
         window.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
       
         
-        debugger;
+        
         document.getElementById('workspace-breadcrumb').innerText = `Workspace(${workspaceName})`
  
         const scope = this.getAttribute('scope')
@@ -114,7 +113,15 @@ customElements.define('env-vars', class extends HTMLElement {
                 document.getElementById('var-key-input').value = ''
                 document.getElementById('var-name-input').value = ''
                 document.getElementById('var-value-input').value = ''
-                debugger;
+                document.getElementById(`${inputKey}-edit-var-btn`).addEventListener('click', (e) => {
+                    e.preventDefault()
+                    console.log('edit var btn clicked')
+
+                    document.getElementById('var-key-input').value = inputKey
+                    document.getElementById('var-name-input').value = varName
+                    document.getElementById('var-value-input').value = varValue
+
+                })
                 const removeRefPath = this.getAttribute('scope') === 'workspace' ? `server/workspaces/${workspaceName}/vars/${inputKey}` : `server/workspaces/${workspaceName}/tasks/${this.getAttribute('taskId')}/vars/${inputKey}`
                 document.getElementById(`${inputKey}-remove-var-btn`).addEventListener('click', (e) => {
                     removeVar(removeRefPath,`${inputKey}-table-raw`)
@@ -127,20 +134,29 @@ customElements.define('env-vars', class extends HTMLElement {
         })
 
 
-
+        //const { idToken, localId: uid, token, screenName } = JSON.parse(localStorage.getItem('auth'))
         const refPath = this.getAttribute('scope') === 'workspace' ? `server/workspaces/${workspaceName}/vars` : `server/workspaces/${workspaceName}/tasks/${this.getAttribute('taskId')}/vars`
-
+     debugger;
+ 
+     debugger;
         window.FB_DATABASE.ref(refPath).get((error, vars) => {
+            debugger;
+            if(vars){
+
+            
             for (let v in vars) {
+                debugger;
+                console.log('v',v)
                 const varName = vars[v]['varName']
                 const varValue = vars[v]['varValue']
+                debugger;
                 document.getElementById('var-container').insertAdjacentHTML('beforeend', `  
             <tr id="${v}-table-raw">
             <th scope="row">${v}</th>
             <td id="${v}-var-name">${varName}</td>
             <td id="${v}-var-value">${varValue}</td>
             <td>
-            <button class="btn  btn-outline-warning" id="${v}-edit-var-btn">Edit</button>
+            <button class="btn  btn-outline-warning" id="${e}-edit-var-btn">Edit</button>
             </td>
             <td>
             <button class="btn  btn-outline-danger" id="${v}-remove-var-btn">Remove</button>
@@ -148,6 +164,8 @@ customElements.define('env-vars', class extends HTMLElement {
           </tr>
             `)
                 document.getElementById(`${v}-edit-var-btn`).addEventListener('click', (e) => {
+                    e.preventDefault()
+                    console.log('edit var btn clicked')
 
                     document.getElementById('var-key-input').value = v
                     document.getElementById('var-name-input').value = varName
@@ -158,13 +176,12 @@ customElements.define('env-vars', class extends HTMLElement {
                 document.getElementById(`${v}-remove-var-btn`).addEventListener('click', (e) => {
                     removeVar(removeRefPath,`${v}-table-raw`)
                     //----------------------------------------------------------------------------------------------------
-
                 })
 
             }//for
 
-
-            debugger;
+        }
+            
 
         })
 
@@ -181,7 +198,7 @@ function removeVar(refPath,id) {
             const parent =document.getElementById(id).parentNode
             parent.removeChild(document.getElementById(id))
 
-        debugger;
+        
 
     })
 }

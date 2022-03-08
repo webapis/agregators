@@ -13,7 +13,7 @@ customElements.define('home-component', class extends HTMLElement {
 
             const auth = JSON.parse(localStorage.getItem('auth'))
             const isValid = auth ? new Date(parseInt(auth.expiresIn) * 1000) < Date.now() : false
-            debugger;
+            
             if (isValid) {
  
               
@@ -32,7 +32,7 @@ customElements.define('home-component', class extends HTMLElement {
 
       
 
-        debugger;
+        
 
 
 

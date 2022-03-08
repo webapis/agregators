@@ -40,11 +40,12 @@ customElements.define('workspace-run-state', class extends HTMLElement {
             success !== undefined ? document.getElementById(`${workspaceName}-success`).innerHTML = success : document.getElementById(`${workspaceName}-failed`).innerHTML = 0
             failed !== undefined ? document.getElementById(`${workspaceName}-failed`).innerHTML = failed : document.getElementById(`${workspaceName}-failed`).innerHTML = 0
            // total !== undefined ? document.getElementById(`${workspaceName}-total`).innerHTML = total : ''
-            const totalWorkSpaces =parseInt( document.getElementById(`${workspaceName}-total-workflows`).textContent)
-            const totalSuccessFul=parseInt( document.getElementById(`${workspaceName}-success`).textContent)
+            const totalWorkFlows =document.getElementById(`${workspaceName}-total-workflows`).textContent ?parseInt( document.getElementById(`${workspaceName}-total-workflows`).textContent):0
+            const totalSuccessFul= document.getElementById(`${workspaceName}-success`).textContent?parseInt( document.getElementById(`${workspaceName}-success`).textContent):0
             debugger;
-            const totalFailed =parseInt(document.getElementById(`${workspaceName}-failed`).textContent)
-                if(totalWorkSpaces === (totalSuccessFul+ totalFailed)){
+            const totalFailed = document.getElementById(`${workspaceName}-failed`).textContent? parseInt(document.getElementById(`${workspaceName}-failed`).textContent):0
+            debugger;
+            if(totalWorkFlows>0 && totalWorkFlows === (totalSuccessFul+ totalFailed)){
                     document.getElementById(`${workspaceName}-end-time`).innerHTML = `${window.formatTime(end)}` 
                 } else
                 {

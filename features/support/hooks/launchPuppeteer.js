@@ -4,6 +4,7 @@ const puppeteer = require("puppeteer");
 const launchOptions = {
     timeout: 0,
     slowMo: 15,
+    
     headless: (/true/i).test(process.env.headless),
   
     // executablePath:
@@ -21,7 +22,7 @@ const launchOptions = {
       //  "--user-data-dir=/tmp/foo",
       "--ignore-certificate-errors",
       "--unsafely-treat-insecure-origin-as-secure=https://localhost:8888"
-    ]// ,devtools: true
+    ] ,devtools: false
   };
 async function launchPuppeteer(){
     //1. LAUNCH BROWSER

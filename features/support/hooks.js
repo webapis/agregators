@@ -32,7 +32,7 @@ Before({ timeout }, async function (scenario) {
     const { initializePage } = require('./hooks/initializePage')
     await initializePage(scenario)
     await setAppState(scenario)
-
+debugger;
   
   } catch (error) {
     debugger;
@@ -45,6 +45,7 @@ Before({ timeout }, async function (scenario) {
 //AFTER HOOK---------------------------------------
 After({ timeout }, async function (scenario) {
   try {
+    debugger;
     const { saveAppState } = require('./hooks/saveAppState')
     await saveAppState(scenario)
     await global.page.close()
