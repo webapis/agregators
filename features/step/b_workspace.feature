@@ -1,5 +1,5 @@
 
-
+@workspace
 Feature: Workspace
 
 Scenario: 1
@@ -102,7 +102,7 @@ User deletes private workspace
   And component with "#inputlist-workflow_a_a" selector contains 0 children 616
 
 
-@workspace
+
  Scenario: 7
  User creates edits and deletes workspace vars
   Given component with "#private-tab" selector is visible to user 700
@@ -125,35 +125,33 @@ User deletes private workspace
   And user clicks to button with "#update-var-btn" selector 717
   And component with "td[id$='-var-name']" id includes "COUNTRY_CODE" textcontent 718
   And component with "td[id$='-var-value']" id includes "TURKIYE" textcontent 719
-  And user clicks to button with "#var-container button[id$='-delete-var-btn']" selector 720
+  And user clicks to button with "button[id$='-remove-var-btn']" selector 720
   And component with "#var-container" selector contains 0 children 721
 
-  Scenario: 4
-User enables google oauth for selected workflow  
 
-    Given page is navigated to "https://localhost:8888/workspaces-list.html" 401
-    And component with "#public-tab" selector is visible to user 402
-    And user clicks to button with "#public-tab" selector 403
-    And component with "#local_pub_ws_bdd-link" selector is visible to user 404
-    And user clicks to button with "#local_pub_ws_bdd-link" selector 405
-    And component with "#auth-config-card" selector is visible to user 406
-    And user clicks to button with "#auth-config-card" selector 407
-    And component with "#google-oauth-config-link" selector is visible to user 410
-    And user clicks to button with "#google-oauth-config-link" selector 411
-    And component with "#google-scopes-input" selector is visible to user 412
-    And user types "https://www.googleapis.com/auth/gmail.send https://www.googleapis.com/auth/drive" to input with "#google-scopes-input" selector 413
-    And user clicks to button with "#save-scopes-btn" selector 414
-    And component with "#authenticate-btn" selector is visible to user 415
-    And button with "#authenticate-btn" selector is enabled 416
-    And user clicks to button with "#authenticate-btn" selector 417
-    And component with "#edit-scopes-btn" selector is visible to user 418
-    And button with "#edit-scopes-btn" selector is enabled 419
+  Scenario: 8
+User enables google oauth for selected workflow
+
+    Given page is navigated to "https://localhost:8888" 800
+    And component with "#private-tab" selector is visible to user 802
+    And user clicks to button with "#private-tab" selector 803
+    And component with "#local_ws_bdd-oauth" selector is visible to user 804
+    And user clicks to button with "#local_ws_bdd-oauth" selector 805
+    And component with "#google-oauth-config-link" selector is visible to user 806
+    And user clicks to button with "#google-oauth-config-link" selector 807
+    And component with "#google-scopes-input" selector is visible to user 808
+    And user types "https://www.googleapis.com/auth/gmail.send https://www.googleapis.com/auth/drive" to input with "#google-scopes-input" selector 809
+    And user clicks to button with "#save-scopes-btn" selector 810
+    And component with "#authenticate-btn" selector is visible to user 811
+    And button with "#authenticate-btn" selector is enabled 812
+    And user clicks to button with "#authenticate-btn" selector 813
+    And component with "#edit-scopes-btn" selector is visible to user 814
+    And button with "#edit-scopes-btn" selector is enabled 815
 
 
   
   
   #Create,Edit,Delete private, public workspace _done
-
   #Create, Edit, Delete, workspace vars
   #Create and delete workflow input
   #Navigate to Tasks
