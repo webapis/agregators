@@ -32,7 +32,7 @@ Before({ timeout }, async function (scenario) {
     const { initializePage } = require('./hooks/initializePage')
     await initializePage(scenario)
     await setAppState(scenario)
-debugger;
+
   
   } catch (error) {
     debugger;

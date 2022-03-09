@@ -8,7 +8,7 @@ customElements.define('task-config', class extends HTMLElement {
         const title = this.getAttribute('title')
         const order = this.getAttribute('order') ? this.getAttribute('order') : 0
         const sequence = this.getAttribute('sequence') ? this.getAttribute('sequence') : 'sequential'
-
+         this.editable=false
         this.innerHTML = `        
         <div class="border border-1 p-1 mb-1">
    
@@ -68,17 +68,18 @@ customElements.define('task-config', class extends HTMLElement {
         document.getElementById(`${taskId}-task-editable-btn`).addEventListener('click', (e) => {
 
 
-            const readonly = document.getElementById(`${taskId}-title`).readOnly
+          
 
 
-            if (readonly) {
-
+            if (!this.editable) {
+                debugger;
                 document.getElementById(`${taskId}-title`).removeAttribute('readonly')
                 document.getElementById(`${taskId}-order`).removeAttribute('readonly')
                 document.getElementById(`${taskId}-sequence`).removeAttribute('disabled')
+                this.editable=! this.editable
 
             } else {
-
+                
                 document.getElementById(`${taskId}-title`).setAttribute('readonly', true)
                 document.getElementById(`${taskId}-order`).setAttribute('readonly', true)
                 document.getElementById(`${taskId}-sequence`).setAttribute('disabled', true)
@@ -87,7 +88,7 @@ customElements.define('task-config', class extends HTMLElement {
                 const taskName = document.getElementById(`${taskId}-title`).value
                 const runOrder = document.getElementById(`${taskId}-order`).value
                 const runSequence = document.getElementById(`${taskId}-sequence`).value
-
+debugger;
                 const updateServerWorkSpace = {
                     [`server/workspaces/${workspaceName}/tasks/${taskId}`]: {
                         taskName, runOrder,
@@ -106,6 +107,7 @@ customElements.define('task-config', class extends HTMLElement {
                     ...updateServerWorkSpace,
                     ...updateClientWorkSpace
                 }, (error, data) => {
+                    this.editable=! this.editable
                     debugger;
                     if (data) {
                         console.log('updated')
