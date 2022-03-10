@@ -27,6 +27,10 @@ customElements.define('run-all-tasks-btn',class extends HTMLElement{
             } else {
                 await triggerAction({ gh_action_url: `https://api.github.com/repos/${owner}/workflow_runner/actions/workflows/aggregate.yml/dispatches`, ticket: token, body })
             }
+            const fetchUrl =`${window.projectUrl}/.json?auth=${idToken}`
+            const updateWsLastLogStart ={[`workspaces/${workspaceName}/lastLog/start`]:{ '.sv': 'timestamp' }}
+            const updateIncResponse = await fetch(fetchUrl, { method: 'PATCH', body: JSON.stringify(updateWsLastLogStart) })
+          debugger;
         })
     }
 })
