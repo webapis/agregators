@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Logs</title>
+ 
+
+</head>
+<body>
+  
+    <div class="container mt-1">
+        <div id="top-bar" class="d-flex justify-content-between">
+        <div class="breadcrumb flat">
+            <a href="/index.html">Home</a>
+            <a href="/pages/workspaces-list/workspaces-list.html">Workspaces</a>
+            <a href="/pages/workspace-tasks/workspace-tasks.html" id="workspace-breadcrumb">Workspace</a>
+            <a href="#" class="active">Logs</a>
+
+         
+            </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+    
+        <workspace-run-logs class="row"></workspace-run-logs>
+    </div>
+     <script src="./components/workflow-list-items.js"></script>
+    <script src="./components/task-accordion-item.js"></script>
+  <script src="./components/workspace-accordion-item.js"></script>
+        <script src="./workspace-run-logs.js"></script>
+</body>
+</html>

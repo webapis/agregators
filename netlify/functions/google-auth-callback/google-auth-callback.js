@@ -37,7 +37,7 @@ debugger;
       <input type="hidden" id="refresh_token" value="${refresh_token}"/>
       <input type="hidden" id="scope" value="${scope}"/>
       <google-oauth-page></google-oauth-page>
-      <script src="${process.env.host}/google-oauth-page.js"></script>
+      <script src="${process.env.host}/pages/google/google-oauth-page.js"></script>
       </body>
 
       </html>` }

@@ -3,7 +3,8 @@ let repoForked = false;
 global.actionEnabled = false;
 function gitHubInterceptor(interceptedRequest, order) {
     const orderInt =parseInt(order)
-    if (orderInt > 5) {
+    const enableOrder ='9'
+    if (orderInt > enableOrder) {
         repoForked === true
         global.actionEnabled = true
     }
@@ -30,7 +31,7 @@ function gitHubInterceptor(interceptedRequest, order) {
             })
 
         } else
-            if (url === 'https://api.github.com/repos/codergihub/moda/branches') {
+            if (url === 'https://api.github.com/repos/codergihub/moda/branches' || url === 'https://api.github.com/repos/codergihub/workflow_a_a/branches') {
 
                 const bodyBranches = fs.readFileSync(`${process.cwd()}/mock-data/git-repos/branches.json`)
                 interceptedRequest.respond({
@@ -44,7 +45,7 @@ function gitHubInterceptor(interceptedRequest, order) {
 
                 //is not forked
             }
-            else if (url === 'https://api.github.com/repos/codergihub/workflow_runner/branches/main' && order === '5' && repoForked === false) {
+            else if (url === 'https://api.github.com/repos/codergihub/workflow_runner/branches/main' && order === enableOrder && repoForked === false) {
 
 
 
@@ -57,7 +58,7 @@ function gitHubInterceptor(interceptedRequest, order) {
                 })
             }
             //is forked
-            else if (url === 'https://api.github.com/repos/codergihub/workflow_runner/branches/main' && order === '5' && repoForked === true) {
+            else if (url === 'https://api.github.com/repos/codergihub/workflow_runner/branches/main' && order ===enableOrder && repoForked === true) {
 
 
 
@@ -71,7 +72,7 @@ function gitHubInterceptor(interceptedRequest, order) {
                 })
             }
             //is forked
-            else if (url === 'https://api.github.com/repos/codergihub/workflow_runner/branches/main' && (order !== '5')) {
+            else if (url === 'https://api.github.com/repos/codergihub/workflow_runner/branches/main' && (order !==enableOrder)) {
 
 
 
@@ -85,7 +86,7 @@ function gitHubInterceptor(interceptedRequest, order) {
                 })
             }
             //fork 
-            else if (url === 'https://api.github.com/repos/webapis/workflow_runner/forks' && order === '5') {
+            else if (url === 'https://api.github.com/repos/webapis/workflow_runner/forks' && order === enableOrder) {
                 repoForked = true
 
 
@@ -99,9 +100,7 @@ function gitHubInterceptor(interceptedRequest, order) {
                 })
             }
             //action is not enabled
-            else if (url === 'https://api.github.com/repos/codergihub/workflow_runner/actions/workflows/aggregate.yml' && order === '5' && global.actionEnabled === false) {
-
-debugger;
+            else if (url === 'https://api.github.com/repos/codergihub/workflow_runner/actions/workflows/aggregate.yml' && order === enableOrder && global.actionEnabled === false) {
 
                 interceptedRequest.respond({
                     status: 404,
@@ -113,9 +112,9 @@ debugger;
                 })
             }
             //action is enabled
-            else if (url === 'https://api.github.com/repos/codergihub/workflow_runner/actions/workflows/aggregate.yml' && order === '5' && global.actionEnabled === true) {
+            else if (url === 'https://api.github.com/repos/codergihub/workflow_runner/actions/workflows/aggregate.yml' && order === enableOrder && global.actionEnabled === true) {
 
-debugger;
+
 
                 interceptedRequest.respond({
                     status: 200,
@@ -125,8 +124,8 @@ debugger;
 
                 })
             }
-            else if (url === 'https://api.github.com/repos/codergihub/workflow_runner/actions/workflows/aggregate.yml' && (order !== '5')) {
-debugger;
+            else if (url === 'https://api.github.com/repos/codergihub/workflow_runner/actions/workflows/aggregate.yml' && (order !== enableOrder)) {
+
                 interceptedRequest.respond({
                     status: 200,
                     statusText: "",
@@ -139,9 +138,8 @@ debugger;
             else if (url === 'https://github.com/codergihub/workflow_runner/actions') {
 
                 global.actionEnabled = true;
-                debugger;
-
-                interceptedRequest.respond({ status: 302, headers: { Location: 'https://localhost:8888/workspace-tasks.html' } })
+                
+                interceptedRequest.respond({ status: 302, headers: { Location: 'https://localhost:8888/pages/workspace-tasks/workspace-tasks.html' } })
 
             }
             //merge repo

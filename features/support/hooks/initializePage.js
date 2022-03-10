@@ -9,7 +9,9 @@ async function initializePage(scenario) {
     height: 1250,
     deviceScaleFactor: 1,
   });
-
+  global.page.on('dialog',async(dialog)=>{
+    await dialog.accept();
+})
   await httpInterceptors(scenario)
   global.page.on('error', async (error) => {
     await global.page.screenshot({ path: `${process.cwd()}/screenshots/${name}-${Date.now()}-error.png` });
