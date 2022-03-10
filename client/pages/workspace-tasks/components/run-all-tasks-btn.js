@@ -25,8 +25,11 @@ customElements.define('run-all-tasks-btn',class extends HTMLElement{
             if (workspaceName === 'local_ws_bdd' || workspaceName === 'local_pub_ws_bdd') {
                 const response = await fetch('http://localhost:3001', { body, method: 'post' })
             } else {
+
                 await triggerAction({ gh_action_url: `https://api.github.com/repos/${owner}/workflow_runner/actions/workflows/aggregate.yml/dispatches`, ticket: token, body })
+            
             }
+
         })
     }
 })
