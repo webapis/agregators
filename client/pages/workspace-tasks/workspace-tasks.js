@@ -25,8 +25,7 @@ customElements.define('workspace-tasks', class extends HTMLElement {
             import('./components/task-run-state.js'),
             import('./components/workflow-run-state.js'),
             import('./components/run-all-tasks-btn.js'),
-            import('./components/workspace-run-state.js'),
-            import('./js/triggerAction.js'),
+            import('./components/workspace-run-state.js')
         ])
 
         const { title: workspaceName } = JSON.parse(localStorage.getItem('workspace'))
