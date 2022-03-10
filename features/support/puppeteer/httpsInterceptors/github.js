@@ -31,7 +31,7 @@ function gitHubInterceptor(interceptedRequest, order) {
             })
 
         } else
-            if (url === 'https://api.github.com/repos/codergihub/moda/branches') {
+            if (url === 'https://api.github.com/repos/codergihub/moda/branches' || url === 'https://api.github.com/repos/codergihub/workflow_a_a/branches') {
 
                 const bodyBranches = fs.readFileSync(`${process.cwd()}/mock-data/git-repos/branches.json`)
                 interceptedRequest.respond({
@@ -101,8 +101,6 @@ function gitHubInterceptor(interceptedRequest, order) {
             }
             //action is not enabled
             else if (url === 'https://api.github.com/repos/codergihub/workflow_runner/actions/workflows/aggregate.yml' && order === enableOrder && global.actionEnabled === false) {
-
-
 
                 interceptedRequest.respond({
                     status: 404,

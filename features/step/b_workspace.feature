@@ -83,6 +83,7 @@ User deletes private workspace
 
  Scenario: 6
  User creates and delete workflow inputs
+ 
   Given component with "#private-tab" selector is visible to user 600
   And user clicks to button with "#private-tab" selector 601
   And component with "#local_ws_bdd-input" selector is visible to user 602
@@ -98,8 +99,6 @@ User deletes private workspace
   And user types "PAGE_URL" to input with "#input-name-workflow_a_a" selector 612
   And user clicks to button with "#add-input-btn-workflow_a_a" selector 613
   Then component with "#inputlist-workflow_a_a" selector contains 1 children 614
-  And user clicks to button with "#inputlist-workflow_a_a li button" selector 615
-  And component with "#inputlist-workflow_a_a" selector contains 0 children 616
 
 
 
@@ -124,16 +123,14 @@ User deletes private workspace
   And user types "COUNTRY_CODE" to input with "#var-name-input" selector 716
   And user clicks to button with "#update-var-btn" selector 717
   And component with "td[id$='-var-name']" id includes "COUNTRY_CODE" textcontent 718
-  And component with "td[id$='-var-value']" id includes "TURKIYE" textcontent 719
-  And user clicks to button with "button[id$='-remove-var-btn']" selector 720
-  And component with "#var-container" selector contains 0 children 721
+
 
 
   Scenario: 8
 User enables google oauth for selected workflow
 
-    Given page is navigated to "https://localhost:8888" 800
-    And component with "#private-tab" selector is visible to user 802
+   
+    Given component with "#private-tab" selector is visible to user 802
     And user clicks to button with "#private-tab" selector 803
     And component with "#local_ws_bdd-oauth" selector is visible to user 804
     And user clicks to button with "#local_ws_bdd-oauth" selector 805
@@ -158,3 +155,11 @@ User enables google oauth for selected workflow
   #Enable,Disable Google oauth oauthentication
   #Navigate back using breadcrumb
   #share workspace
+
+#And user clicks to button with "#inputlist-workflow_a_a li button" selector 615
+#And component with "#inputlist-workflow_a_a" selector contains 0 children 616
+
+
+# And component with "td[id$='-var-value']" id includes "TURKIYE" textcontent 719
+#  And user clicks to button with "button[id$='-remove-var-btn']" selector 720
+#  And component with "#var-container" selector contains 0 children 721
