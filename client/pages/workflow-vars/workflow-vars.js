@@ -25,7 +25,7 @@ customElements.define('workflow-vars', class extends HTMLElement {
         <div id="var-container" class="row">Loading..</div>`
 
 
-        window.FB_DATABASE.ref(`server/workspaces/${workspaceName}/repoInputs/repos/${selectedRepo}/inputs`).get((error, repoInputs) => {
+        window.FB_DATABASE.ref(`inputs/workspaces/${workspaceName}/repos/${selectedRepo}`).get((error, repoInputs) => {
          
             debugger;
             window.FB_DATABASE.ref(`server/workspaces/${workspaceName}/tasks/${taskId}/workflows/${workflowKey}/vars`).get((error, workflowVars) => {
@@ -51,19 +51,20 @@ customElements.define('workflow-vars', class extends HTMLElement {
                     for (let rv in repoInputs) {
                         repoInputs[rv].value = ''
                     }
+                        debugger;
                     this.render({ mergedInputConfig: repoInputs })
                 }
             })
         })
     }
 
-    render({ mergedVarConfig }) {
+    render({ mergedInputConfig }) {
 debugger;
         document.getElementById('var-container').innerHTML = ''
-        for (let key in mergedVarConfig) {
-            const value = mergedVarConfig[key]['value']
-            const inputName = mergedVarConfig[key]['inputName']
-
+        for (let key in mergedInputConfig) {
+            const value = mergedInputConfig[key]['value']
+            const inputName = mergedInputConfig[key]['inputName']
+debugger;
 
             document.getElementById('var-container').insertAdjacentHTML('beforeend', ` <div class="mb-3"><label for="${key}" class="form-label">${inputName}:</label><input type="text" value="${value}" placeholder="${inputName}" class="form-control m-1" id="${inputName}">  </div>`)
 
@@ -101,7 +102,7 @@ debugger;
             const { id: taskId } = JSON.parse(localStorage.getItem('task'))
             const { workflowKey } = JSON.parse(localStorage.getItem('workflow'))
             window.FB_DATABASE.ref(`server/workspaces/${workspaceName}/tasks/${taskId}/workflows/${workflowKey}/vars`).update(workflowVars, (error, result) => {
-                window.location.replace('/task-workflows.html')
+                window.location.replace('/pages/workspace-tasks/workspace-tasks.html')
             })
         })
     }

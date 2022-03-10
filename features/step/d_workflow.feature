@@ -1,5 +1,5 @@
 
-
+@workflow
 Feature: Workflow
 
 Scenario: 12
@@ -51,7 +51,7 @@ Scenario: 13
     And component with "div[id$='-wf']" id includes "main" textcontent 1315
     And component with "div[id$='-wf']" id includes "workflow_a_a" textcontent 1316
     
-@workflow
+
 Scenario: 14
 
  User updates workflow vars
@@ -64,9 +64,14 @@ Scenario: 14
     And user clicks to button with ".accordion-button" selector 1405
     And component with "button[id$='-workflow-config-btn']" selector is visible to user 1406
     And user clicks to button with "button[id$='-workflow-config-btn']" selector 1407
-    And component with "#save-wf-vars" selector is visible to user 1408
-    And user clicks to button with "#save-wf-vars" selector 1409
-
+    And component with "#PAGE_URL" selector is visible to user 1408
+    And user types "https://www.defacto.com.tr/" to input with "#PAGE_URL" selector 1409
+    When user clicks to button with "#save-wf-vars" selector 1410
+    Then component with ".accordion-button" selector is visible to user 1411
+    And user clicks to button with ".accordion-button" selector 1412
+    And component with "button[id$='-workflow-config-btn']" selector is visible to user 1413
+    And user clicks to button with "button[id$='-workflow-config-btn']" selector 1414
+    And input with "#PAGE_URL" id includes "https://www.defacto.com.tr/" value 1415
 
 
     #create workflow
