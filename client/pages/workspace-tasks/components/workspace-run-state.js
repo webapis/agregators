@@ -3,25 +3,24 @@ customElements.define('workspace-run-state', class extends HTMLElement {
         super()
     }
 
-    connectedCallback() {
+    async connectedCallback() {
         const { title: workspaceName } = JSON.parse(localStorage.getItem('workspace'))
         const { idToken } = JSON.parse(localStorage.getItem('auth'))
         const taskId = this.getAttribute('taskId')
         const objPath = `workspaces/${workspaceName}/lastLog`
         const fetchUrl = `${window.projectUrl}/${objPath}/.json?auth=${idToken}`
-
+     
+        const getResponse =await   fetch(fetchUrl, { method: 'GET'})
+        const lastLog =await getResponse.json()
+        this.runState = { start: '00:00:00', last: '00:00:00', duration: '00:00:00', date: '00.00.00', success: 0, failed: 0, totalTasks: 0, totalWorkflows: 0,...lastLog, timestamp: 0 }
+        this.setState(lastLog)
+        this.render(workspaceName)
+        debugger;
         var childaddedEvent = new EventSource(fetchUrl, {});
         childaddedEvent.onerror = (error) => {
 
         };
-        childaddedEvent.addEventListener('put', (e) => {
-
-            const state = JSON.parse(e.data)
-
-            this.runState = { start: '00:00:00', last: '00:00:00', duration: '00:00:00', date: '00.00.00', success: 0, failed: 0, totalTasks: 0, totalWorkflows: 0,...state.data, timestamp: 0 }
-            this.setState(state.data)
-            this.render(workspaceName)
-        })
+ 
         childaddedEvent.addEventListener('patch', (e) => {
 
             const { data } = JSON.parse(e.data)
@@ -32,7 +31,7 @@ customElements.define('workspace-run-state', class extends HTMLElement {
     
 
             let timer = setInterval(() => {
-                const sidespinner = document.getElementById(`side_state_spinner-${workspaceName}`)
+               
                 const { totalWorkflows, success, failed } = this.runState
                 if ((totalWorkflows > 0 && totalWorkflows > (success + failed))) {
                     debugger;

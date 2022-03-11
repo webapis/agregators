@@ -22,7 +22,7 @@ customElements.define('run-all-tasks-btn', class extends HTMLElement {
 
             const body = JSON.stringify({ ref: 'main', inputs: { projectName: workspaceName, parameters } })
             const fetchUrl = `${window.projectUrl}/workspaces/${workspaceName}/lastLog/.json?auth=${idToken}`
-            const updateWsLastLogStart =  { start:{'.sv': 'timestamp' }}
+            const updateWsLastLogStart =  { start:{'.sv': 'timestamp' },last:null}
            // const updateWsLastLogLast = { [`workspaces/${workspaceName}/lastLog/last`]: null }
            // const updateWsLastLogState = { [`workspaces/${workspaceName}/lastLog/state`]: { step: 1, message: 'User initialized run' } }
             const updateIncResponse = await fetch(fetchUrl, { method: 'PUT', body: JSON.stringify(updateWsLastLogStart) })
