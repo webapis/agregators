@@ -24,7 +24,7 @@
     "node-watch": "0.7.1",
     "pre-commit": "1.2.2",
     "puppeteer": "7.1.0",
-    "workflow_runner": "^1.9.0"
+    "workflow_runner": "^1.11.0"
   },
   "scripts": {
     "snipe": "node snipe.js",
@@ -37,7 +37,7 @@
     "testCucumber:@task": "cucumber-js --tags @task",
     "testCucumber:@workflow": "cucumber-js --tags @workflow",
     "testCucumber:@runner": "cucumber-js --tags @runner",
-    "testCucumber": "cucumber-js --tags not @runner",
+    "testCucumber": "cucumber-js --tags 'not @runner'",
     "bddCITest": "(netlify dev) & (firebase emulators:start)& (node ./node_modules/workflow_runner/devServer.js) & (sleep 30 && npm run testCucumber)",
     "bddLocalTest": "netlify dev & (firebase emulators:start) & (sleep 40 && npm run testCucumber)",
     "netlifyLocalDev": "BDD_TEST=FALSE /Users/personalcomputer/.npm-global/lib/node_modules/netlify-cli/bin/run dev",

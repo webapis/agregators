@@ -50,12 +50,12 @@ customElements.define('task-config', class extends HTMLElement {
                     ...updateServerWorkSpace,
                     ...updateClientWorkSpace
                 }, (error, data) => {
-                    debugger;
+                    
                     if (data) {
                         console.log('updated')
                         window.location.replace('/pages/workspace-tasks/workspace-tasks.html')
                     }
-                    debugger;
+                    
 
                 })
               } else {
@@ -72,7 +72,7 @@ customElements.define('task-config', class extends HTMLElement {
 
 
             if (!this.editable) {
-                debugger;
+                
                 document.getElementById(`${taskId}-title`).removeAttribute('readonly')
                 document.getElementById(`${taskId}-order`).removeAttribute('readonly')
                 document.getElementById(`${taskId}-sequence`).removeAttribute('disabled')
@@ -88,7 +88,7 @@ customElements.define('task-config', class extends HTMLElement {
                 const taskName = document.getElementById(`${taskId}-title`).value
                 const runOrder = document.getElementById(`${taskId}-order`).value
                 const runSequence = document.getElementById(`${taskId}-sequence`).value
-debugger;
+
                 const updateServerWorkSpace = {
                     [`server/workspaces/${workspaceName}/tasks/${taskId}`]: {
                         taskName, runOrder,
@@ -108,15 +108,15 @@ debugger;
                     ...updateClientWorkSpace
                 }, (error, data) => {
                     this.editable=! this.editable
-                    debugger;
+                    
                     if (data) {
                         console.log('updated')
                         //window.location.replace('/pages/workspace-tasks/workspace-tasks.html')
                     }
-                    debugger;
+                    
 
                 })
-                debugger;
+                
             }
 
 

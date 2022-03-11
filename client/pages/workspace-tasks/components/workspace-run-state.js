@@ -15,72 +15,43 @@ customElements.define('workspace-run-state', class extends HTMLElement {
 
         };
         childaddedEvent.addEventListener('put', (e) => {
-                debugger;
-                const state  = JSON.parse(e.data)
-                this.render(state.data, workspaceName)
+
+            const state = JSON.parse(e.data)
+
+            this.runState = { start: '00:00:00', last: '00:00:00', duration: '00:00:00', date: '00.00.00', success: 0, failed: 0, totalTasks: 0, totalWorkflows: 0,...state.data, timestamp: 0 }
+            this.setState(state.data)
+            this.render(workspaceName)
         })
         childaddedEvent.addEventListener('patch', (e) => {
 
             const { data } = JSON.parse(e.data)
-         
-
-            const start = data['start'] && new Date(parseInt(data['start']))
-            const timestamp = data['start'] && data['start']
-            const end = data['last'] && new Date(parseInt(data['last']))
-            const success = data['success']
-            const failed = data['failed']
-           // const total = data['total']
-            start !== undefined ? document.getElementById(`${workspaceName}-start-time`).innerHTML = `${window.formatTime(start)}` : ''
-            start !== undefined ? document.getElementById(`${workspaceName}-date`).innerHTML = `${window.formatDate(start)}` : ''
-            timestamp !== undefined ? document.getElementById(`${workspaceName}-timestamp`).innerHTML = timestamp : ''
-           // end !== undefined ? document.getElementById(`${workspaceName}-end-time`).innerHTML = `${window.formatTime(end)}` : document.getElementById(`${workspaceName}-end-time`).innerHTML = `<div class="spinner-grow text-light spinner-grow-sm" role="status" id="side_state_spinner-${workspaceName}"><span class="visually-hidden">Loading...</span></div>`
-            if(end !==undefined){
-                debugger;
-            }
-            success !== undefined ? document.getElementById(`${workspaceName}-success`).innerHTML = success : document.getElementById(`${workspaceName}-failed`).innerHTML = 0
-            failed !== undefined ? document.getElementById(`${workspaceName}-failed`).innerHTML = failed : document.getElementById(`${workspaceName}-failed`).innerHTML = 0
-           // total !== undefined ? document.getElementById(`${workspaceName}-total`).innerHTML = total : ''
-            const totalWorkFlows =document.getElementById(`${workspaceName}-total-workflows`).textContent ?parseInt( document.getElementById(`${workspaceName}-total-workflows`).textContent):0
-            const totalSuccessFul= document.getElementById(`${workspaceName}-success`).textContent?parseInt( document.getElementById(`${workspaceName}-success`).textContent):0
+            this.setState(data)
+            this.render(workspaceName)
             debugger;
-            const totalFailed = document.getElementById(`${workspaceName}-failed`).textContent? parseInt(document.getElementById(`${workspaceName}-failed`).textContent):0
-            debugger;
-            if(totalWorkFlows>0 && totalWorkFlows === (totalSuccessFul+ totalFailed)){
-                    document.getElementById(`${workspaceName}-end-time`).innerHTML = `${window.formatTime(end)}` 
-                } else
-                {
-                    debugger;
-                    document.getElementById(`${workspaceName}-end-time`).innerHTML = document.getElementById(`${workspaceName}-end-time`).innerHTML = `<div class="spinner-grow text-light spinner-grow-sm" role="status" id="side_state_spinner-${workspaceName}"><span class="visually-hidden">Loading...</span></div>`
-                }
 
-            if (end !== undefined) {
-                this.timeInterval = null
+    
 
-                let starttimestamp = new Date(parseInt(document.getElementById(`${workspaceName}-timestamp`).textContent))
-
-                const { hours, mins, seconds } = window.timespan(end, starttimestamp)
-                const duration = `${hours}:${mins}:${seconds}`
-                document.getElementById(`${workspaceName}-duration`).innerHTML = duration
-            } else {
-                // get previous duration
-
-
-
-            }
-
-            let timer = setInterval(function () {
+            let timer = setInterval(() => {
                 const sidespinner = document.getElementById(`side_state_spinner-${workspaceName}`)
-                if (end === undefined && sidespinner !== null) {
-
-                    let starttimestamp = new Date(parseInt(document.getElementById(`${workspaceName}-timestamp`).textContent))
+                const { totalWorkflows, success, failed } = this.runState
+                if ((totalWorkflows > 0 && totalWorkflows > (success + failed))) {
+                    debugger;
+                    let starttimestamp = new Date(parseInt(this.runState.timestamp))
+                    debugger;
                     let currentTime = new Date(Date.now())
+                    debugger;
                     const { hours, mins, seconds } = window.timespan(currentTime, starttimestamp)
                     const duration = `${hours}:${mins}:${seconds}`
+                    debugger;
                     document.getElementById(`${workspaceName}-duration`).innerHTML = duration
+
+                    debugger;
                 } else {
-                    console.log('end', end)
                     clearSelf(timer)
                 }
+
+
+
 
             }, 1000)
 
@@ -89,39 +60,48 @@ customElements.define('workspace-run-state', class extends HTMLElement {
             }
         })
     }
-    render(data, workspaceName) {
- 
-        const success= (data&&data.success) ? data.success:0
-        const failed =(data&&data.failed)? data.failed:0
-        const totalTasks=(data&&data.totalTasks) ?data.totalTasks:0
-        const totalWorkflows=(data&& data.totalWorkflows) ?data.totalWorkflows:0
 
-        const start =data&& data.start&&  new Date(parseInt(data.start))
-        const end = data&&data.last&& new Date(parseInt(data.last))
-        let duration = "00:00:00";
-        let startTime ="00:00:00";
-        let endTime = "00:00:00";
-        let date = "00.00.0000";
+    setState(data){
+        this.runState = { ...this.runState, ...data }
+        const runStateProps = this.runState
+        for (let prop in data) {
+            if (prop === 'start' || prop === 'last') {
+                let date = new Date(parseInt(data[prop]))
+                runStateProps[prop] = window.formatTime(date)
 
-   
-            if(end && start){
-                const { hours, mins, seconds } = window.timespan(end, start)
-                 duration = `${hours}:${mins}:${seconds}`
-              
-              
-               
-            }
+                if (prop === 'start') {
+                    runStateProps['date'] = window.formatDate(date)
+                    runStateProps['timestamp'] = data[prop]
 
-            if(start){
-                 startTime = `${window.formatTime(start)}`
-                 date = `${window.formatDate(start)}`
+                }
+                if (prop === 'last') {
+                    let starttimestamp = new Date(parseInt(data.start||this.runState.timestamp))
+                    debugger;
+                    const { hours, mins, seconds } = window.timespan(date, starttimestamp)
+                    const duration = `${hours}:${mins}:${seconds}`
+                    debugger;
+                    runStateProps['duration'] = duration
+                }
+            } else if (prop === 'failed' || prop === 'success') {
+
+                runStateProps[prop] = parseInt(data[prop])
             }
-            if(end){
-                 endTime = `${window.formatTime(end)}`
+            else if (prop === 'totalTasks' || prop === 'totalWorkflows') {
+
+                runStateProps[prop] = data[prop]
             }
-      
-    
-        debugger;
+          
+        }
+        this.runState = runStateProps
+
+
+    }
+    render(workspaceName) {
+        const { start, last, date, duration, success, failed, totalTasks, totalWorkflows } = this.runState
+
+
+
+
         this.innerHTML = `
         <div class="row">
         <div class="col fw-normal text-center">Tasks</div>
@@ -134,14 +114,16 @@ customElements.define('workspace-run-state', class extends HTMLElement {
         <div class="col fw-normal text-center">Failed</div>
         </div>
         <div class="row">
-        <div class="col text-center"> <span class="badge bg-primary fw-light" id="${workspaceName}-total-tasks">${totalTasks}</span></div>
-        <div class="col text-center">  <span class="badge bg-primary fw-light" id="${workspaceName}-total-workflows">${totalWorkflows}</span></div>
+        <div class="col text-center"> <span class="badge bg-primary fw-light" id="${workspaceName}-totalTasks">${totalTasks}</span></div>
+
+        <div class="col text-center">  <span class="badge bg-primary fw-light" id="${workspaceName}-totalWorkflows">${success+failed}/${totalWorkflows}</span></div>
+
         <div class="col text-center"> <span class="badge bg-primary fw-light" id="${workspaceName}-date">${date}</span></div>
-        <div class="col text-center"><span class="badge bg-primary fw-light" id="${workspaceName}-start-time">${startTime}</span></div>
-        <div class="col text-center"><span class="badge bg-primary fw-light" id="${workspaceName}-end-time">${endTime}</span></div>
-        <div class="col text-center"><span class="badge bg-primary fw-light" id="${workspaceName}-duration">${duration}</span></div>
+        <div class="col text-center"><span class="badge bg-primary fw-light" id="${workspaceName}-start-time">${start}</span></div>
+        <div class="col text-center"><span class="badge bg-primary fw-light" id="${workspaceName}-end-time">${last}</span></div>
+        <div class="col text-center"><span class="badge bg-${totalWorkflows===(success+failed)?'success':'warning'} fw-light" id="${workspaceName}-duration">${duration}</span></div>
         <div class="col text-center"><span class="badge bg-primary fw-light" id="${workspaceName}-success">${success}</span></div>
-        <div class="col text-center"><span class="badge bg-primary fw-light" id="${workspaceName}-failed">${failed}</span></div>
+        <div class="col text-center"><span class="badge bg-${failed>0?'warning':'primary'} fw-light" id="${workspaceName}-failed">${failed}</span></div>
         <span class="badge bg-primary rounded-pill fw-normal d-none" id="${workspaceName}-timestamp">${start}</span>
         </div>`
     }

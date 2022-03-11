@@ -20,8 +20,8 @@ customElements.define('task-run-state', class extends HTMLElement {
     childaddedEvent.addEventListener('put', (e) => {
     
         const state  =  JSON.parse(e.data)
-        debugger;
-        debugger;
+        
+        
         this.render(state.data, taskId)
       
     
