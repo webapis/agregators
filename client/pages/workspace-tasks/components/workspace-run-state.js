@@ -6,53 +6,56 @@ customElements.define('workspace-run-state', class extends HTMLElement {
     async connectedCallback() {
         const { title: workspaceName } = JSON.parse(localStorage.getItem('workspace'))
         const { idToken } = JSON.parse(localStorage.getItem('auth'))
-        const taskId = this.getAttribute('taskId')
+       
         const objPath = `workspaces/${workspaceName}/lastLog`
         const fetchUrl = `${window.projectUrl}/${objPath}/.json?auth=${idToken}`
      
-        const getResponse =await   fetch(fetchUrl, { method: 'GET'})
-        const lastLog =await getResponse.json()
-        this.runState = { start: '00:00:00', last: '00:00:00', duration: '00:00:00', date: '00.00.00', success: 0, failed: 0, totalTasks: 0, totalWorkflows: 0,...lastLog, timestamp: 0 }
-        this.setState(lastLog)
-        this.render(workspaceName)
-        debugger;
+
         var childaddedEvent = new EventSource(fetchUrl, {});
         childaddedEvent.onerror = (error) => {
 
         };
- 
+        childaddedEvent.addEventListener('put', (e) => {
+
+            const state = JSON.parse(e.data)
+
+            this.runState = { start: '00:00:00', last: '00:00:00', duration: '00:00:00', date: '00.00.00', success: 0, failed: 0, totalTasks: 0, totalWorkflows: 0,...state.data, timestamp: 0 }
+            this.setState(state.data)
+            this.render(workspaceName)
+     
+            this.runStateTimer = setInterval(() => {
+               
+                const { totalWorkflows, success, failed } = this.runState
+                if ((totalWorkflows > 0 && totalWorkflows > (success + failed))) {
+              
+                    let starttimestamp = new Date(parseInt(this.runState.timestamp))
+             
+                    let currentTime = new Date(Date.now())
+                 
+                    const { hours, mins, seconds } = window.timespan(currentTime, starttimestamp)
+                    const duration = `${hours}:${mins}:${seconds}`
+                
+                    document.getElementById(`${workspaceName}-duration`).innerHTML = duration
+
+                  
+                }
+
+
+
+            }, 1000)
+        })
         childaddedEvent.addEventListener('patch', (e) => {
 
             const { data } = JSON.parse(e.data)
             this.setState(data)
             this.render(workspaceName)
-            debugger;
+         
 
     
-
-            let timer = setInterval(() => {
-               
-                const { totalWorkflows, success, failed } = this.runState
-                if ((totalWorkflows > 0 && totalWorkflows > (success + failed))) {
-                    debugger;
-                    let starttimestamp = new Date(parseInt(this.runState.timestamp))
-                    debugger;
-                    let currentTime = new Date(Date.now())
-                    debugger;
-                    const { hours, mins, seconds } = window.timespan(currentTime, starttimestamp)
-                    const duration = `${hours}:${mins}:${seconds}`
-                    debugger;
-                    document.getElementById(`${workspaceName}-duration`).innerHTML = duration
-
-                    debugger;
-                } else {
-                    clearSelf(timer)
-                }
-
-
-
-
-            }, 1000)
+            if ((totalWorkflows === (success + failed))) {
+                debugger;
+                clearSelf(this.runStateTimer)
+            }
 
             let clearSelf = function (intfunct) {
                 clearInterval(intfunct)
@@ -75,10 +78,10 @@ customElements.define('workspace-run-state', class extends HTMLElement {
                 }
                 if (prop === 'last') {
                     let starttimestamp = new Date(parseInt(data.start||this.runState.timestamp))
-                    debugger;
+                 
                     const { hours, mins, seconds } = window.timespan(date, starttimestamp)
                     const duration = `${hours}:${mins}:${seconds}`
-                    debugger;
+               
                     runStateProps['duration'] = duration
                 }
             } else if (prop === 'failed' || prop === 'success') {
