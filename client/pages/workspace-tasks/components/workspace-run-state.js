@@ -22,27 +22,28 @@ customElements.define('workspace-run-state', class extends HTMLElement {
             this.runState = { start: '00:00:00', last: '00:00:00', duration: '00:00:00', date: '00.00.00', success: 0, failed: 0, totalTasks: 0, totalWorkflows: 0, ...state.data, timestamp: 0 }
             this.setState(state.data)
             this.render(workspaceName)
+            if(this.runState.totalWorkflows===0){
+                this.runStateTimer = setInterval(() => {
 
-            this.runStateTimer = setInterval(() => {
-
-                const { totalWorkflows, success, failed } = this.runState
-                if ((totalWorkflows > 0 && totalWorkflows > (success + failed))) {
-
-                    let starttimestamp = new Date(parseInt(this.runState.timestamp))
-
-                    let currentTime = new Date(Date.now())
-
-                    const { hours, mins, seconds } = window.timespan(currentTime, starttimestamp)
-                    const duration = `${hours}:${mins}:${seconds}`
-                    debugger;
-                    document.getElementById(`${workspaceName}-duration`).innerHTML = duration
-                    debugger;
-
-                }
-
-
-
-            }, 1000)
+                    const { totalWorkflows, success, failed } = this.runState
+                  //  if ((totalWorkflows > 0 && totalWorkflows > (success + failed))) {
+    
+                        let starttimestamp = new Date(parseInt(this.runState.timestamp))
+    
+                        let currentTime = new Date(Date.now())
+    
+                        const { hours, mins, seconds } = window.timespan(currentTime, starttimestamp)
+                        const duration = `${hours}:${mins}:${seconds}`
+                        debugger;
+                        document.getElementById(`${workspaceName}-duration`).innerHTML = duration
+                        debugger;
+    
+                    //}
+    
+    
+                }, 1000)
+            }
+          
         })
         childaddedEvent.addEventListener('patch', (e) => {
             const { totalWorkflows, success, failed } = this.runState
@@ -53,12 +54,10 @@ customElements.define('workspace-run-state', class extends HTMLElement {
             let clearSelf = function (intfunct) {
                 clearInterval(intfunct)
             }
-
             if (totalWorkflows > 0 && (totalWorkflows === (success + failed))) {
                 debugger;
                 clearSelf(this.runStateTimer)
             }
-
 
         })
     }
@@ -74,7 +73,6 @@ customElements.define('workspace-run-state', class extends HTMLElement {
                 if (prop === 'start') {
                     runStateProps['date'] = window.formatDate(date)
                     runStateProps['timestamp'] = data[prop]
-
                 }
                 if (prop === 'last') {
                     let starttimestamp = new Date(parseInt(data.start || this.runState.timestamp))
@@ -92,7 +90,6 @@ customElements.define('workspace-run-state', class extends HTMLElement {
 
                 runStateProps[prop] = data[prop]
             }
-
         }
         this.runState = runStateProps
 
@@ -100,10 +97,6 @@ customElements.define('workspace-run-state', class extends HTMLElement {
     }
     render(workspaceName) {
         const { start, last, date, duration, success, failed, totalTasks, totalWorkflows } = this.runState
-
-
-
-
         this.innerHTML = `
         <div class="row">
         <div class="col fw-normal text-center">Tasks</div>
@@ -117,9 +110,7 @@ customElements.define('workspace-run-state', class extends HTMLElement {
         </div>
         <div class="row">
         <div class="col text-center"> <span class="badge bg-primary fw-light" id="${workspaceName}-totalTasks">${totalTasks}</span></div>
-
         <div class="col text-center">  <span class="badge bg-primary fw-light" id="${workspaceName}-totalWorkflows">${success + failed}/${totalWorkflows}</span></div>
-
         <div class="col text-center"> <span class="badge bg-primary fw-light" id="${workspaceName}-date">${date}</span></div>
         <div class="col text-center"><span class="badge bg-primary fw-light" id="${workspaceName}-start-time">${start}</span></div>
         <div class="col text-center"><span class="badge bg-primary fw-light" id="${workspaceName}-end-time">${last}</span></div>
