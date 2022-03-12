@@ -28,7 +28,7 @@ customElements.define('workflow-vars', class extends HTMLElement {
         window.FB_DATABASE.ref(`inputs/workspaces/${workspaceName}/repos/${selectedRepo}`).get((error, repoInputs) => {
          
             debugger;
-            window.FB_DATABASE.ref(`server/workspaces/${workspaceName}/tasks/${taskId}/workflows/${workflowKey}/vars`).get((error, workflowVars) => {
+            window.FB_DATABASE.ref(`vars/workspaces/${workspaceName}/tasks/${taskId}/workflows/${workflowKey}/vars`).get((error, workflowVars) => {
                 if (workflowVars) {
                     debugger;
                     const mergedInputs = { ...repoInputs, ...workflowVars }
@@ -101,7 +101,7 @@ debugger;
             const { title: workspaceName } = JSON.parse(localStorage.getItem('workspace'))
             const { id: taskId } = JSON.parse(localStorage.getItem('task'))
             const { workflowKey } = JSON.parse(localStorage.getItem('workflow'))
-            window.FB_DATABASE.ref(`server/workspaces/${workspaceName}/tasks/${taskId}/workflows/${workflowKey}/vars`).update(workflowVars, (error, result) => {
+            window.FB_DATABASE.ref(`vars/workspaces/${workspaceName}/tasks/${taskId}/workflows/${workflowKey}/vars`).update(workflowVars, (error, result) => {
                 window.location.replace('/pages/workspace-tasks/workspace-tasks.html')
             })
         })

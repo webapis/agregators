@@ -76,7 +76,7 @@ customElements.define('env-vars', class extends HTMLElement {
             const varName = document.getElementById('var-name-input').value
             const varValue = document.getElementById('var-value-input').value
             const { title: workspaceName } = JSON.parse(localStorage.getItem('workspace'))
-            const refPath = this.getAttribute('scope') === 'workspace' ? `server/workspaces/${workspaceName}/vars/${varKey}` : `server/workspaces/${workspaceName}/tasks/${this.getAttribute('taskId')}/vars/${varKey}`
+            const refPath = this.getAttribute('scope') === 'workspace' ? `vars/workspaces/${workspaceName}/vars/${varKey}` : `vars/workspaces/${workspaceName}/tasks/${this.getAttribute('taskId')}/vars/${varKey}`
             window.FB_DATABASE.ref(refPath).update({ varName, varValue }, (error, result) => {
 
                 document.getElementById(`${varKey}-var-name`).innerHTML = varName
@@ -94,7 +94,7 @@ customElements.define('env-vars', class extends HTMLElement {
             const varName = document.getElementById('var-name-input').value
             const varValue = document.getElementById('var-value-input').value
             const { title: workspaceName } = JSON.parse(localStorage.getItem('workspace'))
-            const refPath = this.getAttribute('scope') === 'workspace' ? `server/workspaces/${workspaceName}/vars` : `server/workspaces/${workspaceName}/tasks/${this.getAttribute('taskId')}/vars`
+            const refPath = this.getAttribute('scope') === 'workspace' ? `vars/workspaces/${workspaceName}/vars` : `vars/workspaces/${workspaceName}/tasks/${this.getAttribute('taskId')}/vars`
             window.FB_DATABASE.ref(refPath).push({ varName, varValue }, (error, result) => {
                 const { name: inputKey } = result
                 document.getElementById('var-container').insertAdjacentHTML('beforeend', `  
@@ -122,7 +122,7 @@ customElements.define('env-vars', class extends HTMLElement {
                     document.getElementById('var-value-input').value = varValue
 
                 })
-                const removeRefPath = this.getAttribute('scope') === 'workspace' ? `server/workspaces/${workspaceName}/vars/${inputKey}` : `server/workspaces/${workspaceName}/tasks/${this.getAttribute('taskId')}/vars/${inputKey}`
+                const removeRefPath = this.getAttribute('scope') === 'workspace' ? `vars/workspaces/${workspaceName}/vars/${inputKey}` : `vars/workspaces/${workspaceName}/tasks/${this.getAttribute('taskId')}/vars/${inputKey}`
                 document.getElementById(`${inputKey}-remove-var-btn`).addEventListener('click', (e) => {
                     removeVar(removeRefPath,`${inputKey}-table-raw`)
                     //----------------------------------------------------------------------------------------------------
@@ -135,7 +135,7 @@ customElements.define('env-vars', class extends HTMLElement {
 
 
         //const { idToken, localId: uid, token, screenName } = JSON.parse(localStorage.getItem('auth'))
-        const refPath = this.getAttribute('scope') === 'workspace' ? `server/workspaces/${workspaceName}/vars` : `server/workspaces/${workspaceName}/tasks/${this.getAttribute('taskId')}/vars`
+        const refPath = this.getAttribute('scope') === 'workspace' ? `vars/workspaces/${workspaceName}/vars` : `vars/workspaces/${workspaceName}/tasks/${this.getAttribute('taskId')}/vars`
      debugger;
  
      debugger;
@@ -172,7 +172,7 @@ customElements.define('env-vars', class extends HTMLElement {
                     document.getElementById('var-value-input').value = varValue
 
                 })
-                const removeRefPath = this.getAttribute('scope') === 'workspace' ? `server/workspaces/${workspaceName}/vars/${v}` : `server/workspaces/${workspaceName}/tasks/${this.getAttribute('taskId')}/vars/${v}`
+                const removeRefPath = this.getAttribute('scope') === 'workspace' ? `vars/workspaces/${workspaceName}/vars/${v}` : `vars/workspaces/${workspaceName}/tasks/${this.getAttribute('taskId')}/vars/${v}`
                 document.getElementById(`${v}-remove-var-btn`).addEventListener('click', (e) => {
                     removeVar(removeRefPath,`${v}-table-raw`)
                     //----------------------------------------------------------------------------------------------------
