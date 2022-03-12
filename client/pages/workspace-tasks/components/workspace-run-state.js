@@ -6,10 +6,10 @@ customElements.define('workspace-run-state', class extends HTMLElement {
     async connectedCallback() {
         const { title: workspaceName } = JSON.parse(localStorage.getItem('workspace'))
         const { idToken } = JSON.parse(localStorage.getItem('auth'))
-       
+
         const objPath = `workspaces/${workspaceName}/lastLog`
         const fetchUrl = `${window.projectUrl}/${objPath}/.json?auth=${idToken}`
-     
+
 
         var childaddedEvent = new EventSource(fetchUrl, {});
         childaddedEvent.onerror = (error) => {
@@ -19,25 +19,25 @@ customElements.define('workspace-run-state', class extends HTMLElement {
 
             const state = JSON.parse(e.data)
 
-            this.runState = { start: '00:00:00', last: '00:00:00', duration: '00:00:00', date: '00.00.00', success: 0, failed: 0, totalTasks: 0, totalWorkflows: 0,...state.data, timestamp: 0 }
+            this.runState = { start: '00:00:00', last: '00:00:00', duration: '00:00:00', date: '00.00.00', success: 0, failed: 0, totalTasks: 0, totalWorkflows: 0, ...state.data, timestamp: 0 }
             this.setState(state.data)
             this.render(workspaceName)
-     
+
             this.runStateTimer = setInterval(() => {
-               
+
                 const { totalWorkflows, success, failed } = this.runState
                 if ((totalWorkflows > 0 && totalWorkflows > (success + failed))) {
-              
+
                     let starttimestamp = new Date(parseInt(this.runState.timestamp))
-             
+
                     let currentTime = new Date(Date.now())
-                 
+
                     const { hours, mins, seconds } = window.timespan(currentTime, starttimestamp)
                     const duration = `${hours}:${mins}:${seconds}`
-                
+                    debugger;
                     document.getElementById(`${workspaceName}-duration`).innerHTML = duration
+                    debugger;
 
-                  
                 }
 
 
@@ -49,21 +49,21 @@ customElements.define('workspace-run-state', class extends HTMLElement {
             const { data } = JSON.parse(e.data)
             this.setState(data)
             this.render(workspaceName)
-         
+
             let clearSelf = function (intfunct) {
                 clearInterval(intfunct)
             }
-    
-            if (totalWorkflows>0 &&(totalWorkflows === (success + failed))) {
+
+            if (totalWorkflows > 0 && (totalWorkflows === (success + failed))) {
                 debugger;
                 clearSelf(this.runStateTimer)
             }
 
-        
+
         })
     }
 
-    setState(data){
+    setState(data) {
         this.runState = { ...this.runState, ...data }
         const runStateProps = this.runState
         for (let prop in data) {
@@ -77,11 +77,11 @@ customElements.define('workspace-run-state', class extends HTMLElement {
 
                 }
                 if (prop === 'last') {
-                    let starttimestamp = new Date(parseInt(data.start||this.runState.timestamp))
-                 
+                    let starttimestamp = new Date(parseInt(data.start || this.runState.timestamp))
+
                     const { hours, mins, seconds } = window.timespan(date, starttimestamp)
                     const duration = `${hours}:${mins}:${seconds}`
-               
+
                     runStateProps['duration'] = duration
                 }
             } else if (prop === 'failed' || prop === 'success') {
@@ -92,7 +92,7 @@ customElements.define('workspace-run-state', class extends HTMLElement {
 
                 runStateProps[prop] = data[prop]
             }
-          
+
         }
         this.runState = runStateProps
 
@@ -118,14 +118,14 @@ customElements.define('workspace-run-state', class extends HTMLElement {
         <div class="row">
         <div class="col text-center"> <span class="badge bg-primary fw-light" id="${workspaceName}-totalTasks">${totalTasks}</span></div>
 
-        <div class="col text-center">  <span class="badge bg-primary fw-light" id="${workspaceName}-totalWorkflows">${success+failed}/${totalWorkflows}</span></div>
+        <div class="col text-center">  <span class="badge bg-primary fw-light" id="${workspaceName}-totalWorkflows">${success + failed}/${totalWorkflows}</span></div>
 
         <div class="col text-center"> <span class="badge bg-primary fw-light" id="${workspaceName}-date">${date}</span></div>
         <div class="col text-center"><span class="badge bg-primary fw-light" id="${workspaceName}-start-time">${start}</span></div>
         <div class="col text-center"><span class="badge bg-primary fw-light" id="${workspaceName}-end-time">${last}</span></div>
-        <div class="col text-center"><span class="badge bg-${totalWorkflows===(success+failed)?'success':'warning'} fw-light" id="${workspaceName}-duration">${duration}</span></div>
+        <div class="col text-center"><span class="badge bg-${totalWorkflows === (success + failed) ? 'success' : 'warning'} fw-light" id="${workspaceName}-duration">${duration}</span></div>
         <div class="col text-center"><span class="badge bg-primary fw-light" id="${workspaceName}-success">${success}</span></div>
-        <div class="col text-center"><span class="badge bg-${failed>0?'warning':'primary'} fw-light" id="${workspaceName}-failed">${failed}</span></div>
+        <div class="col text-center"><span class="badge bg-${failed > 0 ? 'warning' : 'primary'} fw-light" id="${workspaceName}-failed">${failed}</span></div>
         <span class="badge bg-primary rounded-pill fw-normal d-none" id="${workspaceName}-timestamp">${start}</span>
         </div>`
     }
