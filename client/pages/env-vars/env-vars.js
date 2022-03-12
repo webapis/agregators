@@ -156,7 +156,7 @@ customElements.define('env-vars', class extends HTMLElement {
             <td id="${v}-var-name">${varName}</td>
             <td id="${v}-var-value">${varValue}</td>
             <td>
-            <button class="btn  btn-outline-warning" id="${e}-edit-var-btn">Edit</button>
+            <button class="btn  btn-outline-warning" id="${v}-edit-var-btn">Edit</button>
             </td>
             <td>
             <button class="btn  btn-outline-danger" id="${v}-remove-var-btn">Remove</button>
