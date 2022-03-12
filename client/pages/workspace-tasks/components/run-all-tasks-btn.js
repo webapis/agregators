@@ -25,9 +25,9 @@ customElements.define('run-all-tasks-btn', class extends HTMLElement {
             const updateWsLastLogStart =  { start:{'.sv': 'timestamp' },last:null}
            // const updateWsLastLogLast = { [`workspaces/${workspaceName}/lastLog/last`]: null }
            // const updateWsLastLogState = { [`workspaces/${workspaceName}/lastLog/state`]: { step: 1, message: 'User initialized run' } }
-            const updateIncResponse = await fetch(fetchUrl, { method: 'PUT', body: JSON.stringify(updateWsLastLogStart) })
+            const updateIncResponse = await fetch(fetchUrl, { method: 'put', body: JSON.stringify(updateWsLastLogStart) })
 
-
+            debugger;
             if (workspaceName === 'local_ws_bdd' || workspaceName === 'local_pub_ws_bdd') {
                 const response = await fetch('http://localhost:3001', { body, method: 'post' })
             } else {
