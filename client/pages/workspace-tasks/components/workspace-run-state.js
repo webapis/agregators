@@ -45,21 +45,21 @@ customElements.define('workspace-run-state', class extends HTMLElement {
             }, 1000)
         })
         childaddedEvent.addEventListener('patch', (e) => {
-
+            const { totalWorkflows, success, failed } = this.runState
             const { data } = JSON.parse(e.data)
             this.setState(data)
             this.render(workspaceName)
          
-
+            let clearSelf = function (intfunct) {
+                clearInterval(intfunct)
+            }
     
-            if ((totalWorkflows === (success + failed))) {
+            if (totalWorkflows>0 &&(totalWorkflows === (success + failed))) {
                 debugger;
                 clearSelf(this.runStateTimer)
             }
 
-            let clearSelf = function (intfunct) {
-                clearInterval(intfunct)
-            }
+        
         })
     }
 
