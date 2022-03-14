@@ -120,11 +120,11 @@ customElements.define('task-component', class extends HTMLElement {
                             wfContainer.insertAdjacentHTML('beforeend', `<div class="row mb-1 border-bottom pb-1" id="${id}-${workflowKey}-wf">
                              <div class="col-2">${repoName}</div> 
                              <div class="col-2">${selectedBranch}</div> 
-                             <div class="col-2">${workflowDescription}</div> 
+                             <div class="col-2" style="word-wrap:break-word;overflow:hidden;">${workflowDescription}</div> 
                              <div class ="buttons col-1 d-flex flex-column">
                              <button class="btn btn-outline-secondary btn-sm mb-1" id="${workflowKey}-workflow-config-btn">Vars</button>
-                             <button class="btn btn-outline-warning btn-sm mb-1" id="${workflowKey}-workflow-editor-btn">Edit</button>
-                             <button class="btn btn-outline-danger btn-sm mb-1" id="${workflowKey}-workflow-delete-btn">Delete</button>
+                             <button class="btn btn-outline-warning btn-sm mb-1" id="${workflowKey}-workflow-editor-btn"><edit-icon></edit-icon></button>
+                             <button class="btn btn-outline-danger btn-sm mb-1" id="${workflowKey}-workflow-delete-btn"><delete-icon></delete-icon></button>
                              </div>
                               <workflow-run-state class=col-5 workflowKey=${workflowKey} taskId="${taskId}"></workflow-run-state>                                                           
                                                                                              

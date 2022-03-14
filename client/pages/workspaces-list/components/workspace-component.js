@@ -23,9 +23,9 @@ customElements.define('workspace-component', class extends HTMLElement {
   <a href="#" class="btn btn-outline-success btn-sm" id="${title}-tasks">Tasks</a>
   <a href="#" class="btn btn-outline-warning btn-sm" id="${title}-vars">Vars</a>
   <a href="#" class="btn btn-outline-warning btn-sm" id="${title}-input">Input</a>
-  <a href="#" class="btn btn-outline-warning btn-sm" id="${title}-edit">Edit</a>
   <a href="#" class="btn btn-outline-warning btn-sm"id="${title}-oauth">Oauth</a>
-  <a href="#" class="btn btn-outline-danger btn-sm"id="${title}-delete">Delete</a>
+  <a href="#" class="btn btn-outline-warning btn-sm" id="${title}-edit"><edit-icon></edit-icon></a>
+  <a href="#" class="btn btn-outline-danger btn-sm"id="${title}-delete"><delete-icon></delete-icon></a>
 </div>
 </div>`
     document.getElementById(`${title}-tasks`).addEventListener('click', (e) => {

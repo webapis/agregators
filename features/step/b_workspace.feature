@@ -39,8 +39,8 @@ User creates private workspace
     Then component with "#local_pub_ws_bdd-ws-access-level" selector is visible to user 211
     Then component with "#local_pub_ws_bdd-ws-owner" selector is visible to user 212
 
- 
-Scenario:3
+
+Scenario: 3
 User edits public workspace description
   Given component with "#public-tab" selector is visible to user 300
   And user clicks to button with "#public-tab" selector 301
@@ -56,7 +56,7 @@ User edits public workspace description
  
 
 
-Scenario:4
+Scenario: 4
 User changes public workspace to private
   Given component with "#public-tab" selector is visible to user 400
   And user clicks to button with "#public-tab" selector 401
@@ -71,7 +71,7 @@ User changes public workspace to private
   And component with "#local_pub_ws_bdd-ws" selector is visible to user 410
 
 
-Scenario:5
+Scenario: 5
 User deletes private workspace
   Given component with "#private-tab" selector is visible to user 500
   And user clicks to button with "#private-tab" selector 501

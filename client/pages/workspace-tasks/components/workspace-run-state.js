@@ -34,9 +34,9 @@ customElements.define('workspace-run-state', class extends HTMLElement {
     
                         const { hours, mins, seconds } = window.timespan(currentTime, starttimestamp)
                         const duration = `${hours}:${mins}:${seconds}`
-                        debugger;
+                        
                         document.getElementById(`${workspaceName}-duration`).innerHTML = duration
-                        debugger;
+                        
     
                     //}
     
@@ -55,7 +55,7 @@ customElements.define('workspace-run-state', class extends HTMLElement {
                 clearInterval(intfunct)
             }
             if (totalWorkflows > 0 && (totalWorkflows === (success + failed))) {
-                debugger;
+                
                 clearSelf(this.runStateTimer)
             }
 
@@ -97,6 +97,7 @@ customElements.define('workspace-run-state', class extends HTMLElement {
     }
     render(workspaceName) {
         const { start, last, date, duration, success, failed, totalTasks, totalWorkflows } = this.runState
+        console.log(last.includes('00:00:00'))
         this.innerHTML = `
         <div class="row">
         <div class="col fw-normal text-center">Tasks</div>
@@ -107,6 +108,7 @@ customElements.define('workspace-run-state', class extends HTMLElement {
         <div class="col fw-normal text-center">Duration</div>
         <div class="col fw-normal text-center">Success</div>
         <div class="col fw-normal text-center">Failed</div>
+        <div class="col fw-normal text-center">State</div>
         </div>
         <div class="row">
         <div class="col text-center"> <span class="badge bg-primary fw-light" id="${workspaceName}-totalTasks">${totalTasks}</span></div>
@@ -118,6 +120,11 @@ customElements.define('workspace-run-state', class extends HTMLElement {
         <div class="col text-center"><span class="badge bg-primary fw-light" id="${workspaceName}-success">${success}</span></div>
         <div class="col text-center"><span class="badge bg-${failed > 0 ? 'warning' : 'primary'} fw-light" id="${workspaceName}-failed">${failed}</span></div>
         <span class="badge bg-primary rounded-pill fw-normal d-none" id="${workspaceName}-timestamp">${start}</span>
+        <div class="col text-center">
+        <span class="badge rounded-pill fw-normal">
+        ${(totalWorkflows>0 && totalWorkflows>(success+failed) )?`<div class="spinner-grow text-success spinner-grow-sm" role="status" id="spinner-${workspaceName}"><span class="visually-hidden">Loading...</span></div>`:'vvvv'}
+        </span>
+       </div>
         </div>`
     }
 })
