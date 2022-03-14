@@ -118,6 +118,7 @@ customElements.define('workflow-run-state', class extends HTMLElement{
         <div class="col-3 fw-normal text-center fw-normal">End</div>
         <div class="col-3 fw-normal text-center fw-normal">Duration</div>
         <div class="col-3 fw-normal text-center fw-normal">Result</div>
+        
         </div>
         <div class="row">
         <span class="col-3 badge rounded-pill bg-primary fw-light" id="${taskId}-${workflowKey}-start-time">${startTime}</span>

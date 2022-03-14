@@ -85,13 +85,13 @@ customElements.define('workspace-tasks', class extends HTMLElement {
         document.getElementById('container').innerHTML = `
         <div class="row">
         <div class="col-3">
-         <a class="btn btn-outline-secondary m-1" href="/pages/task-editor/task-editor.html" id="task-editor-btn">Add Task</a>
+         <a class="btn btn-outline-secondary m-1 btn-sm" href="/pages/task-editor/task-editor.html" id="task-editor-btn">Add Task</a>
          <run-all-tasks-btn> </run-all-tasks-btn>
-         <button class="btn btn-outline-danger">Abort </button>
-         <a class="btn btn-outline-info" id="workflow-run-logs-btn" href="/pages/workspace-run-logs/workspace-run-logs.html">Logs</a> 
+         <button class="btn btn-outline-danger btn-sm">Abort </button>
+         <a class="btn btn-outline-info btn-sm" id="workflow-run-logs-btn" href="/pages/workspace-run-logs/workspace-run-logs.html">Logs</a> 
          </div>
-         <div class="col-2 fw-bold text-decoration-underline text-end fw-normal">Workflow's Last Run State:</div>
-         <workspace-run-state class="col-7 border border-1 mb-1 pb-1"></workspace-run-state>
+         <div class="col-1 fw-bold text-decoration-underline text-end fw-normal">Workflow's Last Run State:</div>
+         <workspace-run-state class="col-8 border border-1 mb-1 pb-1"></workspace-run-state>
          </div>
        
        
