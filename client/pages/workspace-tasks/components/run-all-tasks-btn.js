@@ -34,7 +34,7 @@ customElements.define('run-all-tasks-btn', class extends HTMLElement {
                 const response = await fetch('http://localhost:3001', { body, method: 'post' })
             } else {
                 const response = await triggerAction({ gh_action_url: `https://api.github.com/repos/${owner}/workflow_runner/actions/workflows/aggregate.yml/dispatches`, ticket: token, body })
-                const data = await response.json()
+                const data = await response.ok()
                 debugger;
             }
 
