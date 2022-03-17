@@ -3,10 +3,11 @@ customElements.define('run-all-tasks-btn', class extends HTMLElement {
         super()
     }
 
-    connectedCallback() {
+    async connectedCallback() {
+      
         this.innerHTML = ` <button class="btn btn-outline-success btn-sm" id="run-all-tasks-btn">Run </button>`
         document.getElementById(`run-all-tasks-btn`).addEventListener('click', async (e) => {
-
+            await window.updateIdToken()
          //  document.getElementById('run-all-tasks-btn').setAttribute('disabled',true)
            
             const { title: workspaceName } = JSON.parse(localStorage.getItem('workspace'))
