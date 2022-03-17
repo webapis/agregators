@@ -38,10 +38,11 @@ customElements.define('workflow-run-state', class extends HTMLElement{
   
                       const { hours, mins, seconds } = window.timespan(currentTime, starttimestamp)
                       const duration = `${hours}:${mins}:${seconds}`
+                        if( document.getElementById(`${taskId}-${workflowKey}-duration`)){
+                            document.getElementById(`${taskId}-${workflowKey}-duration`).innerHTML = duration;
+                        } 
+                
                       
-                      document.getElementById(`${taskId}-${workflowKey}-duration`).innerHTML = duration
-                      
-  
               
   
               }, 1000)

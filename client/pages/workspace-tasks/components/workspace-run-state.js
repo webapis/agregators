@@ -25,9 +25,6 @@ customElements.define('workspace-run-state', class extends HTMLElement {
             if(this.runState.totalWorkflows===0){
                 this.runStateTimer = setInterval(() => {
 
-                    const { totalWorkflows, success, failed } = this.runState
-                  //  if ((totalWorkflows > 0 && totalWorkflows > (success + failed))) {
-    
                         let starttimestamp = new Date(parseInt(this.runState.timestamp))
     
                         let currentTime = new Date(Date.now())
@@ -36,10 +33,6 @@ customElements.define('workspace-run-state', class extends HTMLElement {
                         const duration = `${hours}:${mins}:${seconds}`
                         
                         document.getElementById(`${workspaceName}-duration`).innerHTML = duration
-                        
-    
-                    //}
-    
     
                 }, 1000)
             }
