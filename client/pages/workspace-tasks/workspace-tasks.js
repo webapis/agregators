@@ -66,7 +66,7 @@ customElements.define('workspace-tasks', class extends HTMLElement {
 
             if (workflowState.status === 200) {
 
-                this.loadTasks({ workspaceName })
+                await this.loadTasks({ workspaceName })
                 //display workspace tasks
             } else {
                 //enable runners workflow
@@ -81,7 +81,14 @@ customElements.define('workspace-tasks', class extends HTMLElement {
 
     }
 
-    loadTasks({ workspaceName }) {
+    async loadTasks({ workspaceName }) {
+        const { idToken } = JSON.parse(localStorage.getItem('auth'))
+        const fetchUrl = `${window.projectUrl}/workspaces/${workspaceName}/tasks/.json?auth=${idToken}`
+        debugger
+         const getResponse = await fetch(fetchUrl, { method: 'GET' })
+         debugger;
+         const tasks = await getResponse.json()
+        debugger;
         document.getElementById('container').innerHTML = `
         <div class="row">
         <div class="col-3">
@@ -94,50 +101,47 @@ customElements.define('workspace-tasks', class extends HTMLElement {
          <workspace-run-state class="col-8 border border-1 mb-1 pb-1"></workspace-run-state>
          </div>
        
-       
          `
 
-        window.FB_DATABASE.ref(`workspaces/${workspaceName}/tasks`).get((error, result) => {
-            const tasks = result //&& Object.entries(result)
-            const taskElement = document.createElement('div')
-            document.getElementById('container').appendChild(taskElement)
-            if (result) {
+        const taskElement = document.createElement('div')
+        document.getElementById('container').appendChild(taskElement)
+        if (tasks) {
 
-                taskElement.id = 'tasks'
-                taskElement.classList.add('accordion')
-                const orderByRunOrder = Object.entries(tasks).map(m => {
-                    const taskId = m[0]
-                    const taskProps = m[1]
-                    return { taskId, ...taskProps }
-                }).sort(function compare(a, b) {
-                    if (a.runOrder < b.runOrder) {
-                        return -1;
-                    }
-                    if (a.runOrder > b.runOrder) {
-                        return 1;
-                    }
-                    return 0;
+            taskElement.id = 'tasks'
+            taskElement.classList.add('accordion')
+            const orderByRunOrder = Object.entries(tasks).map(m => {
+                const taskId = m[0]
+                const taskProps = m[1]
+                return { taskId, ...taskProps }
+            }).sort(function compare(a, b) {
+                if (a.runOrder < b.runOrder) {
+                    return -1;
                 }
-                )
-                window.orderedTasks = orderByRunOrder
-
-                orderByRunOrder.forEach(task => {
-                    const taskId = task['taskId']
-                    const taskName = task['taskName']
-                    const runOrder = task['runOrder']
-                    const runSequence = task['runSequence']
-
-                    taskElement.insertAdjacentHTML('beforeend', ` <task-component id="${taskId}" name="${taskName}" order="${runOrder}" sequence="${runSequence}"></task-component>`)
-
-                })
-
-            } else {
-                taskElement
-                    .innerHTML = '0 Tasks found'
-
+                if (a.runOrder > b.runOrder) {
+                    return 1;
+                }
+                return 0;
             }
+            )
+            window.orderedTasks = orderByRunOrder
 
-        })
+            orderByRunOrder.forEach(task => {
+                const taskId = task['taskId']
+                const taskName = task['taskName']
+                const runOrder = task['runOrder']
+                const runSequence = task['runSequence']
+
+                taskElement.insertAdjacentHTML('beforeend', ` <task-component id="${taskId}" name="${taskName}" order="${runOrder}" sequence="${runSequence}"></task-component>`)
+
+            })
+
+        } else {
+            taskElement
+                .innerHTML = '0 Tasks found'
+
+        }
+
+
 
     }
 
@@ -184,7 +188,7 @@ function timespan(date2, date1) {
     const hourwithzero = hours < 10 ? `0${hours}` : hours
     const minwithzero = mins < 10 ? `0${mins}` : mins
     const secwithzero = seconds < 10 ? `0${seconds}` : seconds
-    
+
     console.log(days + " days, " + hourwithzero + " hours, " + minwithzero + " minutes, " + secwithzero + " seconds");
     return { days, hours: hourwithzero, mins: minwithzero, seconds: secwithzero }
 }
@@ -192,13 +196,13 @@ function timespan(date2, date1) {
 window.timespan = timespan
 
 function formatTime(date) {
-    
-    return `${date.getHours() <10 ?'0'+date.getHours():date.getHours()}:${date.getMinutes() <10 ?'0'+date.getMinutes():date.getMinutes()}:${date.getSeconds() <10 ?'0'+date.getSeconds():date.getSeconds()}`
+
+    return `${date.getHours() < 10 ? '0' + date.getHours() : date.getHours()}:${date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()}:${date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds()}`
 }
 
 function formatDate(date) {
-    
-    return `${date.getDate() < 10 ?'0'+date.getDate():date.getDate()}.${date.getMonth() < 10 ?'0'+(date.getMonth()+1):date.getMonth()}.${date.getFullYear()}`
+
+    return `${date.getDate() < 10 ? '0' + date.getDate() : date.getDate()}.${date.getMonth() < 10 ? '0' + (date.getMonth() + 1) : date.getMonth()}.${date.getFullYear()}`
 }
 window.formatTime = formatTime
 window.formatDate = formatDate

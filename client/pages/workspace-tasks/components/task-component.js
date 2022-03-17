@@ -23,7 +23,7 @@ customElements.define('task-component', class extends HTMLElement {
  
         <div class="row">
           <div class="wf-container col-8 list-group"></div>
-          <div class= "col-4">
+          <div class= "col-4" id="task-conf-container-${id}">
           <h7>Task Configurations:</h7>
           <div class="border border-1 p-2">
           <task-config taskId="${id}" title="${name}" order="${order}" sequence="${sequence}"></task-config>
@@ -37,7 +37,7 @@ customElements.define('task-component', class extends HTMLElement {
           </div>
      
           </div>
-         <task-run-state taskId="${id}"></task-run-state>
+        
           </div>
           </div>
 </div>
@@ -80,21 +80,22 @@ customElements.define('task-component', class extends HTMLElement {
             localStorage.setItem('task', JSON.stringify({ id, taskName: name, runOrder: order, runSequence: sequence }))
             window.location.replace('/pages/workflow-editor/workflow-editor.html')
         })
-        document.getElementById(`panelsStayOpen-heading-${id}`).addEventListener('click', e => {
+        document.getElementById(`panelsStayOpen-heading-${id}`).addEventListener('click', async(e) => {
             e.preventDefault()
             open = !open
 
 
             if (open) {
 
-
-                const { title: workspaceName } = JSON.parse(localStorage.getItem('workspace'))
                 const taskId=id
-                window.FB_DATABASE.ref(`workflows/workspaces/${workspaceName}/tasks/${taskId}`).get((error, result) => {
-                    if (result) {
-
-                        const workflows = result && Object.entries(result)
-                        
+                const { title: workspaceName } = JSON.parse(localStorage.getItem('workspace'))
+                const {idToken}=JSON.parse(localStorage.getItem('auth'))
+                const fetchUrl =`${window.projectUrl}/workflows/workspaces/${workspaceName}/tasks/${taskId}/.json?auth=${idToken}`
+                const getResponse =await   fetch(fetchUrl, { method: 'GET'})
+                const getJsonData =await getResponse.json()
+                const workflows = getJsonData && Object.entries(getJsonData)
+           
+                        debugger;
                         const wfContainer = document.getElementById(`accordion-body-${id}`).querySelector('.wf-container')
                         wfContainer.innerHTML = `<div class="row"><h7 class="col-12 text-end">Workflows:</h7>
                        <div class="row mb-1 pb-1">
@@ -136,7 +137,7 @@ customElements.define('task-component', class extends HTMLElement {
                                     const { title: workspaceName } = JSON.parse(localStorage.getItem('workspace'))
                                     const taskId = id
                     
-                                    const update = { [`workflows/workspaces/${workspaceName}/tasks/${taskId}`]: null }
+                                    const update = { [`workflows/workspaces/${workspaceName}/tasks/${taskId}/${workflowKey}`]: null }
 
                                     window.FB_DATABASE.ref(`/`).update(update, (error, data) => {
                                         if (data) {
@@ -170,11 +171,10 @@ customElements.define('task-component', class extends HTMLElement {
                             })
                         })
 
-                    } else {
+                       // document.getElementById(`task-conf-container-${id}`).insertAdjacentHTML('beforeend',` <task-run-state taskId="${id}"></task-run-state>`)
 
-
-                    }
-                })
+                   
+                
             }
         })
     }

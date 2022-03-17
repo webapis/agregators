@@ -18,7 +18,7 @@ customElements.define('workspaces-list', class extends HTMLElement {
         
         const  { idToken, localId: uid } = JSON.parse(localStorage.getItem('auth'))
         this.uid = uid
-        
+        debugger;
         window.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
         
         this.innerHTML = `
@@ -44,8 +44,6 @@ customElements.define('workspaces-list', class extends HTMLElement {
        `)
 
         document.getElementById('ws-container').innerHTML = ``
-
-   
 
         document.getElementById('create-workspace-btn').addEventListener('click', (e) => {
             e.preventDefault()
