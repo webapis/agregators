@@ -154,7 +154,7 @@ customElements.define('task-component', class extends HTMLElement {
                                 e.preventDefault()
                                 
                                 localStorage.setItem('workflow', JSON.stringify({ workflowKey, workflowDescription, selectedRepo: repoName, selectedBranch }))
-
+                                localStorage.setItem('task', JSON.stringify({ taskName: name, runOrder: order, runSequence: sequence, id }))
                                 window.location.replace('/pages/workflow-vars/workflow-vars.html')
                             })
                             document.getElementById(`${workflowKey}-workflow-editor-btn`).addEventListener('click', (e) => {
