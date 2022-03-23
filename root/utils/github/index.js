@@ -72,6 +72,7 @@ debugger;
                 return reject(error)
             });
         });
+        debugger;
         request.write(JSON.stringify({ postBody: `access_token=${access_token}&providerId=github.com`, requestUri: process.env.requestUri, returnIdpCredential: true, returnSecureToken: true }))
         request.end();
 

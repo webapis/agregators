@@ -11,7 +11,7 @@ customElements.define('run-all-tasks-btn', class extends HTMLElement {
          //  document.getElementById('run-all-tasks-btn').setAttribute('disabled',true)
            
             const { title: workspaceName } = JSON.parse(localStorage.getItem('workspace'))
-            const { idToken, localId: uid, token, screenName: owner, email, refreshToken } = JSON.parse(localStorage.getItem('auth'))
+            const { idToken, localId: uid, token, screenName: owner, email, refreshToken,timestamp,api_key } = JSON.parse(localStorage.getItem('auth'))
             const runid = Date.now()
             const start = runid
             const runNext = true
@@ -24,7 +24,7 @@ customElements.define('run-all-tasks-btn', class extends HTMLElement {
             const incData = await updateIncResponse.json()
 
             const wfrunid = incData
-            const parameters = `${token}--xxx--${owner}--xxx--${idToken}--xxx--${email}--xxx--${uid}--xxx--${refreshToken}--xxx--${'selectedContainer'}--xxx--${window.projectUrl}--xxx--${workspaceName}--xxx--${runid}--xxx--${start}--xxx--${taskId}--xxx--${runNext}--xxx--${runSequence}--xxx--${first}--xxx--${wfrunid}`
+            const parameters = `${token}--xxx--${owner}--xxx--${idToken}--xxx--${email}--xxx--${uid}--xxx--${refreshToken}--xxx--${timestamp}--xxx--${window.projectUrl}--xxx--${workspaceName}--xxx--${runid}--xxx--${start}--xxx--${taskId}--xxx--${runNext}--xxx--${runSequence}--xxx--${first}--xxx--${wfrunid}--xxx--${api_key}`
             const body = JSON.stringify({ ref: 'main', inputs: { projectName: workspaceName, parameters } })
             const fetchUrl = `${window.projectUrl}/workspaces/${workspaceName}/lastLog/.json?auth=${idToken}`
             const updateWsLastLogStart = { start: { '.sv': 'timestamp' }, last: null }

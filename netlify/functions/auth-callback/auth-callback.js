@@ -5,7 +5,7 @@ const { fetchGithubAccessToken, authWithFirebase, updateUserCredentials } = requ
 exports.handler = async (event, context) => {
     try {
 
-
+     
         const { template } = require('../utils/loginPageTemplate')
         const { code } = event.queryStringParameters
         const client_secret = process.env.GH_CLIENT_SECRET

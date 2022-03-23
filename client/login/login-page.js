@@ -19,6 +19,7 @@ customElements.define('login-page', class extends HTMLElement {
             const idToken = document.getElementById('idToken').value
             const localId = document.getElementById('localId').value
             const expiresIn = document.getElementById('expiresIn').value
+            debugger;
             this.uid = localId
          //   window.pageStore.dispatch({ type: window.actionTypes.AUTH_SUCCESS, payload: { auth: { email, token, screenName, photoUrl, refreshToken, idToken, localId, api_key: window.webapikey, timestamp: Date.now() + 3600000,expiresIn } } })
             localStorage.setItem('auth',JSON.stringify({ email, token, screenName, photoUrl, refreshToken, idToken, localId, api_key: window.webapikey, timestamp: Date.now() + 3600000,expiresIn }))
