@@ -4,11 +4,6 @@ require('./test')
 const client_id = process.env.client_id
 const client_secret = process.env.CLIENT_SECRET
 const redirect_uri = process.env.redirectUri
-
-console.log('client_id',client_id)
-console.log('client_secret',client_secret)
-console.log('redirect_uri',redirect_uri)
-
 exports.handler = async (event, context) => {
 
     const { code, state } = event.queryStringParameters
@@ -16,8 +11,7 @@ exports.handler = async (event, context) => {
 debugger;   
     const  authdata = await exchangeGoogleAuthorizationCode({ client_id, client_secret, code, redirect_uri })
     
-console.log('authdata',authdata)
-console.log('state',state)
+
     debugger;
     await updateUsersWorkspaceGoogleAuthState({ ...authdata, state })
     const { access_token, refresh_token, scope } = authdata

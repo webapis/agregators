@@ -18,34 +18,25 @@ async function exchangeGoogleAuthorizationCode({ client_id, client_secret, code,
 
 
 async function updateUsersWorkspaceGoogleAuthState({ access_token, refresh_token, scope, state }) {
+    try {
+        const update = { google: { access_token, refresh_token, scope } }
+        const params = state.split('--xxx--')
+        const selectedWorkspace = params[0]
+        const uid = params[1]
+        const idToken = params[2]
+ 
+        const host = process.env.databaseHost
+        const path = `/oauth/users/${uid}/workspaces/${selectedWorkspace}/auth.json?auth=${idToken}`
 
-    const update = { google: { access_token, refresh_token, scope } }
-    const params = state.split('--xxx--')
-    const selectedWorkspace = params[0]
-    const uid = params[1]
-    const idToken = params[2]
-
-    const host = process.env.databaseHost
-    const path = `/oauth/users/${uid}/workspaces/${selectedWorkspace}/auth/.json?auth=${idToken}`
-    console.log('selectedWorkspace', selectedWorkspace)
-    console.log('uid', uid)
-    console.log('idToken', idToken)
-    console.log('host', host)
-
-    const port = process.env.dbPort ? parseInt(process.env.dbPort) : undefined
-
-    console.log('port', port)
-
-    const ssh = process.env.dbSsh === 'true'
-    debugger;
-    let response =  await nodeFetch({ host, path, method: 'PATCH', body: JSON.stringify(update), port, ssh })
-    
-
-    //   const data = JSON.parse(response)
-    console.log('response', response)
-    return {}
-
-
+        const port = process.env.dbPort && parseInt(process.env.dbPort)
+        const ssh = process.env.dbSsh === 'true'
+        debugger;
+        const response = await nodeFetch({ host, path, method: 'PATCH', body: JSON.stringify(update), port, ssh })
+        return JSON.parse(response)
+      
+    } catch (error) {
+        debugger;
+    }
 
 }
 
