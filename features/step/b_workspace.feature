@@ -1,4 +1,5 @@
 
+
 @workspace
 Feature: Workspace
 
@@ -123,7 +124,6 @@ User deletes private workspace
   And user types "COUNTRY_CODE" to input with "#var-name-input" selector 716
   And user clicks to button with "#update-var-btn" selector 717
   And component with "td[id$='-var-name']" id includes "COUNTRY_CODE" textcontent 718
-
 
 
   Scenario: 8
