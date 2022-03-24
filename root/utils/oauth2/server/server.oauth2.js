@@ -26,7 +26,7 @@ async function updateUsersWorkspaceGoogleAuthState({ access_token, refresh_token
         const idToken = params[2]
  
         const host = process.env.databaseHost
-        const path = `/server/users/${uid}/workspaces/${selectedWorkspace}/auth.json?auth=${idToken}`
+        const path = `/oauth/users/${uid}/workspaces/${selectedWorkspace}/auth.json?auth=${idToken}`
 
         const port = process.env.dbPort && parseInt(process.env.dbPort)
         const ssh = process.env.dbSsh === 'true'

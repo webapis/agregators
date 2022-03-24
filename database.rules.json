@@ -1,5 +1,9 @@
 {
   "rules": {
+    "oauth":{
+      ".read": "true",
+      ".write": "auth != null"
+    },
     "inputs": {
         ".read": "true",
         ".write": "auth != null"
