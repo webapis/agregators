@@ -7,7 +7,7 @@ const redirect_uri = process.env.redirectUri
 exports.handler = async (event, context) => {
 
     const { code, state } = event.queryStringParameters
-
+    console.log('state',state)
 debugger;   
     const  authdata = await exchangeGoogleAuthorizationCode({ client_id, client_secret, code, redirect_uri })
     
