@@ -31,8 +31,11 @@ async function updateUsersWorkspaceGoogleAuthState({ access_token, refresh_token
     console.log('uid', uid)
     console.log('idToken', idToken)
     console.log('host', host)
-    console.log('port', port)
+  
     const port = process.env.dbPort ? parseInt(process.env.dbPort) : undefined
+    
+    console.log('port', port)
+
     const ssh = process.env.dbSsh === 'true'
     debugger;
     const response = await nodeFetch({ host, path, method: 'PUT', body: JSON.stringify(update), port, ssh })
