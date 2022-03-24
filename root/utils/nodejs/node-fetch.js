@@ -1,9 +1,9 @@
 
 
 module.exports.nodeFetch = async function ({ host, path, method, headers, body, port, ssh = 'true' }) {
-    const parsedPort = port && parseInt(port)
-    const parseSsh = ssh ==='true'
-   
+
+    const parseSsh = ssh === 'true'
+
     const https = parseSsh ? require('https') : require('http')
 
     var options = {
@@ -11,7 +11,7 @@ module.exports.nodeFetch = async function ({ host, path, method, headers, body, 
         path,
         method: method ? method : 'GET',
         headers,
-        port: parsedPort
+        port: port !== undefined ? parseInt(port) : undefined
 
     };
 
@@ -22,13 +22,13 @@ module.exports.nodeFetch = async function ({ host, path, method, headers, body, 
                 body += chunk.toString('utf8')
             });
             responce.on("end", function () {
-        
-                
+
+
                 return resolve(body)
             });
             responce.on("error", function (error) {
                 console.log("Node fetch error", error);
-                
+
                 return reject(error)
             });
         });
