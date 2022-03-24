@@ -17,6 +17,7 @@ debugger;
     const  authdata = await exchangeGoogleAuthorizationCode({ client_id, client_secret, code, redirect_uri })
     
 console.log('authdata',authdata)
+console.log('state',state)
     debugger;
     await updateUsersWorkspaceGoogleAuthState({ ...authdata, state })
     const { access_token, refresh_token, scope } = authdata
