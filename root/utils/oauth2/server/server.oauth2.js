@@ -26,7 +26,7 @@ async function updateUsersWorkspaceGoogleAuthState({ access_token, refresh_token
     const idToken = params[2]
 
     const host = process.env.databaseHost
-    const path = `/oauth/users/${uid}/workspaces/${selectedWorkspace}/auth.json?auth=${idToken}`
+    const path = `/oauth/users/${uid}/workspaces/${selectedWorkspace}/auth/.json?auth=${idToken}`
     console.log('selectedWorkspace', selectedWorkspace)
     console.log('uid', uid)
     console.log('idToken', idToken)
@@ -38,7 +38,7 @@ async function updateUsersWorkspaceGoogleAuthState({ access_token, refresh_token
 
     const ssh = process.env.dbSsh === 'true'
     debugger;
-    const response = await nodeFetch({ host, path, method: 'PUT', body: JSON.stringify(update), port, ssh })
+    const response = await nodeFetch({ host, path, method: 'PATCH', body: JSON.stringify(update) })
     //   const data = JSON.parse(response)
     console.log('response', response)
     return {}
