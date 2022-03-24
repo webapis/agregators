@@ -31,14 +31,20 @@ async function updateUsersWorkspaceGoogleAuthState({ access_token, refresh_token
     console.log('uid', uid)
     console.log('idToken', idToken)
     console.log('host', host)
-  
+
     const port = process.env.dbPort ? parseInt(process.env.dbPort) : undefined
-    
+
     console.log('port', port)
 
     const ssh = process.env.dbSsh === 'true'
     debugger;
-    const response = await nodeFetch({ host, path, method: 'PATCH', body: JSON.stringify(update) })
+    let response = {}
+    if (host === 'localhost') {
+        response = await nodeFetch({ host, path, method: 'PATCH', body: JSON.stringify(update) })
+    } else {
+        response = await nodeFetch({ host, path, method: 'PATCH', body: JSON.stringify(update), port, ssh })
+    }
+
     //   const data = JSON.parse(response)
     console.log('response', response)
     return {}
