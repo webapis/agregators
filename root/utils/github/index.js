@@ -9,7 +9,7 @@ const { nodeFetch } = require('../nodejs/node-fetch')
 
 async function fetchGithubAccessToken({ code, client_id, client_secret }) {
 
-debugger;
+
     try {
         var options = {
             host: 'github.com',
@@ -41,12 +41,12 @@ debugger;
 
         return await prom
     } catch (error) {
-        debugger;
+        
     }
 }
 
 async function authWithFirebase({ access_token, key }) {
-debugger;
+
     var options = {
         host: 'identitytoolkit.googleapis.com',
         path: encodeURI(`/v1/accounts:signInWithIdp?key=${key}`),
@@ -72,7 +72,7 @@ debugger;
                 return reject(error)
             });
         });
-        debugger;
+        
         request.write(JSON.stringify({ postBody: `access_token=${access_token}&providerId=github.com`, requestUri: process.env.requestUri, returnIdpCredential: true, returnSecureToken: true }))
         request.end();
 
@@ -122,12 +122,12 @@ async function updateUserCredentials({ token: oauthAccessToken, refreshToken, id
     try {
         const publicData = { email, photoUrl }
         const privateData = { token: oauthAccessToken, refreshToken, idToken, screenName, email }
-        debugger;
+        
         const response = await nodeFetch({ host: process.env.databaseHost, path: `/users/.json?auth=${idToken}`, method: 'PATCH', headers: {}, body: JSON.stringify({ [`private/${localId}/fb_auth`]: privateData, [`public/users/${screenName}`]: publicData }), port: process.env.dbPort, ssh: process.env.dbSsh })
 
         return response
     } catch (error) {
-        debugger;
+        
         console.log('error', error)
         return error
     }

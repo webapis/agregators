@@ -3,30 +3,30 @@ const { nodeFetch } = require('../../nodejs/node-fetch')
 
 async function exchangeGoogleAuthorizationCode({ client_id, client_secret, code, redirect_uri }) {
     // Exchange google authorization code for access token
-    debugger;
+
     const grant_type = 'authorization_code';
     var path = `/token?client_id=${client_id}&client_secret=${client_secret}&code=${code}&grant_type=${grant_type}&redirect_uri=${redirect_uri}`
     const response = await nodeFetch({ host: 'oauth2.googleapis.com', path, method: 'post' })
-    debugger;
+
     const authData = JSON.parse(response)
     console.log('authData', authData)
-    debugger;
+
 
     return authData
 
 }
 
 
-async function updateUsersWorkspaceGoogleAuthState({ access_token, refresh_token, scope, state }) {
+async function updateUsersWorkspaceGoogleAuthState({ access_token, refresh_token, scope, state, expires_in }) {
 
-    const update = { google: { access_token, refresh_token, scope } }
+    const update = { google: { access_token, refresh_token, scope, timestamp: { '.sv': "timestamp" }, expires_in } }
     const params = state.split('--xxx--')
     const selectedWorkspace = params[0]
     const uid = params[1]
     const idToken = params[2]
-    console.log('selectedWorkspace',selectedWorkspace)
-    console.log('uid',uid)
-    console.log('idToken',idToken)
+    console.log('selectedWorkspace', selectedWorkspace)
+    console.log('uid', uid)
+    console.log('idToken', idToken)
     const host = process.env.databaseHost
     const path = `/oauth/users/${uid}/workspaces/${selectedWorkspace}/auth.json?auth=${idToken}`
 
@@ -34,15 +34,15 @@ async function updateUsersWorkspaceGoogleAuthState({ access_token, refresh_token
     const ssh = process.env.dbSsh === 'true'
     debugger;
     let response = {}
-    if(port){
+    if (port) {
         response = await nodeFetch({ host, path, method: 'PATCH', body: JSON.stringify(update), port, ssh })
-    } else{
-        response = await nodeFetch({ host, path, method: 'PATCH', body: JSON.stringify(update)})
+    } else {
+        response = await nodeFetch({ host, path, method: 'PATCH', body: JSON.stringify(update) })
     }
 
-
+    debugger;
     const data = JSON.parse(response)
-
+    debugger;
     return data
 
 

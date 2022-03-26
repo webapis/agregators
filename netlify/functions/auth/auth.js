@@ -2,7 +2,7 @@ require('dotenv').config()
 
 exports.handler = async function (event, context) {
  
-  debugger;
+
   return {
     statusCode: 302,
     headers: {

@@ -8,15 +8,15 @@ exports.handler = async (event, context) => {
 
     const { code, state } = event.queryStringParameters
     console.log('state',state)
-debugger;   
+   
     const  authdata = await exchangeGoogleAuthorizationCode({ client_id, client_secret, code, redirect_uri })
     
 
-    debugger;
+    
     await updateUsersWorkspaceGoogleAuthState({ ...authdata, state })
     const { access_token, refresh_token, scope } = authdata
 
-    debugger;
+    
    
     return {
         statusCode: 200, body: `<!DOCTYPE html>

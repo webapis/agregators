@@ -1,5 +1,5 @@
 function template({  email, localId,photoUrl, screenName, idToken, refreshToken, expiresIn,token }) {
-    debugger;
+
     return `<!DOCTYPE html>
 <html lang="en">
 

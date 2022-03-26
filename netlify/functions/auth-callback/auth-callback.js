@@ -9,7 +9,7 @@ exports.handler = async (event, context) => {
         const { template } = require('../utils/loginPageTemplate')
         const { code } = event.queryStringParameters
         const client_secret = process.env.GH_CLIENT_SECRET
-debugger;
+
         const githubResponse = await fetchGithubAccessToken({ code: code, client_id: process.env.gh_client_id, client_secret })
    
      
@@ -18,7 +18,7 @@ debugger;
         const firebaseauthResponse = await authWithFirebase({ access_token, key: process.env.webapikey })
     
         const firebaseAuthData = JSON.parse(firebaseauthResponse)
-        debugger;
+        
         await updateUserCredentials(firebaseAuthData)
         return {
             statusCode: 200, body: template({ ...firebaseAuthData, token: access_token })
@@ -27,7 +27,7 @@ debugger;
     }
     catch (error) {
         console.log(error)
-        debugger;
+        
     }
 }
 
