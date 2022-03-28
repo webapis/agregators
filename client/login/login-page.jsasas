@@ -5,7 +5,7 @@ customElements.define('login-page', class extends HTMLElement {
 
     async connectedCallback() {
         const resources = await import('../resources.js')
-        const {default:reducer} = await import('../../state/reducers/loginPageReducer.js')
+        const { default: reducer } = await import('../../state/reducers/loginPageReducer.js')
         debugger;
         await resources.default(reducer)
 
@@ -19,13 +19,16 @@ customElements.define('login-page', class extends HTMLElement {
             const idToken = document.getElementById('idToken').value
             const localId = document.getElementById('localId').value
             const expiresIn = document.getElementById('expiresIn').value
+            const timestamp = document.getElementById('timestamp').value
             debugger;
             this.uid = localId
-         //   window.pageStore.dispatch({ type: window.actionTypes.AUTH_SUCCESS, payload: { auth: { email, token, screenName, photoUrl, refreshToken, idToken, localId, api_key: window.webapikey, timestamp: Date.now() + 3600000,expiresIn } } })
-            localStorage.setItem('auth',JSON.stringify({ email, token, screenName, photoUrl, refreshToken, idToken, localId, api_key: window.webapikey, timestamp: Date.now() + 3600000,expiresIn }))
+            //   window.pageStore.dispatch({ type: window.actionTypes.AUTH_SUCCESS, payload: { auth: { email, token, screenName, photoUrl, refreshToken, idToken, localId, api_key: window.webapikey, timestamp: Date.now() + 3600000,expiresIn } } })
+            // localStorage.setItem('auth',JSON.stringify({ email, token, screenName, photoUrl, refreshToken, idToken, localId, api_key: window.webapikey, timestamp: Date.now() + 3600000,expiresIn }))
+            localStorage.setItem('auth', JSON.stringify({ email, token, screenName, photoUrl, refreshToken, idToken, localId, api_key: window.webapikey, timestamp, expiresIn }))
+
             window.location.replace('/')
-            
-debugger;
+
+            debugger;
         } else {
             debugger;
             const { auth: { email } } = window.pageStore.state
@@ -36,7 +39,7 @@ debugger;
 
 
 
-       
+
     }
 
     render({ authed, email }) {

@@ -1,4 +1,4 @@
-function template({  email, localId,photoUrl, screenName, idToken, refreshToken, expiresIn,token }) {
+function template({  email, localId,photoUrl, screenName, idToken, refreshToken, expiresIn,token,timestamp }) {
 
     return `<!DOCTYPE html>
 <html lang="en">
@@ -37,7 +37,7 @@ function template({  email, localId,photoUrl, screenName, idToken, refreshToken,
 <input type="hidden" id="idToken" value="${idToken}"/>
 <input type="hidden" id="refreshToken" value="${refreshToken}"/>
 <input type="hidden" id="expiresIn" value="${expiresIn}"/>
-
+<input type="hidden" id="timestamp" value="${timestamp}"/>
     <script src="${process.env.host}/pages/login/login-page.js"></script>
  
 </body>

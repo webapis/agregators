@@ -41,7 +41,7 @@ async function fetchGithubAccessToken({ code, client_id, client_secret }) {
 
         return await prom
     } catch (error) {
-        
+
     }
 }
 
@@ -72,7 +72,7 @@ async function authWithFirebase({ access_token, key }) {
                 return reject(error)
             });
         });
-        
+
         request.write(JSON.stringify({ postBody: `access_token=${access_token}&providerId=github.com`, requestUri: process.env.requestUri, returnIdpCredential: true, returnSecureToken: true }))
         request.end();
 
@@ -118,19 +118,13 @@ async function userIsNew({ localId, idToken }) {
 
 }
 
-async function updateUserCredentials({ token: oauthAccessToken, refreshToken, idToken, screenName, email, photoUrl, localId }) {
-    try {
-        const publicData = { email, photoUrl }
-        const privateData = { token: oauthAccessToken, refreshToken, idToken, screenName, email }
-        
-        const response = await nodeFetch({ host: process.env.databaseHost, path: `/users/.json?auth=${idToken}`, method: 'PATCH', headers: {}, body: JSON.stringify({ [`private/${localId}/fb_auth`]: privateData, [`public/users/${screenName}`]: publicData }), port: process.env.dbPort, ssh: process.env.dbSsh })
-
+async function updateUserCredentials({ token: oauthAccessToken, refreshToken, idToken, screenName, email, photoUrl, localId,
+    expiresIn,timestamp }) {
+     //   const firebaseServerTimeResponse = await nodeFetch({ host: process.env.databaseHost, path: `/.json?auth=${idToken}`, method: 'PUT', headers: {}, body: JSON.stringify({ inc: { ".sv": "timestamp" } }), port: process.env.dbPort, ssh: process.env.dbSsh })
+       // const {inc:timestamp} = JSON.parse(firebaseServerTimeResponse)
+        const privateData = { token: oauthAccessToken, refreshToken, idToken, screenName, email,expiresIn, timestamp }
+        const response = await nodeFetch({ host: process.env.databaseHost, path: `/.json?auth=${idToken}`, method: 'PATCH', headers: {}, body: JSON.stringify({ [`oauth/users/${localId}/firebase`]: privateData }), port: process.env.dbPort, ssh: process.env.dbSsh })
         return response
-    } catch (error) {
-        
-        console.log('error', error)
-        return error
-    }
 
 
 }

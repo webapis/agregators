@@ -18,9 +18,10 @@ customElements.define('login-page', class extends HTMLElement {
             const refreshToken = document.getElementById('refreshToken').value
             const idToken = document.getElementById('idToken').value
             const localId = document.getElementById('localId').value
-            const expiresIn = document.getElementById('expiresIn').value
+            const expiresIn =parseInt( document.getElementById('expiresIn').value)
+            const timestamp = parseInt( document.getElementById('timestamp').value)
             this.uid = localId
-            localStorage.setItem('auth',JSON.stringify({ email, token, screenName, photoUrl, refreshToken, idToken, localId, api_key: window.webapikey, timestamp: Date.now() + 3600000,expiresIn }))
+            localStorage.setItem('auth',JSON.stringify({ email, token, screenName, photoUrl, refreshToken, idToken, localId, api_key: window.webapikey, timestamp,expiresIn }))
             window.location.replace('/')
             
 debugger;
