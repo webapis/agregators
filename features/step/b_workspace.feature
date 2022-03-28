@@ -1,5 +1,6 @@
 
 
+
 @workspace
 Feature: Workspace
 
@@ -70,7 +71,6 @@ User changes public workspace to private
   Then component with "#private-tab" selector is visible to user 408
   And user clicks to button with "#private-tab" selector 409
   And component with "#local_pub_ws_bdd-ws" selector is visible to user 410
-
 
 Scenario: 5
 User deletes private workspace
