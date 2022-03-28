@@ -79,7 +79,8 @@ User deletes private workspace
   And component with "#workspaces" selector contains 2 children 502
   And component with "#local_pub_ws_bdd-delete" selector is visible to user 503
   When user clicks to button with "#local_pub_ws_bdd-delete" selector 504
-  Then component with "#workspaces" selector contains 1 children 505
+  Then wait for 3 seconds 505
+  And component with "#workspaces" selector contains 1 children 506
 
 
  Scenario: 6
