@@ -88,7 +88,7 @@ customElements.define('workspace-accordion-item', class extends HTMLElement {
     
                 const taskLogRef=`/taskLogs/${workspaceName}/${wsrunid}/tasks`
                 const taskLogObjects =await window.getLogObjects(taskLogRef)
-                debugger;
+                
           
                     let taskPromises = []
                     for (let taskId in taskLogObjects) {
@@ -126,7 +126,7 @@ customElements.define('workspace-accordion-item', class extends HTMLElement {
                         const taskId = task['taskId']
                         const wsrunid = this.getAttribute('wsrunid')
                         if(document.getElementById(`${taskId}-${wsrunid}`)){
-                            debugger;
+                            
                             const parent =document.getElementById(`${taskId}-${wsrunid}`).parentElement
                             parent.removeChild(document.getElementById(`${taskId}-${wsrunid}`))
                         }

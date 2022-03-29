@@ -9,7 +9,7 @@ customElements.define('container-name',class extends HTMLElement{
         await resources.default()
         const { auth: { idToken, localId: uid },workspace:{workspaceSelected},containerName:{name}} = window.pageStore.state
         this.uid = uid
-        window.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
+   
         document.getElementById('ws-breadcrumb').innerText=`workspace(${workspaceSelected})`
         this.innerHTML=`<div>
         <h5>New Container:</h5>
@@ -33,18 +33,18 @@ customElements.define('container-name',class extends HTMLElement{
             window.pageStore.dispatch({type:window.actionTypes.CONTAINER_NAME_CHANGED, payload:value})
         })
 
-        document.getElementById('save-container-name').addEventListener('click',(e)=>{
+        document.getElementById('save-container-name').addEventListener('click',async(e)=>{
            
             const { workspace: { workspaceSelected }, auth: { screenName }, containerName:{name}} = window.pageStore.state
 
-            window.FB_DATABASE.ref(`workspaces/${workspaceSelected}/containers/${name}`).set({ owner: screenName }, (error, data) => {
-                if(!error){
-                    debugger;
+           await window.firebase().ref(`workspaces/${workspaceSelected}/containers/${name}`).set({ owner: screenName })
+           
+                    
                     window.pageStore.dispatch({type:window.actionTypes.CONTAINER_NAME_SAVED})
                     window.location.replace('/workflow-containers.html')
-                }
+                
 
-            })  
+            
         })
     }
 })

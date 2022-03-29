@@ -5,7 +5,7 @@ module.exports.nodeFetch = async function ({ host, path, method, headers, body, 
     const parseSsh = ssh ==='true'
    
     const https = parseSsh ? require('https') : require('http')
-
+debugger;
     var options = {
         host,
         path,

@@ -44,19 +44,19 @@ customElements.define('task-component', class extends HTMLElement {
         </div>
         <div>
     `
-    document.getElementById(`run-task-btn-${id}`).addEventListener('click', (e) => {
-        e.preventDefault()
+        document.getElementById(`run-task-btn-${id}`).addEventListener('click', (e) => {
+            e.preventDefault()
 
-        localStorage.setItem('task', JSON.stringify({ id, taskName: name }))
-        //window.location.replace('/pages/task-logs/task-logs.html')
+            localStorage.setItem('task', JSON.stringify({ id, taskName: name }))
+            //window.location.replace('/pages/task-logs/task-logs.html')
 
-    })
+        })
 
-    
+
         document.getElementById(`${id}-logs-btn`).addEventListener('click', (e) => {
             e.preventDefault()
 
-       
+
             localStorage.setItem('task', JSON.stringify({ id, taskName: name }))
             window.location.replace('/pages/task-logs/task-logs.html')
 
@@ -80,24 +80,24 @@ customElements.define('task-component', class extends HTMLElement {
             localStorage.setItem('task', JSON.stringify({ id, taskName: name, runOrder: order, runSequence: sequence }))
             window.location.replace('/pages/workflow-editor/workflow-editor.html')
         })
-        document.getElementById(`panelsStayOpen-heading-${id}`).addEventListener('click', async(e) => {
+        document.getElementById(`panelsStayOpen-heading-${id}`).addEventListener('click', async (e) => {
             e.preventDefault()
             open = !open
 
 
             if (open) {
 
-                const taskId=id
+                const taskId = id
                 const { title: workspaceName } = JSON.parse(localStorage.getItem('workspace'))
-                const {idToken}=JSON.parse(localStorage.getItem('auth'))
-                const fetchUrl =`${window.projectUrl}/workflows/workspaces/${workspaceName}/tasks/${taskId}/.json?auth=${idToken}`
-                const getResponse =await   fetch(fetchUrl, { method: 'GET'})
-                const getJsonData =await getResponse.json()
+                const fetchUrl = `workflows/workspaces/${workspaceName}/tasks/${taskId}`
+                const getJsonData = await window.firebase().ref(fetchUrl).get()
+               
+                
                 const workflows = getJsonData && Object.entries(getJsonData)
-           
-                        debugger;
-                        const wfContainer = document.getElementById(`accordion-body-${id}`).querySelector('.wf-container')
-                        wfContainer.innerHTML = `<div class="row"><h7 class="col-12 text-end">Workflows:</h7>
+
+                
+                const wfContainer = document.getElementById(`accordion-body-${id}`).querySelector('.wf-container')
+                wfContainer.innerHTML = `<div class="row"><h7 class="col-12 text-end">Workflows:</h7>
                        <div class="row mb-1 pb-1">
                        <div class="col-2 fw-bold">Repo</div>
                        <div class="col-2 fw-bold">Branch</div>
@@ -109,16 +109,16 @@ customElements.define('task-component', class extends HTMLElement {
                        </div> 
                         <div>`
 
-                        workflows && workflows.forEach((wf, i) => {
-                            
-                            const workflowKey = wf[0]
-                            //   const workflowName = wf[1]['workflowName']
-                            const workflowDescription = wf[1]['workflowDescription']
-                            const repoName = wf[1]['repoName']
-                            const selectedBranch = wf[1]['selectedBranch']
+                workflows && workflows.forEach((wf, i) => {
+
+                    const workflowKey = wf[0]
+                    //   const workflowName = wf[1]['workflowName']
+                    const workflowDescription = wf[1]['workflowDescription']
+                    const repoName = wf[1]['repoName']
+                    const selectedBranch = wf[1]['selectedBranch']
 
 
-                            wfContainer.insertAdjacentHTML('beforeend', `<div class="row mb-1 border-bottom pb-1" id="${id}-${workflowKey}-wf">
+                    wfContainer.insertAdjacentHTML('beforeend', `<div class="row mb-1 border-bottom pb-1" id="${id}-${workflowKey}-wf">
                              <div class="col-2">${repoName}</div> 
                              <div class="col-2">${selectedBranch}</div> 
                              <div class="col-2" style="word-wrap:break-word;overflow:hidden;">${workflowDescription}</div> 
@@ -131,50 +131,50 @@ customElements.define('task-component', class extends HTMLElement {
                                                                                              
                                                                                                 </div>`)
 
-                            document.getElementById(`${workflowKey}-workflow-delete-btn`).addEventListener('click', (e) => {
-                                e.preventDefault()
-                                if (confirm(`Are you sure you want to delete $${repoName} this workflow ?`)) {
-                                    const { title: workspaceName } = JSON.parse(localStorage.getItem('workspace'))
-                                    const taskId = id
-                    
-                                    const update = { [`workflows/workspaces/${workspaceName}/tasks/${taskId}/${workflowKey}`]: null }
+                    document.getElementById(`${workflowKey}-workflow-delete-btn`).addEventListener('click', async (e) => {
+                        e.preventDefault()
+                        if (confirm(`Are you sure you want to delete $${repoName} this workflow ?`)) {
+                            const { title: workspaceName } = JSON.parse(localStorage.getItem('workspace'))
+                            const taskId = id
 
-                                    window.FB_DATABASE.ref(`/`).update(update, (error, data) => {
-                                        if (data) {
-                                            console.log('workflow deleted')
-                                            const parent = document.getElementById(`${id}-${workflowKey}-wf`).parentElement
-                                            parent.removeChild(document.getElementById(`${id}-${workflowKey}-wf`))
+                            const update = { [`workflows/workspaces/${workspaceName}/tasks/${taskId}/${workflowKey}`]: null }
 
-                                        }
-                                    })
-                                }
+                            await window.firebase().ref(`/`).update(update)
 
-                            })
-                            document.getElementById(`${workflowKey}-workflow-config-btn`).addEventListener('click', (e) => {
-                                e.preventDefault()
-                                
-                                localStorage.setItem('workflow', JSON.stringify({ workflowKey, workflowDescription, selectedRepo: repoName, selectedBranch }))
-                                localStorage.setItem('task', JSON.stringify({ taskName: name, runOrder: order, runSequence: sequence, id }))
-                                window.location.replace('/pages/workflow-vars/workflow-vars.html')
-                            })
-                            document.getElementById(`${workflowKey}-workflow-editor-btn`).addEventListener('click', (e) => {
-                                e.preventDefault()
-                                try {
-                                    localStorage.setItem('workflow', JSON.stringify({ workflowKey, workflowDescription, selectedRepo: repoName, selectedBranch }))
-                                    localStorage.setItem('task', JSON.stringify({ taskName: name, runOrder: order, runSequence: sequence, id }))
-                                    localStorage.setItem('inputEditor', JSON.stringify({ selectedBranch: "", inputName: '', inputs: [] }))
-                                    window.location.replace('/pages/workflow-editor/workflow-editor.html')
-                                } catch (error) {
+                            console.log('workflow deleted')
+                            const parent = document.getElementById(`${id}-${workflowKey}-wf`).parentElement
+                            parent.removeChild(document.getElementById(`${id}-${workflowKey}-wf`))
 
-                                }
 
-                            })
-                        })
 
-                       // document.getElementById(`task-conf-container-${id}`).insertAdjacentHTML('beforeend',` <task-run-state taskId="${id}"></task-run-state>`)
+                        }
 
-                   
-                
+                    })
+                    document.getElementById(`${workflowKey}-workflow-config-btn`).addEventListener('click', (e) => {
+                        e.preventDefault()
+
+                        localStorage.setItem('workflow', JSON.stringify({ workflowKey, workflowDescription, selectedRepo: repoName, selectedBranch }))
+                        localStorage.setItem('task', JSON.stringify({ taskName: name, runOrder: order, runSequence: sequence, id }))
+                        window.location.replace('/pages/workflow-vars/workflow-vars.html')
+                    })
+                    document.getElementById(`${workflowKey}-workflow-editor-btn`).addEventListener('click', (e) => {
+                        e.preventDefault()
+                        try {
+                            localStorage.setItem('workflow', JSON.stringify({ workflowKey, workflowDescription, selectedRepo: repoName, selectedBranch }))
+                            localStorage.setItem('task', JSON.stringify({ taskName: name, runOrder: order, runSequence: sequence, id }))
+                            localStorage.setItem('inputEditor', JSON.stringify({ selectedBranch: "", inputName: '', inputs: [] }))
+                            window.location.replace('/pages/workflow-editor/workflow-editor.html')
+                        } catch (error) {
+
+                        }
+
+                    })
+                })
+
+    
+
+
+
             }
         })
     }

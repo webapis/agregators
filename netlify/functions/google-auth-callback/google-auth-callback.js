@@ -12,7 +12,7 @@ exports.handler = async (event, context) => {
     const  authdata = await exchangeGoogleAuthorizationCode({ client_id, client_secret, code, redirect_uri })
     
 
-    
+
     await updateUsersWorkspaceGoogleAuthState({ ...authdata, state })
     const { access_token, refresh_token, scope } = authdata
 

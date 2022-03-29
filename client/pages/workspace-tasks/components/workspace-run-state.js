@@ -48,7 +48,7 @@ customElements.define('workspace-run-state', class extends HTMLElement {
                 clearInterval(intfunct)
             }
             if (totalWorkflows > 0 && (totalWorkflows === (success + failed))) {
-                debugger;
+                
                 clearSelf(this.runStateTimer)
             }
 

@@ -35,6 +35,7 @@ async function updateUsersWorkspaceGoogleAuthState({ access_token, refresh_token
     debugger;
     let response = {}
     if (port) {
+        debugger;
         response = await nodeFetch({ host, path, method: 'PATCH', body: JSON.stringify(update), port, ssh })
     } else {
         response = await nodeFetch({ host, path, method: 'PATCH', body: JSON.stringify(update) })

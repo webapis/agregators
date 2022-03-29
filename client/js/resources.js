@@ -13,10 +13,11 @@ export default async () => {
 
 
     ])
-    await updateIdToken()
-    window.projectUrl = window.location.hostname === 'localhost' ? 'http://localhost:9000' : 'https://workflow-prod-799d4-default-rtdb.firebaseio.com'
+   // await updateIdToken()
+     window.projectUrl = window.location.hostname === 'localhost' ? 'http://localhost:9000' : 'https://workflow-prod-799d4-default-rtdb.firebaseio.com'
+   // window.projectUrl = window.location.hostname === 'localhost' ? 'https://turkmenistan-market.firebaseio.com' : 'https://workflow-prod-799d4-default-rtdb.firebaseio.com'
     window.webapikey = window.location.hostname === 'localhost' ? 'AIzaSyDb8Z27Ut0WJ-RH7Exi454Bpit9lbARJeA' : 'AIzaSyCM7LDPIq6eelnMH_A8SARtIBDT5Zi5tK8'
-
+                                                                   
     
     if (!document.querySelector('signed-in-as')) {
         document.body.insertAdjacentHTML('afterbegin', `<signed-in-as></signed-in-as>`)
@@ -51,5 +52,4 @@ async function updateIdToken() {
     }
 }
 
-// window.renewIdToken = renewIdToken
-// window.updateIdToken = updateIdToken
+

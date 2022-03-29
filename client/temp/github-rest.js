@@ -61,7 +61,7 @@ async function getPluginsSourceCodeTree() {
     const treeResponse = await fetch(`https://api.github.com/repos/aggregationplugins/aggregation-plugins/git/trees/${sha}?recursive=1`)
     const treeData = await treeResponse.json()
     const { tree } = treeData
-    debugger;
+    
     return tree
 }
 

@@ -84,6 +84,13 @@
        
       }
     },
+    "vars": {
+      ".read": "auth != null",
+      ".write": "auth != null",
+      "$workpace": {
+       
+      }
+    },
     "env": {
       ".read": "auth != null",
       ".write": "false"

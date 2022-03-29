@@ -9,7 +9,7 @@ const { nodeFetch } = require('../nodejs/node-fetch')
 
 async function fetchGithubAccessToken({ code, client_id, client_secret }) {
 
-
+debugger;
     try {
         var options = {
             host: 'github.com',
@@ -41,7 +41,7 @@ async function fetchGithubAccessToken({ code, client_id, client_secret }) {
 
         return await prom
     } catch (error) {
-
+debugger;
     }
 }
 
@@ -118,12 +118,13 @@ async function userIsNew({ localId, idToken }) {
 
 }
 
-async function updateUserCredentials({ token: oauthAccessToken, refreshToken, idToken, screenName, email, photoUrl, localId,
-    expiresIn,timestamp }) {
-     //   const firebaseServerTimeResponse = await nodeFetch({ host: process.env.databaseHost, path: `/.json?auth=${idToken}`, method: 'PUT', headers: {}, body: JSON.stringify({ inc: { ".sv": "timestamp" } }), port: process.env.dbPort, ssh: process.env.dbSsh })
-       // const {inc:timestamp} = JSON.parse(firebaseServerTimeResponse)
-        const privateData = { token: oauthAccessToken, refreshToken, idToken, screenName, email,expiresIn, timestamp }
+async function updateUserCredentials({ token: oauthAccessToken, refreshToken, idToken, screenName, email, localId,
+     }) {
+        const privateData = { token: oauthAccessToken, refreshToken, idToken, screenName, email }
+        debugger;
         const response = await nodeFetch({ host: process.env.databaseHost, path: `/.json?auth=${idToken}`, method: 'PATCH', headers: {}, body: JSON.stringify({ [`oauth/users/${localId}/firebase`]: privateData }), port: process.env.dbPort, ssh: process.env.dbSsh })
+      //  const response = await nodeFetch({ host: process.env.databaseHost, path: `/.json?auth=${idToken}`, method: 'PATCH', headers: {}, body: JSON.stringify({ [`oauth/users/${localId}/firebase`]: privateData }) })
+        debugger;
         return response
 
 

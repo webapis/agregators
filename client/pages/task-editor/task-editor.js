@@ -4,15 +4,15 @@ customElements.define('task-editor', class extends HTMLElement {
     }
 
     async connectedCallback() {
-        this.innerHTML=`loading...`
+        this.innerHTML = `loading...`
         const resources = await import('/js/resources.js')
         await resources.default()
 
-        const {  title: workspaceName   } = JSON.parse(localStorage.getItem('workspace'))
-       
-        const { idToken, localId: uid } =JSON.parse(localStorage.getItem('auth'))
+        const { title: workspaceName } = JSON.parse(localStorage.getItem('workspace'))
+
+        const { localId: uid } = JSON.parse(localStorage.getItem('auth'))
         this.uid = uid
-        window.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
+
         document.getElementById('workspace-breadcrumb').innerText = `Workspace(${workspaceName})`
         this.innerHTML = `
 
@@ -21,30 +21,30 @@ customElements.define('task-editor', class extends HTMLElement {
         <button class="btn btn-primary" id="save-task-btn">Save Task</button>
         </div>`
 
-        document.getElementById('save-task-btn').addEventListener('click', (e) => {
+        document.getElementById('save-task-btn').addEventListener('click', async (e) => {
             e.preventDefault()
-         //   const {  title: workspaceName   } = JSON.parse(localStorage.getItem('workspace'))
+            //   const {  title: workspaceName   } = JSON.parse(localStorage.getItem('workspace'))
             const taskName = document.getElementById('taskname').value
-        
+
             const taskId = Date.now()
-            const updateServerWorkSpace = { [`server/workspaces/${workspaceName}/tasks/${taskId}`]: {     taskName,runOrder:'0',runSequence:'sequential' } }
+            const updateServerWorkSpace = { [`server/workspaces/${workspaceName}/tasks/${taskId}`]: { taskName, runOrder: '0', runSequence: 'sequential' } }
             const updateClientWorkSpace = {
                 [`workspaces/${workspaceName}/tasks/${taskId}`]: {
-                    taskName,runOrder:'0',runSequence:'sequential'
-                  
+                    taskName, runOrder: '0', runSequence: 'sequential'
+
                 }
             }
-            window.FB_DATABASE.ref('/').update({
+            const data = await window.firebase().ref('/').update({
                 ...updateServerWorkSpace,
                 ...updateClientWorkSpace
-            }, (error, data) => {
-                debugger;
-                if(data){
-                    window.location.replace('/pages/workspace-tasks/workspace-tasks.html')
-                }
-                debugger;   
-            
             })
+            
+            if (data) {
+                window.location.replace('/pages/workspace-tasks/workspace-tasks.html')
+            }
+            
+
+
         })
     }
 })

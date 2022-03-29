@@ -18,7 +18,7 @@ customElements.define('error-displayer', class extends HTMLElement {
         })
 
        this.addEventListener('my_event',(e)=>{
-           debugger;
+           
        })
 
     }

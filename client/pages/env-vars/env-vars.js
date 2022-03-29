@@ -10,17 +10,12 @@ customElements.define('env-vars', class extends HTMLElement {
 
         const { title: workspaceName } = JSON.parse(localStorage.getItem('workspace'))
 
-        const { idToken, localId: uid, token, screenName } = JSON.parse(localStorage.getItem('auth'))
-        window.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
 
-        this.uid = uid
 
-        window.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
-      
-        
-        
+
+
         document.getElementById('workspace-breadcrumb').innerText = `Workspace(${workspaceName})`
- 
+
         const scope = this.getAttribute('scope')
         this.innerHTML = `<div> ${scope} Scope Vars
         <div class="row">
@@ -71,31 +66,31 @@ customElements.define('env-vars', class extends HTMLElement {
         </div>
         `
 
-        document.getElementById('update-var-btn').addEventListener('click', (e) => {
+        document.getElementById('update-var-btn').addEventListener('click', async (e) => {
             const varKey = document.getElementById('var-key-input').value
             const varName = document.getElementById('var-name-input').value
             const varValue = document.getElementById('var-value-input').value
             const { title: workspaceName } = JSON.parse(localStorage.getItem('workspace'))
             const refPath = this.getAttribute('scope') === 'workspace' ? `vars/workspaces/${workspaceName}/vars/${varKey}` : `vars/workspaces/${workspaceName}/tasks/${this.getAttribute('taskId')}/vars/${varKey}`
-            window.FB_DATABASE.ref(refPath).update({ varName, varValue }, (error, result) => {
+            await window.firebase().ref(refPath).update({ varName, varValue })
 
-                document.getElementById(`${varKey}-var-name`).innerHTML = varName
-                document.getElementById(`${varKey}-var-value`).innerHTML = varValue
+            document.getElementById(`${varKey}-var-name`).innerHTML = varName
+            document.getElementById(`${varKey}-var-value`).innerHTML = varValue
 
 
-                document.getElementById('var-key-input').value = ""
-                document.getElementById('var-name-input').value = ""
-                document.getElementById('var-value-input').value = ""
-            })
+            document.getElementById('var-key-input').value = ""
+            document.getElementById('var-name-input').value = ""
+            document.getElementById('var-value-input').value = ""
+
         })
 
-        document.getElementById("add-var-btn").addEventListener('click', (e) => {
+        document.getElementById("add-var-btn").addEventListener('click', async(e) => {
 
             const varName = document.getElementById('var-name-input').value
             const varValue = document.getElementById('var-value-input').value
             const { title: workspaceName } = JSON.parse(localStorage.getItem('workspace'))
             const refPath = this.getAttribute('scope') === 'workspace' ? `vars/workspaces/${workspaceName}/vars` : `vars/workspaces/${workspaceName}/tasks/${this.getAttribute('taskId')}/vars`
-            window.FB_DATABASE.ref(refPath).push({ varName, varValue }, (error, result) => {
+        const result=    await window.firebase().ref(refPath).push({ varName, varValue })
                 const { name: inputKey } = result
                 document.getElementById('var-container').insertAdjacentHTML('beforeend', `  
                 <tr id="${inputKey}-table-raw">
@@ -124,33 +119,33 @@ customElements.define('env-vars', class extends HTMLElement {
                 })
                 const removeRefPath = this.getAttribute('scope') === 'workspace' ? `vars/workspaces/${workspaceName}/vars/${inputKey}` : `vars/workspaces/${workspaceName}/tasks/${this.getAttribute('taskId')}/vars/${inputKey}`
                 document.getElementById(`${inputKey}-remove-var-btn`).addEventListener('click', (e) => {
-                    removeVar(removeRefPath,`${inputKey}-table-raw`)
+                    removeVar(removeRefPath, `${inputKey}-table-raw`)
                     //----------------------------------------------------------------------------------------------------
-    
-                })
-            })//
 
-         
+                })
+            
+
+
         })
 
 
-        //const { idToken, localId: uid, token, screenName } = JSON.parse(localStorage.getItem('auth'))
+   
         const refPath = this.getAttribute('scope') === 'workspace' ? `vars/workspaces/${workspaceName}/vars` : `vars/workspaces/${workspaceName}/tasks/${this.getAttribute('taskId')}/vars`
-     debugger;
- 
-     debugger;
-        window.FB_DATABASE.ref(refPath).get((error, vars) => {
-            debugger;
-            if(vars){
+        
 
-            
-            for (let v in vars) {
-                debugger;
-                console.log('v',v)
-                const varName = vars[v]['varName']
-                const varValue = vars[v]['varValue']
-                debugger;
-                document.getElementById('var-container').insertAdjacentHTML('beforeend', `  
+        
+      const vars =await  window.firebase().ref(refPath).get()
+          
+            if (vars) {
+
+
+                for (let v in vars) {
+              
+                    console.log('v', v)
+                    const varName = vars[v]['varName']
+                    const varValue = vars[v]['varValue']
+                    
+                    document.getElementById('var-container').insertAdjacentHTML('beforeend', `  
             <tr id="${v}-table-raw">
             <th scope="row">${v}</th>
             <td id="${v}-var-name">${varName}</td>
@@ -163,27 +158,27 @@ customElements.define('env-vars', class extends HTMLElement {
             </td>
           </tr>
             `)
-                document.getElementById(`${v}-edit-var-btn`).addEventListener('click', (e) => {
-                    e.preventDefault()
-                    console.log('edit var btn clicked')
+                    document.getElementById(`${v}-edit-var-btn`).addEventListener('click', (e) => {
+                        e.preventDefault()
+                        console.log('edit var btn clicked')
 
-                    document.getElementById('var-key-input').value = v
-                    document.getElementById('var-name-input').value = varName
-                    document.getElementById('var-value-input').value = varValue
+                        document.getElementById('var-key-input').value = v
+                        document.getElementById('var-name-input').value = varName
+                        document.getElementById('var-value-input').value = varValue
 
-                })
-                const removeRefPath = this.getAttribute('scope') === 'workspace' ? `vars/workspaces/${workspaceName}/vars/${v}` : `vars/workspaces/${workspaceName}/tasks/${this.getAttribute('taskId')}/vars/${v}`
-                document.getElementById(`${v}-remove-var-btn`).addEventListener('click', (e) => {
-                    removeVar(removeRefPath,`${v}-table-raw`)
-                    //----------------------------------------------------------------------------------------------------
-                })
+                    })
+                    const removeRefPath = this.getAttribute('scope') === 'workspace' ? `vars/workspaces/${workspaceName}/vars/${v}` : `vars/workspaces/${workspaceName}/tasks/${this.getAttribute('taskId')}/vars/${v}`
+                    document.getElementById(`${v}-remove-var-btn`).addEventListener('click', (e) => {
+                        removeVar(removeRefPath, `${v}-table-raw`)
+                        //----------------------------------------------------------------------------------------------------
+                    })
 
-            }//for
+                }//for
 
-        }
-            
+            }
 
-        })
+
+        
 
     }//
 
@@ -192,13 +187,13 @@ customElements.define('env-vars', class extends HTMLElement {
 })
 
 
-function removeVar(refPath,id) {
-    window.FB_DATABASE.ref(refPath).remove((error, vars) => {
+async function removeVar(refPath, id) {
+    await window.firebase().ref(refPath).remove()
 
-            const parent =document.getElementById(id).parentNode
-            parent.removeChild(document.getElementById(id))
+        const parent = document.getElementById(id).parentNode
+        parent.removeChild(document.getElementById(id))
 
-        
 
-    })
+
+
 }

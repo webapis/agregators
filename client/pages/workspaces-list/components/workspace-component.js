@@ -54,34 +54,33 @@ customElements.define('workspace-component', class extends HTMLElement {
 
     document.getElementById(`${title}-edit`).addEventListener('click', (e) => {
 
-      debugger;
+      
       localStorage.setItem('workspace', JSON.stringify({ title, accessLevel, description, owner }))
       window.location.replace('/pages/workspace-editor/workspace-editor.html')
     })
 
-    document.getElementById(`${title}-delete`).addEventListener('click', (e) => {
+    document.getElementById(`${title}-delete`).addEventListener('click', async(e) => {
 
       if (confirm(`Are you sure you want to delete ${title}? workspace?`)) {
         // Save it!
-  
+
         const { screenName, localId } = JSON.parse(localStorage.getItem('auth'))
         let update = {}
         if (accessLevel === "private") {
-          debugger;
+          
           update = { [`private/${localId}/workspaces/${title}`]: null }
         } else {
-          debugger;
+          
           update = { [`public/workspaces/${title}`]: null }
         }
 
 
-        debugger;
-        window.FB_DATABASE.ref('/').update(update, (error, data) => {
-          if (data) {
-            window.location.replace('../workspaces-list/workspaces-list.html')
-          }
-          debugger;
-        })
+        
+        const data = await window.firebase().ref('/').update(update)
+        if (data) {
+          window.location.replace('../workspaces-list/workspaces-list.html')
+        }
+        
       } else {
         // Do nothing!
         console.log('Thing was not saved to the database.');

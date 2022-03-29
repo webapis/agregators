@@ -7,9 +7,8 @@ customElements.define('workspace-users', class extends HTMLElement {
     const resources = await import('./resources.js.js')
     await resources.default()
 
-    const { auth: { idToken, localId: uid }, workspace: { workspaceSelected:{title:workspaceName} } } = window.pageStore.state
-    this.uid = uid
-    window.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
+    const { auth: { idToken, localId: uid }, workspace: { workspaceSelected: { title: workspaceName } } } = window.pageStore.state
+
     document.getElementById('ws-breadcrumb').innerText = `Workspace(${workspaceName})`
 
     this.innerHTML = `
@@ -28,17 +27,17 @@ customElements.define('user-table', class extends HTMLElement {
     super()
   }
 
-  connectedCallback() {
-    const { auth: { idToken, localId: uid }, workspace: { workspaceSelected:{title:workspaceName} }, workspaceUsers } = window.pageStore.state
+  async connectedCallback() {
+    const { auth: { idToken, localId: uid }, workspace: { workspaceSelected: { title: workspaceName } }, workspaceUsers } = window.pageStore.state
 
-    this.uid = uid
-    window.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
-    window.FB_DATABASE.ref(`shared_workspaces/user/${uid}/workspaces/${workspaceName}/users`).on('value', (error, result) => {
-      debugger;
+
+
+    window.firebase().ref(`shared_workspaces/user/${uid}/workspaces/${workspaceName}/users`).on('value', (error, result) => {
+      
       const users = result.data ? Object.entries(result.data) : []
-      debugger;
+      
       this.render({ workspaceUsers, users })
-      debugger;
+      
     })
 
   }
@@ -82,7 +81,7 @@ customElements.define('user-table', class extends HTMLElement {
       const userName = user[0]
       const role = user[1]['role']
       const state = user[1]['state']
-      debugger;
+      
       document.getElementById('users-table').insertAdjacentHTML('beforeend', `  <tr>
            
       <td>${userName}(${state})</td>
@@ -92,7 +91,7 @@ customElements.define('user-table', class extends HTMLElement {
       <td scope="col"><button class="btn btn-secondary">Remove</button></td>
     </tr>
 `)
-      debugger;
+      
     })
     document.getElementById('username-input').addEventListener('input', (e) => {
       const { value, name } = e.target;
@@ -105,18 +104,14 @@ customElements.define('user-table', class extends HTMLElement {
 
     })
 
-    document.getElementById('invite-btn').addEventListener('click', (e) => {
-      debugger;
-      const { auth: { idToken, localId: uid, screenName }, workspace: { workspaceSelected:{title:workspaceName,description} }, workspaceUsers: { username, role } } = window.pageStore.state
-debugger;
-      const updateInvitations = { [`invitations/${username}/workspaces/${workspaceName}`]: { inviter: screenName, state: 'pending', inviterId: uid,description } }
+    document.getElementById('invite-btn').addEventListener('click', async (e) => {
+      
+      const { auth: { idToken, localId: uid, screenName }, workspace: { workspaceSelected: { title: workspaceName, description } }, workspaceUsers: { username, role } } = window.pageStore.state
+      
+      const updateInvitations = { [`invitations/${username}/workspaces/${workspaceName}`]: { inviter: screenName, state: 'pending', inviterId: uid, description } }
       const updateSharedWorkspaces = { [`shared_workspaces/user/${uid}/workspaces/${workspaceName}/users/${username}`]: { role, state: 'pending' } }
-      window.FB_DATABASE.ref(`/`).update({ ...updateInvitations, ...updateSharedWorkspaces }, (error, data) => {
-
-        debugger;
-
-      })
-      debugger;
+      await window.firebase.ref(`/`).update({ ...updateInvitations, ...updateSharedWorkspaces })
+      
 
     })
 

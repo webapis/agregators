@@ -19,7 +19,7 @@
   "devDependencies": {
     "@actions/artifact": "0.5.2",
     "@cucumber/cucumber": "7.0.0",
-    "cross-env": "7.0.2",
+    "cross-env": "^7.0.2",
     "nock": "^13.2.4",
     "node-watch": "0.7.1",
     "pre-commit": "1.2.2",
@@ -31,7 +31,7 @@
     "local:start": "SERVER=LOCAL_SERVER node root/index.js",
     "fb:emulator": "firebase emulators:start",
     "wfRunner": "node ./node_modules/workflow_runner/devServer.js",
-    "netlifyDev": "netlify dev offline=true",
+    "netlifyDev": "netlify dev",
     "testCucumber:@auth": "cucumber-js --tags @auth",
     "testCucumber:@workspace": "cucumber-js --tags @workspace",
     "testCucumber:@task": "cucumber-js --tags @task",

@@ -29,11 +29,10 @@ customElements.define('workspace-tasks', class extends HTMLElement {
         ])
 
         const { title: workspaceName } = JSON.parse(localStorage.getItem('workspace'))
-        const { idToken, localId: uid, token, screenName } = JSON.parse(localStorage.getItem('auth'))
+        const { token, screenName } = JSON.parse(localStorage.getItem('auth'))
 
-        this.uid = uid
-        window.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
-
+  
+    
 
         document.getElementById('ws-breadcrumb').innerText = `Workspace(${workspaceName})`
         this.innerHTML = `
@@ -82,13 +81,13 @@ customElements.define('workspace-tasks', class extends HTMLElement {
     }
 
     async loadTasks({ workspaceName }) {
-        const { idToken } = JSON.parse(localStorage.getItem('auth'))
-        const fetchUrl = `${window.projectUrl}/workspaces/${workspaceName}/tasks/.json?auth=${idToken}`
-        debugger
-         const getResponse = await fetch(fetchUrl, { method: 'GET' })
-         debugger;
-         const tasks = await getResponse.json()
-        debugger;
+     
+      
+        
+         const getResponse = await window.firebase().ref(`workspaces/${workspaceName}/tasks`).get()
+         
+         const tasks = getResponse
+        
         document.getElementById('container').innerHTML = `
         <div class="row">
         <div class="col-3">

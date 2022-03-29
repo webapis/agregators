@@ -12,8 +12,7 @@ customElements.define('runner-settings', class extends HTMLElement{
         document.getElementById('wf-runner-breadcrumb').innerText=`Runner settings (${selectedContainer})`
       
      
-        this.uid = uid
-        window.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri('https://turkmenistan-market.firebaseio.com')
+  
         this.render({ workspaceSelected,selectedContainer })
         
     }
@@ -27,10 +26,10 @@ customElements.define('runner-settings', class extends HTMLElement{
         `
 
         document.getElementById('containers').innerHTML = `Loading...`
-        window.FB_DATABASE.ref(`workspaces/${workspaceSelected}/containers/${selectedContainer}/workflows`).on('value', (error, response) => {
+        window.firebase().ref(`workspaces/${workspaceSelected}/containers/${selectedContainer}/workflows`).on('value', (error, response) => {
             const workflows = Object.keys(response.data)
             document.getElementById('containers').innerHTML = ``
-            debugger;
+            
             workflows.forEach(c => {
                 document.getElementById('containers').insertAdjacentHTML('beforeend', `<settings-card class="m-1 col-3" title="${c}" >${c}</settings-card>`)
             })

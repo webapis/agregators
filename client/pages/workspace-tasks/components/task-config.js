@@ -8,7 +8,7 @@ customElements.define('task-config', class extends HTMLElement {
         const title = this.getAttribute('title')
         const order = this.getAttribute('order') ? this.getAttribute('order') : 0
         const sequence = this.getAttribute('sequence') ? this.getAttribute('sequence') : 'sequential'
-         this.editable=false
+        this.editable = false
         this.innerHTML = `        
         <div class="border border-1 p-1 mb-1">
    
@@ -36,7 +36,7 @@ customElements.define('task-config', class extends HTMLElement {
 
 `
 
-        document.getElementById(`${taskId}-delete-task-btn`).addEventListener('click', (e) => {
+        document.getElementById(`${taskId}-delete-task-btn`).addEventListener('click', async (e) => {
             if (confirm(`Are you sure you want to delete ${title}?`)) {
                 // Save it!
                 const { title: workspaceName } = JSON.parse(localStorage.getItem('workspace'))
@@ -44,42 +44,40 @@ customElements.define('task-config', class extends HTMLElement {
                     [`server/workspaces/${workspaceName}/tasks/${taskId}`]: null
                 }
                 const updateClientWorkSpace = {
-                    [`workspaces/${workspaceName}/tasks/${taskId}`]:null
+                    [`workspaces/${workspaceName}/tasks/${taskId}`]: null
                 }
-                window.FB_DATABASE.ref('/').update({
+                await window.firebase().ref('/').update({
                     ...updateServerWorkSpace,
                     ...updateClientWorkSpace
-                }, (error, data) => {
-                    
-                    if (data) {
-                        console.log('updated')
-                        window.location.replace('/pages/workspace-tasks/workspace-tasks.html')
-                    }
-                    
-
                 })
-              } else {
-           
-              }
+                console.log('updated')
+                window.location.replace('/pages/workspace-tasks/workspace-tasks.html')
+
+
+
+
+            } else {
+
+            }
         })
 
 
 
-        document.getElementById(`${taskId}-task-editable-btn`).addEventListener('click', (e) => {
+        document.getElementById(`${taskId}-task-editable-btn`).addEventListener('click', async (e) => {
 
 
-          
+
 
 
             if (!this.editable) {
-                
+
                 document.getElementById(`${taskId}-title`).removeAttribute('readonly')
                 document.getElementById(`${taskId}-order`).removeAttribute('readonly')
                 document.getElementById(`${taskId}-sequence`).removeAttribute('disabled')
-                this.editable=! this.editable
+                this.editable = !this.editable
 
             } else {
-                
+
                 document.getElementById(`${taskId}-title`).setAttribute('readonly', true)
                 document.getElementById(`${taskId}-order`).setAttribute('readonly', true)
                 document.getElementById(`${taskId}-sequence`).setAttribute('disabled', true)
@@ -103,20 +101,11 @@ customElements.define('task-config', class extends HTMLElement {
 
                     }
                 }
-                window.FB_DATABASE.ref('/').update({
+                await window.firebase().ref('/').update({
                     ...updateServerWorkSpace,
                     ...updateClientWorkSpace
-                }, (error, data) => {
-                    this.editable=! this.editable
-                    
-                    if (data) {
-                        console.log('updated')
-                        //window.location.replace('/pages/workspace-tasks/workspace-tasks.html')
-                    }
-                    
-
                 })
-                
+                this.editable = !this.editable
             }
 
 

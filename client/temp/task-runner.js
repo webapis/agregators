@@ -10,35 +10,13 @@ customElements.define('task-runner', class extends HTMLElement {
     const resources = await import('./resources.js')
     await resources.default()
 
-    //const { auth: { idToken, localId: uid }, workspace: { workspaceSelected: { title: workspaceName } } } = window.pageStore.state
+ 
     const { title: workspaceName } = JSON.parse(localStorage.getItem('workspaceSelected'))
-    const { idToken, localId: uid, screenName: owner, email, token, refreshToken } = JSON.parse(localStorage.getItem('auth'))
-    const { taskName, id: taskId } = JSON.parse(localStorage.getItem('taskSelected'))
-    this.uid = uid
 
-    window.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
+
     document.getElementById('ws-breadcrumb').innerText = `Workspace(${workspaceName})`
 
 
-    // window.pageStore.subscribe(window.actionTypes.RUNNER_STARTED, async state => {
-
-    //   //const { taskRunner: { [workspaceName]: { runState, runid, start } }, auth: { idToken, localId, token, screenName: owner, email, refreshToken } } = state
-
-    //   const parameters = `${token}--xxx--${owner}--xxx--${idToken}--xxx--${email}--xxx--${uid}--xxx--${refreshToken}--xxx--${'selectedContainer'}--xxx--${window.projectUrl}--xxx--${workspaceName}--xxx--${runid}--xxx--${start}`
-
-    //   const body = JSON.stringify({ ref: 'main', inputs: { projectName: workspaceName, parameters } })
-
-    //   if (workspaceName === 'local_ws_bdd' ||workspaceName==='local_pub_ws_bdd') {
-
-    //     const response = await fetch('http://localhost:3001', { body, method: 'post' })
-
-
-    //   } else {
-
-    //     await triggerAction({ gh_action_url: `https://api.github.com/repos/${owner}/workflow_runner/actions/workflows/aggregate.yml/dispatches`, ticket: token, body })
-    //   }
-
-    // })
 
 
 
@@ -107,48 +85,7 @@ customElements.define('run-result', class extends HTMLElement {
       }
     })
 
-    //     window.pageStore.subscribe(window.actionTypes.RUNNER_STARTED, async state => {
-
-    //      // const { workspace: { workspaceSelected: { title: workspaceName } } } = state
-    //       const {  title: workspaceName   } = JSON.parse(localStorage.getItem('workspaceSelected'))
-    //       const { idToken} =JSON.parse(localStorage.getItem('auth'))
-    //       //const { taskRunner: { [workspaceName]: { runState, runid, start } } } = state
-    //            const {[workspaceName]: { runState, runid, start }} =JSON.parse(this.localStorage.getItem('taskRunner'))
-    //       const startDate = `${new Date(parseInt(start)).toLocaleDateString()} ${new Date(parseInt(start)).toLocaleTimeString()}`
-
-    //       if (runid) {
-    //         document.getElementById('body-container').insertAdjacentHTML('afterbegin', `<div id="runid-${runid}"class="col-12 row py-2 border border-bottom-0">
-    //               <div scope="row" class="col-1">${runid}</div>
-    //               <div class="col">${startDate}</div>
-    //               <div class="col"><span class="text-warning">Pending...</span></div>
-    //               <div class="col"><span class="text-warning">Pending...</span></div>
-    //               <div class="col"><div class="spinner-border spinner-border-sm text-warning" role="status"> <span class="visually-hidden">Loading...</span></div>
-    //               <div class="col"></div>
-    //             </div>`)
-    //         window.FB_DATABASE.ref(`runs/${workspaceName}/${runid}`).on('value', (error, result) => {
-    //           if (result) {
-    //             const data = result.data
-    //             if (data.runState === 2 || data.runState === 3) {
-    // debugger;
-    //               this.querySelectorAll(`#runid-${runid} div`)[2].textContent = `${new Date(data.end).toLocaleDateString()} ${new Date(data.end).toLocaleTimeString()}`
-
-    //               this.querySelectorAll(`#runid-${runid} div`)[3].textContent = data.duration;
-
-    //               this.querySelectorAll(`#runid-${runid} div`)[4].innerHTML = data.runState === 2 ? `<span class="text-success">Ok</span>` : `<span class="text-danger">Error</span>`
-    //               this.querySelector('#body-container >div').insertAdjacentHTML('beforeend', `  <div class="col"><a href="${data.html_url}">Log</a></div>`)
-    //               window.pageStore.dispatch({ type: window.actionTypes.RUNNER_COMPLETE })
-    //             }
-
-    //           }
-    //         })
-    //       }
-    //     })
-
-    // window.pageStore.subscribe(window.actionTypes.RUNS_FETCHED, state => {
-
-    //   const { taskRunner: { runs } } = state
-    //   this.displayRuns({ runs })
-    // })
+  
 
     await this.fetchRuns()
 
@@ -319,12 +256,12 @@ customElements.define('runner-button', class extends HTMLElement {
 
   }
 
-  render({ running }) {
-    debugger;
+async  render({ running }) {
+    
     this.innerHTML = `<button class="btn btn-outline-dark" id="run-tasks-btn" ${running && 'disabled'}>${running ? 'Running...' : 'Run'}</button>`
 
     document.getElementById('run-tasks-btn').addEventListener('click', async (e) => {
-      debugger;
+      
       //3
       e.preventDefault()
       const { title: workspaceName } = JSON.parse(localStorage.getItem('workspaceSelected'))
@@ -335,33 +272,28 @@ customElements.define('runner-button', class extends HTMLElement {
 
 
       try {
-        await window.updateIdToken()
+
         const fetchUrl = `${window.projectUrl}/runs/inc/${workspaceName}/incs.json?auth=${idToken}`
 
-        const updateIncResponse = await fetch(fetchUrl, { method: 'PUT', body: JSON.stringify({ '.sv': { 'increment': 1 } }) })
-        const incrementedNumber = await updateIncResponse.json()
-        debugger;
+        const updateIncResponse = await window.firebase().ref(fetchUrl).set({ '.sv': { 'increment': 1 } })
+        const incrementedNumber = await updateIncResponse
+        
         const error = incrementedNumber['error']
         if (error) {
-
-          // window.pageStore.dispatch({ type: window.actionTypes.CLIENT_ERROR, payload: error })
 
         } else {
           let runid = incrementedNumber
           let start = Date.now()
           update = { [`runs/${workspaceName}/${runid}`]: { runState: 1, start } }
 
-          window.FB_DATABASE.ref('/').update(update, async (error, data) => {
+          await window.firebase().ref('/').update(update)
             //4
-
-            if (data) {
-              debugger;
+              
               localStorage.setItem('taskRunner', JSON.stringify({ [workspaceName]: { runState: 1, runid: incrementedNumber, start } }))
               this.runnerStarted()
-              // window.pageStore.dispatch({ type: window.actionTypes.RUNNER_STARTED, payload: { workspace: workspaceName, runState: 1, runid: incrementedNumber, start } })
 
-            }
-          })
+            
+          
         }
 
       } catch (error) {
@@ -380,14 +312,14 @@ customElements.define('runner-button', class extends HTMLElement {
     const parameters = `${token}--xxx--${owner}--xxx--${idToken}--xxx--${email}--xxx--${uid}--xxx--${refreshToken}--xxx--${'selectedContainer'}--xxx--${window.projectUrl}--xxx--${workspaceName}--xxx--${runid}--xxx--${start}`
 
     const body = JSON.stringify({ ref: 'main', inputs: { projectName: workspaceName, parameters } })
-    debugger;
+    
     if (workspaceName === 'local_ws_bdd' || workspaceName === 'local_pub_ws_bdd') {
-      debugger;
+      
       const response = await fetch('http://localhost:3001', { body, method: 'post' })
 
-      debugger;
+      
     } else {
-      debugger;
+      
       await triggerAction({ gh_action_url: `https://api.github.com/repos/${owner}/workflow_runner/actions/workflows/aggregate.yml/dispatches`, ticket: token, body })
     }
   }
@@ -399,7 +331,7 @@ customElements.define('runner-button', class extends HTMLElement {
 
 
 async function triggerAction({ ticket, body, gh_action_url }) {
-  debugger;
+  
 
   try {
     const response = await fetch(gh_action_url, {
@@ -412,7 +344,7 @@ async function triggerAction({ ticket, body, gh_action_url }) {
     })
     const data = await response.json()
   } catch (error) {
-    debugger;
+    
   }
 
 }

@@ -166,8 +166,8 @@ customElements.define('task-accordion-item', class extends HTMLElement {
 
                     }//end for loop
                     const workflows = await Promise.all(workPromises)
-                    debugger;
-                    debugger;
+                    
+                    
                     workflows.forEach(wf => {
                         const taskId =this.getAttribute('taskId')
                         const end = wf['end']
@@ -180,7 +180,7 @@ customElements.define('task-accordion-item', class extends HTMLElement {
                         const workflowDescription = wf['workflowDescription']
                         const workflowKey=wf['workflowKey']
                         if(document.getElementById(`${workflowKey}-${taskId}-${wsrunid}`)){
-                          debugger;
+                          
                           const parent =document.getElementById(`${workflowKey}-${taskId}-${wsrunid}`).parentElement
                           parent.removeChild(document.getElementById(`${workflowKey}-${taskId}-${wsrunid}`))
                       }

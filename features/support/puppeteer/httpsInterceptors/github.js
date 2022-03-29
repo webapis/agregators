@@ -11,13 +11,16 @@ function gitHubInterceptor(interceptedRequest, order) {
     const url = interceptedRequest._url
 
     if (url.includes('https://github.com/login/oauth/authorize?client_id')) {
-
+debugger;
         interceptedRequest.respond({
             status: 302,
             statusCode: 302,
             headers: { Location: 'https://localhost:8888/.netlify/functions/auth-callback' },
         })
-    } else
+
+    }
+    
+   else
         if (url === 'https://api.github.com/user/repos') {
 
             const bodyRepos = fs.readFileSync(`${process.cwd()}/mock-data/git-repos/repos.json`)

@@ -9,8 +9,7 @@ customElements.define('wf-container', class extends HTMLElement{
         const {workspace:{workspaceSelected},wfContainer:{selectedContainer},auth: { idToken, localId: uid }}=window.pageStore.state
         document.getElementById('ws-breadcrumb').innerText=`Workspace(${workspaceSelected})`
         document.getElementById('wf-container-breadcrumb').innerText=`Container(${selectedContainer})`
-        this.uid = uid
-        window.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri('https://turkmenistan-market.firebaseio.com')
+  
         this.innerHTML=`<div>
         <div class="d-flex">
         <h5>Container:</h5>
@@ -22,11 +21,11 @@ customElements.define('wf-container', class extends HTMLElement{
         </div>`
 
 
-        window.FB_DATABASE.ref(`workspaces/${workspaceSelected}/containers/${selectedContainer}/workflows`).on('value', (error, response) => {
+   const response =   await  window.firebase().ref(`workspaces/${workspaceSelected}/containers/${selectedContainer}/workflows`).on('value', (error, response) => {
           if(response.data){
             const workflows = Object.keys(response.data)
             document.getElementById('workflows').innerHTML = ``
-            debugger;
+            
             workflows.forEach(c => {
                 document.getElementById('workflows').insertAdjacentHTML('beforeend', `<worklow-card class="m-1 col-3" title="${c}" >${c}</worklow-card>`)
             })
@@ -34,8 +33,6 @@ customElements.define('wf-container', class extends HTMLElement{
             document.getElementById('workflows').innerHTML=`No worklows available`
           }
            
-         
-
         })
     }
 })
@@ -105,7 +102,7 @@ customElements.define('wf-gear-icon', class extends HTMLElement{
       `
 
         document.getElementById(`btn-${title}`).addEventListener('click',(e)=>{
-                debugger;
+                
             window.pageStore.dispatch({ type: window.actionTypes.WF_CONTAINER_SELECTED, payload: title })
 
         })

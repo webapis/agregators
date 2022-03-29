@@ -8,8 +8,7 @@ customElements.define('container-runners', class extends HTMLElement{
         await resources.default()
 
         const { workspace: { workspaceSelected }, auth: { idToken, localId: uid } } = window.pageStore.state
-        this.uid = uid
-        window.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
+ 
         this.render({ workspaceSelected })
      
     }
@@ -23,10 +22,10 @@ customElements.define('container-runners', class extends HTMLElement{
         <div id="containers" class="row"></div>
         </div>`
         document.getElementById('containers').innerHTML = `Loading...`
-        window.FB_DATABASE.ref(`workspaces/${workspaceSelected}/containers`).on('value', (error, response) => {
+        window.ref(`workspaces/${workspaceSelected}/containers`).on('value', (error, response) => {
             const containers = Object.keys(response.data)
             document.getElementById('containers').innerHTML = ``
-            debugger;
+            
             containers.forEach(c => {
                 document.getElementById('containers').insertAdjacentHTML('beforeend', `<runner-card title="${c}">${c}</runner-card>`)
             })
@@ -97,17 +96,17 @@ customElements.define('runner-card', class extends HTMLElement {
         const projectUrl=window.projectUrl
         const selectedContainer=title
         const parameters=`${token}--xxx--${owner}--xxx--${idToken}--xxx--${email}--xxx--${localId}--xxx--${refreshToken}--xxx--${selectedContainer}--xxx--${projectUrl}--xxx--${workspaceSelected}`
-        debugger;
+        
         const body = JSON.stringify({ ref: 'main', inputs: { projectName: title, parameters } })
      
-        debugger;
+        
        await triggerAction({ gh_action_url: `https://api.github.com/repos/${owner}/workflow_runner/actions/workflows/aggregate.yml/dispatches`, ticket: token, body })
     
     
       })
 
       document.getElementById(`a-${title}`).addEventListener('click',(e)=>{
-        debugger;
+        
     window.pageStore.dispatch({ type: window.actionTypes.WF_CONTAINER_SELECTED, payload: title })
 })
    
@@ -134,7 +133,7 @@ customElements.define('gear-icon', class extends HTMLElement{
       `
 
         document.getElementById(`btn-${title}`).addEventListener('click',(e)=>{
-                debugger;
+                
             window.pageStore.dispatch({ type: window.actionTypes.WF_CONTAINER_SELECTED, payload: title })
 
         })
@@ -147,7 +146,7 @@ customElements.define('gear-icon', class extends HTMLElement{
 
 
 async function triggerAction({ ticket, body, gh_action_url }) {
-  debugger;
+  
 
   try {
     const response =await fetch(gh_action_url, {
@@ -160,7 +159,7 @@ async function triggerAction({ ticket, body, gh_action_url }) {
   })
   const data =await response.json()
   } catch (error) {
-    debugger;
+    
   }
  
 }

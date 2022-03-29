@@ -8,13 +8,13 @@ customElements.define('workspace-editor', class extends HTMLElement {
         const resources = await import('/js/resources.js')
         await resources.default()
 
-        const { idToken, localId: uid } = JSON.parse(localStorage.getItem('auth'))
+        const {localId: uid } = JSON.parse(localStorage.getItem('auth'))
 
         const workspace = JSON.parse(localStorage.getItem('workspace'))
 
         this.uid = uid
-        window.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
-        debugger;
+      
+        
         document.getElementById('workspace-breadcrumb').innerText = workspace.title !== '' ? `Update Workspace(${workspace.title})` : 'New Workspace'
         this.render(workspace)
     }
@@ -28,7 +28,7 @@ customElements.define('workspace-editor', class extends HTMLElement {
         <form class="row g-3">
         <div class="col-12">
             <label for="staticEmail2" >Workspace Name:</label>
-            <input type="text"  class="form-control" id="workspace-name-input" name="title" value="${title}" placeholder="Enter workspace name" ${title !=''&& 'readonly'}>
+            <input type="text"  class="form-control" id="workspace-name-input" name="title" value="${title}" placeholder="Enter workspace name" ${title != '' && 'readonly'}>
         </div>
 
 
@@ -74,27 +74,27 @@ customElements.define('workspace-editor', class extends HTMLElement {
 
 
 
-        document.getElementById('save-ws-name-btn').addEventListener('click', (e) => {
+        document.getElementById('save-ws-name-btn').addEventListener('click', async (e) => {
             e.preventDefault()
             const { title, accessLevel, description } = JSON.parse(localStorage.getItem('workspace'))
             const { screenName, localId } = JSON.parse(localStorage.getItem('auth'))
             let update = {}
             if (accessLevel === "private") {
-                debugger;
+                
                 update = { [`private/${localId}/workspaces/${title}`]: { owner: screenName, description, accessLevel }, [`public/workspaces/${title}`]: null }
             } else {
-                debugger;
+                
                 update = { [`public/workspaces/${title}`]: { owner: screenName, description, accessLevel }, [`private/${localId}/workspaces/${title}`]: null }
             }
 
 
-            debugger;
-            window.FB_DATABASE.ref('/').update(update, (error, data) => {
-                if (data) {
-                    window.location.replace('../workspaces-list/workspaces-list.html')
-                }
-                debugger;
-            })
+            
+            const data = await window.firebase().ref('/').update(update)
+            
+            if (data) {
+                window.location.replace('../workspaces-list/workspaces-list.html')
+            }
+            
         })
     }
 })

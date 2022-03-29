@@ -16,7 +16,7 @@ customElements.define('workflow-list-items', class extends HTMLElement {
         const duration = `${hours}:${mins}:${seconds}`
         const startTime = `${start.getHours()}:${start.getMinutes()}:${start.getSeconds()}`
         const endTime = `${end.getHours()}:${end.getMinutes()}:${end.getSeconds()}`
-        debugger;
+        
         this.innerHTML = `
         <div class="row">
 

@@ -7,13 +7,13 @@ customElements.define('tasks-configuration', class extends HTMLElement {
         const resources = await import('./resources.js')
         await resources.default()
         if (document.getElementById('token')) {
-            debugger;
+            
 
 
-            debugger;
+            
             this.render()
         } else {
-            debugger;
+            
             this.render()
         }
 
@@ -21,8 +21,7 @@ customElements.define('tasks-configuration', class extends HTMLElement {
 
     render() {
         const { auth: { idToken, localId: uid, googleOauth }, workspace: { workspaceSelected: { title: workspaceName } } } = window.pageStore.state
-        this.uid = uid
-        window.FB_DATABASE = window.firebase().setIdToken(idToken).setProjectUri(window.projectUrl)
+
         document.getElementById('ws-breadcrumb').innerText = `Workspace(${workspaceName})`
         this.innerHTML = `
      
@@ -33,30 +32,30 @@ customElements.define('tasks-configuration', class extends HTMLElement {
         </div>
         `
 
-        document.getElementById('google-auth-btn').addEventListener('click', (e) => {
+        document.getElementById('google-auth-btn').addEventListener('click', async (e) => {
             const { auth: { idToken, localId: uid }, workspace: { workspaceSelected: { title: workspaceName } }, workspaceTasks: { googleScopes } } = window.pageStore.state
             const client_id = "117708549296-uij0mup1c3biok6ifaupa2951vtvf418.apps.googleusercontent.com"
             const redirect_url = `${window.location.origin}/google-auth-callback`
-            debugger;
+            
             const scope = googleScopes
             const state = `${workspaceName}--xxx--${uid}--xxx--${idToken}`
             const authRequestUri = `/google-auth?scope=${scope}&client_id=${client_id}&redirect_url=${redirect_url}&state=${state}`//`https://accounts.google.com/o/oauth2/v2/auth?scope=${scope}&access_type=offline&include_granted_scopes=true&response_type=code&state=${state}&redirect_uri=${redirect_url}&client_id=${client_id}`
-            debugger;
+            
             window.location.replace(authRequestUri)
-            debugger;
+            
         })
 
         //Collect google apis scopes remove dublicate scopes
-        window.FB_DATABASE.ref(`workspaces/${workspaceName}/workflowConfigs/tasks`).get((error, result) => {
-            if (result) {
-                debugger;
+    const result= await window.firebase().ref(`workspaces/${workspaceName}/workflowConfigs/tasks`).get()
+          
+                
                 const tasks = Object.values(result)
                 const configs = []
-                debugger;
+                
                 tasks.forEach(task => {
                     const workflows = Object.values(task.workflows);
 
-                    debugger;
+                    
                     workflows.forEach(workflowConfig => {
 
                         configs.push(workflowConfig)
@@ -77,10 +76,10 @@ customElements.define('tasks-configuration', class extends HTMLElement {
                 const withoutDublicate = gmailScopes.split(' ').filter(function (item, pos, self) {
                     return self.indexOf(item) == pos
                 }).join(' ')
-                debugger;
+                
                 window.pageStore.dispatch({ type: window.actionTypes.GOOGLE_SCOPES, payload: withoutDublicate })
-            }
-        })
+            
+        
     }
 })
 
