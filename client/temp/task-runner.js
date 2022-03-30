@@ -99,7 +99,7 @@ customElements.define('run-result', class extends HTMLElement {
     const { title: workspaceName } = JSON.parse(localStorage.getItem('workspaceSelected'))
     const { idToken } = JSON.parse(localStorage.getItem('auth'))
     try {
-      await window.updateIdToken()
+
       const runLength = await this.fetchRunLength()
 
       const startAt = runLength - 10
@@ -172,7 +172,7 @@ customElements.define('run-result', class extends HTMLElement {
           window.runFetchComplete = true
         }
 
-        await window.updateIdToken()
+   
         const fetchUrl = `${window.projectUrl}/runs/${workspaceName}.json?auth=${idToken}&orderBy="$key"&startAt="${startAt}"&endAt="${endAt}"`
 
         const getResponse = await fetch(fetchUrl, { method: 'GET' })
@@ -214,7 +214,7 @@ customElements.define('run-result', class extends HTMLElement {
       const { title: workspaceName } = JSON.parse(localStorage.getItem('workspaceSelected'))
       const { idToken } = JSON.parse(localStorage.getItem('auth'))
       try {
-        await window.updateIdToken()
+    
         const fetchUrl = `${window.projectUrl}/runs/inc/${workspaceName}/incs.json?auth=${idToken}`
         const getResponse = await fetch(fetchUrl, { method: 'GET' })
         const getJsonData = await getResponse.json()

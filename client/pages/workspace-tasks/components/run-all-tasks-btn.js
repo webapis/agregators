@@ -7,7 +7,7 @@ customElements.define('run-all-tasks-btn', class extends HTMLElement {
       
         this.innerHTML = ` <button class="btn btn-outline-success btn-sm" id="run-all-tasks-btn">Run </button>`
         document.getElementById(`run-all-tasks-btn`).addEventListener('click', async (e) => {
-            await window.updateIdToken()
+         
          //  document.getElementById('run-all-tasks-btn').setAttribute('disabled',true)
            
             const { title: workspaceName } = JSON.parse(localStorage.getItem('workspace'))
@@ -19,11 +19,13 @@ customElements.define('run-all-tasks-btn', class extends HTMLElement {
             const runSequence = window.orderedTasks[0]['runSequence']
             const first = 'true'
 
-            const fetchIncUrl = `inc/workspaces/${workspaceName}/inc`
-            const updateIncResponse = await window.firebase().ref(fetchIncUrl).update({ '.sv': { "increment": 1 } })
-            const incData = await updateIncResponse
+            const fetchIncUrl = `inc/workspaces/${workspaceName}`
+            debugger;
+            const updateIncResponse = await window.firebase().ref(fetchIncUrl).update({ inc:{'.sv': { "increment": 1 }} })
+            const {inc} = await updateIncResponse
 
-            const wfrunid = incData
+            const wfrunid = inc
+            debugger;
             const parameters = `${token}--xxx--${owner}--xxx--${idToken}--xxx--${email}--xxx--${uid}--xxx--${refreshToken}--xxx--${timestamp}--xxx--${window.projectUrl}--xxx--${workspaceName}--xxx--${runid}--xxx--${start}--xxx--${taskId}--xxx--${runNext}--xxx--${runSequence}--xxx--${first}--xxx--${wfrunid}--xxx--${api_key}`
             const body = JSON.stringify({ ref: 'main', inputs: { projectName: workspaceName, parameters } })
             const fetchUrl = `workspaces/${workspaceName}/lastLog`
